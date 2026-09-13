@@ -192,160 +192,239 @@ const NETZWERK_DATA = {
       `
       },
       interactiveExercises: [
-        {
-          id: "k1_ex1",
-          title: "Übung 1: Complete the German Greetings (Begrüßung)",
-          instruction: "Fill in the missing German word for each situation:",
-          questions: [
-            {
-              id: "k1_q1",
-              prompt: "1. Greeting someone in the morning (8:00 AM): 'Guten ______!'",
-              expected: ["Morgen", "morgen"],
-              hint: "German word for 'morning', capitalized.",
-              explanation: "'Guten Morgen' is used to greet people in the morning."
-            },
-            {
-              id: "k1_q2",
-              prompt: "2. Wishing someone sweet dreams before sleeping: 'Gute ______!'",
-              expected: ["Nacht", "nacht"],
-              hint: "German word for 'night' (feminine: die Nacht).",
-              explanation: "'Gute Nacht' is used exclusively when heading to bed."
-            },
-            {
-              id: "k1_q3",
-              prompt: "3. Formal polite goodbye: 'Auf ______!'",
-              expected: ["Wiedersehen", "wiedersehen"],
-              hint: "Literally means 'until seeing again'.",
-              explanation: "'Auf Wiedersehen' is the standard formal farewell in German."
-            }
-          ]
-        },
-        {
-          id: "k1_ex2",
-          title: "Übung 2: Introducing Yourself (Sich vorstellen)",
-          instruction: "Complete the self-introduction sentences with the correct word:",
-          questions: [
-            {
-              id: "k1_q4",
-              prompt: "1. 'Hallo, ich ______ (heißen) Cheeya.'",
-              expected: ["heiße", "heisse"],
-              hint: "Conjugate 'heißen' for the subject 'ich' (ending -e).",
-              explanation: "For subject 'ich', heißen becomes 'heiße'."
-            },
-            {
-              id: "k1_q5",
-              prompt: "2. 'Woher ______ (kommen) du?'",
-              expected: ["kommst"],
-              hint: "Conjugate 'kommen' for the subject 'du' (ending -st).",
-              explanation: "For subject 'du', kommen becomes 'kommst'."
-            },
-            {
-              id: "k1_q6",
-              prompt: "3. 'Ich komme ______ (from) Deutschland.'",
-              expected: ["aus"],
-              hint: "German preposition for country origin (from).",
-              explanation: "'aus' means 'from' when stating origin (aus Deutschland)."
-            }
-          ]
-        },
-        {
-          id: "k1_ex3",
-          title: "Übung 3: The Verb 'sein' (to be)",
-          instruction: "Fill in the correct form of 'sein' (bin, bist, ist, sind):",
-          questions: [
-            {
-              id: "k1_q7",
-              prompt: "1. 'Wer ______ du?' (Who are you?)",
-              expected: ["bist"],
-              hint: "Form of 'sein' for subject 'du'.",
-              explanation: "Du bist -> Wer bist du?"
-            },
-            {
-              id: "k1_q8",
-              prompt: "2. 'Wer ______ Sie?' (Who are You? - formal)",
-              expected: ["sind"],
-              hint: "Form of 'sein' for formal 'Sie'.",
-              explanation: "Sie sind -> Wer sind Sie?"
-            },
-            {
-              id: "k1_q9",
-              prompt: "3. 'Das ______ Herr Müller.' (That is Mr. Müller.)",
-              expected: ["ist"],
-              hint: "Form of 'sein' for 3rd person singular (er/es/das).",
-              explanation: "Er/es/das ist -> Das ist Herr Müller."
-            }
-          ]
-        },
-        {
-          id: "k1_ex4",
-          title: "Übung 4: Das deutsche Alphabet & Buchstabieren (Spelling)",
-          instruction: "Answer the questions about the German alphabet and spelling:",
-          questions: [
-            {
-              id: "k1_q10",
-              prompt: "1. How do you ask politely: 'Wie ______ man das?' (buchstabieren)",
-              expected: ["buchstabiert", "buchstabieren"],
-              hint: "Conjugate 'buchstabieren' for 3rd person singular 'man' (ends in -t).",
-              explanation: "For subject 'man' (one/you), the verb ending is '-t': 'Wie buchstabiert man das?'"
-            },
-            {
-              id: "k1_q11",
-              prompt: "2. Which special German character is called 'Eszett' or 'scharfes S'? Type the symbol:",
-              expected: ["ß", "ss"],
-              hint: "Type the letter ß (or ss).",
-              explanation: "The letter 'ß' is known as Eszett or scharfes S."
-            },
-            {
-              id: "k1_q12",
-              prompt: "3. How is the German letter 'W' pronounced? Like English ______ (V / W / B):",
-              expected: ["V", "v"],
-              hint: "Like the 'v' in victory.",
-              explanation: "In German, 'W' sounds like the English 'V' (e.g. Wasser = Vasser)."
-            },
-            {
-              id: "k1_q13",
-              prompt: "4. Spell the German word 'Tee' with hyphens (z.B. T-E-E):",
-              expected: ["T-E-E", "t-e-e"],
-              hint: "Three letters separated by hyphens.",
-              explanation: "Tee is spelled T - E - E."
-            }
-          ]
-        },
-        {
-          id: "k1_ex5",
-          title: "Übung 5: Die Zahlen 0 bis 20 (German Numbers)",
-          instruction: "Write the correct German number words:",
-          questions: [
-            {
-              id: "k1_q14",
-              prompt: "1. 7 + 5 = 12. Write the number 12 in German word:",
-              expected: ["zwölf", "zwoelf", "Zwölf", "Zwoelf"],
-              hint: "Starts with zw- and contains ö.",
-              explanation: "12 = zwölf."
-            },
-            {
-              id: "k1_q15",
-              prompt: "2. Which number comes after 15 (fünfzehn)? Note: drop the 's'!",
-              expected: ["sechzehn", "Sechzehn"],
-              hint: "16 is sechzehn (NOT sechszehn).",
-              explanation: "16 = sechzehn (the 's' from sechs is dropped!)."
-            },
-            {
-              id: "k1_q16",
-              prompt: "3. How do you write the number 20 in German?",
-              expected: ["zwanzig", "Zwanzig"],
-              hint: "Starts with zw- and ends with -zig.",
-              explanation: "20 = zwanzig."
-            },
-            {
-              id: "k1_q17",
-              prompt: "4. Write the phone digits in numbers: 'null - acht - eins - fünf':",
-              expected: ["0815", "0 8 1 5", "0-8-1-5"],
-              hint: "Four numbers together.",
-              explanation: "null (0) - acht (8) - eins (1) - fünf (5) = 0815."
-            }
-          ]
-        }
+          {
+              "id":  "k1_ex1",
+              "title":  "Übung 1: Complete the German Greetings (Begrüßung)",
+              "instruction":  "Fill in the missing German word for each situation:",
+              "questions":  [
+                                {
+                                    "id":  "k1_q1",
+                                    "prompt":  "1. Greeting someone in the morning (8:00 AM): 'Guten ______!'",
+                                    "expected":  [
+                                                     "Morgen",
+                                                     "morgen"
+                                                 ],
+                                    "hint":  "German word for 'morning', capitalized.",
+                                    "explanation":  "'Guten Morgen' is used to greet people in the morning until around 11:00 AM."
+                                },
+                                {
+                                    "id":  "k1_q2",
+                                    "prompt":  "2. Wishing someone sweet dreams before sleeping: 'Gute ______!'",
+                                    "expected":  [
+                                                     "Nacht",
+                                                     "nacht"
+                                                 ],
+                                    "hint":  "German word for 'night' (feminine: die Nacht).",
+                                    "explanation":  "'Gute Nacht' is used exclusively when heading to bed."
+                                },
+                                {
+                                    "id":  "k1_q3",
+                                    "prompt":  "3. Formal polite goodbye: 'Auf ______!'",
+                                    "expected":  [
+                                                     "Wiedersehen",
+                                                     "wiedersehen"
+                                                 ],
+                                    "hint":  "Literally means 'until seeing again'.",
+                                    "explanation":  "'Auf Wiedersehen' is the standard formal farewell in German."
+                                },
+                                {
+                                    "id":  "k1_q4",
+                                    "prompt":  "4. Friendly informal goodbye among friends: '______!'",
+                                    "expected":  [
+                                                     "Tschüss",
+                                                     "tschüss",
+                                                     "Tschuess",
+                                                     "tschuess"
+                                                 ],
+                                    "hint":  "Informal 'bye' in German, starts with Tsch-.",
+                                    "explanation":  "'Tschüss' is the most common casual way to say goodbye to friends."
+                                }
+                            ]
+          },
+          {
+              "id":  "k1_ex2",
+              "title":  "Übung 2: Introducing Yourself \u0026 Origins (Sich vorstellen)",
+              "instruction":  "Complete the self-introduction sentences with the correct word:",
+              "questions":  [
+                                {
+                                    "id":  "k1_q5",
+                                    "prompt":  "1. 'Hallo, ich ______ (heißen) Cheeya.'",
+                                    "expected":  [
+                                                     "heiße",
+                                                     "heisse"
+                                                 ],
+                                    "hint":  "Conjugate 'heißen' for subject 'ich' (ending -e).",
+                                    "explanation":  "For subject 'ich', heißen becomes 'heiße'."
+                                },
+                                {
+                                    "id":  "k1_q6",
+                                    "prompt":  "2. 'Woher ______ (kommen) du?'",
+                                    "expected":  [
+                                                     "kommst"
+                                                 ],
+                                    "hint":  "Conjugate 'kommen' for subject 'du' (ending -st).",
+                                    "explanation":  "For subject 'du', kommen becomes 'kommst'."
+                                },
+                                {
+                                    "id":  "k1_q7",
+                                    "prompt":  "3. 'Ich komme ______ (from) Deutschland.'",
+                                    "expected":  [
+                                                     "aus"
+                                                 ],
+                                    "hint":  "German preposition for country origin (from).",
+                                    "explanation":  "'aus' means 'from' when stating origin (aus Deutschland, aus Indonesien)."
+                                },
+                                {
+                                    "id":  "k1_q8",
+                                    "prompt":  "4. 'Wo ______ (wohnen) Sie, Frau Bauer?'",
+                                    "expected":  [
+                                                     "wohnen"
+                                                 ],
+                                    "hint":  "Conjugate 'wohnen' for formal 'Sie' (ending -en).",
+                                    "explanation":  "Formal 'Sie' takes the standard infinitive ending '-en' (wohnen Sie)."
+                                }
+                            ]
+          },
+          {
+              "id":  "k1_ex3",
+              "title":  "Übung 3: The Verb 'sein' (to be)",
+              "instruction":  "Fill in the correct form of 'sein' (bin, bist, ist, sind):",
+              "questions":  [
+                                {
+                                    "id":  "k1_q9",
+                                    "prompt":  "1. 'Wer ______ du?' (Who are you?)",
+                                    "expected":  [
+                                                     "bist"
+                                                 ],
+                                    "hint":  "Form of 'sein' for subject 'du'.",
+                                    "explanation":  "Du bist -\u003e Wer bist du?"
+                                },
+                                {
+                                    "id":  "k1_q10",
+                                    "prompt":  "2. 'Wer ______ Sie?' (Who are You? - formal)",
+                                    "expected":  [
+                                                     "sind"
+                                                 ],
+                                    "hint":  "Form of 'sein' for formal 'Sie'.",
+                                    "explanation":  "Sie sind -\u003e Wer sind Sie?"
+                                },
+                                {
+                                    "id":  "k1_q11",
+                                    "prompt":  "3. 'Das ______ Herr Müller.' (That is Mr. Müller.)",
+                                    "expected":  [
+                                                     "ist"
+                                                 ],
+                                    "hint":  "Form of 'sein' for 3rd person singular (er/es/das).",
+                                    "explanation":  "Er/es/das ist -\u003e Das ist Herr Müller."
+                                },
+                                {
+                                    "id":  "k1_q12",
+                                    "prompt":  "4. 'Ich ______ Studentin.' (I am a student.)",
+                                    "expected":  [
+                                                     "bin"
+                                                 ],
+                                    "hint":  "Form of 'sein' for subject 'ich'.",
+                                    "explanation":  "Ich bin -\u003e Ich bin Studentin."
+                                }
+                            ]
+          },
+          {
+              "id":  "k1_ex4",
+              "title":  "Übung 4: Das Alphabet \u0026 Buchstabieren (Spelling)",
+              "instruction":  "Answer the questions about the German alphabet and spelling:",
+              "questions":  [
+                                {
+                                    "id":  "k1_q13",
+                                    "prompt":  "1. How do you ask politely: 'Wie ______ man das?' (buchstabieren)",
+                                    "expected":  [
+                                                     "buchstabiert",
+                                                     "buchstabieren"
+                                                 ],
+                                    "hint":  "Conjugate 'buchstabieren' for 3rd person singular 'man' (ends in -t).",
+                                    "explanation":  "For subject 'man' (one/you), the verb ending is '-t': 'Wie buchstabiert man das?'"
+                                },
+                                {
+                                    "id":  "k1_q14",
+                                    "prompt":  "2. Which special German character is called 'Eszett' or 'scharfes S'? Type the symbol:",
+                                    "expected":  [
+                                                     "ß",
+                                                     "ss"
+                                                 ],
+                                    "hint":  "Type the letter ß (or ss).",
+                                    "explanation":  "The letter 'ß' is known as Eszett or scharfes S."
+                                },
+                                {
+                                    "id":  "k1_q15",
+                                    "prompt":  "3. How is the German letter 'W' pronounced? Like English ______ (V / W / B):",
+                                    "expected":  [
+                                                     "V",
+                                                     "v"
+                                                 ],
+                                    "hint":  "Like the 'v' in victory.",
+                                    "explanation":  "In German, 'W' sounds like the English 'V' (e.g. Wasser = Vasser)."
+                                },
+                                {
+                                    "id":  "k1_q16",
+                                    "prompt":  "4. Spell the German word 'Tee' with hyphens (z.B. T-E-E):",
+                                    "expected":  [
+                                                     "T-E-E",
+                                                     "t-e-e"
+                                                 ],
+                                    "hint":  "Three letters separated by hyphens.",
+                                    "explanation":  "Tee is spelled T - E - E."
+                                }
+                            ]
+          },
+          {
+              "id":  "k1_ex5",
+              "title":  "Übung 5: Die Zahlen 0 bis 20 (German Numbers)",
+              "instruction":  "Write the correct German number words:",
+              "questions":  [
+                                {
+                                    "id":  "k1_q17",
+                                    "prompt":  "1. 7 + 5 = 12. Write the number 12 in German word:",
+                                    "expected":  [
+                                                     "zwölf",
+                                                     "zwoelf",
+                                                     "Zwölf",
+                                                     "Zwoelf"
+                                                 ],
+                                    "hint":  "Starts with zw- and contains ö.",
+                                    "explanation":  "12 = zwölf."
+                                },
+                                {
+                                    "id":  "k1_q18",
+                                    "prompt":  "2. Which number comes after 15 (fünfzehn)? Note: drop the 's'!",
+                                    "expected":  [
+                                                     "sechzehn",
+                                                     "Sechzehn"
+                                                 ],
+                                    "hint":  "16 is sechzehn (NOT sechszehn).",
+                                    "explanation":  "16 = sechzehn (the 's' from sechs is dropped!)."
+                                },
+                                {
+                                    "id":  "k1_q19",
+                                    "prompt":  "3. How do you write the number 20 in German?",
+                                    "expected":  [
+                                                     "zwanzig",
+                                                     "Zwanzig"
+                                                 ],
+                                    "hint":  "Starts with zw- and ends with -zig.",
+                                    "explanation":  "20 = zwanzig."
+                                },
+                                {
+                                    "id":  "k1_q20",
+                                    "prompt":  "4. Write the phone digits in numbers: 'null - acht - eins - fünf':",
+                                    "expected":  [
+                                                     "0815",
+                                                     "0 8 1 5",
+                                                     "0-8-1-5"
+                                                 ],
+                                    "hint":  "Four numbers together.",
+                                    "explanation":  "null (0) - acht (8) - eins (1) - fünf (5) = 0815."
+                                }
+                            ]
+          }
       ],
       grammarSummary: `
 **Core Grammar Rules (Kapitel 1):**
@@ -429,36 +508,116 @@ const NETZWERK_DATA = {
         { de: "bitte / danke", en: "please / thank you", type: "phrase" }
       ],
       quizzes: [
-        {
-          q: "What is the German word for the number 16?",
-          options: ["sechzehn", "sechszehn", "sechzig", "siebzehn"],
-          correct: 0,
-          explanation: "In 16 (sechzehn), the letter 's' from 'sechs' is dropped."
-        },
-        {
-          q: "How is the German letter 'W' pronounced in words like 'Wasser'?",
-          options: ["Like English 'W' (water)", "Like English 'V' (vase)", "Like 'B'", "It is silent"],
-          correct: 1,
-          explanation: "In German, the letter 'W' is pronounced like the English 'V' [ve:]."
-        },
-        {
-          q: "Which letter is known as 'Eszett' or 'scharfes S'?",
-          options: ["ß", "Ä", "Ö", "Z"],
-          correct: 0,
-          explanation: "'ß' is the unique German letter called Eszett or scharfes S."
-        },
-        {
-          q: "What is the result of 'sieben + fünf' (7 + 5) in German?",
-          options: ["zehn (10)", "elf (11)", "zwölf (12)", "dreizehn (13)"],
-          correct: 2,
-          explanation: "7 + 5 = 12, which is 'zwölf' in German."
-        },
-        {
-          q: "Choose the correct verb forms: 'Hallo, ich ______ Julia. Und wer ______ du?'",
-          options: ["bin / bist", "heiße / heißen", "komme / kommt", "bist / bin"],
-          correct: 0,
-          explanation: "Subject 'ich' takes 'bin', and subject 'du' takes 'bist' from the verb 'sein'."
-        }
+          {
+              "q":  "What is the German word for the number 16?",
+              "options":  [
+                              "sechzehn",
+                              "sechszehn",
+                              "sechzig",
+                              "siebzehn"
+                          ],
+              "correct":  0,
+              "explanation":  "In 16 (sechzehn), the letter 's' from 'sechs' is dropped."
+          },
+          {
+              "q":  "How is the German letter 'W' pronounced in words like 'Wasser'?",
+              "options":  [
+                              "Like English 'W' (water)",
+                              "Like English 'V' (vase)",
+                              "Like 'B'",
+                              "It is silent"
+                          ],
+              "correct":  1,
+              "explanation":  "In German, the letter 'W' is pronounced like the English 'V' [ve:]."
+          },
+          {
+              "q":  "Which letter is known as 'Eszett' or 'scharfes S'?",
+              "options":  [
+                              "ß",
+                              "Ä",
+                              "Ö",
+                              "Z"
+                          ],
+              "correct":  0,
+              "explanation":  "'ß' is the unique German letter called Eszett or scharfes S."
+          },
+          {
+              "q":  "What is the result of 'sieben + fünf' (7 + 5) in German?",
+              "options":  [
+                              "zehn (10)",
+                              "elf (11)",
+                              "zwölf (12)",
+                              "dreizehn (13)"
+                          ],
+              "correct":  2,
+              "explanation":  "7 + 5 = 12, which is 'zwölf' in German."
+          },
+          {
+              "q":  "Choose the correct verb forms: 'Hallo, ich ______ Julia. Und wer ______ du?'",
+              "options":  [
+                              "bin / bist",
+                              "heiße / heißen",
+                              "komme / kommt",
+                              "bist / bin"
+                          ],
+              "correct":  0,
+              "explanation":  "Subject 'ich' takes 'bin', and subject 'du' takes 'bist' from the verb 'sein'."
+          },
+          {
+              "q":  "Where does the conjugated verb stand in a standard German statement (Aussagesatz)?",
+              "options":  [
+                              "Position 1 (First)",
+                              "Position 2 (Second)",
+                              "At the very end",
+                              "Any position"
+                          ],
+              "correct":  1,
+              "explanation":  "In standard German main clauses and W-questions, the finite verb always occupies Position 2."
+          },
+          {
+              "q":  "How do you respond politely to 'Wie geht es Ihnen?' when you are doing well?",
+              "options":  [
+                              "Gute Nacht!",
+                              "Sehr gut, danke. Und Ihnen?",
+                              "Auf Wiedersehen.",
+                              "Ich heiße Anna."
+                          ],
+              "correct":  1,
+              "explanation":  "'Sehr gut, danke. Und Ihnen?' is the polite formal answer to how you are doing."
+          },
+          {
+              "q":  "Which question word asks for a person's city or country of origin?",
+              "options":  [
+                              "Wo? (Where)",
+                              "Woher? (Where from)",
+                              "Wohin? (Where to)",
+                              "Wer? (Who)"
+                          ],
+              "correct":  1,
+              "explanation":  "'Woher' asks for origin, typically paired with 'kommen aus': 'Woher kommen Sie?'"
+          },
+          {
+              "q":  "What is the correct German greeting at 19:00 (7:00 PM)?",
+              "options":  [
+                              "Guten Morgen",
+                              "Guten Tag",
+                              "Guten Abend",
+                              "Gute Nacht"
+                          ],
+              "correct":  2,
+              "explanation":  "'Guten Abend' is the appropriate greeting from roughly 18:00 onwards."
+          },
+          {
+              "q":  "How do you say: 'I speak German and English' in German?",
+              "options":  [
+                              "Ich spreche Deutsch und Englisch.",
+                              "Ich sprechen Deutsch und Englisch.",
+                              "Ich sprichst Deutsch und Englisch.",
+                              "Ich sprecht Deutsch und Englisch."
+                          ],
+              "correct":  0,
+              "explanation":  "The subject 'ich' takes the verb ending '-e' (ich spreche)."
+          }
       ]
     },
     {
@@ -592,76 +751,236 @@ const NETZWERK_DATA = {
       `
       },
       interactiveExercises: [
-        {
-          id: "k2_ex1",
-          title: "Übung 1: Definite Articles (der, die, or das?)",
-          instruction: "Select or type the correct definite article (der / die / das):",
-          questions: [
-            {
-              id: "k2_q1",
-              prompt: "1. ______ Lehrer (male teacher)",
-              expected: ["der", "Der"],
-              hint: "Masculine gender.",
-              explanation: "Male professions are masculine: der Lehrer."
-            },
-            {
-              id: "k2_q2",
-              prompt: "2. ______ Lehrerin (female teacher)",
-              expected: ["die", "Die"],
-              hint: "Feminine gender (ending -in).",
-              explanation: "Professions ending in -in are feminine: die Lehrerin."
-            },
-            {
-              id: "k2_q3",
-              prompt: "3. ______ Buch (book)",
-              expected: ["das", "Das"],
-              hint: "Neutral gender.",
-              explanation: "Buch is neutral: das Buch."
-            }
-          ]
-        },
-        {
-          id: "k2_ex2",
-          title: "Übung 2: The Verb 'haben' (to have)",
-          instruction: "Fill in the correct conjugated form of 'haben':",
-          questions: [
-            {
-              id: "k2_q4",
-              prompt: "1. '______ du heute Zeit?' (Do you have time today?)",
-              expected: ["Hast", "hast"],
-              hint: "Conjugation of 'haben' for subject 'du'.",
-              explanation: "For 'du', haben becomes 'hast' (Hast du...?)."
-            },
-            {
-              id: "k2_q5",
-              prompt: "2. 'Ich ______ zwei Geschwister.' (I have two siblings.)",
-              expected: ["habe"],
-              hint: "Ending -e for subject 'ich'.",
-              explanation: "For 'ich', haben becomes 'habe'."
-            }
-          ]
-        },
-        {
-          id: "k2_ex3",
-          title: "Übung 3: Negation with 'kein' / 'keine'",
-          instruction: "Fill in 'kein' or 'keine' to negate the noun:",
-          questions: [
-            {
-              id: "k2_q6",
-              prompt: "1. 'Das ist ______ (der) Computer.' (That is not a computer.)",
-              expected: ["kein"],
-              hint: "Masculine Nominativ negation without -e.",
-              explanation: "der Computer (masculine) -> kein Computer."
-            },
-            {
-              id: "k2_q7",
-              prompt: "2. 'Ich habe ______ (die) Zeit.' (I have no time.)",
-              expected: ["keine"],
-              hint: "Feminine negation with -e.",
-              explanation: "die Zeit (feminine) -> keine Zeit."
-            }
-          ]
-        }
+          {
+              "id":  "k2_ex1",
+              "title":  "Übung 1: Berufe männlich und weiblich (Professions)",
+              "instruction":  "Fill in the correct male or female professional title:",
+              "questions":  [
+                                {
+                                    "id":  "k2_q1",
+                                    "prompt":  "1. Male teacher is 'Lehrer'. Female teacher is '______'.",
+                                    "expected":  [
+                                                     "Lehrerin"
+                                                 ],
+                                    "hint":  "Add '-in' to the male form.",
+                                    "explanation":  "Female professions in German typically add the suffix '-in': die Lehrerin."
+                                },
+                                {
+                                    "id":  "k2_q2",
+                                    "prompt":  "2. Male doctor is 'Arzt'. Female doctor is '______'.",
+                                    "expected":  [
+                                                     "Ärztin",
+                                                     "Aerztin"
+                                                 ],
+                                    "hint":  "Adds an Umlaut (Ä) and '-in'.",
+                                    "explanation":  "der Arzt -\u003e die Ärztin (with Umlaut Ä and -in)."
+                                },
+                                {
+                                    "id":  "k2_q3",
+                                    "prompt":  "3. 'Was sind Sie von ______?' (What is your profession?)",
+                                    "expected":  [
+                                                     "Beruf",
+                                                     "beruf"
+                                                 ],
+                                    "hint":  "German word for 'profession' / 'job'.",
+                                    "explanation":  "'von Beruf' is the standard idiom to ask about one's line of work."
+                                },
+                                {
+                                    "id":  "k2_q4",
+                                    "prompt":  "4. 'Ich arbeite ______ Ingenieur bei Bosch.' (I work as an engineer...)",
+                                    "expected":  [
+                                                     "als"
+                                                 ],
+                                    "hint":  "German preposition meaning 'as' for professions.",
+                                    "explanation":  "'arbeiten als...' means 'to work as [profession]'."
+                                }
+                            ]
+          },
+          {
+              "id":  "k2_ex2",
+              "title":  "Übung 2: The Verb 'haben' im Präsens (to have)",
+              "instruction":  "Fill in the correct conjugated form of 'haben':",
+              "questions":  [
+                                {
+                                    "id":  "k2_q5",
+                                    "prompt":  "1. '______ du heute Zeit?' (Do you have time today?)",
+                                    "expected":  [
+                                                     "Hast",
+                                                     "hast"
+                                                 ],
+                                    "hint":  "Conjugation of 'haben' for subject 'du'.",
+                                    "explanation":  "For 'du', haben becomes 'hast' (Hast du...?)."
+                                },
+                                {
+                                    "id":  "k2_q6",
+                                    "prompt":  "2. 'Ich ______ zwei Geschwister.' (I have two siblings.)",
+                                    "expected":  [
+                                                     "habe"
+                                                 ],
+                                    "hint":  "Ending -e for subject 'ich'.",
+                                    "explanation":  "For 'ich', haben becomes 'habe'."
+                                },
+                                {
+                                    "id":  "k2_q7",
+                                    "prompt":  "3. 'Wir ______ einen Hund.' (We have a dog.)",
+                                    "expected":  [
+                                                     "haben"
+                                                 ],
+                                    "hint":  "Standard form for subject 'wir'.",
+                                    "explanation":  "For 'wir', haben is 'haben'."
+                                },
+                                {
+                                    "id":  "k2_q8",
+                                    "prompt":  "4. 'Er ______ ein Auto.' (He has a car.)",
+                                    "expected":  [
+                                                     "hat"
+                                                 ],
+                                    "hint":  "3rd person singular er/sie/es.",
+                                    "explanation":  "For 'er/sie/es', haben becomes 'hat'."
+                                }
+                            ]
+          },
+          {
+              "id":  "k2_ex3",
+              "title":  "Übung 3: Ja/Nein-Fragen \u0026 Antworten",
+              "instruction":  "Complete the questions and answers:",
+              "questions":  [
+                                {
+                                    "id":  "k2_q9",
+                                    "prompt":  "1. '______ (leben) deine Eltern in Wien?' (Verb in Position 1)",
+                                    "expected":  [
+                                                     "Leben",
+                                                     "leben"
+                                                 ],
+                                    "hint":  "Conjugate 'leben' for plural 'deine Eltern' (they).",
+                                    "explanation":  "Yes/No questions place the verb in Position 1: 'Leben deine Eltern in Wien?'"
+                                },
+                                {
+                                    "id":  "k2_q10",
+                                    "prompt":  "2. 'Ja, sie ______ in Wien.' (wohnen)",
+                                    "expected":  [
+                                                     "wohnen"
+                                                 ],
+                                    "hint":  "Conjugate for subject 'sie' (they).",
+                                    "explanation":  "Subject 'sie' (plural) takes ending '-en' (wohnen)."
+                                },
+                                {
+                                    "id":  "k2_q11",
+                                    "prompt":  "3. '______ (sprechen) du Spanisch?' (du-form with vowel change e -\u003e i)",
+                                    "expected":  [
+                                                     "Sprichst",
+                                                     "sprichst"
+                                                 ],
+                                    "hint":  "Vowel change e -\u003e i for 'du'.",
+                                    "explanation":  "The verb 'sprechen' has vowel change in du-form: 'Sprichst du?'"
+                                },
+                                {
+                                    "id":  "k2_q12",
+                                    "prompt":  "4. 'Nein, ich spreche ______ (not) Spanisch.'",
+                                    "expected":  [
+                                                     "nicht"
+                                                 ],
+                                    "hint":  "Negation word for verbs and adjectives.",
+                                    "explanation":  "Verbs are negated with 'nicht': 'Ich spreche nicht Spanisch.'"
+                                }
+                            ]
+          },
+          {
+              "id":  "k2_ex4",
+              "title":  "Übung 4: Negation with 'kein' / 'keine'",
+              "instruction":  "Fill in 'kein' or 'keine' to negate the noun:",
+              "questions":  [
+                                {
+                                    "id":  "k2_q13",
+                                    "prompt":  "1. 'Das ist ______ (der) Computer.' (That is not a computer.)",
+                                    "expected":  [
+                                                     "kein"
+                                                 ],
+                                    "hint":  "Masculine Nominativ negation without -e.",
+                                    "explanation":  "der Computer (masculine) -\u003e kein Computer."
+                                },
+                                {
+                                    "id":  "k2_q14",
+                                    "prompt":  "2. 'Ich habe ______ (die) Zeit.' (I have no time.)",
+                                    "expected":  [
+                                                     "keine"
+                                                 ],
+                                    "hint":  "Feminine negation with -e.",
+                                    "explanation":  "die Zeit (feminine) -\u003e keine Zeit."
+                                },
+                                {
+                                    "id":  "k2_q15",
+                                    "prompt":  "3. 'Das ist ______ (das) Handy.' (That is not a mobile phone.)",
+                                    "expected":  [
+                                                     "kein"
+                                                 ],
+                                    "hint":  "Neutral Nominativ negation without -e.",
+                                    "explanation":  "das Handy (neutral) -\u003e kein Handy."
+                                },
+                                {
+                                    "id":  "k2_q16",
+                                    "prompt":  "4. 'Wir haben ______ (die Plural) Kinder.' (We have no children.)",
+                                    "expected":  [
+                                                     "keine"
+                                                 ],
+                                    "hint":  "Plural negation takes -e.",
+                                    "explanation":  "die Kinder (plural) -\u003e keine Kinder."
+                                }
+                            ]
+          },
+          {
+              "id":  "k2_ex5",
+              "title":  "Übung 5: Zahlen von 20 bis 100 (Numbers 20-100)",
+              "instruction":  "Write the German number words:",
+              "questions":  [
+                                {
+                                    "id":  "k2_q17",
+                                    "prompt":  "1. How do you write 30 in German? (Note: uses -ßig!)",
+                                    "expected":  [
+                                                     "dreißig",
+                                                     "dreissig",
+                                                     "Dreißig",
+                                                     "Dreissig"
+                                                 ],
+                                    "hint":  "30 uses -ßig instead of -zig.",
+                                    "explanation":  "30 = dreißig (the only tens number with ß)."
+                                },
+                                {
+                                    "id":  "k2_q18",
+                                    "prompt":  "2. 21 in German is literally 'one-and-twenty': '______'",
+                                    "expected":  [
+                                                     "einundzwanzig",
+                                                     "Einundzwanzig"
+                                                 ],
+                                    "hint":  "eins drops the -s before und.",
+                                    "explanation":  "21 = einundzwanzig (eins + und + zwanzig)."
+                                },
+                                {
+                                    "id":  "k2_q19",
+                                    "prompt":  "3. Write the number 50 in German:",
+                                    "expected":  [
+                                                     "fünfzig",
+                                                     "fuenfzig",
+                                                     "Fünfzig",
+                                                     "Fuenfzig"
+                                                 ],
+                                    "hint":  "fünf + -zig.",
+                                    "explanation":  "50 = fünfzig."
+                                },
+                                {
+                                    "id":  "k2_q20",
+                                    "prompt":  "4. Write the number 100 in German:",
+                                    "expected":  [
+                                                     "hundert",
+                                                     "einhundert",
+                                                     "Hundert",
+                                                     "Einhundert"
+                                                 ],
+                                    "hint":  "hundert or einhundert.",
+                                    "explanation":  "100 = (ein)hundert."
+                                }
+                            ]
+          }
       ],
       grammarSummary: `
 **Core Grammar Rules (Kapitel 2):**
@@ -705,18 +1024,116 @@ const NETZWERK_DATA = {
         { de: "Ich arbeite als...", en: "I work as a...", type: "phrase" }
       ],
       quizzes: [
-        {
-          q: "Choose the correct form of 'haben': '______ du Geschwister?'",
-          options: ["Habt", "Hast", "Haben", "Hat"],
-          correct: 1,
-          explanation: "Subject 'du' takes 'hast' (du hast)."
-        },
-        {
-          q: "How do you negate 'Das ist ein Buch'?",
-          options: ["Das ist nicht ein Buch", "Das ist kein Buch", "Das ist keine Buch", "Das ist nichts Buch"],
-          correct: 1,
-          explanation: "'das Buch' is neutral, so the negative indefinite article is 'kein Buch'."
-        }
+          {
+              "q":  "Choose the correct form of 'haben': '______ du Geschwister?'",
+              "options":  [
+                              "Habt",
+                              "Hast",
+                              "Haben",
+                              "Hat"
+                          ],
+              "correct":  1,
+              "explanation":  "Subject 'du' takes 'hast' (du hast)."
+          },
+          {
+              "q":  "How do you negate 'Das ist ein Buch'?",
+              "options":  [
+                              "Das ist nicht ein Buch",
+                              "Das ist kein Buch",
+                              "Das ist keine Buch",
+                              "Das ist nichts Buch"
+                          ],
+              "correct":  1,
+              "explanation":  "'das Buch' is neutral, so the negative indefinite article is 'kein Buch'."
+          },
+          {
+              "q":  "What is the female form of 'der Student'?",
+              "options":  [
+                              "die Student",
+                              "die Studentin",
+                              "die Studentinnen",
+                              "die Studentfrau"
+                          ],
+              "correct":  1,
+              "explanation":  "The feminine counterpart adds '-in': 'die Studentin'."
+          },
+          {
+              "q":  "Which sentence is a correct Ja/Nein-Frage (Yes/No Question)?",
+              "options":  [
+                              "Woher kommst du?",
+                              "Kommst du aus Spanien?",
+                              "Du kommst aus Spanien?",
+                              "Wer ist das?"
+                          ],
+              "correct":  1,
+              "explanation":  "A Ja/Nein question puts the verb in Position 1: 'Kommst du aus Spanien?'"
+          },
+          {
+              "q":  "What is the number 45 in German?",
+              "options":  [
+                              "fünfundvierzig",
+                              "vierzigundfünf",
+                              "vierzigfünf",
+                              "fünfvierzig"
+                          ],
+              "correct":  0,
+              "explanation":  "In German, the single digit comes first: 45 = fünf (5) + und + vierzig (40)."
+          },
+          {
+              "q":  "How do you say 'I am not married' in German?",
+              "options":  [
+                              "Ich bin nicht verheiratet.",
+                              "Ich bin kein verheiratet.",
+                              "Ich habe nicht verheiratet.",
+                              "Ich bin unheirat."
+                          ],
+              "correct":  0,
+              "explanation":  "Adjectives like 'verheiratet' (married) are negated with 'nicht'."
+          },
+          {
+              "q":  "Which pronoun replaces 'Herr Weber' in a sentence?",
+              "options":  [
+                              "sie",
+                              "er",
+                              "es",
+                              "ihr"
+                          ],
+              "correct":  1,
+              "explanation":  "A male person (Herr Weber) is referenced by 'er' (he)."
+          },
+          {
+              "q":  "What is the correct conjugation of 'sprechen' for 'du'?",
+              "options":  [
+                              "du sprechst",
+                              "du sprichst",
+                              "du sprecht",
+                              "du sprechen"
+                          ],
+              "correct":  1,
+              "explanation":  "'sprechen' has an irregular vowel change e -\u003e i in du-form: 'du sprichst'."
+          },
+          {
+              "q":  "Complete the phrase: 'In meiner Freizeit spiele ich gerne ______.'",
+              "options":  [
+                              "Fußball",
+                              "ein Fußball",
+                              "der Fußball",
+                              "den Fußball"
+                          ],
+              "correct":  0,
+              "explanation":  "Sports and games take no article with 'spielen': 'Fußball spielen'."
+          },
+          {
+              "q":  "Which ending is unique to the number 30 (dreißig)?",
+              "options":  [
+                              "-zig",
+                              "-ßig",
+                              "-te",
+                              "-zehn"
+                          ],
+              "correct":  1,
+              "explanation":  "30 is spelled with '-ßig' (dreißig), while 20, 40, 50 etc. end in '-zig'."
+          }
       ]
     },
     {
@@ -815,55 +1232,233 @@ When an adjective follows the verb *sein* to describe a subject, it **does not t
       `
       },
       interactiveExercises: [
-        {
-          id: "k3_ex1",
-          title: "Übung 1: The Akkusativ Case (der -> den / ein -> einen)",
-          instruction: "Fill in the correct Akkusativ article:",
-          questions: [
-            {
-              id: "k3_q1",
-              prompt: "1. 'Ich suche ______ (der) Bahnhof.'",
-              expected: ["den"],
-              hint: "In Akkusativ, masculine 'der' becomes 'den'.",
-              explanation: "'der Bahnhof' is masculine. As a direct object, 'der' changes to 'den'."
-            },
-            {
-              id: "k3_q2",
-              prompt: "2. 'Wir brauchen ______ (ein) Stadtplan (der Stadtplan).'",
-              expected: ["einen"],
-              hint: "Indefinite masculine article in Akkusativ adds -en.",
-              explanation: "der Stadtplan (city map) -> einen Stadtplan."
-            },
-            {
-              id: "k3_q3",
-              prompt: "3. 'Sie sucht ______ (die) U-Bahn-Station.'",
-              expected: ["die"],
-              hint: "Feminine 'die' remains unchanged in Akkusativ!",
-              explanation: "Feminine nouns do not change form in Akkusativ: die U-Bahn-Station."
-            }
-          ]
-        },
-        {
-          id: "k3_ex2",
-          title: "Übung 2: Giving Directions (Wegbeschreibung)",
-          instruction: "Complete the direction sentences:",
-          questions: [
-            {
-              id: "k3_q4",
-              prompt: "1. 'Gehen Sie bitte ______ (straight ahead).'",
-              expected: ["geradeaus", "Geradeaus"],
-              hint: "German word for straight ahead, starts with g.",
-              explanation: "'geradeaus' means straight ahead."
-            },
-            {
-              id: "k3_q5",
-              prompt: "2. 'Dann biegen Sie ______ (to the left) ab.'",
-              expected: ["links", "Links"],
-              hint: "Opposite of 'rechts' (right).",
-              explanation: "'links' means left (biegen Sie links ab)."
-            }
-          ]
-        }
+          {
+              "id":  "k3_ex1",
+              "title":  "Übung 1: Bestimmte Artikel der, die, das (Definite Articles)",
+              "instruction":  "Fill in the correct definite article (der, die, das):",
+              "questions":  [
+                                {
+                                    "id":  "k3_q1",
+                                    "prompt":  "1. '______ Bahnhof ist sehr modern.' (train station - masculine)",
+                                    "expected":  [
+                                                     "Der",
+                                                     "der"
+                                                 ],
+                                    "hint":  "Masculine article (der).",
+                                    "explanation":  "der Bahnhof (masculine)."
+                                },
+                                {
+                                    "id":  "k3_q2",
+                                    "prompt":  "2. '______ Kirche ist alt.' (church - feminine)",
+                                    "expected":  [
+                                                     "Die",
+                                                     "die"
+                                                 ],
+                                    "hint":  "Feminine article (die).",
+                                    "explanation":  "die Kirche (feminine)."
+                                },
+                                {
+                                    "id":  "k3_q3",
+                                    "prompt":  "3. '______ Museum öffnet um 10 Uhr.' (museum - neutral)",
+                                    "expected":  [
+                                                     "Das",
+                                                     "das"
+                                                 ],
+                                    "hint":  "Neutral article (das).",
+                                    "explanation":  "das Museum (neutral)."
+                                },
+                                {
+                                    "id":  "k3_q4",
+                                    "prompt":  "4. '______ Touristen fotografieren den Hafen.' (tourists - plural)",
+                                    "expected":  [
+                                                     "Die",
+                                                     "die"
+                                                 ],
+                                    "hint":  "Plural article (die).",
+                                    "explanation":  "die Touristen (plural article is always die)."
+                                }
+                            ]
+          },
+          {
+              "id":  "k3_ex2",
+              "title":  "Übung 2: Unbestimmte Artikel \u0026 Negation (ein / kein)",
+              "instruction":  "Fill in 'ein', 'eine', 'kein', or 'keine':",
+              "questions":  [
+                                {
+                                    "id":  "k3_q5",
+                                    "prompt":  "1. 'Gibt es hier ______ (die) Apotheke?' (Is there a pharmacy here?)",
+                                    "expected":  [
+                                                     "eine"
+                                                 ],
+                                    "hint":  "Feminine indefinite article with -e.",
+                                    "explanation":  "die Apotheke -\u003e eine Apotheke."
+                                },
+                                {
+                                    "id":  "k3_q6",
+                                    "prompt":  "2. 'Nein, hier ist ______ (die) Apotheke.' (No, there is no pharmacy here.)",
+                                    "expected":  [
+                                                     "keine"
+                                                 ],
+                                    "hint":  "Feminine negation with -e.",
+                                    "explanation":  "die Apotheke -\u003e keine Apotheke."
+                                },
+                                {
+                                    "id":  "k3_q7",
+                                    "prompt":  "3. 'Das ist ______ (das) Hotel, sondern ein Büro.' (That is not a hotel...)",
+                                    "expected":  [
+                                                     "kein"
+                                                 ],
+                                    "hint":  "Neutral negation without -e.",
+                                    "explanation":  "das Hotel -\u003e kein Hotel."
+                                },
+                                {
+                                    "id":  "k3_q8",
+                                    "prompt":  "4. 'Hamburg hat ______ (der) großen Hafen.' (Hamburg has a... [Akkusativ])",
+                                    "expected":  [
+                                                     "einen"
+                                                 ],
+                                    "hint":  "Masculine Akkusativ ends in -en.",
+                                    "explanation":  "der Hafen in Akkusativ becomes 'einen Hafen'."
+                                }
+                            ]
+          },
+          {
+              "id":  "k3_ex3",
+              "title":  "Übung 3: Akkusativ männlicher Nomen (den / einen)",
+              "instruction":  "Choose the Akkusativ form for masculine nouns (der -\u003e den / einen):",
+              "questions":  [
+                                {
+                                    "id":  "k3_q9",
+                                    "prompt":  "1. 'Ich suche ______ (der) Hauptbahnhof.' (I am looking for the main station.)",
+                                    "expected":  [
+                                                     "den"
+                                                 ],
+                                    "hint":  "Definite masculine article in Akkusativ.",
+                                    "explanation":  "der Hauptbahnhof -\u003e den Hauptbahnhof (Akkusativ object of suchen)."
+                                },
+                                {
+                                    "id":  "k3_q10",
+                                    "prompt":  "2. 'Wir besuchen heute ______ (der) Zoo.' (We visit the zoo today.)",
+                                    "expected":  [
+                                                     "den"
+                                                 ],
+                                    "hint":  "Definite masculine article in Akkusativ.",
+                                    "explanation":  "der Zoo -\u003e den Zoo (Akkusativ object of besuchen)."
+                                },
+                                {
+                                    "id":  "k3_q11",
+                                    "prompt":  "3. 'Siehst du ______ (ein) Park da drüben?' (Do you see a park over there?)",
+                                    "expected":  [
+                                                     "einen"
+                                                 ],
+                                    "hint":  "Indefinite masculine article in Akkusativ.",
+                                    "explanation":  "der Park -\u003e einen Park (Akkusativ object of sehen)."
+                                },
+                                {
+                                    "id":  "k3_q12",
+                                    "prompt":  "4. 'Er hat leider ______ (kein) Stadtplan.' (He unfortunately has no city map.)",
+                                    "expected":  [
+                                                     "keinen"
+                                                 ],
+                                    "hint":  "Negative masculine article in Akkusativ.",
+                                    "explanation":  "der Stadtplan -\u003e keinen Stadtplan (Akkusativ object of haben)."
+                                }
+                            ]
+          },
+          {
+              "id":  "k3_ex4",
+              "title":  "Übung 4: Nach dem Weg fragen (Asking Directions)",
+              "instruction":  "Fill in the missing conversational words for directions:",
+              "questions":  [
+                                {
+                                    "id":  "k3_q13",
+                                    "prompt":  "1. '______ Sie, wo ist das Rathaus?' (Excuse me, where is the city hall?)",
+                                    "expected":  [
+                                                     "Entschuldigen",
+                                                     "entschuldigen",
+                                                     "Entschuldigung"
+                                                 ],
+                                    "hint":  "Polite formula to get attention (Entschuldigen Sie).",
+                                    "explanation":  "'Entschuldigen Sie' is the polite way to say excuse me."
+                                },
+                                {
+                                    "id":  "k3_q14",
+                                    "prompt":  "2. 'Gehen Sie bitte ______ (straight ahead).' ",
+                                    "expected":  [
+                                                     "geradeaus",
+                                                     "Geradeaus"
+                                                 ],
+                                    "hint":  "German word for straight ahead.",
+                                    "explanation":  "'geradeaus' means straight ahead."
+                                },
+                                {
+                                    "id":  "k3_q15",
+                                    "prompt":  "3. 'Biegen Sie dann nach ______ (left) ab.'",
+                                    "expected":  [
+                                                     "links",
+                                                     "Links"
+                                                 ],
+                                    "hint":  "Opposite of 'rechts'.",
+                                    "explanation":  "'nach links' means to the left."
+                                },
+                                {
+                                    "id":  "k3_q16",
+                                    "prompt":  "4. 'Die Post ist auf der rechten ______ (side).'",
+                                    "expected":  [
+                                                     "Seite",
+                                                     "seite"
+                                                 ],
+                                    "hint":  "German word for 'side' (die Seite).",
+                                    "explanation":  "'auf der rechten Seite' means on the right side."
+                                }
+                            ]
+          },
+          {
+              "id":  "k3_ex5",
+              "title":  "Übung 5: Verkehrsmittel in der Stadt (Transport)",
+              "instruction":  "Fill in the correct transit terms:",
+              "questions":  [
+                                {
+                                    "id":  "k3_q17",
+                                    "prompt":  "1. 'Ich fahre mit ______ (der) Bus.' (Dativ masculine: der -\u003e dem)",
+                                    "expected":  [
+                                                     "dem"
+                                                 ],
+                                    "hint":  "'mit' always takes Dativ: der Bus -\u003e dem Bus.",
+                                    "explanation":  "Preposition 'mit' requires Dativ: mit dem Bus."
+                                },
+                                {
+                                    "id":  "k3_q18",
+                                    "prompt":  "2. 'Wir nehmen ______ (die) U-Bahn.' (Akkusativ feminine: die)",
+                                    "expected":  [
+                                                     "die"
+                                                 ],
+                                    "hint":  "Feminine Akkusativ remains 'die'.",
+                                    "explanation":  "nehmen + Akkusativ: die U-Bahn bleibt 'die U-Bahn'."
+                                },
+                                {
+                                    "id":  "k3_q19",
+                                    "prompt":  "3. 'Fährst du mit ______ (das) Fahrrad?' (Dativ neutral: das -\u003e dem)",
+                                    "expected":  [
+                                                     "dem"
+                                                 ],
+                                    "hint":  "'mit' + das Fahrrad -\u003e dem.",
+                                    "explanation":  "mit dem Fahrrad (das Fahrrad in Dativ is dem Fahrrad)."
+                                },
+                                {
+                                    "id":  "k3_q20",
+                                    "prompt":  "4. 'Gehen wir zu ______ (on foot)?'",
+                                    "expected":  [
+                                                     "Fuß",
+                                                     "Fuss",
+                                                     "fuß",
+                                                     "fuss"
+                                                 ],
+                                    "hint":  "German idiom 'zu Fuß' = on foot.",
+                                    "explanation":  "'zu Fuß gehen' means to walk / go on foot."
+                                }
+                            ]
+          }
       ],
       grammarSummary: `
 **Core Grammar Rules (Kapitel 3):**
@@ -904,12 +1499,116 @@ When an adjective follows the verb *sein* to describe a subject, it **does not t
         { de: "einfach / hin und zurück", en: "one-way / round-trip", type: "phrase" }
       ],
       quizzes: [
-        {
-          q: "Complete the Akkusativ sentence: 'Ich suche ______ Bahnhof (der Bahnhof).'",
-          options: ["der", "den", "dem", "das"],
-          correct: 1,
-          explanation: "In Akkusativ as a direct object, masculine 'der' becomes 'den'."
-        }
+          {
+              "q":  "Which article changes in the Akkusativ case?",
+              "options":  [
+                              "Only masculine (der -\u003e den)",
+                              "Only feminine (die -\u003e der)",
+                              "Only neutral (das -\u003e dem)",
+                              "All articles change"
+                          ],
+              "correct":  0,
+              "explanation":  "In Akkusativ, only the masculine article changes: der -\u003e den, ein -\u003e einen, kein -\u003e keinen. Feminine, neutral, and plural stay the same."
+          },
+          {
+              "q":  "What is the gender of 'die Kirche' (church)?",
+              "options":  [
+                              "Masculine (der)",
+                              "Feminine (die)",
+                              "Neutral (das)",
+                              "Plural only"
+                          ],
+              "correct":  1,
+              "explanation":  "'Kirche' is feminine: die Kirche."
+          },
+          {
+              "q":  "How do you ask: 'Is there a supermarket nearby?'",
+              "options":  [
+                              "Gibt es hier einen Supermarkt?",
+                              "Ist hier ein Supermarkt?",
+                              "Hat es ein Supermarkt?",
+                              "Wo ein Supermarkt?"
+                          ],
+              "correct":  0,
+              "explanation":  "'Gibt es...?' is followed by Akkusativ: 'Gibt es hier einen Supermarkt?'"
+          },
+          {
+              "q":  "What does 'Biegen Sie nach rechts ab' mean?",
+              "options":  [
+                              "Go straight ahead",
+                              "Turn right",
+                              "Turn left",
+                              "Stop here"
+                          ],
+              "correct":  1,
+              "explanation":  "'nach rechts abbiegen' means to turn right."
+          },
+          {
+              "q":  "Which preposition is used when expressing transport with 'mit'?",
+              "options":  [
+                              "mit + Nominativ",
+                              "mit + Akkusativ",
+                              "mit + Dativ",
+                              "mit + Genitiv"
+                          ],
+              "correct":  2,
+              "explanation":  "'mit' is a strict Dativ preposition: mit dem Bus, mit der Bahn."
+          },
+          {
+              "q":  "What is the plural of 'das Hotel'?",
+              "options":  [
+                              "die Hoteler",
+                              "die Hotelen",
+                              "die Hotels",
+                              "die Hotel"
+                          ],
+              "correct":  2,
+              "explanation":  "Loan words ending in vowels often take '-s' in plural: die Hotels."
+          },
+          {
+              "q":  "Choose the correct sentence: 'Ich suche ______.'",
+              "options":  [
+                              "der Park",
+                              "den Park",
+                              "dem Park",
+                              "des Parks"
+                          ],
+              "correct":  1,
+              "explanation":  "'suchen' takes a direct Akkusativ object: den Park."
+          },
+          {
+              "q":  "What is the German word for 'train station'?",
+              "options":  [
+                              "der Flughafen",
+                              "der Bahnhof",
+                              "die Haltestelle",
+                              "der Hafen"
+                          ],
+              "correct":  1,
+              "explanation":  "der Bahnhof = train station (Hauptbahnhof = main central station)."
+          },
+          {
+              "q":  "How do you say 'It is very close' in German?",
+              "options":  [
+                              "Es ist sehr weit.",
+                              "Es ist ganz in der Nähe.",
+                              "Es ist teuer.",
+                              "Es ist gerade."
+                          ],
+              "correct":  1,
+              "explanation":  "'in der Nähe' means nearby / close."
+          },
+          {
+              "q":  "What does 'S-Bahn' stand for in Germany?",
+              "options":  [
+                              "Schnellbahn / Stadtschnellbahn",
+                              "Super-Bahn",
+                              "Straßenbahn",
+                              "Schwebebahn"
+                          ],
+              "correct":  0,
+              "explanation":  "S-Bahn stands for Stadtschnellbahn (suburban commuter railway)."
+          }
       ]
     },
     {
@@ -1034,48 +1733,235 @@ The following key verbs always require an object in the **Akkusativ**:
       `
       },
       interactiveExercises: [
-        {
-          id: "k4_ex1",
-          title: "Übung 1: Stem Vowel Change Verbs (e -> i)",
-          instruction: "Conjugate the verb in parentheses:",
-          questions: [
-            {
-              id: "k4_q1",
-              prompt: "1. 'Was ______ (essen) du gern zum Frühstück?'",
-              expected: ["isst"],
-              hint: "Vowel e changes to i for subject 'du'.",
-              explanation: "Conjugation of 'essen' for 'du' is 'du isst'."
-            },
-            {
-              id: "k4_q2",
-              prompt: "2. 'Er ______ (nehmen) ein Stück Kuchen.'",
-              expected: ["nimmt"],
-              hint: "Conjugation of 'nehmen' for 'er'.",
-              explanation: "For 'er', nehmen becomes 'nimmt'."
-            }
-          ]
-        },
-        {
-          id: "k4_ex2",
-          title: "Übung 2: Ordering with 'möchten' & Akkusativ",
-          instruction: "Complete the ordering sentences:",
-          questions: [
-            {
-              id: "k4_q3",
-              prompt: "1. 'Ich ______ (möchten) bitte einen Apfelsaft.'",
-              expected: ["möchte"],
-              hint: "Form of möchten for subject 'ich'.",
-              explanation: "'ich möchte'."
-            },
-            {
-              id: "k4_q4",
-              prompt: "2. 'Ich trinke ______ (kein / keine) Kaffee (der Kaffee).'",
-              expected: ["keinen"],
-              hint: "der Kaffee in Akkusativ: kein -> keinen.",
-              explanation: "Masculine direct object Akkusativ: keinen Kaffee."
-            }
-          ]
-        }
+          {
+              "id":  "k4_ex1",
+              "title":  "Übung 1: Lebensmittel \u0026 Artikel (der, die, das)",
+              "instruction":  "Fill in the correct definite article for each food item:",
+              "questions":  [
+                                {
+                                    "id":  "k4_q1",
+                                    "prompt":  "1. '______ Apfel ist rot.' (apple - masculine)",
+                                    "expected":  [
+                                                     "Der",
+                                                     "der"
+                                                 ],
+                                    "hint":  "der Apfel (masculine).",
+                                    "explanation":  "der Apfel (masculine)."
+                                },
+                                {
+                                    "id":  "k4_q2",
+                                    "prompt":  "2. '______ Banane ist gelb.' (banana - feminine)",
+                                    "expected":  [
+                                                     "Die",
+                                                     "die"
+                                                 ],
+                                    "hint":  "die Banane (feminine).",
+                                    "explanation":  "die Banane (feminine)."
+                                },
+                                {
+                                    "id":  "k4_q3",
+                                    "prompt":  "3. '______ Brot ist frisch.' (bread - neutral)",
+                                    "expected":  [
+                                                     "Das",
+                                                     "das"
+                                                 ],
+                                    "hint":  "das Brot (neutral).",
+                                    "explanation":  "das Brot (neutral)."
+                                },
+                                {
+                                    "id":  "k4_q4",
+                                    "prompt":  "4. '______ Milch ist kalt.' (milk - feminine)",
+                                    "expected":  [
+                                                     "Die",
+                                                     "die"
+                                                 ],
+                                    "hint":  "die Milch (feminine).",
+                                    "explanation":  "die Milch (feminine)."
+                                }
+                            ]
+          },
+          {
+              "id":  "k4_ex2",
+              "title":  "Übung 2: Akkusativ beim Einkaufen (den / einen)",
+              "instruction":  "Fill in the correct Akkusativ article for shopping items:",
+              "questions":  [
+                                {
+                                    "id":  "k4_q5",
+                                    "prompt":  "1. 'Ich kaufe ______ (der) Käse.' (I buy the cheese.)",
+                                    "expected":  [
+                                                     "den"
+                                                 ],
+                                    "hint":  "Masculine Akkusativ: der -\u003e den.",
+                                    "explanation":  "der Käse in Akkusativ is 'den Käse'."
+                                },
+                                {
+                                    "id":  "k4_q6",
+                                    "prompt":  "2. 'Möchten Sie ______ (ein) Apfel?' (Would you like an apple?)",
+                                    "expected":  [
+                                                     "einen"
+                                                 ],
+                                    "hint":  "Masculine Akkusativ: ein -\u003e einen.",
+                                    "explanation":  "der Apfel in Akkusativ is 'einen Apfel'."
+                                },
+                                {
+                                    "id":  "k4_q7",
+                                    "prompt":  "3. 'Wir brauchen ______ (das) Ei.' (We need the egg.)",
+                                    "expected":  [
+                                                     "das"
+                                                 ],
+                                    "hint":  "Neutral Akkusativ remains 'das'.",
+                                    "explanation":  "das Ei in Akkusativ stays 'das Ei'."
+                                },
+                                {
+                                    "id":  "k4_q8",
+                                    "prompt":  "4. 'Ich esse gern ______ (eine) Tomate.' (I like to eat a tomato.)",
+                                    "expected":  [
+                                                     "eine"
+                                                 ],
+                                    "hint":  "Feminine Akkusativ remains 'eine'.",
+                                    "explanation":  "die Tomate in Akkusativ stays 'eine Tomate'."
+                                }
+                            ]
+          },
+          {
+              "id":  "k4_ex3",
+              "title":  "Übung 3: Verben 'essen' und 'möchten'",
+              "instruction":  "Conjugate 'essen' (vowel change e -\u003e i) or 'möchten':",
+              "questions":  [
+                                {
+                                    "id":  "k4_q9",
+                                    "prompt":  "1. 'Was ______ (essen) du gern?' (du-form with vowel change e -\u003e i)",
+                                    "expected":  [
+                                                     "isst"
+                                                 ],
+                                    "hint":  "du isst (double s).",
+                                    "explanation":  "The verb 'essen' changes to 'isst' for subject 'du'."
+                                },
+                                {
+                                    "id":  "k4_q10",
+                                    "prompt":  "2. 'Er ______ (essen) kein Fleisch.' (er-form with vowel change)",
+                                    "expected":  [
+                                                     "isst"
+                                                 ],
+                                    "hint":  "er isst.",
+                                    "explanation":  "For 'er/sie/es', essen also conjugates to 'isst'."
+                                },
+                                {
+                                    "id":  "k4_q11",
+                                    "prompt":  "3. 'Was ______ (möchten) Sie trinken, Frau Müller?'",
+                                    "expected":  [
+                                                     "möchten",
+                                                     "moechten"
+                                                 ],
+                                    "hint":  "Formal Sie form.",
+                                    "explanation":  "Sie möchten."
+                                },
+                                {
+                                    "id":  "k4_q12",
+                                    "prompt":  "4. 'Ich ______ (möchten) einen Orangensaft bitte.'",
+                                    "expected":  [
+                                                     "möchte",
+                                                     "moechte"
+                                                 ],
+                                    "hint":  "ich möchte (ending -e).",
+                                    "explanation":  "Subject 'ich' takes 'ich möchte'."
+                                }
+                            ]
+          },
+          {
+              "id":  "k4_ex4",
+              "title":  "Übung 4: Mengenangaben \u0026 Verpackungen (Packaging \u0026 Units)",
+              "instruction":  "Fill in the correct container or measurement word:",
+              "questions":  [
+                                {
+                                    "id":  "k4_q13",
+                                    "prompt":  "1. 'Eine ______ (bottle) Mineralwasser bitte.'",
+                                    "expected":  [
+                                                     "Flasche",
+                                                     "flasche"
+                                                 ],
+                                    "hint":  "die Flasche = bottle.",
+                                    "explanation":  "eine Flasche Wasser = a bottle of water."
+                                },
+                                {
+                                    "id":  "k4_q14",
+                                    "prompt":  "2. 'Ein ______ (kilo) Äpfel kostet 2 Euro.'",
+                                    "expected":  [
+                                                     "Kilo",
+                                                     "kilo"
+                                                 ],
+                                    "hint":  "das Kilo (Kilogramm).",
+                                    "explanation":  "ein Kilo Äpfel = a kilogram of apples."
+                                },
+                                {
+                                    "id":  "k4_q15",
+                                    "prompt":  "3. 'Ein ______ (piece) Kuchen bitte.'",
+                                    "expected":  [
+                                                     "Stück",
+                                                     "stueck",
+                                                     "Stueck",
+                                                     "stück"
+                                                 ],
+                                    "hint":  "das Stück = piece / slice.",
+                                    "explanation":  "ein Stück Kuchen = a piece of cake."
+                                },
+                                {
+                                    "id":  "k4_q16",
+                                    "prompt":  "4. 'Eine ______ (can/tin) Tomaten.'",
+                                    "expected":  [
+                                                     "Dose",
+                                                     "dose"
+                                                 ],
+                                    "hint":  "die Dose = can / tin.",
+                                    "explanation":  "eine Dose Tomaten = a can of tomatoes."
+                                }
+                            ]
+          },
+          {
+              "id":  "k4_ex5",
+              "title":  "Übung 5: Im Restaurant \u0026 Preise (Ordering \u0026 Prices)",
+              "instruction":  "Complete the restaurant dialogue:",
+              "questions":  [
+                                {
+                                    "id":  "k4_q17",
+                                    "prompt":  "1. 'Ich ______ (nehmen) die Suppe.' (nehmen: ich-form)",
+                                    "expected":  [
+                                                     "nehme"
+                                                 ],
+                                    "hint":  "ich nehme.",
+                                    "explanation":  "Subject 'ich' takes 'nehme'."
+                                },
+                                {
+                                    "id":  "k4_q18",
+                                    "prompt":  "2. 'Was ______ (kosten) das Sandwich?'",
+                                    "expected":  [
+                                                     "kostet"
+                                                 ],
+                                    "hint":  "das Sandwich is 3rd person singular.",
+                                    "explanation":  "3rd person takes ending '-et': 'Was kostet das?'"
+                                },
+                                {
+                                    "id":  "k4_q19",
+                                    "prompt":  "3. 'Das macht ______ 4 Euro 50.' (together / in total)",
+                                    "expected":  [
+                                                     "zusammen",
+                                                     "insgesamt"
+                                                 ],
+                                    "hint":  "German word for together / total in paying.",
+                                    "explanation":  "'Das macht zusammen...' is the standard waiter phrase for total bill."
+                                },
+                                {
+                                    "id":  "k4_q20",
+                                    "prompt":  "4. 'Guten ______!' (Enjoy your meal! - Appetit)",
+                                    "expected":  [
+                                                     "Appetit",
+                                                     "appetit"
+                                                 ],
+                                    "hint":  "Guten Appetit.",
+                                    "explanation":  "'Guten Appetit!' = Bon appétit / Enjoy your meal."
+                                }
+                            ]
+          }
       ],
       grammarSummary: `
 **Core Grammar Rules (Kapitel 4):**
@@ -1113,12 +1999,116 @@ The following key verbs always require an object in the **Akkusativ**:
         { de: "Zahlen, bitte!", en: "The bill, please!", type: "phrase" }
       ],
       quizzes: [
-        {
-          q: "What is the correct form: 'Was ______ du zum Frühstück? (essen)'",
-          options: ["esst", "isst", "esse", "essen"],
-          correct: 1,
-          explanation: "The verb 'essen' changes vowel: 'du isst'."
-        }
+          {
+              "q":  "What is the correct Akkusativ form for 'der Salat'?",
+              "options":  [
+                              "den Salat",
+                              "dem Salat",
+                              "der Salat",
+                              "des Salats"
+                          ],
+              "correct":  0,
+              "explanation":  "Masculine 'der Salat' becomes 'den Salat' in Akkusativ."
+          },
+          {
+              "q":  "How does 'essen' conjugate for 'du'?",
+              "options":  [
+                              "du esst",
+                              "du isst",
+                              "du esset",
+                              "du isstet"
+                          ],
+              "correct":  1,
+              "explanation":  "The stem vowel 'e' changes to 'i': 'du isst'."
+          },
+          {
+              "q":  "Which phrase means 'I'd like to pay, please'?",
+              "options":  [
+                              "Ich möchte bitte bezahlen.",
+                              "Ich möchte bitte essen.",
+                              "Ich möchte bitte kochen.",
+                              "Ich habe Hunger."
+                          ],
+              "correct":  0,
+              "explanation":  "'Ich möchte bitte bezahlen' is the polite phrase to ask for the bill."
+          },
+          {
+              "q":  "How do you say '3.50 €' (drei Euro fünfzig) in German?",
+              "options":  [
+                              "drei Euro fünfzig",
+                              "fünfzig Euro drei",
+                              "drei Cent fünfzig",
+                              "drei und fünfzig"
+                          ],
+              "correct":  0,
+              "explanation":  "Prices in German state the Euros first, then the word 'Euro', then the Cents: 3,50 € = drei Euro fünfzig."
+          },
+          {
+              "q":  "What is the plural form of 'der Apfel'?",
+              "options":  [
+                              "die Äpfel",
+                              "die Apfeln",
+                              "die Apfels",
+                              "die Äpfeln"
+                          ],
+              "correct":  0,
+              "explanation":  "der Apfel forms its plural with an Umlaut only: die Äpfel."
+          },
+          {
+              "q":  "Which of the following is a neutral noun (das)?",
+              "options":  [
+                              "das Brot",
+                              "der Käse",
+                              "die Wurst",
+                              "die Suppe"
+                          ],
+              "correct":  0,
+              "explanation":  "'das Brot' is neutral. 'der Käse' is masculine, 'die Wurst' and 'die Suppe' are feminine."
+          },
+          {
+              "q":  "What does a waiter say when bringing your food?",
+              "options":  [
+                              "Guten Appetit!",
+                              "Auf Wiedersehen!",
+                              "Gute Nacht!",
+                              "Wie geht's?"
+                          ],
+              "correct":  0,
+              "explanation":  "Waiters say 'Guten Appetit!' (Enjoy your meal!)."
+          },
+          {
+              "q":  "What is 'ein Becher Joghurt'?",
+              "options":  [
+                              "a tub / cup of yogurt",
+                              "a bottle of yogurt",
+                              "a slice of yogurt",
+                              "a kilo of yogurt"
+                          ],
+              "correct":  0,
+              "explanation":  "der Becher = cup / plastic tub: ein Becher Joghurt."
+          },
+          {
+              "q":  "Which sentence is grammatically correct?",
+              "options":  [
+                              "Ich trinke einen Kaffee.",
+                              "Ich trinke ein Kaffee.",
+                              "Ich trinke eine Kaffee.",
+                              "Ich trinke keines Kaffee."
+                          ],
+              "correct":  0,
+              "explanation":  "der Kaffee is masculine, so in Akkusativ: 'Ich trinke einen Kaffee'."
+          },
+          {
+              "q":  "What do you say when you are thirsty in German?",
+              "options":  [
+                              "Ich habe Durst.",
+                              "Ich habe Hunger.",
+                              "Ich habe Zeit.",
+                              "Ich bin Durst."
+                          ],
+              "correct":  0,
+              "explanation":  "Germans use 'haben' with Hunger and Durst: 'Ich habe Durst' (I am thirsty)."
+          }
       ]
     },
     {
@@ -1242,48 +2232,230 @@ The following key verbs always require an object in the **Akkusativ**:
       `
       },
       interactiveExercises: [
-        {
-          id: "k5_ex1",
-          title: "Übung 1: Separable Verbs (Trennbare Verben)",
-          instruction: "Complete the prefix at the end of the sentence:",
-          questions: [
-            {
-              id: "k5_q1",
-              prompt: "1. 'Anna steht jeden Morgen um 6 Uhr ______ (aufstehen).'",
-              expected: ["auf"],
-              hint: "Prefix of 'aufstehen' is 'auf'.",
-              explanation: "aufstehen separates: 'steht ... auf'."
-            },
-            {
-              id: "k5_q2",
-              prompt: "2. 'Am Abend kauft Herr Weber im Supermarkt ______ (einkaufen).'",
-              expected: ["ein"],
-              hint: "Prefix of 'einkaufen' is 'ein'.",
-              explanation: "einkaufen separates: 'kauft ... ein'."
-            }
-          ]
-        },
-        {
-          id: "k5_ex2",
-          title: "Übung 2: Possessive Articles (mein / meine)",
-          instruction: "Fill in 'mein' or 'meine':",
-          questions: [
-            {
-              id: "k5_q3",
-              prompt: "1. 'Das ist ______ (die) Mutter.'",
-              expected: ["meine"],
-              hint: "Feminine nouns add -e.",
-              explanation: "die Mutter is feminine -> meine Mutter."
-            },
-            {
-              id: "k5_q4",
-              prompt: "2. 'Das ist ______ (der) Bruder.'",
-              expected: ["mein"],
-              hint: "Masculine nouns take mein.",
-              explanation: "der Bruder is masculine -> mein Bruder."
-            }
-          ]
-        }
+          {
+              "id":  "k5_ex1",
+              "title":  "Übung 1: Die Uhrzeit (Telling the Time)",
+              "instruction":  "Fill in the missing words for time expressions:",
+              "questions":  [
+                                {
+                                    "id":  "k5_q1",
+                                    "prompt":  "1. 'Wie ______ ist es?' (What time is it?)",
+                                    "expected":  [
+                                                     "spät",
+                                                     "spaet"
+                                                 ],
+                                    "hint":  "Wie spät ist es?",
+                                    "explanation":  "'Wie spät ist es?' is the standard German question for what time it is."
+                                },
+                                {
+                                    "id":  "k5_q2",
+                                    "prompt":  "2. 14:00 in official time: 'Es ist vierzehn ______.'",
+                                    "expected":  [
+                                                     "Uhr"
+                                                 ],
+                                    "hint":  "The word for o'clock (Uhr).",
+                                    "explanation":  "In official time: 'Es ist vierzehn Uhr'."
+                                },
+                                {
+                                    "id":  "k5_q3",
+                                    "prompt":  "3. 8:15 in informal time: 'Es ist Viertel ______ acht.' (quarter past eight)",
+                                    "expected":  [
+                                                     "nach"
+                                                 ],
+                                    "hint":  "German word for 'past' (nach).",
+                                    "explanation":  "'nach' means past in time: Viertel nach acht = quarter past eight."
+                                },
+                                {
+                                    "id":  "k5_q4",
+                                    "prompt":  "4. 8:30 in informal time: 'Es ist ______ neun.' (half to nine)",
+                                    "expected":  [
+                                                     "halb",
+                                                     "Halb"
+                                                 ],
+                                    "hint":  "German says 'half of the next hour' (halb).",
+                                    "explanation":  "In German, 8:30 is 'halb neun' (halfway to nine!)."
+                                }
+                            ]
+          },
+          {
+              "id":  "k5_ex2",
+              "title":  "Übung 2: Trennbare Verben (Separable Verbs)",
+              "instruction":  "Complete the sentences with the prefix of the separable verb at the end:",
+              "questions":  [
+                                {
+                                    "id":  "k5_q5",
+                                    "prompt":  "1. 'Ich stehe jeden Morgen um 6:30 Uhr ______.' (aufstehen)",
+                                    "expected":  [
+                                                     "auf"
+                                                 ],
+                                    "hint":  "Prefix of aufstehen.",
+                                    "explanation":  "aufstehen splits: 'Ich stehe ... auf'."
+                                },
+                                {
+                                    "id":  "k5_q6",
+                                    "prompt":  "2. 'Der Deutschkurs fängt um 9:00 Uhr ______.' (anfangen)",
+                                    "expected":  [
+                                                     "an"
+                                                 ],
+                                    "hint":  "Prefix of anfangen.",
+                                    "explanation":  "anfangen splits: 'Der Kurs fängt ... an'."
+                                },
+                                {
+                                    "id":  "k5_q7",
+                                    "prompt":  "3. 'Am Samstag kaufe ich im Supermarkt ______.' (einkaufen)",
+                                    "expected":  [
+                                                     "ein"
+                                                 ],
+                                    "hint":  "Prefix of einkaufen.",
+                                    "explanation":  "einkaufen splits: 'Ich kaufe ... ein'."
+                                },
+                                {
+                                    "id":  "k5_q8",
+                                    "prompt":  "4. 'Abends sieht Thomas gern fern. Der Film hört um 22:00 Uhr ______.' (aufhören)",
+                                    "expected":  [
+                                                     "auf"
+                                                 ],
+                                    "hint":  "Prefix of aufhören (to stop/end).",
+                                    "explanation":  "aufhören splits: 'Der Film hört ... auf'."
+                                }
+                            ]
+          },
+          {
+              "id":  "k5_ex3",
+              "title":  "Übung 3: Zeitpräpositionen (am, um, von... bis)",
+              "instruction":  "Fill in the correct preposition of time:",
+              "questions":  [
+                                {
+                                    "id":  "k5_q9",
+                                    "prompt":  "1. 'Der Unterricht beginnt ______ 8:00 Uhr.' (at 8:00 o'clock)",
+                                    "expected":  [
+                                                     "um"
+                                                 ],
+                                    "hint":  "Preposition for clock times.",
+                                    "explanation":  "'um' is used for clock times: um 8:00 Uhr."
+                                },
+                                {
+                                    "id":  "k5_q10",
+                                    "prompt":  "2. '______ Montag habe ich frei.' (on Monday)",
+                                    "expected":  [
+                                                     "Am",
+                                                     "am"
+                                                 ],
+                                    "hint":  "Preposition for days of the week (an + dem = am).",
+                                    "explanation":  "'am' is used for days of the week and parts of the day: am Montag."
+                                },
+                                {
+                                    "id":  "k5_q11",
+                                    "prompt":  "3. 'Ich arbeite ______ 9:00 bis 17:00 Uhr.' (from... to)",
+                                    "expected":  [
+                                                     "von"
+                                                 ],
+                                    "hint":  "Paired with 'bis' (from).",
+                                    "explanation":  "'von ... bis' means from ... until/to."
+                                },
+                                {
+                                    "id":  "k5_q12",
+                                    "prompt":  "4. '______ Wochenende treffe ich meine Freunde.' (at the weekend)",
+                                    "expected":  [
+                                                     "Am",
+                                                     "am"
+                                                 ],
+                                    "hint":  "am Wochenende.",
+                                    "explanation":  "'am Wochenende' = at the weekend."
+                                }
+                            ]
+          },
+          {
+              "id":  "k5_ex4",
+              "title":  "Übung 4: Tagesablauf beschreiben (Daily Routine)",
+              "instruction":  "Fill in the correct verbs for daily routine:",
+              "questions":  [
+                                {
+                                    "id":  "k5_q13",
+                                    "prompt":  "1. 'Morgens ______ (frühstücken) ich ein Brötchen.'",
+                                    "expected":  [
+                                                     "frühstücke",
+                                                     "fruehstuecke"
+                                                 ],
+                                    "hint":  "ich frühstücke.",
+                                    "explanation":  "Subject 'ich' takes '-e': ich frühstücke."
+                                },
+                                {
+                                    "id":  "k5_q14",
+                                    "prompt":  "2. 'Um 13 Uhr ______ (machen) wir eine Mittagspause.'",
+                                    "expected":  [
+                                                     "machen"
+                                                 ],
+                                    "hint":  "wir machen.",
+                                    "explanation":  "Subject 'wir' takes '-en': wir machen."
+                                },
+                                {
+                                    "id":  "k5_q15",
+                                    "prompt":  "3. 'Er ______ (gehen) um 23 Uhr ins Bett.'",
+                                    "expected":  [
+                                                     "geht"
+                                                 ],
+                                    "hint":  "er geht.",
+                                    "explanation":  "Subject 'er' takes '-t': er geht."
+                                },
+                                {
+                                    "id":  "k5_q16",
+                                    "prompt":  "4. 'Am Nachmittag ______ (arbeiten) Lisa im Büro.'",
+                                    "expected":  [
+                                                     "arbeitet"
+                                                 ],
+                                    "hint":  "Stems ending in -t add -et: arbeitet.",
+                                    "explanation":  "Verbs with stem in -t add an extra 'e': Lisa arbeitet."
+                                }
+                            ]
+          },
+          {
+              "id":  "k5_ex5",
+              "title":  "Übung 5: Wochentage \u0026 Tageszeiten (Days \u0026 Times of Day)",
+              "instruction":  "Fill in the missing day or time of day:",
+              "questions":  [
+                                {
+                                    "id":  "k5_q17",
+                                    "prompt":  "1. Which day comes between Dienstag and Donnerstag? '______'",
+                                    "expected":  [
+                                                     "Mittwoch",
+                                                     "mittwoch"
+                                                 ],
+                                    "hint":  "Literally 'mid-week' in German.",
+                                    "explanation":  "Dienstag -\u003e Mittwoch -\u003e Donnerstag."
+                                },
+                                {
+                                    "id":  "k5_q18",
+                                    "prompt":  "2. Which day comes after Freitag? '______'",
+                                    "expected":  [
+                                                     "Samstag",
+                                                     "samstag"
+                                                 ],
+                                    "hint":  "First day of the weekend.",
+                                    "explanation":  "Freitag -\u003e Samstag -\u003e Sonntag."
+                                },
+                                {
+                                    "id":  "k5_q19",
+                                    "prompt":  "3. The part of the day after 18:00 is 'der ______'.",
+                                    "expected":  [
+                                                     "Abend",
+                                                     "abend"
+                                                 ],
+                                    "hint":  "Guten Abend -\u003e der Abend.",
+                                    "explanation":  "der Abend = evening."
+                                },
+                                {
+                                    "id":  "k5_q20",
+                                    "prompt":  "4. The middle of the day (12:00) is 'der ______'.",
+                                    "expected":  [
+                                                     "Mittag",
+                                                     "mittag"
+                                                 ],
+                                    "hint":  "der Mittag (12:00).",
+                                    "explanation":  "der Mittag = noon / midday."
+                                }
+                            ]
+          }
       ],
       grammarSummary: `
 **Core Grammar Rules (Kapitel 5):**
@@ -1315,12 +2487,116 @@ The following key verbs always require an object in the **Akkusativ**:
         { de: "Wie spät ist es?", en: "What time is it?", type: "phrase" }
       ],
       quizzes: [
-        {
-          q: "Complete with the separable prefix: 'Ich stehe um 7 Uhr ______.' (aufstehen)",
-          options: ["an", "aus", "auf", "ab"],
-          correct: 2,
-          explanation: "The prefix of 'aufstehen' is 'auf'."
-        }
+          {
+              "q":  "What does 'halb vier' mean in English?",
+              "options":  [
+                              "3:30",
+                              "4:30",
+                              "4:15",
+                              "3:15"
+                          ],
+              "correct":  0,
+              "explanation":  "In German, 'halb vier' means halfway to four, which is 3:30!"
+          },
+          {
+              "q":  "Where does the prefix of a separable verb go in a present tense main clause?",
+              "options":  [
+                              "Position 1",
+                              "Position 2",
+                              "Right next to the verb",
+                              "At the very end of the sentence"
+                          ],
+              "correct":  3,
+              "explanation":  "The prefix separates and is placed at the very end of the clause: 'Ich stehe um 7 Uhr auf'."
+          },
+          {
+              "q":  "Which preposition is used for days of the week like 'Montag'?",
+              "options":  [
+                              "um",
+                              "am",
+                              "im",
+                              "an"
+                          ],
+              "correct":  1,
+              "explanation":  "'am' (contraction of an + dem) is used for days of the week: am Montag, am Dienstag."
+          },
+          {
+              "q":  "Which preposition is used for exact clock times like '14:30 Uhr'?",
+              "options":  [
+                              "um",
+                              "am",
+                              "im",
+                              "von"
+                          ],
+              "correct":  0,
+              "explanation":  "'um' is always used for exact times: um 14:30 Uhr."
+          },
+          {
+              "q":  "What is 'Viertel vor acht' in digital time?",
+              "options":  [
+                              "8:15",
+                              "7:45",
+                              "8:45",
+                              "7:15"
+                          ],
+              "correct":  1,
+              "explanation":  "'Viertel vor acht' means a quarter before 8:00, which is 7:45."
+          },
+          {
+              "q":  "Which verb is NOT separable?",
+              "options":  [
+                              "aufstehen",
+                              "einkaufen",
+                              "fernsehen",
+                              "verstehen"
+                          ],
+              "correct":  3,
+              "explanation":  "Verbs with prefix 'ver-' (like verstehen, verkaufen) are inseparable (untrennbar)."
+          },
+          {
+              "q":  "How do you say 'from 8:00 to 16:00' in German?",
+              "options":  [
+                              "von 8:00 bis 16:00 Uhr",
+                              "ab 8:00 nach 16:00 Uhr",
+                              "um 8:00 am 16:00 Uhr",
+                              "in 8:00 aus 16:00 Uhr"
+                          ],
+              "correct":  0,
+              "explanation":  "'von ... bis' expresses a time span from start to end."
+          },
+          {
+              "q":  "What is the correct order of days: Donnerstag, Freitag, ______?",
+              "options":  [
+                              "Sonntag",
+                              "Samstag",
+                              "Mittwoch",
+                              "Dienstag"
+                          ],
+              "correct":  1,
+              "explanation":  "Donnerstag (Thursday) -\u003e Freitag (Friday) -\u003e Samstag (Saturday)."
+          },
+          {
+              "q":  "Complete the sentence: 'Wann ______ der Film an?'",
+              "options":  [
+                              "fängt",
+                              "fangen",
+                              "fängst",
+                              "fange"
+                          ],
+              "correct":  0,
+              "explanation":  "der Film (3rd person singular) has vowel change a -\u003e ä: 'fängt an'."
+          },
+          {
+              "q":  "What does 'feierabend machen' mean in German daily life?",
+              "options":  [
+                              "To throw a big party",
+                              "To finish work for the day",
+                              "To take a holiday",
+                              "To start working"
+                          ],
+              "correct":  1,
+              "explanation":  "'Feierabend machen' is the beloved German expression for knocking off work and enjoying the evening."
+          }
       ]
     },
     {
@@ -1359,7 +2635,6 @@ The following key verbs always require an object in the **Akkusativ**:
         { id: "1-094", name: "Track 1-094", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-094.mp3" },
         { id: "1-095", name: "Track 1-095", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-095.mp3" },
         { id: "1-096", name: "Track 1-096", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-096.mp3" },
-        { id: "1-097", name: "Track 1-097", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-097.mp3" },
         { id: "1-098", name: "Track 1-098", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-098.mp3" }
       ],
       videos: [
@@ -1468,41 +2743,231 @@ The following key verbs always require an object in the **Akkusativ**:
       `
       },
       interactiveExercises: [
-        {
-          id: "k6_ex1",
-          title: "Übung 1: Conjugating Modal Verbs",
-          instruction: "Fill in the correct modal verb form:",
-          questions: [
-            {
-              id: "k6_q1",
-              prompt: "1. 'Cheeya ______ (können) sehr gut Klavier spielen.'",
-              expected: ["kann"],
-              hint: "Form of können for 3rd person singular.",
-              explanation: "sie kann -> Maria kann."
-            },
-            {
-              id: "k6_q2",
-              prompt: "2. '______ (wollen) du am Freitag ins Kino gehen?'",
-              expected: ["Willst", "willst"],
-              hint: "Form of wollen for subject 'du'.",
-              explanation: "du willst -> Willst du...?"
-            }
-          ]
-        },
-        {
-          id: "k6_ex2",
-          title: "Übung 2: Sentence Bracket (End-of-Sentence Verb)",
-          instruction: "Complete the verb at the end of the sentence in Infinitive form:",
-          questions: [
-            {
-              id: "k6_q3",
-              prompt: "1. 'Ich kann heute leider nicht ______ (kommen).'",
-              expected: ["kommen"],
-              hint: "The main verb remains in Infinitive at the end.",
-              explanation: "Modal bracket: 'kann ... kommen'."
-            }
-          ]
-        }
+          {
+              "id":  "k6_ex1",
+              "title":  "Übung 1: Modalverben können, wollen, müssen",
+              "instruction":  "Fill in the correct conjugated modal verb in the blank:",
+              "questions":  [
+                                {
+                                    "id":  "k6_q1",
+                                    "prompt":  "1. 'Ich ______ (können) gut Deutsch sprechen.' (I can speak German well.)",
+                                    "expected":  [
+                                                     "kann"
+                                                 ],
+                                    "hint":  "ich kann (no umlaut).",
+                                    "explanation":  "Modal verbs drop the umlaut in singular: ich kann."
+                                },
+                                {
+                                    "id":  "k6_q2",
+                                    "prompt":  "2. '______ (wollen) wir am Samstag ins Kino gehen?' (Shall we...)",
+                                    "expected":  [
+                                                     "Wollen",
+                                                     "wollen"
+                                                 ],
+                                    "hint":  "wir wollen.",
+                                    "explanation":  "Subject 'wir' takes standard infinitive form: wir wollen."
+                                },
+                                {
+                                    "id":  "k6_q3",
+                                    "prompt":  "3. 'Er ______ (müssen) heute lange arbeiten.' (He must work long today.)",
+                                    "expected":  [
+                                                     "muss"
+                                                 ],
+                                    "hint":  "er muss (no umlaut).",
+                                    "explanation":  "er muss (singular drops the umlaut and has double s)."
+                                },
+                                {
+                                    "id":  "k6_q4",
+                                    "prompt":  "4. '______ (können) ihr morgen kommen?' (Can you all come tomorrow?)",
+                                    "expected":  [
+                                                     "Könnt",
+                                                     "könnt",
+                                                     "Krennt",
+                                                     "koennt"
+                                                 ],
+                                    "hint":  "ihr könnt.",
+                                    "explanation":  "Subject 'ihr' takes 'ihr könnt'."
+                                }
+                            ]
+          },
+          {
+              "id":  "k6_ex2",
+              "title":  "Übung 2: Akkusativ Personalpronomen (mich, dich, uns...)",
+              "instruction":  "Fill in the correct Akkusativ pronoun (mich, dich, ihn, sie, uns, euch):",
+              "questions":  [
+                                {
+                                    "id":  "k6_q5",
+                                    "prompt":  "1. 'Ich lade ______ (du) herzlich zu meiner Party ein.' (I invite you warmly...)",
+                                    "expected":  [
+                                                     "dich"
+                                                 ],
+                                    "hint":  "Akkusativ of 'du'.",
+                                    "explanation":  "du in Akkusativ becomes 'dich': 'Ich lade dich ein'."
+                                },
+                                {
+                                    "id":  "k6_q6",
+                                    "prompt":  "2. 'Besuchst du ______ (ich) am Sonntag?' (Are you visiting me...)",
+                                    "expected":  [
+                                                     "mich"
+                                                 ],
+                                    "hint":  "Akkusativ of 'ich'.",
+                                    "explanation":  "ich in Akkusativ becomes 'mich'."
+                                },
+                                {
+                                    "id":  "k6_q7",
+                                    "prompt":  "3. 'Kennst du Herrn Meier? — Ja, ich kenne ______ (er).' (Yes, I know him.)",
+                                    "expected":  [
+                                                     "ihn"
+                                                 ],
+                                    "hint":  "Akkusativ of 'er'.",
+                                    "explanation":  "er in Akkusativ becomes 'ihn'."
+                                },
+                                {
+                                    "id":  "k6_q8",
+                                    "prompt":  "4. 'Könnt ihr ______ (wir) morgen anrufen?' (Can you call us tomorrow?)",
+                                    "expected":  [
+                                                     "uns"
+                                                 ],
+                                    "hint":  "Akkusativ of 'wir'.",
+                                    "explanation":  "wir in Akkusativ remains 'uns'."
+                                }
+                            ]
+          },
+          {
+              "id":  "k6_ex3",
+              "title":  "Übung 3: Datum \u0026 Ordinalzahlen (Dates \u0026 Ordinal Numbers)",
+              "instruction":  "Complete the date expressions (ending in -ten after 'am'):",
+              "questions":  [
+                                {
+                                    "id":  "k6_q9",
+                                    "prompt":  "1. 'Die Party ist am ______ (1.) Mai.' (on the first of May)",
+                                    "expected":  [
+                                                     "ersten",
+                                                     "Ersten"
+                                                 ],
+                                    "hint":  "Ordinal 1st with ending -ten: ersten.",
+                                    "explanation":  "1. with 'am' is 'am ersten'."
+                                },
+                                {
+                                    "id":  "k6_q10",
+                                    "prompt":  "2. 'Mein Geburtstag ist am ______ (3.) Oktober.' (on the third...)",
+                                    "expected":  [
+                                                     "dritten",
+                                                     "Dritten"
+                                                 ],
+                                    "hint":  "3rd with ending -ten: dritten.",
+                                    "explanation":  "3. with 'am' is 'am dritten'."
+                                },
+                                {
+                                    "id":  "k6_q11",
+                                    "prompt":  "3. 'Wir treffen uns am ______ (15.) August.' (on the fifteenth...)",
+                                    "expected":  [
+                                                     "fünfzehnten",
+                                                     "fuenfzehnten",
+                                                     "Fünfzehnten"
+                                                 ],
+                                    "hint":  "fünfzehn + -ten.",
+                                    "explanation":  "15. with 'am' is 'am fünfzehnten'."
+                                },
+                                {
+                                    "id":  "k6_q12",
+                                    "prompt":  "4. 'Heute haben wir den ______ (20.) Juni.'",
+                                    "expected":  [
+                                                     "zwanzigsten",
+                                                     "Zwanzigsten"
+                                                 ],
+                                    "hint":  "Numbers from 20 onwards add -sten: zwanzigsten.",
+                                    "explanation":  "From 20 onwards, ordinal numbers take -sten: zwanzigsten."
+                                }
+                            ]
+          },
+          {
+              "id":  "k6_ex4",
+              "title":  "Übung 4: Einladung schreiben \u0026 beantworten (Invitations)",
+              "instruction":  "Fill in the missing words in the party invitation:",
+              "questions":  [
+                                {
+                                    "id":  "k6_q13",
+                                    "prompt":  "1. 'Wir ______ (einladen) euch herzlich zu unserem Sommerfest ein.'",
+                                    "expected":  [
+                                                     "laden"
+                                                 ],
+                                    "hint":  "wir laden ... ein.",
+                                    "explanation":  "einladen splits: 'Wir laden euch herzlich ein'."
+                                },
+                                {
+                                    "id":  "k6_q14",
+                                    "prompt":  "2. 'Die Party fängt um 18:00 Uhr ______.' (anfangen)",
+                                    "expected":  [
+                                                     "an"
+                                                 ],
+                                    "hint":  "Prefix of anfangen.",
+                                    "explanation":  "anfangen: 'fängt um 18:00 Uhr an'."
+                                },
+                                {
+                                    "id":  "k6_q15",
+                                    "prompt":  "3. 'Kannst du einen Salat ______? (mitbringen - infinitive at end)'",
+                                    "expected":  [
+                                                     "mitbringen"
+                                                 ],
+                                    "hint":  "Infinitive verb at the end after modal verb 'kannst'.",
+                                    "explanation":  "With modal verbs (kannst du), the main verb stays in infinitive at the end."
+                                },
+                                {
+                                    "id":  "k6_q16",
+                                    "prompt":  "4. 'Ich komme sehr ______! (gladly / with pleasure)'",
+                                    "expected":  [
+                                                     "gerne",
+                                                     "gern"
+                                                 ],
+                                    "hint":  "gern or gerne.",
+                                    "explanation":  "'Ich komme sehr gern / gerne!' = I'd love to come!"
+                                }
+                            ]
+          },
+          {
+              "id":  "k6_ex5",
+              "title":  "Übung 5: Im Restaurant bestellen \u0026 bezahlen",
+              "instruction":  "Fill in the restaurant dialogue words:",
+              "questions":  [
+                                {
+                                    "id":  "k6_q17",
+                                    "prompt":  "1. 'Zahlen Sie ______ oder getrennt?' (Together or separate?)",
+                                    "expected":  [
+                                                     "zusammen"
+                                                 ],
+                                    "hint":  "zusammen (together).",
+                                    "explanation":  "'Zusammen oder getrennt?' is the classic German waiter question."
+                                },
+                                {
+                                    "id":  "k6_q18",
+                                    "prompt":  "2. 'Wir zahlen bitte ______ (separately).' ",
+                                    "expected":  [
+                                                     "getrennt"
+                                                 ],
+                                    "hint":  "getrennt = separately.",
+                                    "explanation":  "'getrennt zahlen' means each person pays for their own."
+                                },
+                                {
+                                    "id":  "k6_q19",
+                                    "prompt":  "3. 'Das ______ 18 Euro 40.' (That comes to...)",
+                                    "expected":  [
+                                                     "macht"
+                                                 ],
+                                    "hint":  "Das macht...",
+                                    "explanation":  "'Das macht [amount]' means the bill comes to."
+                                },
+                                {
+                                    "id":  "k6_q20",
+                                    "prompt":  "4. Tip expression: 'Hier sind 20 Euro. Stimmt so!' ('Stimmt ______' = Keep the change)",
+                                    "expected":  [
+                                                     "so"
+                                                 ],
+                                    "hint":  "Stimmt so!",
+                                    "explanation":  "'Stimmt so!' is the idiomatic German way to say 'Keep the change!'"
+                                }
+                            ]
+          }
       ],
       grammarSummary: `
 **Core Grammar Rules (Kapitel 6):**
@@ -1527,17 +2992,116 @@ The following key verbs always require an object in the **Akkusativ**:
         { de: "Tut mir leid, ich kann nicht", en: "I'm sorry, I can't", type: "phrase" }
       ],
       quizzes: [
-        {
-          q: "Which word order is correct?",
-          options: [
-            "Ich will Deutsch lernen heute.",
-            "Ich will heute Deutsch lernen.",
-            "Ich lernen heute Deutsch will.",
-            "Deutsch lernen ich will heute."
-          ],
-          correct: 1,
-          explanation: "Modal verb 'will' at Position 2, infinitive 'lernen' at the very end."
-        }
+          {
+              "q":  "Where does the main infinitive verb go when using a modal verb like 'können'?",
+              "options":  [
+                              "Position 1",
+                              "Position 2",
+                              "Right after the modal verb",
+                              "At the very end of the sentence"
+                          ],
+              "correct":  3,
+              "explanation":  "With modal verbs, the conjugated modal is in Position 2, and the full infinitive verb is sent to the very end: 'Ich kann morgen kommen'."
+          },
+          {
+              "q":  "What is the Akkusativ form of the pronoun 'du'?",
+              "options":  [
+                              "dir",
+                              "dich",
+                              "dein",
+                              "du"
+                          ],
+              "correct":  1,
+              "explanation":  "du (Nominativ) -\u003e dich (Akkusativ) -\u003e dir (Dativ)."
+          },
+          {
+              "q":  "What does 'Zusammen oder getrennt?' mean in a restaurant?",
+              "options":  [
+                              "Inside or outside?",
+                              "Cash or card?",
+                              "Paying together on one bill or separately?",
+                              "Soup or salad?"
+                          ],
+              "correct":  2,
+              "explanation":  "Waiters ask this before bringing the bill to know if you want one joint bill (zusammen) or individual bills (getrennt)."
+          },
+          {
+              "q":  "What is the correct conjugation of 'können' for 'er'?",
+              "options":  [
+                              "er kann",
+                              "er könnt",
+                              "er konnt",
+                              "er kannt"
+                          ],
+              "correct":  0,
+              "explanation":  "Modal verbs have identical 1st and 3rd person singular without umlaut: 'ich kann', 'er kann'."
+          },
+          {
+              "q":  "How do you say 'Keep the change' politely to a German waiter?",
+              "options":  [
+                              "Stimmt so!",
+                              "Danke schön!",
+                              "Guten Appetit!",
+                              "Geld behalten!"
+                          ],
+              "correct":  0,
+              "explanation":  "'Stimmt so!' is the universal cultural phrase to tell the server to keep the difference as a tip."
+          },
+          {
+              "q":  "What is the ordinal number for 1. in date expressions (am 1. Mai)?",
+              "options":  [
+                              "am eins Mai",
+                              "am ersten Mai",
+                              "am erstens Mai",
+                              "am einsten Mai"
+                          ],
+              "correct":  1,
+              "explanation":  "1. after 'am' is always 'am ersten'."
+          },
+          {
+              "q":  "Which sentence correctly uses 'wollen'?",
+              "options":  [
+                              "Wir wollen heute Pizza essen.",
+                              "Wir will heute Pizza essen.",
+                              "Wir wollt heute Pizza essen.",
+                              "Wir wollen heute Pizza esst."
+                          ],
+              "correct":  0,
+              "explanation":  "Subject 'wir' takes 'wollen', and the infinitive 'essen' sits at the end."
+          },
+          {
+              "q":  "What is the Präteritum (simple past) of 'haben' for 'ich'?",
+              "options":  [
+                              "ich war",
+                              "ich hatte",
+                              "ich bin gehabt",
+                              "ich habe"
+                          ],
+              "correct":  1,
+              "explanation":  "The simple past of haben is 'hatte' (ich hatte = I had)."
+          },
+          {
+              "q":  "What is the Präteritum of 'sein' for 'wir'?",
+              "options":  [
+                              "wir waren",
+                              "wir hatten",
+                              "wir sind gewesen",
+                              "wir seind"
+                          ],
+              "correct":  0,
+              "explanation":  "The simple past of sein is 'waren' (wir waren = we were)."
+          },
+          {
+              "q":  "How do you politely decline an invitation because you are busy?",
+              "options":  [
+                              "Ich komme sehr gerne!",
+                              "Schade, da kann ich leider nicht.",
+                              "Das macht Spaß!",
+                              "Stimmt so!"
+                          ],
+              "correct":  1,
+              "explanation":  "'Schade, da kann ich leider nicht' (Pity, unfortunately I can't then) is the friendly polite refusal."
+          }
       ]
     },
     {
@@ -1660,27 +3224,231 @@ The following key verbs always require an object in the **Akkusativ**:
       `
       },
       interactiveExercises: [
-        {
-          id: "k7_ex1",
-          title: "Übung 1: Past Tense (war vs hatte)",
-          instruction: "Fill in 'war' (was) or 'hatte' (had):",
-          questions: [
-            {
-              id: "k7_q1",
-              prompt: "1. 'Gestern ______ (sein) ich den ganzen Tag im Büro.'",
-              expected: ["war"],
-              hint: "Past form of 'sein' for 'ich'.",
-              explanation: "ich war."
-            },
-            {
-              id: "k7_q2",
-              prompt: "2. 'Wir ______ (haben) gestern viel Arbeit.'",
-              expected: ["hatten"],
-              hint: "Past form of 'haben' for 'wir'.",
-              explanation: "wir hatten."
-            }
-          ]
-        }
+          {
+              "id":  "k7_ex1",
+              "title":  "Übung 1: Dativ Personalpronomen (mir, dir, Ihnen...)",
+              "instruction":  "Fill in the correct personal pronoun in the Dativ case:",
+              "questions":  [
+                                {
+                                    "id":  "k7_q1",
+                                    "prompt":  "1. 'Wie geht es ______ (du)?' — 'Es geht mir gut!'",
+                                    "expected":  [
+                                                     "dir"
+                                                 ],
+                                    "hint":  "Dativ of 'du'.",
+                                    "explanation":  "du in Dativ is 'dir': 'Wie geht es dir?'"
+                                },
+                                {
+                                    "id":  "k7_q2",
+                                    "prompt":  "2. 'Guten Tag, Herr Weber! Wie geht es ______ (Sie - formal)?'",
+                                    "expected":  [
+                                                     "Ihnen"
+                                                 ],
+                                    "hint":  "Dativ of formal 'Sie' (capitalized).",
+                                    "explanation":  "Formal 'Sie' in Dativ is 'Ihnen': 'Wie geht es Ihnen?'"
+                                },
+                                {
+                                    "id":  "k7_q3",
+                                    "prompt":  "3. 'Kannst du ______ (ich) bitte helfen?'",
+                                    "expected":  [
+                                                     "mir"
+                                                 ],
+                                    "hint":  "Dativ of 'ich'.",
+                                    "explanation":  "ich in Dativ is 'mir': 'Kannst du mir helfen?'"
+                                },
+                                {
+                                    "id":  "k7_q4",
+                                    "prompt":  "4. 'Das Kleid gefällt ______ (sie - 3rd person singular female) sehr gut.'",
+                                    "expected":  [
+                                                     "ihr"
+                                                 ],
+                                    "hint":  "Dativ of 'sie' (her).",
+                                    "explanation":  "sie (she) in Dativ becomes 'ihr': 'Das Kleid gefällt ihr'."
+                                }
+                            ]
+          },
+          {
+              "id":  "k7_ex2",
+              "title":  "Übung 2: Verben mit Dativ (helfen, danken, gefallen...)",
+              "instruction":  "Complete the sentences with verbs that trigger Dativ:",
+              "questions":  [
+                                {
+                                    "id":  "k7_q5",
+                                    "prompt":  "1. 'Der Arzt ______ (helfen - er-form) dem Patienten.' (vowel change e -\u003e i)",
+                                    "expected":  [
+                                                     "hilft"
+                                                 ],
+                                    "hint":  "er hilft.",
+                                    "explanation":  "helfen has vowel change in 3rd person: 'Der Arzt hilft'."
+                                },
+                                {
+                                    "id":  "k7_q6",
+                                    "prompt":  "2. 'Ich ______ (danken) dir für deine Hilfe!'",
+                                    "expected":  [
+                                                     "danke"
+                                                 ],
+                                    "hint":  "ich danke.",
+                                    "explanation":  "danken + Dativ: 'Ich danke dir'."
+                                },
+                                {
+                                    "id":  "k7_q7",
+                                    "prompt":  "3. 'Die Schuhe ______ (passen) mir leider nicht.' (plural subject)",
+                                    "expected":  [
+                                                     "passen"
+                                                 ],
+                                    "hint":  "plural subject (die Schuhe).",
+                                    "explanation":  "die Schuhe (plural) -\u003e passen mir."
+                                },
+                                {
+                                    "id":  "k7_q8",
+                                    "prompt":  "4. 'Wie ______ (gefallen) Ihnen Hamburg?' (3rd person singular)",
+                                    "expected":  [
+                                                     "gefällt",
+                                                     "gefaellt"
+                                                 ],
+                                    "hint":  "vowel change a -\u003e ä: gefällt.",
+                                    "explanation":  "gefallen has umlaut change: 'Hamburg gefällt Ihnen'."
+                                }
+                            ]
+          },
+          {
+              "id":  "k7_ex3",
+              "title":  "Übung 3: Termine vereinbaren \u0026 absagen (Appointments)",
+              "instruction":  "Fill in the phrases for making appointments:",
+              "questions":  [
+                                {
+                                    "id":  "k7_q9",
+                                    "prompt":  "1. 'Ich möchte einen Termin ______ (to arrange/agree).' (vereinbaren)",
+                                    "expected":  [
+                                                     "vereinbaren"
+                                                 ],
+                                    "hint":  "infinitive 'vereinbaren' at end.",
+                                    "explanation":  "'einen Termin vereinbaren' = to make/schedule an appointment."
+                                },
+                                {
+                                    "id":  "k7_q10",
+                                    "prompt":  "2. '______ (passt) es Ihnen am Dienstag um 14 Uhr?'",
+                                    "expected":  [
+                                                     "Passt",
+                                                     "passt"
+                                                 ],
+                                    "hint":  "Verb 'passen' in Position 1.",
+                                    "explanation":  "'Passt es Ihnen...?' = Does ... suit you?"
+                                },
+                                {
+                                    "id":  "k7_q11",
+                                    "prompt":  "3. 'Ich muss den Termin leider ______ (to cancel).' (absagen)",
+                                    "expected":  [
+                                                     "absagen"
+                                                 ],
+                                    "hint":  "absagen = to cancel.",
+                                    "explanation":  "'einen Termin absagen' = to cancel an appointment."
+                                },
+                                {
+                                    "id":  "k7_q12",
+                                    "prompt":  "4. 'Können wir den Termin auf Freitag ______ (to postpone)?' (verschieben)",
+                                    "expected":  [
+                                                     "verschieben"
+                                                 ],
+                                    "hint":  "verschieben = to postpone/reschedule.",
+                                    "explanation":  "'einen Termin verschieben' = to postpone an appointment."
+                                }
+                            ]
+          },
+          {
+              "id":  "k7_ex4",
+              "title":  "Übung 4: E-Mail \u0026 Briefe (Salutations \u0026 Closings)",
+              "instruction":  "Fill in the correct greetings and closings:",
+              "questions":  [
+                                {
+                                    "id":  "k7_q13",
+                                    "prompt":  "1. Formal salutation to a man: 'Sehr geehrter ______ Müller,'",
+                                    "expected":  [
+                                                     "Herr"
+                                                 ],
+                                    "hint":  "Sehr geehrter Herr...",
+                                    "explanation":  "'Sehr geehrter Herr' is the standard formal opening for a male recipient."
+                                },
+                                {
+                                    "id":  "k7_q14",
+                                    "prompt":  "2. Formal salutation to a woman: 'Sehr geehrte ______ Meier,'",
+                                    "expected":  [
+                                                     "Frau"
+                                                 ],
+                                    "hint":  "Sehr geehrte Frau...",
+                                    "explanation":  "'Sehr geehrte Frau' is the formal opening for a female recipient."
+                                },
+                                {
+                                    "id":  "k7_q15",
+                                    "prompt":  "3. Formal email closing: 'Mit freundlichen ______' (Grüßen)",
+                                    "expected":  [
+                                                     "Grüßen",
+                                                     "Gruessen",
+                                                     "grüßen",
+                                                     "gruessen"
+                                                 ],
+                                    "hint":  "Mit freundlichen Grüßen.",
+                                    "explanation":  "'Mit freundlichen Grüßen' = Yours sincerely / Kind regards."
+                                },
+                                {
+                                    "id":  "k7_q16",
+                                    "prompt":  "4. Informal email opening to a female friend: '______ Maria,' (Liebe)",
+                                    "expected":  [
+                                                     "Liebe",
+                                                     "liebe"
+                                                 ],
+                                    "hint":  "Liebe (for female friend).",
+                                    "explanation":  "'Liebe [Name]' is the warm informal salutation for a woman."
+                                }
+                            ]
+          },
+          {
+              "id":  "k7_ex5",
+              "title":  "Übung 5: Kommunikation \u0026 Medien (Media \u0026 Communication)",
+              "instruction":  "Fill in the modern communication terms:",
+              "questions":  [
+                                {
+                                    "id":  "k7_q17",
+                                    "prompt":  "1. 'Ich schreibe dir eine ______ (E-Mail).' (article: die)",
+                                    "expected":  [
+                                                     "E-Mail",
+                                                     "Email",
+                                                     "e-mail",
+                                                     "email"
+                                                 ],
+                                    "hint":  "die E-Mail.",
+                                    "explanation":  "eine E-Mail schreiben = to write an email."
+                                },
+                                {
+                                    "id":  "k7_q18",
+                                    "prompt":  "2. 'Kannst du mich auf dem Handy ______ (to call)?' (anrufen)",
+                                    "expected":  [
+                                                     "anrufen"
+                                                 ],
+                                    "hint":  "anrufen = to call.",
+                                    "explanation":  "jemanden anrufen = to call someone."
+                                },
+                                {
+                                    "id":  "k7_q19",
+                                    "prompt":  "3. 'Ich schicke dir eine SMS / ______ (WhatsApp message).' (Nachricht)",
+                                    "expected":  [
+                                                     "Nachricht",
+                                                     "nachricht"
+                                                 ],
+                                    "hint":  "die Nachricht = message.",
+                                    "explanation":  "die Nachricht = message."
+                                },
+                                {
+                                    "id":  "k7_q20",
+                                    "prompt":  "4. 'Ich habe deine E-Mail ______ (received).' (bekommen)",
+                                    "expected":  [
+                                                     "bekommen"
+                                                 ],
+                                    "hint":  "bekommen = to get / receive.",
+                                    "explanation":  "eine E-Mail bekommen = to receive an email."
+                                }
+                            ]
+          }
       ],
       grammarSummary: `
 **Core Grammar Rules (Kapitel 7):**
@@ -1702,12 +3470,116 @@ The following key verbs always require an object in the **Akkusativ**:
         { de: "Ich war gestern im Büro", en: "I was in the office yesterday", type: "phrase" }
       ],
       quizzes: [
-        {
-          q: "Select the correct past form: 'Gestern ______ ich keine Zeit.'",
-          options: ["habe", "hatte", "bin", "war"],
-          correct: 1,
-          explanation: "For having time in the past: 'ich hatte'."
-        }
+          {
+              "q":  "What is the Dativ form of 'ich'?",
+              "options":  [
+                              "mich",
+                              "mir",
+                              "mein",
+                              "du"
+                          ],
+              "correct":  1,
+              "explanation":  "ich (Nominativ) -\u003e mich (Akkusativ) -\u003e mir (Dativ)."
+          },
+          {
+              "q":  "Which of these verbs ALWAYS requires a Dativ object?",
+              "options":  [
+                              "helfen",
+                              "kaufen",
+                              "sehen",
+                              "finden"
+                          ],
+              "correct":  0,
+              "explanation":  "'helfen' is a classic Dativ verb: 'Ich helfe dir'."
+          },
+          {
+              "q":  "How do you start a formal email when you do not know the recipient's name?",
+              "options":  [
+                              "Hallo zusammen,",
+                              "Sehr geehrte Damen und Herren,",
+                              "Liebe Freunde,",
+                              "Guten Tag Herr Frau,"
+                          ],
+              "correct":  1,
+              "explanation":  "'Sehr geehrte Damen und Herren,' is the official German 'Dear Sir/Madam'."
+          },
+          {
+              "q":  "What is the appropriate closing for a formal letter or job application?",
+              "options":  [
+                              "Tschüss!",
+                              "Bis bald,",
+                              "Mit freundlichen Grüßen,",
+                              "Liebe Grüße,"
+                          ],
+              "correct":  2,
+              "explanation":  "'Mit freundlichen Grüßen' is the universal formal letter closing."
+          },
+          {
+              "q":  "What does 'einen Termin verschieben' mean?",
+              "options":  [
+                              "To cancel an appointment",
+                              "To confirm an appointment",
+                              "To reschedule/postpone an appointment",
+                              "To attend an appointment"
+                          ],
+              "correct":  2,
+              "explanation":  "'verschieben' means to move/postpone an appointment to another date or time."
+          },
+          {
+              "q":  "Choose the correct sentence: 'Das Buch gehört ______.'",
+              "options":  [
+                              "ich",
+                              "mich",
+                              "mir",
+                              "meiner"
+                          ],
+              "correct":  2,
+              "explanation":  "'gehören' (to belong to) triggers Dativ: 'gehört mir'."
+          },
+          {
+              "q":  "How do you ask: 'Does Tuesday at 10:00 AM work for you?'",
+              "options":  [
+                              "Passt es dir am Dienstag um 10 Uhr?",
+                              "Bist du Dienstag um 10 Uhr?",
+                              "Gehst du Dienstag 10 Uhr?",
+                              "Hast du Dienstag 10 Uhr?"
+                          ],
+              "correct":  0,
+              "explanation":  "'Passt es dir / Ihnen...?' is the natural idiomatic phrase for checking appointment availability."
+          },
+          {
+              "q":  "What is the Dativ form of 'wir'?",
+              "options":  [
+                              "uns",
+                              "euch",
+                              "ihnen",
+                              "wir"
+                          ],
+              "correct":  0,
+              "explanation":  "The pronoun 'wir' is 'uns' in both Akkusativ and Dativ."
+          },
+          {
+              "q":  "What does 'Gefällt dir die Stadt?' mean?",
+              "options":  [
+                              "Do you live in the city?",
+                              "Do you like the city?",
+                              "Is the city big?",
+                              "Where is the city?"
+                          ],
+              "correct":  1,
+              "explanation":  "'gefallen + Dativ' expresses liking / appealing to someone: 'Do you like the city?'"
+          },
+          {
+              "q":  "How do you sign off an informal email to a close friend?",
+              "options":  [
+                              "Mit freundlichen Grüßen",
+                              "Sehr geehrte",
+                              "Liebe Grüße / Herzliche Grüße",
+                              "Hochachtungsvoll"
+                          ],
+              "correct":  2,
+              "explanation":  "'Liebe Grüße' or 'Viele Grüße' is the standard friendly informal sign-off."
+          }
       ]
     },
     {
@@ -1829,48 +3701,244 @@ The following key verbs always require an object in the **Akkusativ**:
       `
       },
       interactiveExercises: [
-        {
-          id: "k8_ex1",
-          title: "Übung 1: Imperative Commands (Der Imperativ)",
-          instruction: "Form the correct imperative command:",
-          questions: [
-            {
-              id: "k8_q1",
-              prompt: "1. Doctor's formal advice: '______ (trinken) Sie viel Tee!'",
-              expected: ["Trinken", "trinken"],
-              hint: "Formal imperative keeps infinitive.",
-              explanation: "'Trinken Sie!'."
-            },
-            {
-              id: "k8_q2",
-              prompt: "2. Informal advice to a friend: '______ (schlafen) viel!'",
-              expected: ["Schlaf", "schlaf"],
-              hint: "Drop -st and subject du.",
-              explanation: "du schläfst -> Schlaf!"
-            }
-          ]
-        },
-        {
-          id: "k8_ex2",
-          title: "Übung 2: Expressing Pain (tut weh vs tun weh)",
-          instruction: "Fill in 'tut weh' (singular) or 'tun weh' (plural):",
-          questions: [
-            {
-              id: "k8_q3",
-              prompt: "1. 'Mein Rücken ______.' (singular back pain)",
-              expected: ["tut weh"],
-              hint: "der Rücken is singular.",
-              explanation: "Singular: tut weh."
-            },
-            {
-              id: "k8_q4",
-              prompt: "2. 'Meine Augen ______.' (plural eyes pain)",
-              expected: ["tun weh"],
-              hint: "die Augen is plural.",
-              explanation: "Plural: tun weh."
-            }
-          ]
-        }
+          {
+              "id":  "k8_ex1",
+              "title":  "Übung 1: Zimmer in der Wohnung (Rooms of the House)",
+              "instruction":  "Fill in the correct definite article and room names:",
+              "questions":  [
+                                {
+                                    "id":  "k8_q1",
+                                    "prompt":  "1. 'Wir kochen in ______ (die) Küche.' (Dativ feminine: die -\u003e der)",
+                                    "expected":  [
+                                                     "der"
+                                                 ],
+                                    "hint":  "die Küche in Dativ is der Küche.",
+                                    "explanation":  "in + Dativ for location: in der Küche."
+                                },
+                                {
+                                    "id":  "k8_q2",
+                                    "prompt":  "2. 'Das Sofa steht in ______ (das) Wohnzimmer.' (in + das = im)",
+                                    "expected":  [
+                                                     "dem",
+                                                     "im"
+                                                 ],
+                                    "hint":  "in dem = im.",
+                                    "explanation":  "das Wohnzimmer in Dativ is 'in dem' (im) Wohnzimmer."
+                                },
+                                {
+                                    "id":  "k8_q3",
+                                    "prompt":  "3. 'Er schläft in ______ (das) Schlafzimmer.' (in + dem = im)",
+                                    "expected":  [
+                                                     "dem",
+                                                     "im"
+                                                 ],
+                                    "hint":  "das Schlafzimmer in Dativ is im.",
+                                    "explanation":  "in dem (im) Schlafzimmer."
+                                },
+                                {
+                                    "id":  "k8_q4",
+                                    "prompt":  "4. 'Die Dusche ist in ______ (das) Bad / Badezimmer.'",
+                                    "expected":  [
+                                                     "dem",
+                                                     "im"
+                                                 ],
+                                    "hint":  "das Bad -\u003e im Bad.",
+                                    "explanation":  "im Bad / im Badezimmer."
+                                }
+                            ]
+          },
+          {
+              "id":  "k8_ex2",
+              "title":  "Übung 2: Möbel \u0026 Artikel (Furniture)",
+              "instruction":  "Fill in the correct article for the furniture pieces:",
+              "questions":  [
+                                {
+                                    "id":  "k8_q5",
+                                    "prompt":  "1. '______ Tisch ist aus Holz.' (table - masculine)",
+                                    "expected":  [
+                                                     "Der",
+                                                     "der"
+                                                 ],
+                                    "hint":  "der Tisch (masculine).",
+                                    "explanation":  "der Tisch (masculine)."
+                                },
+                                {
+                                    "id":  "k8_q6",
+                                    "prompt":  "2. '______ Lampe ist modern.' (lamp - feminine)",
+                                    "expected":  [
+                                                     "Die",
+                                                     "die"
+                                                 ],
+                                    "hint":  "die Lampe (feminine).",
+                                    "explanation":  "die Lampe (feminine)."
+                                },
+                                {
+                                    "id":  "k8_q7",
+                                    "prompt":  "3. '______ Bett ist sehr bequem.' (bed - neutral)",
+                                    "expected":  [
+                                                     "Das",
+                                                     "das"
+                                                 ],
+                                    "hint":  "das Bett (neutral).",
+                                    "explanation":  "das Bett (neutral)."
+                                },
+                                {
+                                    "id":  "k8_q8",
+                                    "prompt":  "4. '______ Schrank steht im Flur.' (wardrobe/closet - masculine)",
+                                    "expected":  [
+                                                     "Der",
+                                                     "der"
+                                                 ],
+                                    "hint":  "der Schrank (masculine).",
+                                    "explanation":  "der Schrank (masculine)."
+                                }
+                            ]
+          },
+          {
+              "id":  "k8_ex3",
+              "title":  "Übung 3: Lokale Wechselpräpositionen mit Dativ (Location)",
+              "instruction":  "Fill in the position preposition with Dativ (in, auf, an, unter, neben):",
+              "questions":  [
+                                {
+                                    "id":  "k8_q9",
+                                    "prompt":  "1. 'Das Buch liegt ______ (on top of) dem Tisch.'",
+                                    "expected":  [
+                                                     "auf",
+                                                     "Auf"
+                                                 ],
+                                    "hint":  "auf = on top of horizontal surface.",
+                                    "explanation":  "'auf dem Tisch' means on the table."
+                                },
+                                {
+                                    "id":  "k8_q10",
+                                    "prompt":  "2. 'Das Bild hängt ______ (on vertical surface) der Wand.'",
+                                    "expected":  [
+                                                     "an",
+                                                     "An"
+                                                 ],
+                                    "hint":  "an = on vertical surface.",
+                                    "explanation":  "'an der Wand' means on the wall."
+                                },
+                                {
+                                    "id":  "k8_q11",
+                                    "prompt":  "3. 'Der Hund schläft ______ (under) dem Bett.'",
+                                    "expected":  [
+                                                     "unter",
+                                                     "Unter"
+                                                 ],
+                                    "hint":  "unter = under.",
+                                    "explanation":  "'unter dem Bett' means under the bed."
+                                },
+                                {
+                                    "id":  "k8_q12",
+                                    "prompt":  "4. 'Der Stuhl steht ______ (next to) dem Schreibtisch.'",
+                                    "expected":  [
+                                                     "neben",
+                                                     "Neben"
+                                                 ],
+                                    "hint":  "neben = next to / beside.",
+                                    "explanation":  "'neben dem Schreibtisch' means beside the desk."
+                                }
+                            ]
+          },
+          {
+              "id":  "k8_ex4",
+              "title":  "Übung 4: Adjektive für die Wohnung (Describing Rooms)",
+              "instruction":  "Fill in the opposite adjectives:",
+              "questions":  [
+                                {
+                                    "id":  "k8_q13",
+                                    "prompt":  "1. Opposite of 'dunkel' (dark): 'Die Wohnung ist sehr ______ (bright).'",
+                                    "expected":  [
+                                                     "hell",
+                                                     "Hell"
+                                                 ],
+                                    "hint":  "hell = bright / light.",
+                                    "explanation":  "hell is the opposite of dunkel."
+                                },
+                                {
+                                    "id":  "k8_q14",
+                                    "prompt":  "2. Opposite of 'teuer' (expensive): 'Das Zimmer ist relativ ______ (cheap).'",
+                                    "expected":  [
+                                                     "billig",
+                                                     "günstig",
+                                                     "guenstig"
+                                                 ],
+                                    "hint":  "billig or günstig.",
+                                    "explanation":  "billig / günstig = inexpensive / affordable."
+                                },
+                                {
+                                    "id":  "k8_q15",
+                                    "prompt":  "3. Opposite of 'laut' (noisy): 'Die Lage ist wunderbar ______ (quiet).'",
+                                    "expected":  [
+                                                     "ruhig",
+                                                     "Ruhig"
+                                                 ],
+                                    "hint":  "ruhig = quiet / peaceful.",
+                                    "explanation":  "ruhig is the opposite of laut."
+                                },
+                                {
+                                    "id":  "k8_q16",
+                                    "prompt":  "4. Opposite of 'klein' (small): 'Das Wohnzimmer ist ziemlich ______ (big).'",
+                                    "expected":  [
+                                                     "groß",
+                                                     "gross",
+                                                     "Groß",
+                                                     "Gross"
+                                                 ],
+                                    "hint":  "groß = big / large.",
+                                    "explanation":  "groß is the opposite of klein."
+                                }
+                            ]
+          },
+          {
+              "id":  "k8_ex5",
+              "title":  "Übung 5: Wohnungsanzeigen \u0026 Miete (Rent \u0026 Ads)",
+              "instruction":  "Fill in key housing terms:",
+              "questions":  [
+                                {
+                                    "id":  "k8_q17",
+                                    "prompt":  "1. 'Die ______ (rent) beträgt 650 Euro pro Monat.' (die Miete)",
+                                    "expected":  [
+                                                     "Miete",
+                                                     "miete"
+                                                 ],
+                                    "hint":  "die Miete = rent.",
+                                    "explanation":  "die Miete = monthly rent."
+                                },
+                                {
+                                    "id":  "k8_q18",
+                                    "prompt":  "2. 'Die Wohnung hat 3 ______ (rooms) und einen Balkon.' (Zimmer)",
+                                    "expected":  [
+                                                     "Zimmer",
+                                                     "zimmer"
+                                                 ],
+                                    "hint":  "das Zimmer, plural die Zimmer.",
+                                    "explanation":  "3 Zimmer = 3 rooms."
+                                },
+                                {
+                                    "id":  "k8_q19",
+                                    "prompt":  "3. 'Die Wohnung liegt im 2. ______ (floor/storey).' (Stock)",
+                                    "expected":  [
+                                                     "Stock",
+                                                     "Stockwerk",
+                                                     "stock"
+                                                 ],
+                                    "hint":  "der Stock (im 2. Stock).",
+                                    "explanation":  "'im 2. Stock' = on the 2nd floor."
+                                },
+                                {
+                                    "id":  "k8_q20",
+                                    "prompt":  "4. 'Ich suche ein Zimmer in einer ______ (shared apartment / WG).' (WG)",
+                                    "expected":  [
+                                                     "WG",
+                                                     "Wohngemeinschaft"
+                                                 ],
+                                    "hint":  "WG (Wohngemeinschaft).",
+                                    "explanation":  "WG stands for Wohngemeinschaft (shared flat)."
+                                }
+                            ]
+          }
       ],
       grammarSummary: `
 **Core Grammar Rules (Kapitel 8):**
@@ -1894,12 +3962,116 @@ The following key verbs always require an object in the **Akkusativ**:
         { de: "Gute Besserung!", en: "Get well soon!", type: "phrase" }
       ],
       quizzes: [
-        {
-          q: "What is the polite imperative form for 'schlafen'?",
-          options: ["Schlaf Sie!", "Schlafen Sie!", "Schlaft Sie!", "Schläfst du!"],
-          correct: 1,
-          explanation: "Polite imperative keeps infinitive followed by Sie: 'Schlafen Sie!'."
-        }
+          {
+              "q":  "Which case is used after two-way prepositions (an, auf, in...) to express fixed location (Wo?)?",
+              "options":  [
+                              "Nominativ",
+                              "Akkusativ",
+                              "Dativ",
+                              "Genitiv"
+                          ],
+              "correct":  2,
+              "explanation":  "Questions answering 'Wo?' (Where is it located?) strictly take the Dativ case."
+          },
+          {
+              "q":  "What is the Dativ form of 'das Wohnzimmer' after 'in'?",
+              "options":  [
+                              "in das Wohnzimmer",
+                              "im Wohnzimmer",
+                              "in der Wohnzimmer",
+                              "in den Wohnzimmer"
+                          ],
+              "correct":  1,
+              "explanation":  "in + dem Wohnzimmer contracts to 'im Wohnzimmer'."
+          },
+          {
+              "q":  "What is the difference between 'an' and 'auf'?",
+              "options":  [
+                              "'auf' is on a horizontal surface, 'an' is on a vertical surface",
+                              "'an' is on horizontal, 'auf' is vertical",
+                              "'an' is only for water",
+                              "There is no difference"
+                          ],
+              "correct":  0,
+              "explanation":  "'auf dem Tisch' (horizontal surface) vs. 'an der Wand' (vertical surface like walls/boards)."
+          },
+          {
+              "q":  "What is 'die Warmmiete' in Germany?",
+              "options":  [
+                              "Rent with heating and utility costs included",
+                              "Rent during summer only",
+                              "Rent for a heated garage",
+                              "Cold basic rent without utilities"
+                          ],
+              "correct":  0,
+              "explanation":  "'Warmmiete' is total rent including heating, water, and building maintenance (Nebenkosten)."
+          },
+          {
+              "q":  "What does 'WG' stand for in German student culture?",
+              "options":  [
+                              "Wohnungsgemeinschaft / Wohngemeinschaft",
+                              "Wintergarten",
+                              "Wohngebäude",
+                              "Wochenendgruppe"
+                          ],
+              "correct":  0,
+              "explanation":  "A WG (Wohngemeinschaft) is a flatshare where roommates have their own bedrooms but share kitchen and bathroom."
+          },
+          {
+              "q":  "What is the plural of 'das Zimmer'?",
+              "options":  [
+                              "die Zimmers",
+                              "die Zimmern",
+                              "die Zimmer",
+                              "die Zimme"
+                          ],
+              "correct":  2,
+              "explanation":  "Neutrals ending in '-er' like 'Zimmer' have identical singular and plural: das Zimmer -\u003e die Zimmer."
+          },
+          {
+              "q":  "Which preposition means 'between' two objects?",
+              "options":  [
+                              "neben",
+                              "hinter",
+                              "zwischen",
+                              "unter"
+                          ],
+              "correct":  2,
+              "explanation":  "'zwischen' means between: 'zwischen dem Schrank und dem Bett'."
+          },
+          {
+              "q":  "How do you say: 'The apartment is 80 square meters' in German?",
+              "options":  [
+                              "Die Wohnung hat 80 Quadratmeter.",
+                              "Die Wohnung ist 80 Quadratkilometer.",
+                              "Die Wohnung hat 80 Meter.",
+                              "Die Wohnung ist 80 Zimmer."
+                          ],
+              "correct":  0,
+              "explanation":  "Floor space is measured in Quadratmeter (sqm / m²)."
+          },
+          {
+              "q":  "Which adjective describes an apartment that has lots of sunlight?",
+              "options":  [
+                              "dunkel",
+                              "hell",
+                              "schmal",
+                              "kalt"
+                          ],
+              "correct":  1,
+              "explanation":  "'hell' means bright / well-lit with natural light."
+          },
+          {
+              "q":  "Where is the television placed? 'Der Fernseher steht ______ Tisch.'",
+              "options":  [
+                              "auf dem",
+                              "in die",
+                              "unter den",
+                              "an das"
+                          ],
+              "correct":  0,
+              "explanation":  "'auf dem Tisch' (on the table) with Dativ."
+          }
       ]
     },
     {
@@ -2001,27 +4173,233 @@ The 9 two-way prepositions are: **an, auf, hinter, in, neben, über, unter, vor,
       `
       },
       interactiveExercises: [
-        {
-          id: "k9_ex1",
-          title: "Übung 1: Dativ Prepositions of Location (dem / der)",
-          instruction: "Fill in the correct Dativ article:",
-          questions: [
-            {
-              id: "k9_q1",
-              prompt: "1. 'Das Buch liegt auf ______ (der) Tisch.'",
-              expected: ["dem"],
-              hint: "In Dativ, masculine 'der' becomes 'dem'.",
-              explanation: "der Tisch -> dem Tisch."
-            },
-            {
-              id: "k9_q2",
-              prompt: "2. 'Cheeya kocht in ______ (die) Küche.'",
-              expected: ["der"],
-              hint: "In Dativ, feminine 'die' becomes 'der'.",
-              explanation: "die Küche -> der Küche."
-            }
-          ]
-        }
+          {
+              "id":  "k9_ex1",
+              "title":  "Übung 1: Kleidungsstücke \u0026 Farben (Clothes \u0026 Colors)",
+              "instruction":  "Fill in the correct clothing and color terms:",
+              "questions":  [
+                                {
+                                    "id":  "k9_q1",
+                                    "prompt":  "1. '______ Pullover ist blau.' (sweater - masculine)",
+                                    "expected":  [
+                                                     "Der",
+                                                     "der"
+                                                 ],
+                                    "hint":  "der Pullover.",
+                                    "explanation":  "der Pullover (masculine)."
+                                },
+                                {
+                                    "id":  "k9_q2",
+                                    "prompt":  "2. '______ Hose ist schwarz.' (trousers/pants - feminine in German)",
+                                    "expected":  [
+                                                     "Die",
+                                                     "die"
+                                                 ],
+                                    "hint":  "die Hose (singular feminine).",
+                                    "explanation":  "In German, pants are singular feminine: die Hose."
+                                },
+                                {
+                                    "id":  "k9_q3",
+                                    "prompt":  "3. '______ Hemd ist weiß.' (shirt - neutral)",
+                                    "expected":  [
+                                                     "Das",
+                                                     "das"
+                                                 ],
+                                    "hint":  "das Hemd (neutral).",
+                                    "explanation":  "das Hemd (neutral)."
+                                },
+                                {
+                                    "id":  "k9_q4",
+                                    "prompt":  "4. '______ Schuhe sind braun.' (shoes - plural)",
+                                    "expected":  [
+                                                     "Die",
+                                                     "die"
+                                                 ],
+                                    "hint":  "die Schuhe (plural).",
+                                    "explanation":  "die Schuhe (plural)."
+                                }
+                            ]
+          },
+          {
+              "id":  "k9_ex2",
+              "title":  "Übung 2: Demonstrativpronomen (dieser, diese, dieses)",
+              "instruction":  "Fill in the correct demonstrative pronoun:",
+              "questions":  [
+                                {
+                                    "id":  "k9_q5",
+                                    "prompt":  "1. '______ (der) Mantel gefällt mir gut.' (this coat)",
+                                    "expected":  [
+                                                     "Dieser",
+                                                     "dieser"
+                                                 ],
+                                    "hint":  "masculine Nominativ: dieser.",
+                                    "explanation":  "der Mantel -\u003e dieser Mantel."
+                                },
+                                {
+                                    "id":  "k9_q6",
+                                    "prompt":  "2. 'Wie findest du ______ (die) Jacke?' (Akkusativ feminine: diese)",
+                                    "expected":  [
+                                                     "diese",
+                                                     "Diese"
+                                                 ],
+                                    "hint":  "feminine Akkusativ: diese.",
+                                    "explanation":  "die Jacke -\u003e diese Jacke."
+                                },
+                                {
+                                    "id":  "k9_q7",
+                                    "prompt":  "3. '______ (das) T-Shirt ist zu klein.' (this t-shirt)",
+                                    "expected":  [
+                                                     "Dieses",
+                                                     "dieses"
+                                                 ],
+                                    "hint":  "neutral Nominativ: dieses.",
+                                    "explanation":  "das T-Shirt -\u003e dieses T-Shirt."
+                                },
+                                {
+                                    "id":  "k9_q8",
+                                    "prompt":  "4. 'Ich nehme ______ (der) Pullover hier.' (Akkusativ masculine: diesen)",
+                                    "expected":  [
+                                                     "diesen"
+                                                 ],
+                                    "hint":  "masculine Akkusativ ends in -en.",
+                                    "explanation":  "der Pullover in Akkusativ becomes 'diesen Pullover'."
+                                }
+                            ]
+          },
+          {
+              "id":  "k9_ex3",
+              "title":  "Übung 3: Perfekt mit 'haben' (Regelmäßige Verben)",
+              "instruction":  "Form the Partizip II (ge-...-t) for regular verbs:",
+              "questions":  [
+                                {
+                                    "id":  "k9_q9",
+                                    "prompt":  "1. 'kaufen' -\u003e 'Ich habe gestern eine Jacke ______.' (bought)",
+                                    "expected":  [
+                                                     "gekauft"
+                                                 ],
+                                    "hint":  "ge + kauf + t.",
+                                    "explanation":  "kaufen -\u003e gekauft."
+                                },
+                                {
+                                    "id":  "k9_q10",
+                                    "prompt":  "2. 'machen' -\u003e 'Was hast du am Wochenende ______?' (done/made)",
+                                    "expected":  [
+                                                     "gemacht"
+                                                 ],
+                                    "hint":  "ge + mach + t.",
+                                    "explanation":  "machen -\u003e gemacht."
+                                },
+                                {
+                                    "id":  "k9_q11",
+                                    "prompt":  "3. 'hören' -\u003e 'Wir haben deutsche Musik ______.' (heard/listened)",
+                                    "expected":  [
+                                                     "gehört",
+                                                     "gehoert"
+                                                 ],
+                                    "hint":  "ge + hör + t.",
+                                    "explanation":  "hören -\u003e gehört."
+                                },
+                                {
+                                    "id":  "k9_q12",
+                                    "prompt":  "4. 'lernen' -\u003e 'Er hat viel Grammatik ______.' (learned)",
+                                    "expected":  [
+                                                     "gelernt"
+                                                 ],
+                                    "hint":  "ge + lern + t.",
+                                    "explanation":  "lernen -\u003e gelernt."
+                                }
+                            ]
+          },
+          {
+              "id":  "k9_ex4",
+              "title":  "Übung 4: Perfekt mit unregelmäßigen Verben (ge-...-en)",
+              "instruction":  "Fill in the irregular Partizip II forms with 'haben':",
+              "questions":  [
+                                {
+                                    "id":  "k9_q13",
+                                    "prompt":  "1. 'trinken' -\u003e 'Er hat einen Kaffee ______.' (drunk)",
+                                    "expected":  [
+                                                     "getrunken"
+                                                 ],
+                                    "hint":  "getrunken.",
+                                    "explanation":  "trinken -\u003e getrunken."
+                                },
+                                {
+                                    "id":  "k9_q14",
+                                    "prompt":  "2. 'essen' -\u003e 'Was habt ihr zu Mittag ______?' (eaten)",
+                                    "expected":  [
+                                                     "gegessen"
+                                                 ],
+                                    "hint":  "gegessen.",
+                                    "explanation":  "essen -\u003e gegessen."
+                                },
+                                {
+                                    "id":  "k9_q15",
+                                    "prompt":  "3. 'lesen' -\u003e 'Ich habe ein interessantes Buch ______.' (read)",
+                                    "expected":  [
+                                                     "gelesen"
+                                                 ],
+                                    "hint":  "gelesen.",
+                                    "explanation":  "lesen -\u003e gelesen."
+                                },
+                                {
+                                    "id":  "k9_q16",
+                                    "prompt":  "4. 'schreiben' -\u003e 'Sie hat eine E-Mail ______.' (written)",
+                                    "expected":  [
+                                                     "geschrieben"
+                                                 ],
+                                    "hint":  "geschrieben.",
+                                    "explanation":  "schreiben -\u003e geschrieben."
+                                }
+                            ]
+          },
+          {
+              "id":  "k9_ex5",
+              "title":  "Übung 5: Im Kaufhaus einkaufen (Shopping Dialogue)",
+              "instruction":  "Complete the shopping conversation phrases:",
+              "questions":  [
+                                {
+                                    "id":  "k9_q17",
+                                    "prompt":  "1. 'Kann ich Ihnen ______ (to help)?' (helfen)",
+                                    "expected":  [
+                                                     "helfen"
+                                                 ],
+                                    "hint":  "infinitive 'helfen' at end.",
+                                    "explanation":  "Kann ich Ihnen helfen? = Can I help you?"
+                                },
+                                {
+                                    "id":  "k9_q18",
+                                    "prompt":  "2. 'Haben Sie diese Hose auch in ______ (size) 38?' (Größe)",
+                                    "expected":  [
+                                                     "Größe",
+                                                     "Groesse",
+                                                     "größe",
+                                                     "groesse"
+                                                 ],
+                                    "hint":  "die Größe = clothing size.",
+                                    "explanation":  "in Größe [number] = in size..."
+                                },
+                                {
+                                    "id":  "k9_q19",
+                                    "prompt":  "3. 'Wo kann ich die Bluse ______ (to try on)?' (anprobieren)",
+                                    "expected":  [
+                                                     "anprobieren"
+                                                 ],
+                                    "hint":  "anprobieren = to try on clothes.",
+                                    "explanation":  "anprobieren = to try on."
+                                },
+                                {
+                                    "id":  "k9_q20",
+                                    "prompt":  "4. 'Die Umkleidekabine ist da ______ (over there).' (drüben)",
+                                    "expected":  [
+                                                     "drüben",
+                                                     "drueben"
+                                                 ],
+                                    "hint":  "da drüben = over there.",
+                                    "explanation":  "da drüben = over there."
+                                }
+                            ]
+          }
       ],
       grammarSummary: `
 **Core Grammar Rules (Kapitel 9):**
@@ -2046,12 +4424,116 @@ The 9 two-way prepositions are: **an, auf, hinter, in, neben, über, unter, vor,
         { de: "die Lampe, -n", en: "lamp", type: "die" }
       ],
       quizzes: [
-        {
-          q: "Fill in the Dativ blank: 'Das Bild hängt in ______ Küche (die Küche).'",
-          options: ["die", "der", "dem", "den"],
-          correct: 1,
-          explanation: "In Dativ, feminine 'die' changes to 'der'."
-        }
+          {
+              "q":  "How is the Perfekt tense structured in German main clauses?",
+              "options":  [
+                              "Auxiliary (haben/sein) in Pos. 2 + Partizip II at the very end",
+                              "Partizip II in Pos. 2 + auxiliary at the end",
+                              "Only Partizip II without auxiliary",
+                              "Auxiliary and Partizip II together in Pos. 1"
+                          ],
+              "correct":  0,
+              "explanation":  "The auxiliary verb (haben or sein) takes Position 2, while the Partizip II sits at the very end of the clause."
+          },
+          {
+              "q":  "What is the Partizip II of 'kaufen'?",
+              "options":  [
+                              "gekauft",
+                              "gekaufen",
+                              "kaufte",
+                              "kaufen"
+                          ],
+              "correct":  0,
+              "explanation":  "Regular verbs form Partizip II with ge- + stem + -t: gekauft."
+          },
+          {
+              "q":  "What is the gender of 'die Hose' (trousers/pants)?",
+              "options":  [
+                              "Feminine singular (die)",
+                              "Plural only",
+                              "Masculine (der)",
+                              "Neutral (das)"
+                          ],
+              "correct":  0,
+              "explanation":  "Unlike English 'pants' (plural), in German 'die Hose' is feminine singular."
+          },
+          {
+              "q":  "What is the Partizip II of the irregular verb 'trinken'?",
+              "options":  [
+                              "getrunken",
+                              "getrinkt",
+                              "getrankt",
+                              "trunken"
+                          ],
+              "correct":  0,
+              "explanation":  "trinken -\u003e hat getrunken."
+          },
+          {
+              "q":  "Which demonstrative pronoun is used for masculine Akkusativ: 'Ich nehme ______ Mantel'?",
+              "options":  [
+                              "dieser",
+                              "diesen",
+                              "diesem",
+                              "dieses"
+                          ],
+              "correct":  1,
+              "explanation":  "Masculine in Akkusativ ends in '-en': diesen Mantel."
+          },
+          {
+              "q":  "What is 'die Umkleidekabine' in a clothing shop?",
+              "options":  [
+                              "The fitting / dressing room",
+                              "The cashier counter",
+                              "The entrance escalator",
+                              "The return counter"
+                          ],
+              "correct":  0,
+              "explanation":  "die Umkleidekabine = fitting room / changing cubicle."
+          },
+          {
+              "q":  "How do you ask: 'How does this jacket suit me?'",
+              "options":  [
+                              "Wie steht mir diese Jacke?",
+                              "Wie geht diese Jacke?",
+                              "Was macht diese Jacke?",
+                              "Wo ist diese Jacke?"
+                          ],
+              "correct":  0,
+              "explanation":  "'Wie steht mir...?' is the natural way to ask if an item of clothing looks good on you."
+          },
+          {
+              "q":  "What is the Partizip II of 'schreiben'?",
+              "options":  [
+                              "geschrieben",
+                              "geschreibt",
+                              "geschrobt",
+                              "schreiben"
+                          ],
+              "correct":  0,
+              "explanation":  "schreiben -\u003e hat geschrieben."
+          },
+          {
+              "q":  "What color is 'weiß'?",
+              "options":  [
+                              "White",
+                              "Black",
+                              "Brown",
+                              "Yellow"
+                          ],
+              "correct":  0,
+              "explanation":  "weiß = white."
+          },
+          {
+              "q":  "Complete the dialogue: 'Was haben Sie gestern gemacht?' — 'Ich habe zu Hause ______.'",
+              "options":  [
+                              "gearbeitet",
+                              "arbeite",
+                              "arbeiten",
+                              "gearbeiten"
+                          ],
+              "correct":  0,
+              "explanation":  "arbeiten forms its Partizip II as 'gearbeitet' (extra 'e' for stems in -t)."
+          }
       ]
     },
     {
@@ -2156,27 +4638,233 @@ In everyday spoken German, native speakers almost never say *„Ich bin gewesen�
       `
       },
       interactiveExercises: [
-        {
-          id: "k10_ex1",
-          title: "Übung 1: Partizip II Forms (ge-...-t)",
-          instruction: "Fill in the Partizip II form at the end of the sentence:",
-          questions: [
-            {
-              id: "k10_q1",
-              prompt: "1. 'Cheeya hat fleißig Deutsch ______ (lernen).'",
-              expected: ["gelernt"],
-              hint: "ge- + lern + -t.",
-              explanation: "lernen -> gelernt."
-            },
-            {
-              id: "k10_q2",
-              prompt: "2. 'Herr Weber hat an der Universität ______ (studieren).'",
-              expected: ["studiert"],
-              hint: "Verbs ending in -ieren do not take ge-.",
-              explanation: "studieren -> studiert."
-            }
-          ]
-        }
+          {
+              "id":  "k10_ex1",
+              "title":  "Übung 1: Verkehrsmittel mit 'mit dem / mit der' (Transport)",
+              "instruction":  "Fill in 'dem' or 'der' after the Dativ preposition 'mit':",
+              "questions":  [
+                                {
+                                    "id":  "k10_q1",
+                                    "prompt":  "1. 'Wir fahren mit ______ (der) Zug nach Berlin.' (masculine)",
+                                    "expected":  [
+                                                     "dem"
+                                                 ],
+                                    "hint":  "der Zug in Dativ is dem Zug.",
+                                    "explanation":  "mit dem Zug (masculine Dativ)."
+                                },
+                                {
+                                    "id":  "k10_q2",
+                                    "prompt":  "2. 'Sie fliegt mit ______ (das) Flugzeug nach Mallorca.' (neutral)",
+                                    "expected":  [
+                                                     "dem"
+                                                 ],
+                                    "hint":  "das Flugzeug in Dativ is dem Flugzeug.",
+                                    "explanation":  "mit dem Flugzeug (neutral Dativ)."
+                                },
+                                {
+                                    "id":  "k10_q3",
+                                    "prompt":  "3. 'Er fährt mit ______ (die) Straßenbahn zur Arbeit.' (feminine)",
+                                    "expected":  [
+                                                     "der"
+                                                 ],
+                                    "hint":  "die Straßenbahn in Dativ is der Straßenbahn.",
+                                    "explanation":  "mit der Straßenbahn (feminine Dativ)."
+                                },
+                                {
+                                    "id":  "k10_q4",
+                                    "prompt":  "4. 'Fährst du oft mit ______ (das) Auto?' (neutral)",
+                                    "expected":  [
+                                                     "dem"
+                                                 ],
+                                    "hint":  "das Auto in Dativ is dem Auto.",
+                                    "explanation":  "mit dem Auto (neutral Dativ)."
+                                }
+                            ]
+          },
+          {
+              "id":  "k10_ex2",
+              "title":  "Übung 2: Perfekt mit 'sein' (Movement Verbs)",
+              "instruction":  "Fill in the correct auxiliary form of 'sein' (bin, bist, ist, sind):",
+              "questions":  [
+                                {
+                                    "id":  "k10_q5",
+                                    "prompt":  "1. 'Ich ______ gestern nach München gefahren.' (fahren -\u003e sein)",
+                                    "expected":  [
+                                                     "bin"
+                                                 ],
+                                    "hint":  "ich bin gefahren.",
+                                    "explanation":  "Verbs of movement take 'sein': ich bin gefahren."
+                                },
+                                {
+                                    "id":  "k10_q6",
+                                    "prompt":  "2. 'Wann ______ du nach Hause gegangen?' (gehen -\u003e sein)",
+                                    "expected":  [
+                                                     "bist"
+                                                 ],
+                                    "hint":  "du bist gegangen.",
+                                    "explanation":  "du bist gegangen."
+                                },
+                                {
+                                    "id":  "k10_q7",
+                                    "prompt":  "3. 'Er ______ nach Italien geflogen.' (fliegen -\u003e sein)",
+                                    "expected":  [
+                                                     "ist"
+                                                 ],
+                                    "hint":  "er ist geflogen.",
+                                    "explanation":  "er ist geflogen."
+                                },
+                                {
+                                    "id":  "k10_q8",
+                                    "prompt":  "4. 'Wir ______ um 8 Uhr am Bahnhof angekommen.' (ankommen -\u003e sein)",
+                                    "expected":  [
+                                                     "sind"
+                                                 ],
+                                    "hint":  "wir sind angekommen.",
+                                    "explanation":  "wir sind angekommen."
+                                }
+                            ]
+          },
+          {
+              "id":  "k10_ex3",
+              "title":  "Übung 3: Partizip II der Bewegungsverben",
+              "instruction":  "Write the Partizip II of the motion verb:",
+              "questions":  [
+                                {
+                                    "id":  "k10_q9",
+                                    "prompt":  "1. 'gehen' -\u003e 'Wir sind zu Fuß ______.' (walked/gone)",
+                                    "expected":  [
+                                                     "gegangen"
+                                                 ],
+                                    "hint":  "gegangen.",
+                                    "explanation":  "gehen -\u003e ist gegangen."
+                                },
+                                {
+                                    "id":  "k10_q10",
+                                    "prompt":  "2. 'fahren' -\u003e 'Sie ist mit dem Zug ______.' (driven/traveled)",
+                                    "expected":  [
+                                                     "gefahren"
+                                                 ],
+                                    "hint":  "gefahren.",
+                                    "explanation":  "fahren -\u003e ist gefahren."
+                                },
+                                {
+                                    "id":  "k10_q11",
+                                    "prompt":  "3. 'fliegen' -\u003e 'Bist du schon mal nach New York ______?' (flown)",
+                                    "expected":  [
+                                                     "geflogen"
+                                                 ],
+                                    "hint":  "geflogen.",
+                                    "explanation":  "fliegen -\u003e ist geflogen."
+                                },
+                                {
+                                    "id":  "k10_q12",
+                                    "prompt":  "4. 'bleiben' -\u003e 'Am Sonntag bin ich zu Hause ______.' (stayed - takes sein!)",
+                                    "expected":  [
+                                                     "geblieben"
+                                                 ],
+                                    "hint":  "geblieben (takes sein).",
+                                    "explanation":  "bleiben -\u003e ist geblieben (change of condition/location takes sein)."
+                                }
+                            ]
+          },
+          {
+              "id":  "k10_ex4",
+              "title":  "Übung 4: Am Bahnhof \u0026 Fahrkarten (At the Train Station)",
+              "instruction":  "Fill in train travel terms:",
+              "questions":  [
+                                {
+                                    "id":  "k10_q13",
+                                    "prompt":  "1. 'Ich möchte eine ______ (ticket) nach Köln bitte.' (Fahrkarte)",
+                                    "expected":  [
+                                                     "Fahrkarte",
+                                                     "fahrkarte",
+                                                     "Fahrkarte"
+                                                 ],
+                                    "hint":  "die Fahrkarte = ticket.",
+                                    "explanation":  "die Fahrkarte = train/bus ticket."
+                                },
+                                {
+                                    "id":  "k10_q14",
+                                    "prompt":  "2. 'Einfach oder hin und ______?' (Single or return ticket?)",
+                                    "expected":  [
+                                                     "zurück",
+                                                     "zurueck"
+                                                 ],
+                                    "hint":  "hin und zurück = round trip.",
+                                    "explanation":  "'hin und zurück' = return / round-trip."
+                                },
+                                {
+                                    "id":  "k10_q15",
+                                    "prompt":  "3. 'Von welchem ______ (platform) fährt der ICE ab?' (Gleis)",
+                                    "expected":  [
+                                                     "Gleis",
+                                                     "gleis"
+                                                 ],
+                                    "hint":  "das Gleis = platform track.",
+                                    "explanation":  "das Gleis = platform / track (z.B. Gleis 4)."
+                                },
+                                {
+                                    "id":  "k10_q16",
+                                    "prompt":  "4. 'Der Zug hat 10 Minuten ______ (delay).' (Verspätung)",
+                                    "expected":  [
+                                                     "Verspätung",
+                                                     "Verspaetung",
+                                                     "verspätung"
+                                                 ],
+                                    "hint":  "die Verspätung = delay.",
+                                    "explanation":  "Verspätung haben = to have a delay."
+                                }
+                            ]
+          },
+          {
+              "id":  "k10_ex5",
+              "title":  "Übung 5: Wegbeschreibung in der Stadt (Directions)",
+              "instruction":  "Complete the navigation phrases:",
+              "questions":  [
+                                {
+                                    "id":  "k10_q17",
+                                    "prompt":  "1. 'Gehen Sie bis zur ______ (traffic lights).' (Ampel)",
+                                    "expected":  [
+                                                     "Ampel",
+                                                     "ampel"
+                                                 ],
+                                    "hint":  "die Ampel = traffic lights.",
+                                    "explanation":  "die Ampel = traffic lights."
+                                },
+                                {
+                                    "id":  "k10_q18",
+                                    "prompt":  "2. 'An der Kreuzung biegen Sie nach ______ (right) ab.'",
+                                    "expected":  [
+                                                     "rechts",
+                                                     "Rechts"
+                                                 ],
+                                    "hint":  "rechts = right.",
+                                    "explanation":  "nach rechts = to the right."
+                                },
+                                {
+                                    "id":  "k10_q19",
+                                    "prompt":  "3. 'Das Museum liegt gleich um die ______ (corner).' (Ecke)",
+                                    "expected":  [
+                                                     "Ecke",
+                                                     "ecke"
+                                                 ],
+                                    "hint":  "die Ecke = corner.",
+                                    "explanation":  "um die Ecke = around the corner."
+                                },
+                                {
+                                    "id":  "k10_q20",
+                                    "prompt":  "4. 'Gehen Sie geradeaus über die ______ (bridge).' (Brücke)",
+                                    "expected":  [
+                                                     "Brücke",
+                                                     "Bruecke",
+                                                     "brücke",
+                                                     "bruecke"
+                                                 ],
+                                    "hint":  "die Brücke = bridge.",
+                                    "explanation":  "die Brücke = bridge."
+                                }
+                            ]
+          }
       ],
       grammarSummary: `
 **Core Grammar Rules (Kapitel 10):**
@@ -2194,12 +4882,116 @@ In everyday spoken German, native speakers almost never say *„Ich bin gewesen�
         { de: "Ich habe Deutsch gelernt", en: "I learned German", type: "phrase" }
       ],
       quizzes: [
-        {
-          q: "What is the Perfekt form of 'Er lernt Deutsch'?",
-          options: ["Er hat Deutsch gelernt.", "Er ist Deutsch gelernt.", "Er hat Deutsch gelernen.", "Er Deutsch hat gelernt."],
-          correct: 0,
-          explanation: "Helper verb 'hat' + Partizip II 'gelernt' at the end."
-        }
+          {
+              "q":  "Which verbs use 'sein' as the auxiliary in the Perfekt tense?",
+              "options":  [
+                              "Verbs expressing movement or change of location",
+                              "All regular verbs",
+                              "Verbs with direct Akkusativ objects",
+                              "Modal verbs only"
+                          ],
+              "correct":  0,
+              "explanation":  "Verbs expressing movement (gehen, fahren, fliegen) or change of state (aufwachen, sterben), plus 'bleiben' and 'sein', use 'sein'."
+          },
+          {
+              "q":  "Choose the correct sentence: 'Gestern ______ ich nach Frankfurt gefahren.'",
+              "options":  [
+                              "habe",
+                              "bin",
+                              "hat",
+                              "ist"
+                          ],
+              "correct":  1,
+              "explanation":  "'fahren' is a movement verb, so the subject 'ich' requires 'bin': 'Gestern bin ich gefahren'."
+          },
+          {
+              "q":  "What is 'hin und zurück' at a ticket counter?",
+              "options":  [
+                              "One-way ticket",
+                              "Round-trip / Return ticket",
+                              "Monthly pass",
+                              "First-class ticket"
+                          ],
+              "correct":  1,
+              "explanation":  "'hin und zurück' means outbound and return (round-trip)."
+          },
+          {
+              "q":  "What does 'Gleis 7' mean at a German railway station?",
+              "options":  [
+                              "Carriage 7",
+                              "Seat 7",
+                              "Platform / Track 7",
+                              "Gate 7"
+                          ],
+              "correct":  2,
+              "explanation":  "'Gleis' is the railway track/platform number."
+          },
+          {
+              "q":  "Which verb uses 'sein' in the Perfekt despite not involving physical travel?",
+              "options":  [
+                              "bleiben (to stay)",
+                              "arbeiten (to work)",
+                              "lernen (to study)",
+                              "kaufen (to buy)"
+                          ],
+              "correct":  0,
+              "explanation":  "'bleiben' (to stay / remain) strictly takes 'sein': 'Ich bin zu Hause geblieben'."
+          },
+          {
+              "q":  "How do you say 'The train is on time'?",
+              "options":  [
+                              "Der Zug ist pünktlich.",
+                              "Der Zug ist spät.",
+                              "Der Zug hat Verspätung.",
+                              "Der Zug fährt nicht."
+                          ],
+              "correct":  0,
+              "explanation":  "'pünktlich' means punctual / on time."
+          },
+          {
+              "q":  "Which preposition combination means 'by bus'?",
+              "options":  [
+                              "mit dem Bus",
+                              "mit den Bus",
+                              "bei dem Bus",
+                              "in der Bus"
+                          ],
+              "correct":  0,
+              "explanation":  "'mit' requires Dativ: der Bus -\u003e mit dem Bus."
+          },
+          {
+              "q":  "What is the Partizip II of 'ankommen' (separable verb)?",
+              "options":  [
+                              "angekommen",
+                              "geankommt",
+                              "ankommt",
+                              "gekommenan"
+                          ],
+              "correct":  0,
+              "explanation":  "In separable verbs, '-ge-' is inserted between prefix and stem: an + ge + kommen = angekommen."
+          },
+          {
+              "q":  "What does 'umsteigen' mean on public transport?",
+              "options":  [
+                              "To change trains / transfer",
+                              "To get off",
+                              "To get on",
+                              "To miss the train"
+                          ],
+              "correct":  0,
+              "explanation":  "'umsteigen' = to change/transfer lines; 'einsteigen' = to board; 'aussteigen' = to alight."
+          },
+          {
+              "q":  "Complete the announcement: 'Vorsicht an der ______!' (Bahnsteigkante)",
+              "options":  [
+                              "Bahnsteigkante",
+                              "Uhr",
+                              "Straße",
+                              "Tür"
+                          ],
+              "correct":  0,
+              "explanation":  "'Vorsicht an der Bahnsteigkante!' (Caution at the platform edge!) is the iconic German railway safety announcement."
+          }
       ]
     },
     {
@@ -2314,27 +5106,236 @@ The following important fashion & interaction verbs ALWAYS take their object in 
       `
       },
       interactiveExercises: [
-        {
-          id: "k11_ex1",
-          title: "Übung 1: Dativ Personal Pronouns (mir / dir / Ihnen)",
-          instruction: "Fill in the correct Dativ pronoun:",
-          questions: [
-            {
-              id: "k11_q1",
-              prompt: "1. 'Die rosa Bluse gefällt ______ (ich) sehr gut.'",
-              expected: ["mir"],
-              hint: "Dativ of 'ich'.",
-              explanation: "ich -> mir (gefällt mir)."
-            },
-            {
-              id: "k11_q2",
-              prompt: "2. 'Wie steht ______ (du) das Kleid?'",
-              expected: ["dir"],
-              hint: "Dativ of 'du'.",
-              explanation: "du -> dir (steht dir)."
-            }
-          ]
-        }
+          {
+              "id":  "k11_ex1",
+              "title":  "Übung 1: Körperteile \u0026 Beschwerden (Body Parts \u0026 Illness)",
+              "instruction":  "Fill in the body parts with their articles:",
+              "questions":  [
+                                {
+                                    "id":  "k11_q1",
+                                    "prompt":  "1. 'Mein ______ tut weh.' (head - masculine: Kopf)",
+                                    "expected":  [
+                                                     "Kopf",
+                                                     "kopf"
+                                                 ],
+                                    "hint":  "der Kopf = head.",
+                                    "explanation":  "der Kopf = head."
+                                },
+                                {
+                                    "id":  "k11_q2",
+                                    "prompt":  "2. 'Ich habe ______.' (stomach ache: Bauchschmerzen)",
+                                    "expected":  [
+                                                     "Bauchschmerzen",
+                                                     "bauchschmerzen"
+                                                 ],
+                                    "hint":  "Bauch + Schmerzen.",
+                                    "explanation":  "Bauchschmerzen = stomach ache."
+                                },
+                                {
+                                    "id":  "k11_q3",
+                                    "prompt":  "3. 'Die Ärztin untersucht ______ (der) Rücken.' (Akkusativ: den Rücken)",
+                                    "expected":  [
+                                                     "den"
+                                                 ],
+                                    "hint":  "der Rücken in Akkusativ: den Rücken.",
+                                    "explanation":  "untersuchen + Akkusativ: den Rücken."
+                                },
+                                {
+                                    "id":  "k11_q4",
+                                    "prompt":  "4. 'Mein ______ (ear - neutral: Ohr) tut weh.'",
+                                    "expected":  [
+                                                     "Ohr",
+                                                     "ohr"
+                                                 ],
+                                    "hint":  "das Ohr = ear.",
+                                    "explanation":  "das Ohr = ear."
+                                }
+                            ]
+          },
+          {
+              "id":  "k11_ex2",
+              "title":  "Übung 2: Das Modalverb 'sollen' (Doctor's Advice)",
+              "instruction":  "Fill in the conjugated form of 'sollen':",
+              "questions":  [
+                                {
+                                    "id":  "k11_q5",
+                                    "prompt":  "1. 'Der Arzt sagt, ich ______ (sollen) viel Wasser trinken.'",
+                                    "expected":  [
+                                                     "soll"
+                                                 ],
+                                    "hint":  "ich soll.",
+                                    "explanation":  "ich soll (no ending in 1st person singular)."
+                                },
+                                {
+                                    "id":  "k11_q6",
+                                    "prompt":  "2. 'Was ______ (sollen) du tun?'",
+                                    "expected":  [
+                                                     "sollst"
+                                                 ],
+                                    "hint":  "du sollst.",
+                                    "explanation":  "du sollst."
+                                },
+                                {
+                                    "id":  "k11_q7",
+                                    "prompt":  "3. 'Er ______ (sollen) drei Tage im Bett bleiben.'",
+                                    "expected":  [
+                                                     "soll"
+                                                 ],
+                                    "hint":  "er soll.",
+                                    "explanation":  "er/sie/es soll."
+                                },
+                                {
+                                    "id":  "k11_q8",
+                                    "prompt":  "4. 'Sie ______ (sollen) diese Tabletten zweimal täglich nehmen, Herr Klein.'",
+                                    "expected":  [
+                                                     "sollen"
+                                                 ],
+                                    "hint":  "Sie sollen.",
+                                    "explanation":  "formal Sie sollen."
+                                }
+                            ]
+          },
+          {
+              "id":  "k11_ex3",
+              "title":  "Übung 3: Der Imperativ (Commands \u0026 Advice)",
+              "instruction":  "Form the imperative command for 'du' or formal 'Sie':",
+              "questions":  [
+                                {
+                                    "id":  "k11_q9",
+                                    "prompt":  "1. 'trinken' -\u003e '______ (du) viel Tee!' (Trink)",
+                                    "expected":  [
+                                                     "Trink",
+                                                     "trink"
+                                                 ],
+                                    "hint":  "Drop the -st and pronoun: Trink!",
+                                    "explanation":  "Imperativ for 'du' drops '-st' and 'du': 'Trink viel Tee!'"
+                                },
+                                {
+                                    "id":  "k11_q10",
+                                    "prompt":  "2. 'schlafen' -\u003e '______ (Sie) gut, Herr Meyer!' (Schlafen Sie)",
+                                    "expected":  [
+                                                     "Schlafen Sie",
+                                                     "schlafen Sie"
+                                                 ],
+                                    "hint":  "Infinitive + Sie: Schlafen Sie!",
+                                    "explanation":  "Formal Imperativ: 'Schlafen Sie gut!'"
+                                },
+                                {
+                                    "id":  "k11_q11",
+                                    "prompt":  "3. 'bleiben' -\u003e '______ (du) heute im Bett!' (Bleib)",
+                                    "expected":  [
+                                                     "Bleib",
+                                                     "bleib"
+                                                 ],
+                                    "hint":  "Bleib!",
+                                    "explanation":  "Imperativ for 'du': 'Bleib heute im Bett!'"
+                                },
+                                {
+                                    "id":  "k11_q12",
+                                    "prompt":  "4. 'nehmen' -\u003e '______ (Sie) bitte Platz!' (Nehmen Sie)",
+                                    "expected":  [
+                                                     "Nehmen Sie",
+                                                     "nehmen Sie"
+                                                 ],
+                                    "hint":  "Nehmen Sie!",
+                                    "explanation":  "Formal Imperativ: 'Nehmen Sie bitte Platz!'"
+                                }
+                            ]
+          },
+          {
+              "id":  "k11_ex4",
+              "title":  "Übung 4: Zeitpräpositionen (seit, vor, für)",
+              "instruction":  "Fill in 'seit', 'vor', or 'für':",
+              "questions":  [
+                                {
+                                    "id":  "k11_q13",
+                                    "prompt":  "1. 'Ich bin ______ (since) drei Tagen krank.' (ongoing action)",
+                                    "expected":  [
+                                                     "seit",
+                                                     "Seit"
+                                                 ],
+                                    "hint":  "seit = since / for (ongoing until now).",
+                                    "explanation":  "'seit' + Dativ expresses an action that started in the past and continues."
+                                },
+                                {
+                                    "id":  "k11_q14",
+                                    "prompt":  "2. 'Ich war ______ (ago) zwei Wochen beim Arzt.' (completed action)",
+                                    "expected":  [
+                                                     "vor",
+                                                     "Vor"
+                                                 ],
+                                    "hint":  "vor = ago.",
+                                    "explanation":  "'vor' + Dativ expresses a completed past point: 'vor zwei Wochen' (two weeks ago)."
+                                },
+                                {
+                                    "id":  "k11_q15",
+                                    "prompt":  "3. 'Der Arzt schreibt mich ______ (for) eine Woche krank.' (Akkusativ)",
+                                    "expected":  [
+                                                     "für",
+                                                     "fuer"
+                                                 ],
+                                    "hint":  "für + Akkusativ.",
+                                    "explanation":  "'für' + Akkusativ expresses planned duration."
+                                },
+                                {
+                                    "id":  "k11_q16",
+                                    "prompt":  "4. 'Ich nehme die Medizin ______ (since) gestern.'",
+                                    "expected":  [
+                                                     "seit",
+                                                     "Seit"
+                                                 ],
+                                    "hint":  "seit gestern = since yesterday.",
+                                    "explanation":  "seit gestern = since yesterday."
+                                }
+                            ]
+          },
+          {
+              "id":  "k11_ex5",
+              "title":  "Übung 5: In der Apotheke \u0026 beim Arzt (At the Pharmacy)",
+              "instruction":  "Fill in the medical dialogue words:",
+              "questions":  [
+                                {
+                                    "id":  "k11_q17",
+                                    "prompt":  "1. 'Hier ist mein ______ (prescription) vom Arzt.' (Rezept)",
+                                    "expected":  [
+                                                     "Rezept",
+                                                     "rezept"
+                                                 ],
+                                    "hint":  "das Rezept = medical prescription.",
+                                    "explanation":  "das Rezept = doctor's prescription."
+                                },
+                                {
+                                    "id":  "k11_q18",
+                                    "prompt":  "2. 'Haben Sie etwas gegen ______ (headache)?' (Kopfschmerzen)",
+                                    "expected":  [
+                                                     "Kopfschmerzen",
+                                                     "kopfschmerzen"
+                                                 ],
+                                    "hint":  "Kopf + Schmerzen.",
+                                    "explanation":  "etwas gegen Kopfschmerzen = something for a headache."
+                                },
+                                {
+                                    "id":  "k11_q19",
+                                    "prompt":  "3. 'Nehmen Sie eine ______ (tablet/pill) vor dem Essen.' (Tablette)",
+                                    "expected":  [
+                                                     "Tablette",
+                                                     "tablette"
+                                                 ],
+                                    "hint":  "die Tablette = tablet / pill.",
+                                    "explanation":  "eine Tablette nehmen = to take a pill."
+                                },
+                                {
+                                    "id":  "k11_q20",
+                                    "prompt":  "4. 'Gute ______!' (Get well soon! - Besserung)",
+                                    "expected":  [
+                                                     "Besserung",
+                                                     "besserung"
+                                                 ],
+                                    "hint":  "Gute Besserung!",
+                                    "explanation":  "'Gute Besserung!' is the standard German wish for 'Get well soon!'"
+                                }
+                            ]
+          }
       ],
       grammarSummary: `
 **Core Grammar Rules (Kapitel 11):**
@@ -2354,12 +5355,116 @@ The following important fashion & interaction verbs ALWAYS take their object in 
         { de: "passen (es passt mir)", en: "to fit", type: "verb" }
       ],
       quizzes: [
-        {
-          q: "Choose the correct Dativ pronoun: 'Wie gefällt ______ das Kleid?' (you - informal)",
-          options: ["dich", "du", "dir", "dein"],
-          correct: 2,
-          explanation: "'gefallen' takes Dativ: 'dir'."
-        }
+          {
+              "q":  "How do you wish someone a speedy recovery in German?",
+              "options":  [
+                              "Guten Appetit!",
+                              "Gute Besserung!",
+                              "Herzlichen Glückwunsch!",
+                              "Schönen Feierabend!"
+                          ],
+              "correct":  1,
+              "explanation":  "'Gute Besserung!' = Get well soon!"
+          },
+          {
+              "q":  "What does 'Mein Kopf tut weh' mean?",
+              "options":  [
+                              "My head hurts (I have a headache)",
+                              "My head is big",
+                              "I have fever",
+                              "My tooth hurts"
+                          ],
+              "correct":  0,
+              "explanation":  "'weh tun' means to hurt / ache: 'Mein Kopf tut weh'."
+          },
+          {
+              "q":  "Which modal verb is used to report a doctor's recommendation ('The doctor says I should...')?",
+              "options":  [
+                              "wollen",
+                              "sollen",
+                              "müssen",
+                              "können"
+                          ],
+              "correct":  1,
+              "explanation":  "'sollen' expresses an obligation or recommendation from another person (e.g. doctor): 'Ich soll im Bett bleiben'."
+          },
+          {
+              "q":  "How do you form the informal imperative of 'gehen' for 'du'?",
+              "options":  [
+                              "Geh!",
+                              "Gehst!",
+                              "Gehen!",
+                              "Geht!"
+                          ],
+              "correct":  0,
+              "explanation":  "The du-imperative drops the '-st' and the pronoun 'du': 'Geh!'"
+          },
+          {
+              "q":  "What does 'vor drei Tagen' mean?",
+              "options":  [
+                              "in three days",
+                              "for three days",
+                              "three days ago",
+                              "since three days"
+                          ],
+              "correct":  2,
+              "explanation":  "'vor' + Dativ expresses past time: 'three days ago'."
+          },
+          {
+              "q":  "What does 'seit einer Woche' indicate?",
+              "options":  [
+                              "A completed action in the past",
+                              "An ongoing condition that started one week ago",
+                              "A plan for next week",
+                              "A one-week deadline"
+                          ],
+              "correct":  1,
+              "explanation":  "'seit' is used with the present tense for conditions that started in the past and still continue."
+          },
+          {
+              "q":  "What is 'das Rezept' at an Apotheke?",
+              "options":  [
+                              "A cooking recipe",
+                              "A doctor's prescription",
+                              "A receipt of payment",
+                              "An insurance card"
+                          ],
+              "correct":  1,
+              "explanation":  "In medical contexts, 'das Rezept' is the doctor's prescription."
+          },
+          {
+              "q":  "What does 'Fieber haben' mean?",
+              "options":  [
+                              "To have a fever / high temperature",
+                              "To have a cough",
+                              "To feel dizzy",
+                              "To break a bone"
+                          ],
+              "correct":  0,
+              "explanation":  "das Fieber = fever."
+          },
+          {
+              "q":  "What is the formal imperative of 'trinken'?",
+              "options":  [
+                              "Trink!",
+                              "Trinkt!",
+                              "Trinken Sie!",
+                              "Trinken!"
+                          ],
+              "correct":  2,
+              "explanation":  "Formal commands use the infinitive followed by 'Sie': 'Trinken Sie viel Wasser!'"
+          },
+          {
+              "q":  "Where do you buy prescription medicine in Germany?",
+              "options":  [
+                              "In der Drogerie",
+                              "In der Apotheke",
+                              "Im Supermarkt",
+                              "Am Kiosk"
+                          ],
+              "correct":  1,
+              "explanation":  "Medicines in Germany are strictly sold in an 'Apotheke' (pharmacy), not in general drugstores (Drogerie)."
+          }
       ]
     },
     {
@@ -2482,55 +5587,244 @@ All of these temporal prepositions require the **Dativ case**:
       `
       },
       interactiveExercises: [
-        {
-          id: "k12_ex1",
-          title: "Übung 1: Direction (Wohin? - Akkusativ) vs Location (Wo? - Dativ)",
-          instruction: "Fill in the correct prepositional contraction:",
-          questions: [
-            {
-              id: "k12_q1",
-              prompt: "1. 'Wohin fährst du? - Ich fahre an ______ (der) Strand.'",
-              expected: ["den"],
-              hint: "Wohin requires Akkusativ (der -> den).",
-              explanation: "an den Strand."
-            },
-            {
-              id: "k12_q2",
-              prompt: "2. 'Wo bist du jetzt? - Ich bin an ______ (der) Strand.'",
-              expected: ["dem"],
-              hint: "Wo requires Dativ (der -> dem).",
-              explanation: "an dem Strand = am Strand."
-            }
-          ]
-        },
-        {
-          id: "k12_ex2",
-          title: "Übung 2: Time Prepositions (im / am / um)",
-          instruction: "Fill in 'im', 'am', or 'um':",
-          questions: [
-            {
-              id: "k12_q3",
-              prompt: "1. 'Wir fliegen ______ Juli nach Berlin.'",
-              expected: ["im", "Im"],
-              hint: "Months take 'im'.",
-              explanation: "im Juli."
-            },
-            {
-              id: "k12_q4",
-              prompt: "2. 'Der Flug geht ______ Montag.'",
-              expected: ["am", "Am"],
-              hint: "Days take 'am'.",
-              explanation: "am Montag."
-            },
-            {
-              id: "k12_q5",
-              prompt: "3. 'Wir treffen uns ______ 14 Uhr.'",
-              expected: ["um", "Um"],
-              hint: "Clock time takes 'um'.",
-              explanation: "um 14 Uhr."
-            }
-          ]
-        }
+          {
+              "id":  "k12_ex1",
+              "title":  "Übung 1: Konjunktionen auf Position 0 (und, oder, aber, denn)",
+              "instruction":  "Fill in the correct connecting word (und, oder, aber, denn):",
+              "questions":  [
+                                {
+                                    "id":  "k12_q1",
+                                    "prompt":  "1. 'Ich lerne Deutsch, ______ (because) ich möchte in Berlin studieren.'",
+                                    "expected":  [
+                                                     "denn"
+                                                 ],
+                                    "hint":  "denn = because (Position 0).",
+                                    "explanation":  "'denn' explains the reason without changing the word order (Verb stays in Pos. 2)."
+                                },
+                                {
+                                    "id":  "k12_q2",
+                                    "prompt":  "2. 'Ich habe die Prüfung bestanden, ______ (but) sie war schwer.'",
+                                    "expected":  [
+                                                     "aber"
+                                                 ],
+                                    "hint":  "aber = but.",
+                                    "explanation":  "'aber' expresses contrast."
+                                },
+                                {
+                                    "id":  "k12_q3",
+                                    "prompt":  "3. 'Möchtest du Kaffee ______ (or) lieber Tee?'",
+                                    "expected":  [
+                                                     "oder"
+                                                 ],
+                                    "hint":  "oder = or.",
+                                    "explanation":  "'oder' expresses an alternative."
+                                },
+                                {
+                                    "id":  "k12_q4",
+                                    "prompt":  "4. 'Wir feiern heute ______ (and) tanzen bis spät in die Nacht.'",
+                                    "expected":  [
+                                                     "und"
+                                                 ],
+                                    "hint":  "und = and.",
+                                    "explanation":  "'und' connects two statements."
+                                }
+                            ]
+          },
+          {
+              "id":  "k12_ex2",
+              "title":  "Übung 2: Feiertage \u0026 Feste (Celebrations \u0026 Festivals)",
+              "instruction":  "Fill in the German festival names:",
+              "questions":  [
+                                {
+                                    "id":  "k12_q5",
+                                    "prompt":  "1. 'Am 24. Dezember feiern wir ______ (Christmas).' (Weihnachten)",
+                                    "expected":  [
+                                                     "Weihnachten",
+                                                     "weihnachten"
+                                                 ],
+                                    "hint":  "das Weihnachtsfest / Weihnachten.",
+                                    "explanation":  "Weihnachten = Christmas."
+                                },
+                                {
+                                    "id":  "k12_q6",
+                                    "prompt":  "2. 'Am 31. Dezember feiern wir ______ (New Year's Eve).' (Silvester)",
+                                    "expected":  [
+                                                     "Silvester",
+                                                     "silvester"
+                                                 ],
+                                    "hint":  "Silvester = New Year's Eve.",
+                                    "explanation":  "Silvester = New Year's Eve."
+                                },
+                                {
+                                    "id":  "k12_q7",
+                                    "prompt":  "3. 'Im Frühling suchen Kinder bunte Eier an ______ (Easter).' (Ostern)",
+                                    "expected":  [
+                                                     "Ostern",
+                                                     "ostern"
+                                                 ],
+                                    "hint":  "das Osterfest / Ostern.",
+                                    "explanation":  "Ostern = Easter."
+                                },
+                                {
+                                    "id":  "k12_q8",
+                                    "prompt":  "4. 'Heute feiere ich meinen 25. ______ (birthday).' (Geburtstag)",
+                                    "expected":  [
+                                                     "Geburtstag",
+                                                     "geburtstag"
+                                                 ],
+                                    "hint":  "der Geburtstag.",
+                                    "explanation":  "der Geburtstag = birthday."
+                                }
+                            ]
+          },
+          {
+              "id":  "k12_ex3",
+              "title":  "Übung 3: Glückwünsche formulieren (Congratulations \u0026 Wishes)",
+              "instruction":  "Complete the classic German holiday wishes:",
+              "questions":  [
+                                {
+                                    "id":  "k12_q9",
+                                    "prompt":  "1. Birthday wish: 'Alles ______ zum Geburtstag!' (Gute)",
+                                    "expected":  [
+                                                     "Gute",
+                                                     "gute"
+                                                 ],
+                                    "hint":  "Alles Gute!",
+                                    "explanation":  "'Alles Gute zum Geburtstag!' = All the best for your birthday!"
+                                },
+                                {
+                                    "id":  "k12_q10",
+                                    "prompt":  "2. Christmas wish: 'Frohe ______!' (Weihnachten)",
+                                    "expected":  [
+                                                     "Weihnachten",
+                                                     "weihnachten"
+                                                 ],
+                                    "hint":  "Frohe Weihnachten!",
+                                    "explanation":  "'Frohe Weihnachten!' = Merry Christmas!"
+                                },
+                                {
+                                    "id":  "k12_q11",
+                                    "prompt":  "3. New Year wish: 'Ein frohes neues ______!' (Jahr)",
+                                    "expected":  [
+                                                     "Jahr",
+                                                     "jahr"
+                                                 ],
+                                    "hint":  "das Jahr = year.",
+                                    "explanation":  "'Ein frohes neues Jahr!' = Happy New Year!"
+                                },
+                                {
+                                    "id":  "k12_q12",
+                                    "prompt":  "4. Wedding / exam congratulations: 'Herzlichen ______!' (Glückwunsch)",
+                                    "expected":  [
+                                                     "Glückwunsch",
+                                                     "Glueckwunsch",
+                                                     "glückwunsch"
+                                                 ],
+                                    "hint":  "Herzlichen Glückwunsch!",
+                                    "explanation":  "'Herzlichen Glückwunsch!' = Warm congratulations!"
+                                }
+                            ]
+          },
+          {
+              "id":  "k12_ex4",
+              "title":  "Übung 4: Datumsangaben im Kalender (Calendar Dates)",
+              "instruction":  "Write the ordinal date with preposition 'am':",
+              "questions":  [
+                                {
+                                    "id":  "k12_q13",
+                                    "prompt":  "1. 'Die Feier ist am ______ (31.) Dezember.'",
+                                    "expected":  [
+                                                     "einunddreißigsten",
+                                                     "einunddreissigsten",
+                                                     "Einunddreißigsten"
+                                                 ],
+                                    "hint":  "einunddreißig + -sten.",
+                                    "explanation":  "am 31. = am einunddreißigsten."
+                                },
+                                {
+                                    "id":  "k12_q14",
+                                    "prompt":  "2. 'Der Tag der Deutschen Einheit ist am ______ (3.) Oktober.'",
+                                    "expected":  [
+                                                     "dritten",
+                                                     "Dritten"
+                                                 ],
+                                    "hint":  "am 3. = am dritten.",
+                                    "explanation":  "am 3. = am dritten."
+                                },
+                                {
+                                    "id":  "k12_q15",
+                                    "prompt":  "3. 'Mein Urlaub beginnt am ______ (2.) Juli.'",
+                                    "expected":  [
+                                                     "zweiten",
+                                                     "Zweiten"
+                                                 ],
+                                    "hint":  "am 2. = am zweiten.",
+                                    "explanation":  "am 2. = am zweiten."
+                                },
+                                {
+                                    "id":  "k12_q16",
+                                    "prompt":  "4. 'Der Deutschkurs endet am ______ (30.) Juni.'",
+                                    "expected":  [
+                                                     "dreißigsten",
+                                                     "dreissigsten",
+                                                     "Dreißigsten"
+                                                 ],
+                                    "hint":  "am 30. = am dreißigsten.",
+                                    "explanation":  "am 30. = am dreißigsten."
+                                }
+                            ]
+          },
+          {
+              "id":  "k12_ex5",
+              "title":  "Übung 5: A1 Grammatik-Rückblick (Final A1 Review)",
+              "instruction":  "Complete the final synthesis questions:",
+              "questions":  [
+                                {
+                                    "id":  "k12_q17",
+                                    "prompt":  "1. 'Wir haben das ganze Kursbuch A1 erfolgreich ______ (to finish).' (abgeschlossen)",
+                                    "expected":  [
+                                                     "abgeschlossen",
+                                                     "gelernt",
+                                                     "beendet"
+                                                 ],
+                                    "hint":  "abgeschlossen / gelernt.",
+                                    "explanation":  "Perfekt: erfolgreich abgeschlossen / gelernt."
+                                },
+                                {
+                                    "id":  "k12_q18",
+                                    "prompt":  "2. 'Ich ______ (wollen) jetzt für das A1-Zertifikat lernen.' (ich-form)",
+                                    "expected":  [
+                                                     "will"
+                                                 ],
+                                    "hint":  "ich will.",
+                                    "explanation":  "ich will."
+                                },
+                                {
+                                    "id":  "k12_q19",
+                                    "prompt":  "3. 'Deutschlernen macht mir großen ______ (fun/joy).' (Spaß)",
+                                    "expected":  [
+                                                     "Spaß",
+                                                     "Spass",
+                                                     "spaß",
+                                                     "spass"
+                                                 ],
+                                    "hint":  "der Spaß (Spaß machen).",
+                                    "explanation":  "Spaß machen = to be fun."
+                                },
+                                {
+                                    "id":  "k12_q20",
+                                    "prompt":  "4. 'Viel ______ bei der Prüfung!' (success / good luck - Erfolg)",
+                                    "expected":  [
+                                                     "Erfolg",
+                                                     "Glück",
+                                                     "erfolg",
+                                                     "glück"
+                                                 ],
+                                    "hint":  "Viel Erfolg! / Viel Glück!",
+                                    "explanation":  "'Viel Erfolg!' = Much success / Best of luck!"
+                                }
+                            ]
+          }
       ],
       grammarSummary: `
 **Core Grammar Rules (Kapitel 12):**
@@ -2552,12 +5846,116 @@ All of these temporal prepositions require the **Dativ case**:
         { de: "Schönen Urlaub!", en: "Have a great vacation!", type: "phrase" }
       ],
       quizzes: [
-        {
-          q: "Select the correct preposition: 'Ich fahre ______ Sommer nach Deutschland.'",
-          options: ["am", "im", "um", "an"],
-          correct: 1,
-          explanation: "Months and seasons take 'im' (im Sommer)."
-        }
+          {
+              "q":  "What position do conjunctions like 'und, oder, aber, denn' occupy in a sentence?",
+              "options":  [
+                              "Position 0 (they do not affect verb position)",
+                              "Position 1 (they push the verb to the end)",
+                              "Position 2",
+                              "At the very end"
+                          ],
+              "correct":  0,
+              "explanation":  "'und, oder, aber, denn' (ADUSO) sit on Position 0; the next clause starts normally with Subject + Verb on Position 2."
+          },
+          {
+              "q":  "How do you wish someone a Happy Birthday in German?",
+              "options":  [
+                              "Herzlichen Glückwunsch zum Geburtstag!",
+                              "Frohe Ostern!",
+                              "Gute Nacht!",
+                              "Vielen Dank!"
+                          ],
+              "correct":  0,
+              "explanation":  "'Herzlichen Glückwunsch zum Geburtstag!' or 'Alles Gute zum Geburtstag!'."
+          },
+          {
+              "q":  "What is celebrated on 'Silvester' (December 31st)?",
+              "options":  [
+                              "Christmas Eve",
+                              "New Year's Eve",
+                              "Easter Sunday",
+                              "Midsummer Night"
+                          ],
+              "correct":  1,
+              "explanation":  "December 31st is named 'Silvester' in German-speaking countries."
+          },
+          {
+              "q":  "What greeting is used before midnight on New Year's Eve in Germany?",
+              "options":  [
+                              "Guten Rutsch ins neue Jahr!",
+                              "Frohe Pfingsten!",
+                              "Guten Appetit!",
+                              "Auf Wiedersehen!"
+                          ],
+              "correct":  0,
+              "explanation":  "'Guten Rutsch (ins neue Jahr)!' is the traditional wish for a good slide/transition into the new year."
+          },
+          {
+              "q":  "Which sentence correctly connects two clauses with 'denn'?",
+              "options":  [
+                              "Ich lerne Deutsch, denn ich liebe die Sprache.",
+                              "Ich lerne Deutsch, denn ich die Sprache liebe.",
+                              "Ich lerne Deutsch, denn liebe ich die Sprache.",
+                              "Ich lerne Deutsch, ich denn liebe die Sprache."
+                          ],
+              "correct":  0,
+              "explanation":  "'denn' is in Position 0, followed by subject (ich) and finite verb in Position 2 (liebe)."
+          },
+          {
+              "q":  "What do Germans say when clinking glasses for a toast?",
+              "options":  [
+                              "Prost! / Zum Wohl!",
+                              "Guten Tag!",
+                              "Gute Besserung!",
+                              "Bitte schön!"
+                          ],
+              "correct":  0,
+              "explanation":  "'Prost!' (with beer/casual) or 'Zum Wohl!' (with wine/formal) are the traditional German toasts."
+          },
+          {
+              "q":  "What is the German national holiday on October 3rd called?",
+              "options":  [
+                              "Tag der Deutschen Einheit",
+                              "Bundesfeiertag",
+                              "Nationalfeiertag",
+                              "Oktoberfest-Tag"
+                          ],
+              "correct":  0,
+              "explanation":  "October 3rd is the 'Tag der Deutschen Einheit' (Day of German Unity), celebrating the reunification in 1990."
+          },
+          {
+              "q":  "How do you say 'Good luck on the exam!' in German?",
+              "options":  [
+                              "Viel Erfolg bei der Prüfung!",
+                              "Gute Nacht bei der Prüfung!",
+                              "Stimmt so bei der Prüfung!",
+                              "Keine Ahnung!"
+                          ],
+              "correct":  0,
+              "explanation":  "'Viel Erfolg (bei der Prüfung)!' means best of luck and success on your test."
+          },
+          {
+              "q":  "What does 'Ich habe das Goethe-Zertifikat A1 bestanden' mean?",
+              "options":  [
+                              "I passed the Goethe A1 exam",
+                              "I registered for the exam",
+                              "I failed the exam",
+                              "I lost my certificate"
+                          ],
+              "correct":  0,
+              "explanation":  "'bestehen' in Perfekt is 'hat bestanden' (to pass an examination)."
+          },
+          {
+              "q":  "Congratulations! Which famous German proverb means 'Practice makes perfect'?",
+              "options":  [
+                              "Übung macht den Meister.",
+                              "Ende gut, alles gut.",
+                              "Aller Anfang ist schwer.",
+                              "Morgenstund hat Gold im Mund."
+                          ],
+              "correct":  0,
+              "explanation":  "„Übung macht den Meister“ (Practice makes the master / Practice makes perfect) is the ultimate German study motto!"
+          }
       ]
     }
   ]
