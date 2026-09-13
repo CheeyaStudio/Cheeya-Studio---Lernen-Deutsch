@@ -9583,28 +9583,147 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.printGrammarCheatSheet = function() {
-    // Reveal all tables inside printable area for complete printout
-    const contentArea = document.getElementById('printableGrammarArea');
-    if (!contentArea) return;
+    let printRoot = document.getElementById('directPrintRoot');
+    if (!printRoot) {
+      printRoot = document.createElement('div');
+      printRoot.id = 'directPrintRoot';
+      document.body.appendChild(printRoot);
+    }
+
+    printRoot.classList.remove('hidden');
+    printRoot.style.display = 'block';
+
     const fullHtml = `
-      <div class="space-y-6">
-        <div class="text-center border-b pb-3">
-          <h2 class="text-xl font-black text-sky-950">Cheeya Studio • Netzwerk NEU A1 Master Grammar Cheat Sheet</h2>
-          <p class="text-xs text-sky-700">Official Essential Reference Guide for German A1 Learners</p>
+      <div style="padding: 10px 0; background: white; color: #0f172a;">
+        <!-- Header -->
+        <div style="border-bottom: 2px solid #0284c7; padding-bottom: 12px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <h1 style="font-size: 20pt; font-weight: 900; color: #0284c7; margin: 0; line-height: 1.1;">Cheeya Studio &bull; Netzwerk NEU A1</h1>
+            <h2 style="font-size: 13pt; font-weight: 800; color: #0f172a; margin: 4px 0 0 0;">Master German Grammar Reference Cheat Sheet</h2>
+            <p style="font-size: 9pt; color: #475569; margin: 2px 0 0 0;">Official Complete A1 Reference: Der/Die/Das, Cases, Pronouns, Prepositions &amp; Verbs</p>
+          </div>
+          <div style="text-align: right;">
+            <span style="display: inline-block; padding: 3px 10px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; border-radius: 9999px; font-weight: 800; font-size: 8.5pt;">A1 Examination Reference</span>
+            <div style="font-size: 8pt; color: #64748b; margin-top: 4px;">https://cheeyastudio.github.io</div>
+          </div>
         </div>
-        ${GRAMMAR_TABLES.articles}
-        ${GRAMMAR_TABLES.cases}
-        ${GRAMMAR_TABLES.pronouns}
-        ${GRAMMAR_TABLES.prepositions}
-        ${GRAMMAR_TABLES.verbs}
+
+        <!-- Section 1: Articles -->
+        <div class="print-section">
+          ${GRAMMAR_TABLES.articles}
+        </div>
+
+        <!-- Section 2: Cases -->
+        <div class="print-section">
+          ${GRAMMAR_TABLES.cases}
+        </div>
+
+        <!-- Section 3: Pronouns -->
+        <div class="print-section">
+          ${GRAMMAR_TABLES.pronouns}
+        </div>
+
+        <!-- Section 4: Prepositions -->
+        <div class="print-section">
+          ${GRAMMAR_TABLES.prepositions}
+        </div>
+
+        <!-- Section 5: Verbs -->
+        <div class="print-section">
+          ${GRAMMAR_TABLES.verbs}
+        </div>
+
+        <!-- Footer -->
+        <div style="border-top: 1px solid #cbd5e1; padding-top: 8px; margin-top: 20px; font-size: 8pt; color: #64748b; display: flex; justify-content: space-between;">
+          <span>Cheeya Studio &bull; Netzwerk NEU A1 Comprehensive German Learning Sanctuary</span>
+          <span>Page generated directly from Master Grammar Reference Hub</span>
+        </div>
       </div>
     `;
-    const oldContent = contentArea.innerHTML;
-    contentArea.innerHTML = fullHtml;
-    window.print();
+
+    printRoot.innerHTML = fullHtml;
+
+    const cleanupPrint = () => {
+      if (printRoot) {
+        printRoot.classList.add('hidden');
+        printRoot.style.display = 'none';
+        printRoot.innerHTML = '';
+      }
+      window.removeEventListener('afterprint', cleanupPrint);
+    };
+    window.addEventListener('afterprint', cleanupPrint);
+
     setTimeout(() => {
-      contentArea.innerHTML = oldContent;
-    }, 1000);
+      window.print();
+    }, 150);
+  };
+
+  window.openGrammarPrintTab = function() {
+    const win = window.open('', '_blank');
+    if (!win) {
+      window.printGrammarCheatSheet();
+      return;
+    }
+    const htmlDoc = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <title>Cheeya Studio - Netzwerk NEU A1 Master Grammar Cheat Sheet</title>
+        <style>
+          @page { size: A4 portrait; margin: 12mm 10mm 14mm 10mm; }
+          * { box-sizing: border-box; }
+          body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #0f172a; margin: 0; padding: 24px; line-height: 1.5; }
+          .container { max-width: 920px; margin: 0 auto; background: white; padding: 32px; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); border: 1px solid #bae6fd; }
+          .toolbar { display: flex; align-items: center; justify-content: space-between; background: #f0f9ff; border: 1px solid #7dd3fc; padding: 12px 18px; border-radius: 12px; margin-bottom: 24px; }
+          .btn-print { background: #0284c7; color: white; border: none; padding: 9px 20px; border-radius: 10px; font-weight: 800; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(2,132,199,0.25); transition: background 0.15s; }
+          .btn-print:hover { background: #0369a1; }
+          .header { border-bottom: 2px solid #0284c7; padding-bottom: 14px; margin-bottom: 22px; display: flex; justify-content: space-between; align-items: flex-start; }
+          .title { font-size: 22px; font-weight: 900; color: #0284c7; margin: 0; }
+          .subtitle { font-size: 14px; font-weight: 800; color: #0f172a; margin: 4px 0 0 0; }
+          .desc { font-size: 12px; color: #64748b; margin: 2px 0 0 0; }
+          .badge { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; padding: 4px 12px; border-radius: 9999px; font-weight: 800; font-size: 11px; }
+          .print-section { margin-bottom: 24px; page-break-inside: avoid; }
+          table { width: 100% !important; border-collapse: collapse !important; margin: 10px 0 !important; font-size: 12px !important; }
+          th, td { border: 1px solid #cbd5e1 !important; padding: 8px 12px !important; text-align: left; }
+          th { background-color: #f1f5f9 !important; font-weight: 800 !important; color: #0f172a !important; }
+          .footer { border-top: 1px solid #e2e8f0; padding-top: 12px; margin-top: 24px; font-size: 11px; color: #94a3b8; display: flex; justify-content: space-between; }
+          @media print {
+            body { background: white !important; padding: 0 !important; }
+            .container { box-shadow: none !important; border: none !important; padding: 0 !important; max-width: 100% !important; }
+            .toolbar { display: none !important; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="toolbar">
+            <div style="font-weight: bold; font-size: 13px; color: #0369a1;">📄 Standalone Printable Master Grammar Cheat Sheet</div>
+            <button onclick="window.print()" class="btn-print">🖨️ Print / Save as PDF</button>
+          </div>
+          <div class="header">
+            <div>
+              <div class="title">Cheeya Studio • Netzwerk NEU A1</div>
+              <div class="subtitle">Master German Grammar Reference Cheat Sheet</div>
+              <div class="desc">Official Complete Reference: Der/Die/Das Rules, Case Matrix, Pronouns, Prepositions &amp; Verbs</div>
+            </div>
+            <div><span class="badge">Netzwerk A1</span></div>
+          </div>
+          <div class="print-section">${GRAMMAR_TABLES.articles}</div>
+          <div class="print-section">${GRAMMAR_TABLES.cases}</div>
+          <div class="print-section">${GRAMMAR_TABLES.pronouns}</div>
+          <div class="print-section">${GRAMMAR_TABLES.prepositions}</div>
+          <div class="print-section">${GRAMMAR_TABLES.verbs}</div>
+          <div class="footer">
+            <span>Cheeya Studio • German Learning Sanctuary</span>
+            <span>https://cheeyastudio.github.io</span>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+    win.document.write(htmlDoc);
+    win.document.close();
   };
 
   // ================= 33. PROGRESSIVE WEB APP (PWA) INSTALL & SERVICE WORKER =================
@@ -9612,8 +9731,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then((reg) => console.log('Cheeya Deutsch PWA ServiceWorker registered:', reg.scope))
+      navigator.serviceWorker.register('./sw.js?v=20260914_v2')
+        .then((reg) => {
+          reg.update();
+          console.log('Cheeya Deutsch PWA ServiceWorker registered & updated:', reg.scope);
+        })
         .catch((err) => console.log('ServiceWorker registration error:', err));
     });
   }
@@ -9621,28 +9743,41 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPwaPrompt = e;
-    const installBtn = document.getElementById('pwaInstallBtn');
-    if (installBtn) {
-      installBtn.classList.remove('hidden');
-      installBtn.classList.add('inline-flex');
+    const directBtn = document.getElementById('pwaDirectInstallBtn');
+    if (directBtn) {
+      directBtn.classList.remove('hidden');
     }
   });
 
-  window.triggerPwaInstall = function() {
-    if (!deferredPwaPrompt) {
-      showFloatingToast("App installation is supported on Chrome, Edge, and Android browsers!");
-      return;
+  window.openPwaInstallModal = function() {
+    const modal = document.getElementById('pwaInstallModal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    const directBtn = document.getElementById('pwaDirectInstallBtn');
+    if (directBtn && deferredPwaPrompt) {
+      directBtn.classList.remove('hidden');
     }
-    deferredPwaPrompt.prompt();
-    deferredPwaPrompt.userChoice.then((choiceResult) => {
-      if (choiceResult.outcome === 'accepted') {
-        showFloatingToast("🎉 App installed successfully! Access it from your home screen.");
-        const installBtn = document.getElementById('pwaInstallBtn');
-        if (installBtn) installBtn.classList.add('hidden');
-        awardXP(50, 'PWA Installed');
-      }
-      deferredPwaPrompt = null;
-    });
+  };
+
+  window.closePwaInstallModal = function() {
+    const modal = document.getElementById('pwaInstallModal');
+    if (modal) modal.classList.add('hidden');
+  };
+
+  window.triggerPwaInstall = function() {
+    if (deferredPwaPrompt) {
+      deferredPwaPrompt.prompt();
+      deferredPwaPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          showFloatingToast("🎉 App installed successfully! Access it from your home screen.");
+          closePwaInstallModal();
+          awardXP(50, 'PWA Installed');
+        }
+        deferredPwaPrompt = null;
+      });
+    } else {
+      openPwaInstallModal();
+    }
   };
 
 

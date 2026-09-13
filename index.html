@@ -20,7 +20,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   
   <!-- Custom Soft Pastel Blue Theme & Scalable Font Styling -->
-  <link rel="stylesheet" href="style.css?v=20260913_tts_player">
+  <link rel="stylesheet" href="style.css?v=20260914_print_pwa_v2">
 </head>
 <body class="h-full flex flex-col antialiased select-none relative overflow-hidden">
 
@@ -145,14 +145,14 @@
 
       <!-- Master Grammar Reference Hub & Printable PDF -->
       <button onclick="openGrammarHubModal()" class="px-3 py-1.5 rounded-xl bg-blue-100 hover:bg-blue-200 border border-blue-300 text-blue-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Master German Grammar Reference & Printable PDF Cheat Sheets">
-        <span>ðŸ“‘</span>
-        <span class="hidden md:inline">Grammar Hub</span>
+        <span>&#x1F4D1;</span>
+        <span class="hidden sm:inline">Grammar Hub</span>
       </button>
 
-      <!-- PWA Install Button (Shown on supported browsers) -->
-      <button id="pwaInstallBtn" onclick="triggerPwaInstall()" class="hidden px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black items-center gap-1.5 transition shadow-xs cursor-pointer animate-pulse" title="Install Cheeya Studio App on your device for offline practice">
-        <span>ðŸ“²</span>
-        <span class="hidden xl:inline">Install App</span>
+      <!-- PWA Install Button (Always visible on all devices) -->
+      <button id="pwaInstallBtn" onclick="openPwaInstallModal()" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black flex items-center gap-1.5 transition shadow-sm cursor-pointer hover:scale-105" title="Install Cheeya Studio App on your PC, Android, or iPhone">
+        <span>📲</span>
+        <span>Install App</span>
       </button>
 
       <!-- 4. Quick Grammar Reference Modal Trigger -->
@@ -293,6 +293,26 @@
         </div>
         <button onclick="startDailyMixedQuiz()" class="px-5 py-2.5 rounded-xl bg-white hover:bg-white/90 text-purple-900 text-xs font-black transition shadow-md hover:scale-105 flex items-center gap-2 cursor-pointer z-10 flex-shrink-0">
           <span>⚡ Start 5-Min Quiz</span>
+          <span>➔</span>
+        </button>
+      </div>
+
+      <!-- ================= PWA APP INSTALL PROMO BANNER ================= -->
+      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-700 text-white p-3.5 md:p-4 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0 mb-3 border border-emerald-400/40">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-xs flex items-center justify-center text-2xl flex-shrink-0 shadow-inner">
+            📲
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-sm md:text-base font-black tracking-wide">Install Cheeya Deutsch App on Your Device</h3>
+              <span class="text-[9px] bg-emerald-400 text-emerald-950 font-black px-2 py-0.5 rounded-full uppercase tracking-wider">Fast &amp; Offline</span>
+            </div>
+            <p class="text-xs text-white/90 font-medium mt-0.5">Use as a full standalone app on Windows, Mac, Android &amp; iPhone without app store downloads!</p>
+          </div>
+        </div>
+        <button onclick="openPwaInstallModal()" class="px-4 py-2 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 text-xs font-black transition shadow-md hover:scale-105 flex items-center gap-1.5 cursor-pointer z-10 flex-shrink-0">
+          <span>📲 How to Install / Open</span>
           <span>➔</span>
         </button>
       </div>
@@ -1752,9 +1772,15 @@
 
         <div class="flex items-center gap-2">
           <!-- Print / Save Clean PDF Button -->
-          <button onclick="printGrammarCheatSheet()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-black flex items-center gap-1.5 transition shadow-sm cursor-pointer" title="Print this complete reference onto A4 paper or save as clean PDF">
-            <span>&#x1F5A8;&#xFE0F;</span>
+          <button onclick="printGrammarCheatSheet()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-black flex items-center gap-1.5 transition shadow-sm cursor-pointer hover:scale-105" title="Print this complete reference onto A4 paper or save as clean PDF">
+            <span>🖨️</span>
             <span>Print / Save PDF</span>
+          </button>
+
+          <!-- Open in Standalone Tab Fallback Button -->
+          <button onclick="openGrammarPrintTab()" class="px-3 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-850 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer hover:scale-105" title="Open complete cheat-sheet in a clean new tab to view, print or save as PDF">
+            <span>📄</span>
+            <span>Open in Tab</span>
           </button>
           <button onclick="closeGrammarHubModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -1789,12 +1815,134 @@
     </div>
   </div>
 
+  <!-- Dedicated Container for Direct Clean Grammar Print (Root Level for Multi-Page Pagination) -->
+  <div id="directPrintRoot" class="hidden"></div>
+
+  <!-- ================= PWA INSTALL MODAL (Desktop, Android & iOS Instructions) ================= -->
+  <div id="pwaInstallModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-3 md:p-6 hidden">
+    <div class="blue-glass-card max-w-2xl w-full max-h-[92vh] p-5 md:p-7 shadow-2xl flex flex-col border-2 border-emerald-300 overflow-hidden">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-emerald-200 mb-4 flex-shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center text-2xl shadow-sm">
+            📲
+          </div>
+          <div>
+            <h3 class="font-black text-lg text-sky-950 flex items-center gap-2">
+              <span>Install Cheeya Studio App</span>
+              <span class="text-[10px] bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded-full border border-emerald-300">PWA Offline-Ready</span>
+            </h3>
+            <p class="text-xs text-sky-700 font-medium">Install on your PC, Android, or iPhone without downloading from App Store</p>
+          </div>
+        </div>
+        <button onclick="closePwaInstallModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Modal Content Area -->
+      <div class="flex-1 overflow-y-auto space-y-4 pr-1">
+        
+        <!-- One-Click Direct Install Button (If browser prompt is available) -->
+        <div id="pwaDirectInstallBtn" class="hidden p-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md flex items-center justify-between gap-3">
+          <div>
+            <div class="text-sm font-black flex items-center gap-1.5">
+              <span>⚡ One-Click Direct Installation Ready</span>
+            </div>
+            <p class="text-xs text-emerald-100 font-medium mt-0.5">Your browser supports instant installation directly onto your system!</p>
+          </div>
+          <button onclick="triggerPwaInstall()" class="px-5 py-2.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 text-xs font-black shadow-md transition hover:scale-105 cursor-pointer flex-shrink-0">
+            📥 Install App Now
+          </button>
+        </div>
+
+        <!-- 3 Device Installation Guides -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+          
+          <!-- Guide 1: Desktop Chrome & Edge -->
+          <div class="p-4 rounded-2xl bg-sky-50/70 border border-sky-200 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-2 font-black text-sky-950">
+                <span class="text-base">💻</span>
+                <span>PC / Laptop (Chrome/Edge)</span>
+              </div>
+              <ol class="list-decimal list-inside space-y-1.5 text-sky-800 font-medium leading-relaxed">
+                <li>Look at the right side of your browser <strong>URL address bar</strong>.</li>
+                <li>Click the <strong>Install icon</strong> (🖥️ or ➕) that says <em>"Install Cheeya Studio"</em>.</li>
+                <li>Or click Chrome menu <strong>(⋮) ➔ Save and share ➔ Install Cheeya Studio</strong>.</li>
+              </ol>
+            </div>
+            <div class="mt-3 text-[11px] font-bold text-sky-600 bg-white p-2 rounded-xl border border-sky-100 text-center">
+              ✨ Opens as dedicated desktop window
+            </div>
+          </div>
+
+          <!-- Guide 2: Android (Chrome / Edge) -->
+          <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-2 font-black text-emerald-950">
+                <span class="text-base">🤖</span>
+                <span>Android (Chrome / Samsung)</span>
+              </div>
+              <ol class="list-decimal list-inside space-y-1.5 text-emerald-900 font-medium leading-relaxed">
+                <li>Tap the <strong>three dots (⋮)</strong> menu in the top right corner of Chrome.</li>
+                <li>Tap <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong>.</li>
+                <li>Confirm by tapping <strong>"Install"</strong>.</li>
+              </ol>
+            </div>
+            <div class="mt-3 text-[11px] font-bold text-emerald-700 bg-white p-2 rounded-xl border border-emerald-100 text-center">
+              📱 Works just like a Play Store app!
+            </div>
+          </div>
+
+          <!-- Guide 3: iPhone & iPad (Safari) -->
+          <div class="p-4 rounded-2xl bg-purple-50/70 border border-purple-200 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-2 font-black text-purple-950">
+                <span class="text-base">🍏</span>
+                <span>iPhone &amp; iPad (Safari)</span>
+              </div>
+              <ol class="list-decimal list-inside space-y-1.5 text-purple-900 font-medium leading-relaxed">
+                <li>Open this website in <strong>Apple Safari</strong>.</li>
+                <li>Tap the <strong>Share button</strong> (square with arrow 📤) at the bottom.</li>
+                <li>Scroll down and tap <strong>"Add to Home Screen"</strong> (➕).</li>
+                <li>Tap <strong>"Add"</strong> in the top right corner.</li>
+              </ol>
+            </div>
+            <div class="mt-3 text-[11px] font-bold text-purple-700 bg-white p-2 rounded-xl border border-purple-100 text-center">
+              ⭐ Fullscreen mode with no Safari address bar
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Benefits Highlights -->
+        <div class="p-3.5 rounded-2xl bg-white border border-sky-100 flex flex-wrap items-center justify-around gap-2 text-[11px] font-bold text-sky-800">
+          <span class="flex items-center gap-1">⚡ Instant 0.1s Launch</span>
+          <span class="flex items-center gap-1">📶 Offline Study Mode</span>
+          <span class="flex items-center gap-1">💾 Progress Auto-Synced</span>
+          <span class="flex items-center gap-1">✨ Zero App Store Storage Waste</span>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="pt-3 border-t border-emerald-200 mt-4 flex items-center justify-end flex-shrink-0">
+        <button onclick="closePwaInstallModal()" class="px-5 py-2 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-850 font-bold text-xs transition cursor-pointer">
+          Got it, Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+
 
   <!-- Floating XP Toast Container -->
   <div id="floatingXPContainer" class="fixed top-20 right-6 z-50 pointer-events-none flex flex-col gap-2"></div>
 
   <!-- SCRIPT LOGIC -->
   <script src="media-data.js?v=20260913_360q"></script>
-  <script src="app.js?v=20260914_6_elite_features"></script>
+  <script src="app.js?v=20260914_print_pwa_v2"></script>
 </body>
 </html>
