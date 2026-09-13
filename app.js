@@ -2442,13 +2442,174 @@ document.addEventListener('DOMContentLoaded', () => {
       canvasCtx.restore();
     });
 
+    function showScribbleErasedFeedback() {
+      let toast = document.getElementById('scribbleToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'scribbleToast';
+        toast.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-slate-900/90 text-white text-xs font-bold rounded-2xl shadow-xl backdrop-blur-sm pointer-events-none transition-all duration-300 opacity-0 transform scale-90 flex items-center gap-2 border border-sky-400/40';
+        toast.innerHTML = '<span>✍️✨</span><span>Scribble Erased (Coretan terhapus)</span>';
+        document.body.appendChild(toast);
+      }
+      toast.classList.remove('opacity-0', 'scale-90');
+      toast.classList.add('opacity-100', 'scale-100');
+      clearTimeout(toast._timeout);
+      toast._timeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'scale-100');
+        toast.classList.add('opacity-0', 'scale-90');
+      }, 1200);
+    }
+
+    function checkScribbleToErase(stroke, strokes) {
+      const pts = stroke.points;
+      if (!pts || pts.length < 12) return false;
+
+      const w = canvas.width;
+      const h = canvas.height;
+
+      let minX = 1.0, maxX = 0.0, minY = 1.0, maxY = 0.0;
+      let totalPath = 0;
+
+      for (let i = 0; i < pts.length; i++) {
+        const p = pts[i];
+        if (p.x < minX) minX = p.x;
+        if (p.x > maxX) maxX = p.x;
+        if (p.y < minY) minY = p.y;
+        if (p.y > maxY) maxY = p.y;
+
+        if (i > 0) {
+          const prev = pts[i - 1];
+          const dx = (p.x - prev.x) * w;
+          const dy = (p.y - prev.y) * h;
+          totalPath += Math.sqrt(dx * dx + dy * dy);
+        }
+      }
+
+      const boxW = (maxX - minX) * w;
+      const boxH = (maxY - minY) * h;
+      const boxDiag = Math.sqrt(boxW * boxW + boxH * boxH);
+      if (boxDiag < 15) return false;
+
+      const ratio = totalPath / Math.max(1.0, boxDiag);
+      if (ratio < 2.8) return false;
+
+      const minSpanX = Math.max(8, boxW * 0.3);
+      let revX = 0;
+      let dirX = 0;
+      let lastX = pts[0].x * w;
+
+      for (let i = 1; i < pts.length; i++) {
+        const curX = pts[i].x * w;
+        if (dirX === 0) {
+          if (Math.abs(curX - lastX) >= minSpanX) {
+            dirX = curX > lastX ? 1 : -1;
+            lastX = curX;
+          }
+        } else if (dirX === 1) {
+          if (curX > lastX) {
+            lastX = curX;
+          } else if (lastX - curX >= minSpanX) {
+            revX++;
+            dirX = -1;
+            lastX = curX;
+          }
+        } else if (dirX === -1) {
+          if (curX < lastX) {
+            lastX = curX;
+          } else if (curX - lastX >= minSpanX) {
+            revX++;
+            dirX = 1;
+            lastX = curX;
+          }
+        }
+      }
+
+      const minSpanY = Math.max(8, boxH * 0.3);
+      let revY = 0;
+      let dirY = 0;
+      let lastY = pts[0].y * h;
+
+      for (let i = 1; i < pts.length; i++) {
+        const curY = pts[i].y * h;
+        if (dirY === 0) {
+          if (Math.abs(curY - lastY) >= minSpanY) {
+            dirY = curY > lastY ? 1 : -1;
+            lastY = curY;
+          }
+        } else if (dirY === 1) {
+          if (curY > lastY) {
+            lastY = curY;
+          } else if (lastY - curY >= minSpanY) {
+            revY++;
+            dirY = -1;
+            lastY = curY;
+          }
+        } else if (dirY === -1) {
+          if (curY < lastY) {
+            lastY = curY;
+          } else if (curY - lastY >= minSpanY) {
+            revY++;
+            dirY = 1;
+            lastY = curY;
+          }
+        }
+      }
+
+      const isScribble = (revX >= 3 || revY >= 3 || (revX + revY) >= 4);
+      if (!isScribble) return false;
+
+      const padX = 20 / w;
+      const padY = 20 / h;
+      const sMinX = minX - padX;
+      const sMaxX = maxX + padX;
+      const sMinY = minY - padY;
+      const sMaxY = maxY + padY;
+
+      const remainingStrokes = [];
+      let erasedCount = 0;
+
+      for (let sIdx = 0; sIdx < strokes.length; sIdx++) {
+        const targetStroke = strokes[sIdx];
+        let overlaps = false;
+        if (targetStroke.points) {
+          for (let pIdx = 0; pIdx < targetStroke.points.length; pIdx++) {
+            const tp = targetStroke.points[pIdx];
+            if (tp.x >= sMinX && tp.x <= sMaxX && tp.y >= sMinY && tp.y <= sMaxY) {
+              overlaps = true;
+              break;
+            }
+          }
+        }
+
+        if (overlaps) {
+          erasedCount++;
+        } else {
+          remainingStrokes.push(targetStroke);
+        }
+      }
+
+      if (erasedCount > 0) {
+        savePageStrokes(remainingStrokes);
+        showScribbleErasedFeedback();
+        return true;
+      } else {
+        return true;
+      }
+    }
+
     const finishStroke = (e) => {
       if (!isDrawing || !activeStroke) return;
       isDrawing = false;
       if (activeStroke.points.length > 1) {
         const strokes = loadPageStrokes();
-        strokes.push(activeStroke);
-        savePageStrokes(strokes);
+        let wasScribbled = false;
+        if (activeStroke.tool === 'pen' || activeStroke.tool === 'highlighter') {
+          wasScribbled = checkScribbleToErase(activeStroke, strokes);
+        }
+        if (!wasScribbled) {
+          strokes.push(activeStroke);
+          savePageStrokes(strokes);
+        }
       }
       activeStroke = null;
       redrawPdfStrokes();
