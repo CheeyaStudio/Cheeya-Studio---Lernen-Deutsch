@@ -13,7 +13,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   
   <!-- Custom Soft Pastel Blue Theme & Scalable Font Styling -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20260913_pen">
 </head>
 <body class="h-full flex flex-col antialiased select-none relative overflow-hidden">
 
@@ -410,10 +410,10 @@
           <div class="h-5 w-[1px] bg-sky-300 mx-1"></div>
 
           <!-- Line Width Choices -->
-          <div class="flex items-center gap-1">
-            <button onclick="setPdfStrokeWidth(2)" class="px-2 py-0.5 text-xs font-bold rounded-lg hover:bg-sky-200 text-sky-800" title="Fine (2px)">• Fine</button>
-            <button onclick="setPdfStrokeWidth(4)" class="px-2 py-0.5 text-xs font-bold rounded-lg hover:bg-sky-200 text-sky-800 bg-sky-200" title="Medium (4px)">•• Med</button>
-            <button onclick="setPdfStrokeWidth(8)" class="px-2 py-0.5 text-xs font-bold rounded-lg hover:bg-sky-200 text-sky-800" title="Thick (8px)">••• Thick</button>
+          <div class="flex items-center gap-1 bg-sky-100/80 p-0.5 rounded-xl border border-sky-200" title="Pen & Highlighter Thickness">
+            <button id="strokeWidthBtn-2" onclick="setPdfStrokeWidth(2)" class="px-2.5 py-1 text-xs font-bold rounded-lg transition text-sky-800 bg-white hover:bg-sky-100 cursor-pointer" title="Fine (2px)">• Fine</button>
+            <button id="strokeWidthBtn-4" onclick="setPdfStrokeWidth(4)" class="px-2.5 py-1 text-xs font-bold rounded-lg transition bg-sky-600 text-white shadow-xs cursor-pointer" title="Medium (4px)">•• Med</button>
+            <button id="strokeWidthBtn-8" onclick="setPdfStrokeWidth(8)" class="px-2.5 py-1 text-xs font-bold rounded-lg transition text-sky-800 bg-white hover:bg-sky-100 cursor-pointer" title="Thick (8px)">••• Thick</button>
           </div>
 
           <!-- Undo & Clear Buttons -->

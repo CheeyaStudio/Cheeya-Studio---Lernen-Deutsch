@@ -2351,23 +2351,27 @@ document.addEventListener('DOMContentLoaded', () => {
   function drawSingleStroke(stroke, ctx) {
     if (!stroke.points || stroke.points.length < 2) return;
 
+    const rect = canvas ? canvas.getBoundingClientRect() : null;
+    const scaleRatio = (rect && rect.width > 0) ? (canvas.width / rect.width) : 1;
+    const effectiveWidth = (stroke.width || 4) * scaleRatio;
+
     ctx.save();
     if (stroke.tool === 'highlighter') {
       ctx.globalAlpha = 0.38;
       ctx.strokeStyle = stroke.color;
-      ctx.lineWidth = stroke.width * 3.5;
+      ctx.lineWidth = effectiveWidth * 3.5;
       ctx.lineCap = 'square';
       ctx.lineJoin = 'round';
     } else if (stroke.tool === 'eraser') {
       ctx.globalCompositeOperation = 'destination-out';
-      ctx.lineWidth = stroke.width * 5;
+      ctx.lineWidth = effectiveWidth * 5;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
     } else {
       // Pen
       ctx.globalAlpha = 1.0;
       ctx.strokeStyle = stroke.color;
-      ctx.lineWidth = stroke.width;
+      ctx.lineWidth = effectiveWidth;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
     }
@@ -2386,8 +2390,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentPdfTool === 'hand') return;
       isDrawing = true;
       const rect = canvas.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / canvas.width;
-      const y = (e.clientY - rect.top) / canvas.height;
+      const x = rect.width > 0 ? (e.clientX - rect.left) / rect.width : 0;
+      const y = rect.height > 0 ? (e.clientY - rect.top) / rect.height : 0;
 
       activeStroke = {
         tool: currentPdfTool,
@@ -2401,26 +2405,29 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.addEventListener('pointermove', (e) => {
       if (!isDrawing || !activeStroke) return;
       const rect = canvas.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / canvas.width;
-      const y = (e.clientY - rect.top) / canvas.height;
+      const x = rect.width > 0 ? (e.clientX - rect.left) / rect.width : 0;
+      const y = rect.height > 0 ? (e.clientY - rect.top) / rect.height : 0;
 
       activeStroke.points.push({ x, y });
+
+      const scaleRatio = rect.width > 0 ? (canvas.width / rect.width) : 1;
+      const effectiveWidth = (activeStroke.width || 4) * scaleRatio;
 
       // Draw current active segment incrementally
       canvasCtx.save();
       if (activeStroke.tool === 'highlighter') {
         canvasCtx.globalAlpha = 0.38;
         canvasCtx.strokeStyle = activeStroke.color;
-        canvasCtx.lineWidth = activeStroke.width * 3.5;
+        canvasCtx.lineWidth = effectiveWidth * 3.5;
         canvasCtx.lineCap = 'square';
       } else if (activeStroke.tool === 'eraser') {
         canvasCtx.globalCompositeOperation = 'destination-out';
-        canvasCtx.lineWidth = activeStroke.width * 5;
+        canvasCtx.lineWidth = effectiveWidth * 5;
         canvasCtx.lineCap = 'round';
       } else {
         canvasCtx.globalAlpha = 1.0;
         canvasCtx.strokeStyle = activeStroke.color;
-        canvasCtx.lineWidth = activeStroke.width;
+        canvasCtx.lineWidth = effectiveWidth;
         canvasCtx.lineCap = 'round';
       }
 
@@ -2482,6 +2489,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.setPdfStrokeWidth = function(w) {
     currentPdfStrokeWidth = w;
+    [2, 4, 8].forEach(widthVal => {
+      const btn = document.getElementById(`strokeWidthBtn-${widthVal}`);
+      if (btn) {
+        if (widthVal === w) {
+          btn.className = "px-2.5 py-1 text-xs font-bold rounded-lg transition bg-sky-600 text-white shadow-xs cursor-pointer";
+        } else {
+          btn.className = "px-2.5 py-1 text-xs font-bold rounded-lg transition text-sky-800 bg-white hover:bg-sky-100 cursor-pointer";
+        }
+      }
+    });
   };
 
   window.undoPdfStroke = function() {
