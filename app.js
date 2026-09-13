@@ -2339,8 +2339,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (spinner) {
         spinner.innerHTML = `
           <div class="text-center p-4">
-            <p class="text-xs font-bold text-rose-600 mb-2">Halaman PDF tidak dapat dimuat langsung</p>
-            <a href="${encodeURI(pdfPath)}" target="_blank" class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs inline-block">Buka File PDF Eksternal</a>
+            <p class="text-xs font-bold text-rose-600 mb-2">PDF page could not be loaded directly</p>
+            <a href="${encodeURI(pdfPath)}" target="_blank" class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs inline-block">Open External PDF File</a>
           </div>
         `;
       }
@@ -4291,14 +4291,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (btn08) btn08.className = 'px-2 py-0.5 rounded-lg text-[10px] font-bold bg-white text-sky-800 border border-sky-200 hover:bg-sky-100 cursor-pointer';
       if (btn10) btn10.className = 'px-2 py-0.5 rounded-lg text-[10px] font-bold bg-sky-600 text-white shadow-2xs cursor-pointer';
     }
-    showFloatingToast(`Kecepatan audio diatur ke ${speed}x`);
+    showFloatingToast(`Audio speed set to ${speed}x`);
   };
 
   window.playCustomTtsInput = function() {
     const input = document.getElementById('customTtsInput');
     if (!input || !input.value.trim()) return;
     playGermanSpeech(input.value.trim());
-    showFloatingToast(`🔊 Melafalkan: "${input.value.trim()}"`);
+    showFloatingToast(`🔊 Pronouncing: "${input.value.trim()}"`);
   };
 
   function renderTtsWordList() {
@@ -4306,7 +4306,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!container) return;
     const chapter = NETZWERK_DATA.chapters[ttsActiveChapterIdx];
     if (!chapter || !chapter.vocabList) {
-      container.innerHTML = `<p class="text-xs text-sky-600 italic text-center py-4">Tidak ada kata di bab ini.</p>`;
+      container.innerHTML = `<p class="text-xs text-sky-600 italic text-center py-4">No vocabulary words found for this chapter.</p>`;
       return;
     }
 
