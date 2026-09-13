@@ -1,0 +1,6 @@
+# Temporary and development scratch folders
+scratch/
+*.zip
+Thumbs.db
+.DS_Store
+*NWn_A1_Film_013-015.mp4

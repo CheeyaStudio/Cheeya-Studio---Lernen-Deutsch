@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-sky-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cheeya Studio - Netzwerk Neu A1 Interactive German Learning ❄️</title>
+  <link rel="icon" type="image/jpeg" href="LOGO.jpeg">
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Custom Soft Pastel Blue Theme & Scalable Font Styling -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="h-full flex flex-col antialiased select-none relative overflow-hidden">
+
+  <!-- ================= CANVAS PARTICLES (DREAMY GLASS BUBBLES & STARDUST) ================= -->
+  <canvas id="sparkleCanvas"></canvas>
+
+  <!-- ================= CURSOR CLICK ANIMATION LAYER ================= -->
+  <div id="cursorClickLayer"></div>
+
+  <!-- ================= TOP NAVIGATION BAR ================= -->
+  <header class="h-16 bg-white/92 border-b border-sky-200 px-3 md:px-5 flex items-center justify-between flex-shrink-0 z-30 backdrop-blur-md shadow-xs">
+    
+    <!-- Left: Girly Aesthetic Brand & Cheeya Studio Logo -->
+    <div class="flex items-center gap-3 flex-shrink-0">
+      <div onclick="switchView('dashboard')" class="w-11 h-11 rounded-2xl overflow-hidden shadow-md shadow-pink-200/50 border-2 border-sky-300 bg-white flex items-center justify-center flex-shrink-0 floating-anim cursor-pointer" title="Go to Dashboard">
+        <img src="LOGO.jpeg" alt="Cheeya Studio Logo" class="w-full h-full object-cover">
+      </div>
+      <div onclick="switchView('dashboard')" class="cursor-pointer">
+        <div class="flex items-center gap-2">
+          <h1 class="brand-title">Cheeya Studio</h1>
+          <span class="text-[10px] font-bold bg-pink-100 text-pink-700 border border-pink-300 px-2 py-0.5 rounded-full shadow-xs">🌸 Netzwerk A1</span>
+        </div>
+        <p class="text-[11px] text-sky-800 font-medium hidden sm:block">German Language Hub • Interactive Learning Sanctuary ✨</p>
+      </div>
+    </div>
+
+    <!-- Right Controls: ONLY Progress, Music (20 Options), Font Scaler, Quick Grammar -->
+    <div class="flex items-center gap-2 md:gap-3 flex-shrink-0">
+
+      <!-- 1. Progress Tracker Trigger Button -->
+      <button id="navTab-progress" onclick="switchView('progress')" class="px-3.5 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="View Learning Progress & Exercise History">
+        <span>📊</span>
+        <span>Progress</span>
+      </button>
+
+      <!-- 2. Relaxing Study Music Controller (2 Categories: 10 Ambient + 10 Instrumental Songs) -->
+      <div class="relative group" id="musicMenuContainer">
+        <div class="flex items-center">
+          <button id="musicToggleBtn" onclick="toggleStudyMusic()" class="px-3 py-1.5 rounded-l-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 border-r-0 text-sky-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Study Music & Calming Sounds: Play / Pause">
+            <span id="musicPlayIcon" class="text-sm">🎵</span>
+            <span id="musicTitleBadge" class="hidden xl:inline text-[11px] font-bold">1. Ocean Waves</span>
+          </button>
+          <button id="musicDropdownToggle" onclick="toggleMusicMenu(event)" class="px-2 py-1.5 rounded-r-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-700 text-xs font-bold transition shadow-xs cursor-pointer" title="Choose from 20 Relaxing Music Options">
+            <span class="text-[10px]">▼</span>
+          </button>
+        </div>
+
+        <!-- Dropdown Popover for Study Music: 2 Categories (20 Ambiance + 20 Instrumental Songs) -->
+        <div id="musicDropdownMenu" class="absolute right-0 top-full mt-2 w-84 p-3.5 bg-white rounded-2xl shadow-2xl border-2 border-sky-300 hidden group-hover:block z-50 text-xs text-sky-950">
+          <div class="flex items-center justify-between border-b border-sky-200 pb-2 mb-2">
+            <span class="font-extrabold text-sky-900 flex items-center gap-1.5">
+              <span>🎧</span>
+              <span>Study Music Sanctuary</span>
+            </span>
+            <span id="musicStatusText" class="text-[10px] bg-sky-100 text-sky-700 font-bold px-2 py-0.5 rounded-full">OFF</span>
+          </div>
+
+          <!-- 2 Music Modes Selector -->
+          <div class="grid grid-cols-2 gap-1 p-1 bg-sky-100/80 rounded-xl mb-2.5 border border-sky-200 text-center">
+            <button id="musicTabBtn-ambient" onclick="setMusicCategory('ambient')" class="py-1 px-1.5 rounded-lg font-extrabold text-[11px] transition cursor-pointer bg-white text-sky-900 shadow-xs">
+              🌿 Nature & Ambient (20)
+            </button>
+            <button id="musicTabBtn-songs" onclick="setMusicCategory('songs')" class="py-1 px-1.5 rounded-lg font-extrabold text-[11px] transition cursor-pointer text-sky-700 hover:text-sky-900">
+              🎼 Instrumental Songs (20)
+            </button>
+          </div>
+
+          <!-- Volume Slider -->
+          <div class="flex items-center gap-2 mb-2.5 bg-sky-50 p-2 rounded-xl border border-sky-200">
+            <span class="text-sm">🔊</span>
+            <input type="range" id="musicVolumeSlider" min="0" max="1" step="0.05" value="0.35" oninput="setStudyMusicVolume(this.value)" class="w-full h-1.5 bg-sky-200 rounded-lg appearance-none cursor-pointer accent-sky-500">
+            <span id="musicVolPercent" class="text-[10px] font-bold text-sky-700 w-8 text-right">35%</span>
+          </div>
+
+          <!-- Track List (Switches dynamically between 10 Ambient & 10 Songs) -->
+          <div class="space-y-1 max-h-60 overflow-y-auto pr-1" id="musicTrackList">
+            <!-- Populated from JS: 10 Ambiance or 10 Instrumental Songs -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Accessible Font Size Scaling Controls (A- / [Scale %] / A+) -->
+      <div class="flex items-center bg-sky-100/90 p-1 rounded-xl border border-sky-300 text-xs font-bold gap-1 shadow-xs">
+        <button onclick="changeFontSize(-1)" class="w-7 h-7 flex items-center justify-center hover:bg-sky-200 text-sky-800 rounded-lg transition font-extrabold cursor-pointer" title="Decrease font size">
+          A-
+        </button>
+        <span id="fontScaleLabel" class="text-[10px] font-extrabold text-sky-700 px-1 select-none">110%</span>
+        <button onclick="changeFontSize(1)" class="w-7 h-7 flex items-center justify-center hover:bg-sky-200 text-sky-800 rounded-lg transition font-extrabold cursor-pointer" title="Increase font size">
+          A+
+        </button>
+      </div>
+
+      <!-- 4. Quick Grammar Reference Modal Trigger -->
+      <button onclick="openGrammarModal()" class="px-3 py-1.5 rounded-xl bg-blue-100 hover:bg-blue-200 border border-blue-300 text-blue-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Comprehensive German Grammar Reference">
+        <span>📑</span>
+        <span>Quick Grammar</span>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- Mobile View Selector Bar (Shown only on small screens) -->
+  <div class="lg:hidden flex items-center justify-around bg-sky-100/90 border-b border-sky-200 px-2 py-1.5 text-xs font-bold flex-shrink-0 z-20">
+    <button onclick="switchView('dashboard')" class="px-2 py-1 rounded-lg text-sky-800">🏠 Dashboard</button>
+    <button onclick="switchView('lesson')" class="px-2 py-1 rounded-lg text-sky-800">📘 Lesson</button>
+    <button onclick="switchView('pdf')" class="px-2 py-1 rounded-lg text-sky-800">📖 PDF</button>
+    <button onclick="switchView('vocab')" class="px-2 py-1 rounded-lg text-sky-800">📚 Vocab</button>
+    <button onclick="switchView('progress')" class="px-2 py-1 rounded-lg text-sky-800">📊 Progress</button>
+  </div>
+
+  <!-- ================= MAIN FULL-WIDTH WORKSPACE (NO 50/50 SPLIT!) ================= -->
+  <main class="flex-1 flex flex-col overflow-hidden relative">
+
+    <!-- ================= VIEW 1: HOME DASHBOARD (DEFAULT VIEW) ================= -->
+    <section id="view-dashboard" class="app-view active flex-col flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
+      
+      <!-- Welcome Hero Banner (Aesthetic & Inspiring - NO Action Buttons) -->
+      <div class="blue-glass-card p-6 md:p-8 border-2 border-sky-300 bg-gradient-to-r from-sky-50/95 via-blue-50/90 to-sky-100/90 relative overflow-hidden shadow-lg flex-shrink-0">
+        <div class="relative z-10 max-w-4xl space-y-4">
+          
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 bg-pink-100 text-pink-700 border border-pink-300 px-3 py-1 rounded-full text-xs font-extrabold shadow-xs">
+              <span>🌸</span>
+              <span>Cheeya Studio Edition</span>
+            </span>
+            <span class="inline-flex items-center gap-1.5 bg-sky-100 text-sky-800 border border-sky-300 px-3 py-1 rounded-full text-xs font-bold shadow-xs">
+              <span>❄️</span>
+              <span>Netzwerk Neu A1 Comprehensive Learning Sanctuary</span>
+            </span>
+          </div>
+
+          <div>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-sky-950 tracking-tight leading-tight">
+              Willkommen beim <span class="shimmer-text">Netzwerk Neu A1</span> Learning Hub! ✨
+            </h2>
+            <p class="text-sky-800 font-medium text-xs md:text-sm leading-relaxed mt-2">
+              Welcome to your dedicated German language sanctuary! Immerse yourself in an expansive, comfortable study space designed for learners worldwide. Explore in-depth grammar breakdowns, listen to all <strong>155 native audio recordings</strong>, watch <strong>68 video clips with subtitles</strong>, and write personal notes directly onto textbook pages with digital pens and highlighters.
+            </p>
+          </div>
+
+          <!-- Aesthetic German Quotes & Cultural Insights -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+            <div class="bg-white/90 p-3.5 rounded-2xl border border-sky-200 shadow-xs flex items-center gap-3">
+              <div class="text-2xl">🌱</div>
+              <div>
+                <p class="text-xs font-extrabold text-sky-950 italic">„Eine neue Sprache ist ein neues Leben.“</p>
+                <p class="text-[11px] text-sky-600 font-medium">“A new language is a new life.”</p>
+              </div>
+            </div>
+            <div class="bg-white/90 p-3.5 rounded-2xl border border-sky-200 shadow-xs flex items-center gap-3">
+              <div class="text-2xl">⭐</div>
+              <div>
+                <p class="text-xs font-extrabold text-sky-950 italic">„Übung macht den Meister.“</p>
+                <p class="text-[11px] text-sky-600 font-medium">“Practice makes perfect.”</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Aesthetic Feature Badges (Pills only, no action links) -->
+          <div class="flex flex-wrap items-center gap-2 pt-1 text-[11px] font-bold text-sky-800">
+            <span class="bg-sky-100/90 border border-sky-300 px-2.5 py-1 rounded-xl flex items-center gap-1.5">
+              <span>📘</span> 12 Complete Chapters
+            </span>
+            <span class="bg-sky-100/90 border border-sky-300 px-2.5 py-1 rounded-xl flex items-center gap-1.5">
+              <span>🎧</span> 155 Audio Tracks
+            </span>
+            <span class="bg-sky-100/90 border border-sky-300 px-2.5 py-1 rounded-xl flex items-center gap-1.5">
+              <span>🎬</span> 68 Video Lessons
+            </span>
+            <span class="bg-sky-100/90 border border-sky-300 px-2.5 py-1 rounded-xl flex items-center gap-1.5">
+              <span>✍️</span> Annotatable Digital PDF
+            </span>
+            <span class="bg-sky-100/90 border border-sky-300 px-2.5 py-1 rounded-xl flex items-center gap-1.5">
+              <span>⚡</span> Real-time Exercise Checking
+            </span>
+          </div>
+
+        </div>
+
+        <!-- Decorative background emblem -->
+        <div class="absolute -right-8 -bottom-8 w-60 h-60 opacity-10 pointer-events-none text-sky-600">
+          <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        </div>
+      </div>
+
+      <!-- Quick Platform Statistics Strip -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4 flex-shrink-0">
+        <div class="blue-glass-card p-4 text-center border border-sky-200">
+          <div class="text-2xl font-extrabold text-sky-600 mb-0.5">12</div>
+          <div class="text-xs font-bold text-sky-900">Complete Chapters (K1-12)</div>
+          <div class="text-[11px] text-sky-600">Kursbuch A1 Curriculum</div>
+        </div>
+        <div class="blue-glass-card p-4 text-center border border-sky-200">
+          <div class="text-2xl font-extrabold text-sky-600 mb-0.5">155</div>
+          <div class="text-xs font-bold text-sky-900">Original Audio Tracks</div>
+          <div class="text-[11px] text-sky-600">100% Mapped from Disk</div>
+        </div>
+        <div class="blue-glass-card p-4 text-center border border-sky-200">
+          <div class="text-2xl font-extrabold text-sky-600 mb-0.5">68</div>
+          <div class="text-xs font-bold text-sky-900">Learning Videos</div>
+          <div class="text-[11px] text-sky-600">Film, G-Clip, P-Clip & R-Clip</div>
+        </div>
+        <div class="blue-glass-card p-4 text-center border border-sky-200">
+          <div class="text-2xl font-extrabold text-sky-600 mb-0.5" id="dashCompletedBadge">0/12</div>
+          <div class="text-xs font-bold text-sky-900">Chapters Completed</div>
+          <div class="text-[11px] text-sky-600">Progress Tracker</div>
+        </div>
+      </div>
+
+      <!-- Chapter Directory Grid (12 Cards) -->
+      <div class="flex-shrink-0">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-lg font-extrabold text-sky-950 flex items-center gap-2">
+              <span>📚</span>
+              <span>12 Coursebook Chapters (Kapitel 1 - 12)</span>
+            </h3>
+            <p class="text-xs text-sky-700">Select any chapter below to jump straight to its lesson guide, practice exercises, audio tracks, or PDF pages.</p>
+          </div>
+        </div>
+
+        <div id="dashboardChapterGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <!-- Populated dynamically by JavaScript -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= VIEW 2: LESSON & EXERCISES (FULL WIDTH) ================= -->
+    <section id="view-lesson" class="app-view flex-col flex-1 overflow-hidden bg-gradient-to-b from-sky-50/50 via-white to-sky-50/50">
+      
+      <!-- Lesson Action & Audio Header Bar -->
+      <div class="bg-white/95 border-b border-sky-200 p-3 md:px-6 flex flex-wrap items-center justify-between gap-3 flex-shrink-0 shadow-xs z-10">
+        
+        <!-- Chapter Title & Download PDF Button -->
+        <div class="flex items-center gap-3">
+          <button onclick="switchView('dashboard')" class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-extrabold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Back to Dashboard">
+            <span>🏠</span>
+            <span>Dashboard</span>
+          </button>
+          <div>
+            <h2 id="lessonChapterTitle" class="text-base font-extrabold text-sky-950 flex items-center gap-2">
+              Kapitel 1: Guten Tag!
+            </h2>
+            <p id="lessonChapterSubtitle" class="text-xs text-sky-700 font-medium">Greetings, Alphabet, Numbers & Grammar</p>
+          </div>
+        </div>
+
+        <!-- Videos, Download Lesson as PDF & Quick Navigation Buttons -->
+        <div class="flex items-center gap-2">
+          <button onclick="openVideoModal()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 transition shadow-md shadow-purple-200 cursor-pointer" title="Watch Chapter Learning Videos">
+            <span>🎬</span>
+            <span id="lessonVideoCountBtn">Videos</span>
+          </button>
+          <button onclick="downloadLessonPDF()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-xs font-bold flex items-center gap-2 transition shadow-md shadow-emerald-200 cursor-pointer" title="Print or save this complete chapter summary as a clean PDF document">
+            <span>📥</span>
+            <span>Download Lesson as PDF</span>
+          </button>
+          <button onclick="switchView('pdf')" class="px-3 py-2 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Open Chapter PDF Reader with Pen & Highlighter">
+            <span>📖</span>
+            <span class="hidden sm:inline">Open PDF & Notes</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Integrated Audio Player Dock (Top of Lesson View) -->
+      <div id="audioDockLesson" class="h-14 bg-sky-100/70 border-b border-sky-200 px-4 md:px-6 flex items-center justify-between flex-shrink-0 gap-3">
+        <!-- Play / Pause Button -->
+        <button id="playPauseBtn" class="w-9 h-9 rounded-full btn-pastel-blue flex items-center justify-center flex-shrink-0 shadow-md cursor-pointer" title="Play / Pause Audio">
+          <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+
+        <!-- Audio Wave Animation -->
+        <div id="audioWave" class="audio-bar-wave paused hidden sm:flex">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+
+        <!-- Track Selector (Shows all chapter tracks) -->
+        <div class="flex-1 min-w-0">
+          <select id="audioTrackSelect" class="w-full bg-white text-sky-950 border border-sky-300 text-xs rounded-xl px-3 py-1.5 focus:outline-none font-medium cursor-pointer shadow-xs">
+            <!-- Populated from JavaScript -->
+          </select>
+        </div>
+
+        <!-- Progress & Time -->
+        <div class="hidden md:flex items-center gap-2 text-[11px] text-sky-700 font-semibold">
+          <span id="audioTime">0:00</span>
+          <input type="range" id="audioProgress" min="0" max="100" value="0" class="w-24 md:w-36 h-1.5 bg-sky-200 rounded-lg appearance-none cursor-pointer accent-sky-500">
+          <span id="audioDuration">0:00</span>
+        </div>
+
+        <!-- Audio Element -->
+        <audio id="audioPlayer" preload="none"></audio>
+      </div>
+
+      <!-- Full-Width Scrollable Lesson Content -->
+      <div id="lessonScrollArea" class="flex-1 overflow-y-auto p-4 md:p-8">
+        <div id="autoLessonContainer" class="max-w-5xl mx-auto space-y-6 pb-12">
+          <!-- Populated by app.js for the selected chapter -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= VIEW 3: PDF & NOTES (WITH PERSISTENT TOP TOOLBAR) ================= -->
+    <section id="view-pdf" class="app-view flex-col flex-1 overflow-hidden bg-slate-100">
+      
+      <!-- PERSISTENT TOP PDF ANNOTATION TOOLBAR (ALWAYS VISIBLE AT TOP) -->
+      <div class="bg-white border-b-2 border-sky-300 px-3 py-2 flex flex-wrap items-center justify-between gap-2 flex-shrink-0 shadow-md z-20">
+        
+        <!-- Left Group: Document & Page Controls -->
+        <div class="flex items-center gap-2">
+          <!-- Back to Dashboard Button -->
+          <button onclick="switchView('dashboard')" class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-extrabold flex items-center gap-1.5 transition shadow-xs cursor-pointer flex-shrink-0" title="Back to Home Dashboard">
+            <span>🏠</span>
+            <span>Dashboard</span>
+          </button>
+
+          <!-- Document Switcher -->
+          <div class="flex items-center bg-sky-100/70 p-1 rounded-xl border border-sky-200 text-xs font-bold">
+            <button id="tabKursbuch" onclick="switchDoc('kursbuch')" class="doc-tab-btn px-2.5 py-1 rounded-lg font-bold text-white bg-sky-500 shadow-xs transition" title="Strictly active chapter PDF">
+              📖 Chapter PDF
+            </button>
+            <button id="tabFullBook" onclick="switchDoc('fullbook')" class="doc-tab-btn px-2.5 py-1 rounded-lg font-bold text-sky-700 hover:text-sky-900 transition" title="Entire Kursbuch">
+              📚 Full Book
+            </button>
+            <button id="tabLoesung1" onclick="switchDoc('loesungen1_6')" class="doc-tab-btn px-2.5 py-1 rounded-lg font-bold text-sky-700 hover:text-sky-900 transition">
+              🔑 Sol K1-6
+            </button>
+            <button id="tabLoesung2" onclick="switchDoc('loesungen7_12')" class="doc-tab-btn px-2.5 py-1 rounded-lg font-bold text-sky-700 hover:text-sky-900 transition">
+              🔑 Sol K7-12
+            </button>
+          </div>
+
+          <!-- Page Navigation -->
+          <div class="flex items-center gap-1 text-xs text-sky-900 font-bold bg-sky-50 border border-sky-200 px-2 py-1 rounded-xl">
+            <button onclick="changePage(-1)" class="p-1 rounded-lg hover:bg-sky-200 text-sky-700 transition" title="Previous Page">◀</button>
+            <span>Page:</span>
+            <input type="number" id="pageInput" value="1" min="1" max="10" onchange="jumpToPage()" class="w-11 bg-white border border-sky-300 rounded-lg px-1 py-0.5 text-center text-xs text-sky-900 font-bold focus:outline-none focus:border-sky-500">
+            <span id="pageTotalBadge" class="text-xs text-sky-600 font-bold">/ 10</span>
+            <button onclick="changePage(1)" class="p-1 rounded-lg hover:bg-sky-200 text-sky-700 transition" title="Next Page">▶</button>
+          </div>
+        </div>
+
+        <!-- Center Group: PERSISTENT DRAWING & HIGHLIGHT TOOLBAR (Pen, Highlighter, Eraser, Hand) -->
+        <div class="flex items-center gap-1.5 bg-sky-50 border-2 border-sky-300 p-1 rounded-xl shadow-xs">
+          
+          <!-- Hand / Scroll Mode -->
+          <button id="toolBtn-hand" onclick="setPdfTool('hand')" class="pdf-tool-btn active" title="Hand mode (Scroll and zoom PDF freely)">
+            <span>✋</span>
+            <span class="hidden sm:inline">Hand</span>
+          </button>
+
+          <!-- Pen -->
+          <button id="toolBtn-pen" onclick="setPdfTool('pen')" class="pdf-tool-btn" title="Pen for freehand notes and handwriting">
+            <span>🖊️</span>
+            <span>Pen</span>
+          </button>
+
+          <!-- Highlighter (Stabilo) -->
+          <button id="toolBtn-highlighter" onclick="setPdfTool('highlighter')" class="pdf-tool-btn" title="Translucent highlighter for marking key words">
+            <span>🖍️</span>
+            <span>Highlighter</span>
+          </button>
+
+          <!-- Eraser -->
+          <button id="toolBtn-eraser" onclick="setPdfTool('eraser')" class="pdf-tool-btn" title="Eraser for clearing drawn strokes">
+            <span>🧹</span>
+            <span>Eraser</span>
+          </button>
+
+          <!-- Separator -->
+          <div class="h-5 w-[1px] bg-sky-300 mx-1"></div>
+
+          <!-- Color Swatches (Directly Clickable) -->
+          <div class="flex items-center gap-1.5" title="Pen & Highlighter Color Palette">
+            <button onclick="setPdfColor('#0284c7')" class="color-swatch active bg-sky-600" data-color="#0284c7" title="Sky Blue"></button>
+            <button onclick="setPdfColor('#ef4444')" class="color-swatch bg-red-500" data-color="#ef4444" title="Red"></button>
+            <button onclick="setPdfColor('#facc15')" class="color-swatch bg-yellow-400" data-color="#facc15" title="Yellow Highlighter"></button>
+            <button onclick="setPdfColor('#22c55e')" class="color-swatch bg-emerald-500" data-color="#22c55e" title="Green"></button>
+            <button onclick="setPdfColor('#0f172a')" class="color-swatch bg-slate-900" data-color="#0f172a" title="Black"></button>
+          </div>
+
+          <!-- Separator -->
+          <div class="h-5 w-[1px] bg-sky-300 mx-1"></div>
+
+          <!-- Line Width Choices -->
+          <div class="flex items-center gap-1">
+            <button onclick="setPdfStrokeWidth(2)" class="px-2 py-0.5 text-xs font-bold rounded-lg hover:bg-sky-200 text-sky-800" title="Fine (2px)">• Fine</button>
+            <button onclick="setPdfStrokeWidth(4)" class="px-2 py-0.5 text-xs font-bold rounded-lg hover:bg-sky-200 text-sky-800 bg-sky-200" title="Medium (4px)">•• Med</button>
+            <button onclick="setPdfStrokeWidth(8)" class="px-2 py-0.5 text-xs font-bold rounded-lg hover:bg-sky-200 text-sky-800" title="Thick (8px)">••• Thick</button>
+          </div>
+
+          <!-- Undo & Clear Buttons -->
+          <div class="flex items-center gap-1 ml-1">
+            <button onclick="undoPdfStroke()" class="px-2 py-1 rounded-lg bg-white hover:bg-sky-100 border border-sky-200 text-sky-800 text-xs font-bold flex items-center gap-1 shadow-xs cursor-pointer" title="Undo last drawn stroke">
+              <span>↩️</span>
+            </button>
+            <button onclick="clearPdfStrokes()" class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-bold flex items-center gap-1 shadow-xs cursor-pointer" title="Clear all notes on this page">
+              <span>🗑️</span>
+              <span class="hidden md:inline">Clear</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Right Group: Status Badge & Open New Tab -->
+        <div class="flex items-center gap-2">
+          <span id="docBadge" class="text-xs font-bold text-sky-900 bg-sky-100 px-2.5 py-1 rounded-lg hidden xl:inline">
+            Kapitel 1 (PDF)
+          </span>
+          <button onclick="openPdfInNewTab()" class="px-2.5 py-1.5 rounded-lg bg-sky-50 hover:bg-sky-200 border border-sky-300 text-sky-700 text-xs font-bold flex items-center gap-1 transition cursor-pointer" title="Open PDF in a new tab">
+            <span>↗️</span>
+            <span class="hidden sm:inline">New Tab</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- PERSISTENT CHAPTER AUDIO & VIDEO MEDIA BAR IN PDF VIEW -->
+      <div id="pdfMediaBar" class="h-12 bg-gradient-to-r from-sky-100/90 via-white/95 to-sky-100/90 border-b border-sky-300 px-3 md:px-5 flex items-center justify-between gap-2 md:gap-3 flex-shrink-0 shadow-xs z-10">
+        
+        <!-- Left: Audio Play / Pause + Skip + Track Selector -->
+        <div class="flex items-center gap-2 flex-1 min-w-0">
+          <button id="pdfPlayPauseBtn" onclick="togglePdfAudioPlay()" class="w-8 h-8 rounded-full btn-pastel-blue flex items-center justify-center flex-shrink-0 shadow-xs cursor-pointer" title="Play / Pause Chapter Audio">
+            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+
+          <!-- Prev / Next Track Quick Buttons -->
+          <div class="flex items-center gap-1">
+            <button onclick="stepPdfAudioTrack(-1)" class="w-7 h-7 rounded-lg bg-white hover:bg-sky-200 text-sky-800 border border-sky-300 text-xs flex items-center justify-center transition shadow-2xs cursor-pointer" title="Previous Audio Track">
+              ⏮️
+            </button>
+            <button onclick="stepPdfAudioTrack(1)" class="w-7 h-7 rounded-lg bg-white hover:bg-sky-200 text-sky-800 border border-sky-300 text-xs flex items-center justify-center transition shadow-2xs cursor-pointer" title="Next Audio Track">
+              ⏭️
+            </button>
+          </div>
+
+          <!-- Audio Wave Animation -->
+          <div id="pdfAudioWave" class="audio-bar-wave paused hidden sm:flex">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+
+          <!-- Chapter Track Selector Dropdown -->
+          <div class="flex-1 min-w-0 max-w-md">
+            <select id="pdfAudioTrackSelect" onchange="changePdfAudioTrack(this.value)" class="w-full bg-white text-sky-950 border border-sky-300 text-xs rounded-xl px-2.5 py-1.5 focus:outline-none font-semibold cursor-pointer shadow-xs truncate">
+              <!-- Populated dynamically with chapter audio tracks -->
+            </select>
+          </div>
+
+          <!-- Time & Progress bar -->
+          <div class="hidden lg:flex items-center gap-1.5 text-[11px] text-sky-800 font-semibold flex-shrink-0">
+            <span id="pdfAudioTime">0:00</span>
+            <input type="range" id="pdfAudioProgress" min="0" max="100" value="0" class="w-24 xl:w-32 h-1.5 bg-sky-200 rounded-lg appearance-none cursor-pointer accent-sky-500">
+            <span id="pdfAudioDuration">0:00</span>
+          </div>
+        </div>
+
+        <!-- Right: Chapter Videos Quick Button -->
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <button onclick="openVideoModal()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white text-xs font-extrabold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Watch Chapter Learning Videos without leaving PDF">
+            <span>🎬</span>
+            <span id="pdfVideoBtnText">Videos</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- FULL WIDTH PDF & CANVAS CONTAINER -->
+      <div id="pdfViewport" class="flex-1 w-full h-full relative overflow-hidden bg-slate-200">
+        <!-- PDF Iframe -->
+        <iframe id="pdfFrame" class="w-full h-full border-none" src="Netzwerk NEU A1 Kursbuch/Netzwerk NEU A1 Kursbuch/per_kapitel_pdf/Kapitel_1.pdf#page=1"></iframe>
+        
+        <!-- HTML5 Drawing Canvas Overlay for Pen, Stabilo & Eraser -->
+        <canvas id="pdfAnnotationCanvas" class="mode-hand"></canvas>
+      </div>
+
+    </section>
+
+    <!-- ================= VIEW 4: VOCABULARY BANK (FULL WIDTH) ================= -->
+    <section id="view-vocab" class="app-view flex-col flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
+      <div class="max-w-6xl w-full mx-auto space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl md:text-2xl font-extrabold text-sky-950 flex items-center gap-2">
+              <span>📚</span>
+              <span>Wortschatz & Audio Pronunciation (Vocabulary Bank)</span>
+            </h2>
+            <p class="text-xs md:text-sm text-sky-700">Complete vocabulary list for this chapter (Nouns with gender articles, Verbs & Essential Phrases) with native German pronunciation audio.</p>
+          </div>
+          <button onclick="switchView('dashboard')" class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-extrabold flex items-center gap-1.5 transition shadow-xs cursor-pointer">
+            <span>🏠</span>
+            <span>Dashboard</span>
+          </button>
+        </div>
+
+        <div id="vocabContainer">
+          <!-- Populated by app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 5: HISTORY & PROGRESS (FULL WIDTH) ================= -->
+    <section id="view-progress" class="app-view flex-col flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
+      <div class="max-w-5xl w-full mx-auto space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-xl md:text-2xl font-extrabold text-sky-950 flex items-center gap-2">
+              <span>📊</span>
+              <span>Study Progress & Exercise History</span>
+            </h2>
+            <p class="text-xs md:text-sm text-sky-700">Track your completed chapters across the entire Netzwerk Neu A1 curriculum and view recent exercise scores.</p>
+          </div>
+          <button onclick="switchView('dashboard')" class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-extrabold flex items-center gap-1.5 transition shadow-xs cursor-pointer">
+            <span>🏠</span>
+            <span>Dashboard</span>
+          </button>
+        </div>
+
+        <div id="historyContainer">
+          <!-- Populated by app.js -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= MODAL: LEARNING VIDEOS ================= -->
+  <div id="videoModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4 hidden">
+    <div class="blue-glass-card max-w-2xl w-full p-6 shadow-2xl flex flex-col border-2 border-sky-300">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="videoModalTitle" class="font-bold text-sm text-sky-900 flex items-center gap-2">
+          <span>🎬</span>
+          <span>Netzwerk A1 Learning Videos</span>
+        </h3>
+        <button onclick="closeVideoModal()" class="p-1 rounded-lg text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Video Selector -->
+      <div class="mb-3">
+        <label for="videoSelect" class="text-xs text-sky-700 font-bold block mb-1">Select Video Clip for this Chapter:</label>
+        <select id="videoSelect" class="w-full bg-sky-50 text-sky-950 border border-sky-300 text-xs rounded-xl px-3 py-2 focus:outline-none font-medium cursor-pointer">
+          <!-- Populated by JavaScript -->
+        </select>
+      </div>
+
+      <!-- Video Player View -->
+      <div class="relative bg-black rounded-2xl overflow-hidden aspect-video flex items-center justify-center shadow-lg">
+        <video id="videoPlayer" controls class="w-full h-full"></video>
+      </div>
+
+      <p class="text-[11px] text-sky-600 mt-3 text-center font-medium">
+        💡 <em>Tip: Clips marked with <strong>UT</strong> include authentic German subtitles to sharpen your listening comprehension! ✨</em>
+      </p>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: DYNAMIC GRAMMAR REFERENCE (CHANGES PER CHAPTER) ================= -->
+  <div id="grammarModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-3 md:p-6 hidden">
+    <div class="blue-glass-card max-w-4xl w-full max-h-[90vh] p-5 md:p-7 shadow-2xl flex flex-col border-2 border-sky-300">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-sky-200">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">📑</span>
+          <div>
+            <h3 class="font-extrabold text-base text-sky-950">
+              Grammar Reference (Netzwerk Neu A1 Grammatik)
+            </h3>
+            <p class="text-xs text-sky-600 font-medium">Comprehensive grammar rules, tables & examples tailored to each chapter</p>
+          </div>
+        </div>
+        <button onclick="closeGrammarModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Chapter Selector inside Grammar Modal -->
+      <div class="py-3 flex flex-wrap items-center justify-between gap-3 border-b border-sky-100">
+        <div class="flex items-center gap-2 flex-1 min-w-[260px]">
+          <label for="grammarChapterSelect" class="text-xs font-bold text-sky-800 whitespace-nowrap">Chapter Grammar:</label>
+          <select id="grammarChapterSelect" onchange="renderGrammarModalForChapter(parseInt(this.value, 10))" class="flex-1 bg-sky-50 text-sky-950 border border-sky-300 rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-sky-500 cursor-pointer shadow-xs">
+            <!-- Populated from JS for all 12 chapters + Global Overview -->
+          </select>
+        </div>
+        <button onclick="syncGrammarWithActiveChapter()" class="px-3 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs font-bold border border-sky-300 transition shadow-xs cursor-pointer">
+          🔄 Sync Active Chapter
+        </button>
+      </div>
+
+      <!-- Dynamic Grammar Content Container -->
+      <div id="grammarModalBody" class="flex-1 overflow-y-auto py-4 space-y-4 text-xs text-sky-950 pr-1">
+        <!-- Populated dynamically by app.js -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script src="media-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
