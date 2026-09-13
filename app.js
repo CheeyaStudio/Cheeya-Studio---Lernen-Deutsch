@@ -2442,24 +2442,6 @@ document.addEventListener('DOMContentLoaded', () => {
       canvasCtx.restore();
     });
 
-    function showScribbleErasedFeedback() {
-      let toast = document.getElementById('scribbleToast');
-      if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'scribbleToast';
-        toast.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-slate-900/90 text-white text-xs font-bold rounded-2xl shadow-xl backdrop-blur-sm pointer-events-none transition-all duration-300 opacity-0 transform scale-90 flex items-center gap-2 border border-sky-400/40';
-        toast.innerHTML = '<span>✍️✨</span><span>Scribble Erased (Coretan terhapus)</span>';
-        document.body.appendChild(toast);
-      }
-      toast.classList.remove('opacity-0', 'scale-90');
-      toast.classList.add('opacity-100', 'scale-100');
-      clearTimeout(toast._timeout);
-      toast._timeout = setTimeout(() => {
-        toast.classList.remove('opacity-100', 'scale-100');
-        toast.classList.add('opacity-0', 'scale-90');
-      }, 1200);
-    }
-
     function checkScribbleToErase(stroke, strokes) {
       const pts = stroke.points;
       if (!pts || pts.length < 8) return false;
@@ -2588,7 +2570,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (erasedPointsCount > 0) {
         savePageStrokes(newStrokes);
-        showScribbleErasedFeedback();
       }
       return true; // Always discard the scribble itself!
     }
