@@ -1639,8 +1639,8 @@ document.addEventListener('DOMContentLoaded', () => {
       renderAutoLesson(chapter);
     } else if (viewName === 'pdf') {
       setTimeout(() => {
-        resizePdfCanvas();
-        redrawPdfStrokes();
+        const p = parseInt(pageInput.value, 10) || 1;
+        updatePdfSource(p);
       }, 50);
     } else if (viewName === 'vocab') {
       const chapter = NETZWERK_DATA.chapters[currentChapterIndex];
@@ -2150,6 +2150,120 @@ document.addEventListener('DOMContentLoaded', () => {
     redrawPdfStrokes();
   };
 
+  // ================= 8. PDF.JS NATIVE CANVAS RENDERING & NAVIGATION =================
+  if (window.pdfjsLib) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+
+  let currentPdfDoc = null;
+  let currentPdfPath = '';
+  let pdfZoomLevel = 1.0;
+  let pdfRenderTask = null;
+
+  async function renderPdfPageWithPdfJs(pdfPath, pageNum) {
+    const renderCanvas = document.getElementById('pdfRenderCanvas');
+    const wrapper = document.getElementById('pdfCanvasWrapper');
+    const spinner = document.getElementById('pdfLoadingSpinner');
+    const viewportEl = document.getElementById('pdfViewport');
+    const annotCanvas = document.getElementById('pdfAnnotationCanvas');
+    if (!renderCanvas) return;
+
+    if (!window.pdfjsLib) {
+      console.warn("PDF.js library not loaded yet");
+      return;
+    }
+
+    if (spinner) {
+      spinner.style.display = 'flex';
+      spinner.style.opacity = '1';
+    }
+
+    try {
+      if (currentPdfPath !== pdfPath || !currentPdfDoc) {
+        if (pdfRenderTask) {
+          try { pdfRenderTask.cancel(); } catch (e) {}
+          pdfRenderTask = null;
+        }
+        currentPdfPath = pdfPath;
+        const loadingTask = pdfjsLib.getDocument({
+          url: pdfPath,
+          cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+          cMapPacked: true
+        });
+        currentPdfDoc = await loadingTask.promise;
+      }
+
+      if (pdfRenderTask) {
+        try { pdfRenderTask.cancel(); } catch (e) {}
+        pdfRenderTask = null;
+      }
+
+      const page = await currentPdfDoc.getPage(pageNum);
+
+      // Responsive Fit Calculation: Fit to available width inside container
+      const unscaledViewport = page.getViewport({ scale: 1.0 });
+      const availableWidth = Math.max(300, (viewportEl ? viewportEl.clientWidth : window.innerWidth) - 36);
+      const baseFitScale = availableWidth / unscaledViewport.width;
+      const targetScale = Math.min(3.0, Math.max(0.45, baseFitScale * pdfZoomLevel));
+
+      const viewport = page.getViewport({ scale: targetScale });
+
+      renderCanvas.width = viewport.width;
+      renderCanvas.height = viewport.height;
+      if (wrapper) {
+        wrapper.style.width = viewport.width + 'px';
+        wrapper.style.height = viewport.height + 'px';
+      }
+
+      if (annotCanvas) {
+        annotCanvas.width = viewport.width;
+        annotCanvas.height = viewport.height;
+      }
+
+      const ctx = renderCanvas.getContext('2d');
+      pdfRenderTask = page.render({
+        canvasContext: ctx,
+        viewport: viewport
+      });
+
+      await pdfRenderTask.promise;
+      pdfRenderTask = null;
+
+      redrawPdfStrokes();
+
+      if (spinner) {
+        spinner.style.display = 'none';
+      }
+    } catch (err) {
+      if (err && err.name === 'RenderingCancelledException') return;
+      console.error("PDF.js rendering error:", err);
+      if (spinner) {
+        spinner.innerHTML = `
+          <div class="text-center p-4">
+            <p class="text-xs font-bold text-rose-600 mb-2">Halaman PDF tidak dapat dimuat langsung</p>
+            <a href="${encodeURI(pdfPath)}" target="_blank" class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs inline-block">Buka File PDF Eksternal</a>
+          </div>
+        `;
+      }
+    }
+  }
+
+  window.zoomPdf = function(delta) {
+    pdfZoomLevel = Math.min(2.5, Math.max(0.5, pdfZoomLevel + delta));
+    const badge = document.getElementById('pdfZoomBadge');
+    if (badge) badge.textContent = `${Math.round(pdfZoomLevel * 100)}%`;
+    const p = parseInt(pageInput.value, 10) || 1;
+    updatePdfSource(p);
+  };
+
+  window.resetPdfZoom = function() {
+    pdfZoomLevel = 1.0;
+    const badge = document.getElementById('pdfZoomBadge');
+    if (badge) badge.textContent = '100%';
+    const p = parseInt(pageInput.value, 10) || 1;
+    updatePdfSource(p);
+  };
+
   function updatePdfSource(pageNumber) {
     let basePath = NETZWERK_DATA.pdf.kursbuch;
     const chapter = NETZWERK_DATA.chapters[currentChapterIndex];
@@ -2163,7 +2277,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (currentDoc === 'loesungen7_12') {
       basePath = NETZWERK_DATA.pdf.loesungen7_12;
     }
-    pdfFrame.src = encodeURI(`${basePath}#page=${pageNumber}`);
+    renderPdfPageWithPdfJs(basePath, pageNumber);
   }
 
   window.openPdfInNewTab = function() {
@@ -2214,19 +2328,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function resizePdfCanvas() {
     if (!canvas) return;
-    const viewport = document.getElementById('pdfViewport');
-    if (!viewport) return;
-
-    const rect = viewport.getBoundingClientRect();
-    if (rect.width > 0 && rect.height > 0) {
-      canvas.width = rect.width;
-      canvas.height = rect.height;
+    const renderCanvas = document.getElementById('pdfRenderCanvas');
+    if (renderCanvas && renderCanvas.width > 0) {
+      canvas.width = renderCanvas.width;
+      canvas.height = renderCanvas.height;
     }
   }
 
   window.addEventListener('resize', () => {
-    resizePdfCanvas();
-    redrawPdfStrokes();
+    const p = parseInt(pageInput.value, 10) || 1;
+    updatePdfSource(p);
   });
 
   function redrawPdfStrokes() {

@@ -9,6 +9,9 @@
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
+  <!-- Mozilla PDF.js for Native Canvas Rendering (Works on Android, iOS & Desktop without iframe downloads) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  
   <!-- Custom Soft Pastel Blue Theme & Scalable Font Styling -->
   <link rel="stylesheet" href="style.css">
 </head>
@@ -354,6 +357,14 @@
             <span id="pageTotalBadge" class="text-xs text-sky-600 font-bold">/ 10</span>
             <button onclick="changePage(1)" class="p-1 rounded-lg hover:bg-sky-200 text-sky-700 transition" title="Next Page">▶</button>
           </div>
+
+          <!-- Zoom Controls -->
+          <div class="flex items-center gap-1 text-xs text-sky-900 font-bold bg-sky-50 border border-sky-200 px-1.5 py-1 rounded-xl">
+            <button onclick="zoomPdf(-0.15)" class="w-6 h-6 rounded-lg hover:bg-sky-200 text-sky-700 flex items-center justify-center transition" title="Zoom Out">➖</button>
+            <span id="pdfZoomBadge" class="text-[11px] text-sky-800 font-bold px-0.5 min-w-[34px] text-center">100%</span>
+            <button onclick="zoomPdf(0.15)" class="w-6 h-6 rounded-lg hover:bg-sky-200 text-sky-700 flex items-center justify-center transition" title="Zoom In">➕</button>
+            <button onclick="resetPdfZoom()" class="px-1.5 py-0.5 text-[10px] rounded hover:bg-sky-200 text-sky-700 font-bold" title="Reset / Fit Width">Fit</button>
+          </div>
         </div>
 
         <!-- Center Group: PERSISTENT DRAWING & HIGHLIGHT TOOLBAR (Pen, Highlighter, Eraser, Hand) -->
@@ -481,12 +492,22 @@
       </div>
 
       <!-- FULL WIDTH PDF & CANVAS CONTAINER -->
-      <div id="pdfViewport" class="flex-1 w-full h-full relative overflow-hidden bg-slate-200">
-        <!-- PDF Iframe -->
-        <iframe id="pdfFrame" class="w-full h-full border-none" src="Netzwerk NEU A1 Kursbuch/Netzwerk NEU A1 Kursbuch/per_kapitel_pdf/Kapitel_1.pdf#page=1"></iframe>
-        
-        <!-- HTML5 Drawing Canvas Overlay for Pen, Stabilo & Eraser -->
-        <canvas id="pdfAnnotationCanvas" class="mode-hand"></canvas>
+      <div id="pdfViewport" class="flex-1 w-full h-full relative overflow-auto bg-slate-700 flex justify-center items-start p-2 sm:p-4">
+        <!-- PDF Page Canvas Wrapper (Centers the rendered PDF page with canvas overlay) -->
+        <div id="pdfCanvasWrapper" class="relative shadow-2xl bg-white mx-auto my-auto" style="min-width: 320px; min-height: 450px;">
+          <!-- PDF.js Render Canvas -->
+          <canvas id="pdfRenderCanvas" class="block w-full h-auto"></canvas>
+          
+          <!-- HTML5 Drawing Canvas Overlay for Pen, Stabilo & Eraser -->
+          <canvas id="pdfAnnotationCanvas" class="mode-hand absolute inset-0 w-full h-full"></canvas>
+          
+          <!-- Loading Spinner -->
+          <div id="pdfLoadingSpinner" class="absolute inset-0 flex flex-col items-center justify-center bg-white/90 z-10 transition-opacity duration-200">
+            <div class="w-10 h-10 border-4 border-sky-200 border-t-sky-500 rounded-full animate-spin mb-3"></div>
+            <p class="text-xs font-bold text-sky-900">Rendering Textbook Page...</p>
+            <p class="text-[11px] text-sky-600 mt-1">Cheeya Studio Interactive Reader</p>
+          </div>
+        </div>
       </div>
 
     </section>
