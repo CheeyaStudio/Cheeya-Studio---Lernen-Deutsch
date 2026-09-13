@@ -3297,8 +3297,8 @@ document.addEventListener('DOMContentLoaded', () => {
               <p class="font-bold text-xs text-sky-950 mb-2">${q.prompt}</p>
               
               <div class="flex items-center gap-2">
-                <input type="text" id="input-${q.id}" value="${savedAns ? escapeHtml(savedAns.studentAnswer) : ''}" placeholder="Type your answer here..." class="flex-1 bg-sky-50/70 border-2 border-sky-200 rounded-xl px-3 py-2 text-xs text-sky-950 placeholder-sky-300 focus:outline-none focus:border-sky-400 focus:bg-white font-semibold transition">
-                <button onclick="checkSpecificExercise('${q.id}', '${ex.title}')" class="btn-pastel-blue px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap cursor-pointer">
+                <input type="text" id="input-${q.id}" value="${savedAns ? escapeHtml(savedAns.studentAnswer) : ''}" placeholder="Type your answer here..." onkeydown="if(event.key==='Enter') checkSpecificExercise('${q.id}')" class="flex-1 bg-sky-50/70 border-2 border-sky-200 rounded-xl px-3 py-2 text-xs text-sky-950 placeholder-sky-300 focus:outline-none focus:border-sky-400 focus:bg-white font-semibold transition">
+                <button onclick="checkSpecificExercise('${q.id}')" class="btn-pastel-blue px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap cursor-pointer">
                   <span>❄️ Check</span>
                 </button>
               </div>
@@ -3338,15 +3338,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Check Specific Fill-in-the-Blank Exercise
-  window.checkSpecificExercise = function(qId, exTitle) {
+  window.checkSpecificExercise = function(qId) {
     const chapter = NETZWERK_DATA.chapters[currentChapterIndex];
     let foundQ = null;
+    let foundExTitle = '';
 
     if (chapter.interactiveExercises) {
       for (const ex of chapter.interactiveExercises) {
         const q = ex.questions.find(item => item.id === qId);
         if (q) {
           foundQ = q;
+          foundExTitle = ex.title;
           break;
         }
       }
@@ -3356,6 +3358,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const input = document.getElementById(`input-${qId}`);
     const feedbackBox = document.getElementById(`feedback-${qId}`);
+    if (!input || !feedbackBox) return;
     const userAns = input.value.trim();
 
     if (!userAns) {
@@ -3381,7 +3384,7 @@ document.addEventListener('DOMContentLoaded', () => {
       qId: qId,
       chapterId: chapter.id,
       chapterTitle: chapter.title,
-      exerciseNum: exTitle,
+      exerciseNum: foundExTitle,
       studentAnswer: userAns,
       isCorrect: isCorrect,
       feedback: isCorrect ? `Correct! ${foundQ.explanation}` : `Expected: ${foundQ.expected[0]}. ${foundQ.explanation}`,
