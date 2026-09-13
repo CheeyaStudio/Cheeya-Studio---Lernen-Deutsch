@@ -101,8 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
+  let activeAudioObj = null;
+  window.ttsCurrentSpeed = 1.0;
+
   window.playGermanSpeech = function(text, triggerBtn = null) {
-    if (!synth) return;
     if (!text || typeof text !== 'string') return;
     
     // Clean markdown formatting
@@ -117,25 +119,77 @@ document.addEventListener('DOMContentLoaded', () => {
     // Clean slashes e.g. "Hallo / Guten Tag" -> natural pause
     spoken = spoken.replace(/\s*\/\s*/g, ', ');
 
+    // Visual feedback on button if provided
+    if (triggerBtn && triggerBtn.classList) {
+      triggerBtn.classList.add('audio-playing-pulse');
+      setTimeout(() => triggerBtn.classList.remove('audio-playing-pulse'), 1600);
+    }
+
+    // Stop any previously playing audio
+    if (activeAudioObj) {
+      try {
+        activeAudioObj.pause();
+        activeAudioObj.currentTime = 0;
+      } catch (e) {}
+      activeAudioObj = null;
+    }
+
+    // Method 1: Google Native German Audio Stream (100% reliable across mobile and desktop without local language packs)
     try {
-      synth.cancel();
-      const utterance = new SpeechSynthesisUtterance(spoken);
-      utterance.lang = 'de-DE';
-      utterance.rate = 0.88; // Comfortable learning speed
-      if (germanVoice) utterance.voice = germanVoice;
-      
-      // Visual feedback on button if provided
-      if (triggerBtn && triggerBtn.classList) {
-        triggerBtn.classList.add('audio-playing-pulse');
-        utterance.onend = () => triggerBtn.classList.remove('audio-playing-pulse');
-        utterance.onerror = () => triggerBtn.classList.remove('audio-playing-pulse');
+      const encoded = encodeURIComponent(spoken);
+      const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=de&q=${encoded}`;
+      const audio = new Audio(audioUrl);
+      audio.playbackRate = window.ttsCurrentSpeed || 1.0;
+      activeAudioObj = audio;
+
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(err => {
+          console.warn("Audio stream blocked or failed, falling back to Web Speech API:", err);
+          playSpeechSynthesisFallback(spoken, triggerBtn);
+        });
       }
-      
-      synth.speak(utterance);
+
+      audio.onended = () => {
+        if (triggerBtn && triggerBtn.classList) triggerBtn.classList.remove('audio-playing-pulse');
+        activeAudioObj = null;
+      };
+      audio.onerror = () => {
+        playSpeechSynthesisFallback(spoken, triggerBtn);
+      };
     } catch (e) {
-      console.warn("Speech synthesis error:", e);
+      playSpeechSynthesisFallback(spoken, triggerBtn);
     }
   };
+
+  function playSpeechSynthesisFallback(spoken, triggerBtn) {
+    if (!synth) return;
+    try {
+      if (synth.paused) synth.resume();
+      synth.cancel();
+
+      setTimeout(() => {
+        const utterance = new SpeechSynthesisUtterance(spoken);
+        utterance.lang = 'de-DE';
+        utterance.rate = (window.ttsCurrentSpeed === 0.8) ? 0.75 : 0.88;
+        
+        const voices = synth.getVoices() || [];
+        const gVoice = voices.find(v => v.lang === 'de-DE' || (v.lang && v.lang.toLowerCase().startsWith('de')));
+        if (gVoice) utterance.voice = gVoice;
+
+        utterance.onend = () => {
+          if (triggerBtn && triggerBtn.classList) triggerBtn.classList.remove('audio-playing-pulse');
+        };
+        utterance.onerror = () => {
+          if (triggerBtn && triggerBtn.classList) triggerBtn.classList.remove('audio-playing-pulse');
+        };
+
+        synth.speak(utterance);
+      }, 30);
+    } catch (e) {
+      console.warn("Speech synthesis fallback failed:", e);
+    }
+  }
 
   // ================= 2. ROOT HTML FONT SIZE SCALER (VISIBLY SCALES ALL REM UNITS!) =================
   const FONT_SCALES = [
@@ -1743,7 +1797,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span>Vocab</span>
               </button>
             </div>
-            <div class="grid grid-cols-2 gap-1.5 pt-0.5">
+            <div class="grid grid-cols-3 gap-1.5 pt-0.5">
+              <button onclick="selectChapter(${idx}); openAudioPronunciationModal(${idx});" class="py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-300 text-blue-900 text-[11px] font-bold flex items-center justify-center gap-1 transition shadow-2xs cursor-pointer" title="Latih Audio Pelafalan Kosakata (TTS)">
+                <span>🔊</span>
+                <span>Audio TTS</span>
+              </button>
               <button onclick="selectChapter(${idx}); openFlashcardModal(${idx});" class="py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 text-[11px] font-bold flex items-center justify-center gap-1 transition shadow-2xs cursor-pointer" title="Practice Chapter Flashcards">
                 <span>🎴</span>
                 <span>Flashcards</span>
@@ -3733,8 +3791,9 @@ document.addEventListener('DOMContentLoaded', () => {
               <p class="text-[11px] text-sky-600 font-medium truncate">${v.en || v.id}</p>
             </div>
           </div>
-          <button class="p-2 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-700 transition cursor-pointer flex-shrink-0 ml-2" onclick="playGermanSpeech('${v.de.replace(/'/g, "\\'")}', this)" title="Listen to German pronunciation">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+          <button class="px-2.5 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold transition cursor-pointer flex-shrink-0 ml-2 flex items-center gap-1 shadow-2xs" onclick="playGermanSpeech('${v.de.replace(/'/g, "\\'")}', this)" title="Dengarkan pelafalan bahasa Jerman">
+            <span>🔊</span>
+            <span class="hidden sm:inline text-[11px]">Dengar</span>
           </button>
         </div>
       `;
@@ -4174,6 +4233,164 @@ document.addEventListener('DOMContentLoaded', () => {
     return String(string).replace(/[&<>"']/g, function (s) {
       return entityMap[s];
     });
+  }
+
+  // ================= 16. AUDIO PRONUNCIATION (TTS TRAINER) MODAL & ENGINE =================
+  let ttsActiveChapterIdx = 0;
+  let ttsAutoPlayActive = false;
+  let ttsAutoPlayTimeout = null;
+  let ttsAutoPlayIndex = 0;
+
+  window.openAudioPronunciationModal = function(chapterIdx = null) {
+    if (chapterIdx !== null && chapterIdx !== undefined) {
+      ttsActiveChapterIdx = chapterIdx;
+    } else {
+      ttsActiveChapterIdx = currentChapterIndex;
+    }
+    const modal = document.getElementById('audioPronunciationModal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+
+    const chapter = NETZWERK_DATA.chapters[ttsActiveChapterIdx];
+    const badge = document.getElementById('ttsChapterBadge');
+    if (badge && chapter) {
+      badge.textContent = `Kapitel ${chapter.id}: ${chapter.title.split(':')[1]?.trim() || chapter.title}`;
+    }
+
+    renderTtsWordList();
+  };
+
+  window.closeAudioPronunciationModal = function() {
+    stopAutoPlayVocab();
+    const modal = document.getElementById('audioPronunciationModal');
+    if (modal) modal.classList.add('hidden');
+    if (activeAudioObj) {
+      try { activeAudioObj.pause(); } catch(e){}
+      activeAudioObj = null;
+    }
+  };
+
+  window.setTtsSpeed = function(speed) {
+    window.ttsCurrentSpeed = speed;
+    const btn08 = document.getElementById('ttsSpeedBtn-08');
+    const btn10 = document.getElementById('ttsSpeedBtn-10');
+    if (speed === 0.8) {
+      if (btn08) btn08.className = 'px-2 py-0.5 rounded-lg text-[10px] font-bold bg-sky-600 text-white shadow-2xs cursor-pointer';
+      if (btn10) btn10.className = 'px-2 py-0.5 rounded-lg text-[10px] font-bold bg-white text-sky-800 border border-sky-200 hover:bg-sky-100 cursor-pointer';
+    } else {
+      if (btn08) btn08.className = 'px-2 py-0.5 rounded-lg text-[10px] font-bold bg-white text-sky-800 border border-sky-200 hover:bg-sky-100 cursor-pointer';
+      if (btn10) btn10.className = 'px-2 py-0.5 rounded-lg text-[10px] font-bold bg-sky-600 text-white shadow-2xs cursor-pointer';
+    }
+    showFloatingToast(`Kecepatan audio diatur ke ${speed}x`);
+  };
+
+  window.playCustomTtsInput = function() {
+    const input = document.getElementById('customTtsInput');
+    if (!input || !input.value.trim()) return;
+    playGermanSpeech(input.value.trim());
+    showFloatingToast(`🔊 Melafalkan: "${input.value.trim()}"`);
+  };
+
+  function renderTtsWordList() {
+    const container = document.getElementById('ttsWordListContainer');
+    if (!container) return;
+    const chapter = NETZWERK_DATA.chapters[ttsActiveChapterIdx];
+    if (!chapter || !chapter.vocabList) {
+      container.innerHTML = `<p class="text-xs text-sky-600 italic text-center py-4">Tidak ada kata di bab ini.</p>`;
+      return;
+    }
+
+    const words = chapter.vocabList;
+    let html = '';
+    words.forEach((v, idx) => {
+      let bClass = 'badge-phrase';
+      if (v.type === 'der') bClass = 'badge-der';
+      if (v.type === 'die') bClass = 'badge-die';
+      if (v.type === 'das') bClass = 'badge-das';
+      if (v.type === 'verb') bClass = 'badge-verb';
+
+      html += `
+        <div id="ttsItemRow-${idx}" class="flex items-center justify-between p-2.5 rounded-xl bg-white border border-sky-200 hover:border-sky-300 transition shadow-2xs">
+          <div class="flex items-center gap-2 truncate">
+            <span class="${bClass} px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider flex-shrink-0">${v.type}</span>
+            <div class="truncate">
+              <span class="text-xs font-black text-sky-950">${v.de}</span>
+              <span class="text-[11px] text-sky-600 font-medium ml-1.5">• ${v.en || ''}</span>
+            </div>
+          </div>
+          <button id="ttsPlayBtn-${idx}" onclick="playGermanSpeech('${v.de.replace(/'/g, "\\'")}', this)" class="px-3 py-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs font-bold transition cursor-pointer flex items-center gap-1 flex-shrink-0 shadow-2xs" title="Putar audio kata ini">
+            <span>🔊</span>
+            <span class="text-[11px]">Dengar</span>
+          </button>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
+  window.toggleAutoPlayAllVocab = function() {
+    if (ttsAutoPlayActive) {
+      stopAutoPlayVocab();
+      showFloatingToast('⏹️ Pemutaran otomatis dihentikan');
+    } else {
+      startAutoPlayVocab();
+      showFloatingToast('▶️ Memulai pemutaran otomatis kosakata...');
+    }
+  };
+
+  function startAutoPlayVocab() {
+    ttsAutoPlayActive = true;
+    ttsAutoPlayIndex = 0;
+    const icon = document.getElementById('ttsAutoPlayIcon');
+    const text = document.getElementById('ttsAutoPlayText');
+    const btn = document.getElementById('ttsAutoPlayBtn');
+    if (icon) icon.textContent = '⏹️';
+    if (text) text.textContent = 'Berhenti';
+    if (btn) btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white flex items-center gap-1.5 shadow-xs cursor-pointer';
+
+    stepAutoPlayVocab();
+  }
+
+  function stopAutoPlayVocab() {
+    ttsAutoPlayActive = false;
+    if (ttsAutoPlayTimeout) clearTimeout(ttsAutoPlayTimeout);
+    const icon = document.getElementById('ttsAutoPlayIcon');
+    const text = document.getElementById('ttsAutoPlayText');
+    const btn = document.getElementById('ttsAutoPlayBtn');
+    const statusText = document.getElementById('ttsNowPlayingText');
+    if (icon) icon.textContent = '▶️';
+    if (text) text.textContent = 'Putar Berurutan (Auto Play)';
+    if (btn) btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-xs cursor-pointer';
+    if (statusText) statusText.textContent = '';
+  }
+
+  function stepAutoPlayVocab() {
+    if (!ttsAutoPlayActive) return;
+    const chapter = NETZWERK_DATA.chapters[ttsActiveChapterIdx];
+    if (!chapter || !chapter.vocabList || ttsAutoPlayIndex >= chapter.vocabList.length) {
+      stopAutoPlayVocab();
+      showFloatingToast('✅ Selesai memutar seluruh kosakata bab ini!');
+      return;
+    }
+
+    const currentWord = chapter.vocabList[ttsAutoPlayIndex];
+    const statusText = document.getElementById('ttsNowPlayingText');
+    if (statusText) statusText.textContent = `Memutar: ${currentWord.de}`;
+
+    // Highlight row
+    const row = document.getElementById(`ttsItemRow-${ttsAutoPlayIndex}`);
+    if (row) {
+      row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      row.classList.add('bg-sky-100');
+      setTimeout(() => row.classList.remove('bg-sky-100'), 2500);
+    }
+
+    const btn = document.getElementById(`ttsPlayBtn-${ttsAutoPlayIndex}`);
+    playGermanSpeech(currentWord.de, btn);
+
+    ttsAutoPlayIndex++;
+    // Interval between words (~2.8s)
+    ttsAutoPlayTimeout = setTimeout(stepAutoPlayVocab, 2800);
   }
 
   // ================= 17. 3D INTERACTIVE FLASHCARD TRAINER ENGINE =================
