@@ -2532,39 +2532,62 @@ document.addEventListener('DOMContentLoaded', () => {
       const isScribble = (reversals >= 3 && ratio >= 1.7) || (reversals >= 4);
       if (!isScribble) return false;
 
-      // Expand bounding box with generous padding (40px)
-      const padX = 40 / w;
-      const padY = 40 / h;
+      // Surgical letter-level precision bounding box (tight 6px padding)
+      const padX = 6 / w;
+      const padY = 6 / h;
       const sMinX = minX - padX;
       const sMaxX = maxX + padX;
       const sMinY = minY - padY;
       const sMaxY = maxY + padY;
 
-      const remainingStrokes = [];
-      let erasedCount = 0;
+      const newStrokes = [];
+      let erasedPointsCount = 0;
 
       for (let sIdx = 0; sIdx < strokes.length; sIdx++) {
         const targetStroke = strokes[sIdx];
-        let overlaps = false;
-        if (targetStroke.points) {
-          for (let pIdx = 0; pIdx < targetStroke.points.length; pIdx++) {
-            const tp = targetStroke.points[pIdx];
-            if (tp.x >= sMinX && tp.x <= sMaxX && tp.y >= sMinY && tp.y <= sMaxY) {
-              overlaps = true;
-              break;
+        const tpts = targetStroke.points;
+        if (!tpts || tpts.length === 0) continue;
+
+        let currentSegment = [];
+        let strokeModified = false;
+
+        for (let pIdx = 0; pIdx < tpts.length; pIdx++) {
+          const tp = tpts[pIdx];
+          const isInside = (tp.x >= sMinX && tp.x <= sMaxX && tp.y >= sMinY && tp.y <= sMaxY);
+
+          if (isInside) {
+            strokeModified = true;
+            erasedPointsCount++;
+            if (currentSegment.length >= 2) {
+              newStrokes.push({
+                tool: targetStroke.tool,
+                color: targetStroke.color,
+                width: targetStroke.width,
+                points: currentSegment
+              });
             }
+            currentSegment = [];
+          } else {
+            currentSegment.push(tp);
           }
         }
 
-        if (overlaps) {
-          erasedCount++;
-        } else {
-          remainingStrokes.push(targetStroke);
+        if (currentSegment.length >= 2) {
+          if (strokeModified) {
+            newStrokes.push({
+              tool: targetStroke.tool,
+              color: targetStroke.color,
+              width: targetStroke.width,
+              points: currentSegment
+            });
+          } else {
+            newStrokes.push(targetStroke);
+          }
         }
       }
 
-      if (erasedCount > 0) {
-        savePageStrokes(remainingStrokes);
+      if (erasedPointsCount > 0) {
+        savePageStrokes(newStrokes);
         showScribbleErasedFeedback();
       }
       return true; // Always discard the scribble itself!
