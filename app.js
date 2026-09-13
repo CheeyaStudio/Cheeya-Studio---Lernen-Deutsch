@@ -1798,7 +1798,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </button>
             </div>
             <div class="grid grid-cols-3 gap-1.5 pt-0.5">
-              <button onclick="selectChapter(${idx}); openAudioPronunciationModal(${idx});" class="py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-300 text-blue-900 text-[11px] font-bold flex items-center justify-center gap-1 transition shadow-2xs cursor-pointer" title="Latih Audio Pelafalan Kosakata (TTS)">
+              <button onclick="selectChapter(${idx}); openAudioPronunciationModal(${idx});" class="py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-300 text-blue-900 text-[11px] font-bold flex items-center justify-center gap-1 transition shadow-2xs cursor-pointer" title="Practice Vocabulary Audio (TTS)">
                 <span>🔊</span>
                 <span>Audio TTS</span>
               </button>
@@ -3801,9 +3801,9 @@ document.addEventListener('DOMContentLoaded', () => {
               <p class="text-[11px] text-sky-600 font-medium truncate">${v.en || v.id}</p>
             </div>
           </div>
-          <button class="px-2.5 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold transition cursor-pointer flex-shrink-0 ml-2 flex items-center gap-1 shadow-2xs" onclick="playGermanSpeech('${v.de.replace(/'/g, "\\'")}', this)" title="Dengarkan pelafalan bahasa Jerman">
+          <button class="px-2.5 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold transition cursor-pointer flex-shrink-0 ml-2 flex items-center gap-1 shadow-2xs" onclick="playGermanSpeech('${v.de.replace(/'/g, "\\'")}', this)" title="Listen to German pronunciation">
             <span>🔊</span>
-            <span class="hidden sm:inline text-[11px]">Dengar</span>
+            <span class="hidden sm:inline text-[11px]">Listen</span>
           </button>
         </div>
       `;
@@ -4328,9 +4328,9 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="text-[11px] text-sky-600 font-medium ml-1.5">• ${v.en || ''}</span>
             </div>
           </div>
-          <button id="ttsPlayBtn-${idx}" onclick="playGermanSpeech('${v.de.replace(/'/g, "\\'")}', this)" class="px-3 py-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs font-bold transition cursor-pointer flex items-center gap-1 flex-shrink-0 shadow-2xs" title="Putar audio kata ini">
+          <button id="ttsPlayBtn-${idx}" onclick="playGermanSpeech('${v.de.replace(/'/g, "\\'")}', this)" class="px-3 py-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs font-bold transition cursor-pointer flex items-center gap-1 flex-shrink-0 shadow-2xs" title="Listen to pronunciation">
             <span>🔊</span>
-            <span class="text-[11px]">Dengar</span>
+            <span class="text-[11px]">Listen</span>
           </button>
         </div>
       `;
@@ -4341,10 +4341,10 @@ document.addEventListener('DOMContentLoaded', () => {
   window.toggleAutoPlayAllVocab = function() {
     if (ttsAutoPlayActive) {
       stopAutoPlayVocab();
-      showFloatingToast('⏹️ Pemutaran otomatis dihentikan');
+      showFloatingToast('⏹️ Auto-play stopped');
     } else {
       startAutoPlayVocab();
-      showFloatingToast('▶️ Memulai pemutaran otomatis kosakata...');
+      showFloatingToast('▶️ Starting vocabulary auto-play...');
     }
   };
 
@@ -4355,7 +4355,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const text = document.getElementById('ttsAutoPlayText');
     const btn = document.getElementById('ttsAutoPlayBtn');
     if (icon) icon.textContent = '⏹️';
-    if (text) text.textContent = 'Berhenti';
+    if (text) text.textContent = 'Stop';
     if (btn) btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white flex items-center gap-1.5 shadow-xs cursor-pointer';
 
     stepAutoPlayVocab();
@@ -4369,7 +4369,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('ttsAutoPlayBtn');
     const statusText = document.getElementById('ttsNowPlayingText');
     if (icon) icon.textContent = '▶️';
-    if (text) text.textContent = 'Putar Berurutan (Auto Play)';
+    if (text) text.textContent = 'Auto Play Chapter Vocab';
     if (btn) btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-xs cursor-pointer';
     if (statusText) statusText.textContent = '';
   }
@@ -4379,13 +4379,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const chapter = NETZWERK_DATA.chapters[ttsActiveChapterIdx];
     if (!chapter || !chapter.vocabList || ttsAutoPlayIndex >= chapter.vocabList.length) {
       stopAutoPlayVocab();
-      showFloatingToast('✅ Selesai memutar seluruh kosakata bab ini!');
+      showFloatingToast('✅ Completed playing chapter vocabulary!');
       return;
     }
 
     const currentWord = chapter.vocabList[ttsAutoPlayIndex];
     const statusText = document.getElementById('ttsNowPlayingText');
-    if (statusText) statusText.textContent = `Memutar: ${currentWord.de}`;
+    if (statusText) statusText.textContent = `Playing: ${currentWord.de}`;
 
     // Highlight row
     const row = document.getElementById(`ttsItemRow-${ttsAutoPlayIndex}`);
@@ -5090,24 +5090,57 @@ document.addEventListener('DOMContentLoaded', () => {
     'immer': 'always (Adverb of frequency)'
   };
 
-  const KNOWN_VERB_CONJUGATIONS = {
-    // sein (to be)
-    'bin': { inf: 'sein', person: '1st Sing. (ich)', tense: 'Präsens', en: 'am', irregular: true, note: 'Irregular copula verb: links subject to a Nominative predicate' },
-    'bist': { inf: 'sein', person: '2nd Sing. (du)', tense: 'Präsens', en: 'are', irregular: true, note: 'Irregular copula verb' },
-    'ist': { inf: 'sein', person: '3rd Sing. (er/sie/es/man)', tense: 'Präsens', en: 'is', irregular: true, note: 'Irregular copula verb' },
-    'sind': { inf: 'sein', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'are', irregular: true, note: 'Irregular copula verb' },
-    'seid': { inf: 'sein', person: '2nd Plur. (ihr)', tense: 'Präsens', en: 'are', irregular: true, note: 'Irregular copula verb' },
-    'war': { inf: 'sein', person: '1st/3rd Sing. (ich/er/sie/es)', tense: 'Präteritum', en: 'was', irregular: true },
-    'waren': { inf: 'sein', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präteritum', en: 'were', irregular: true },
+  const GERMAN_PRONOUNS_DICT = {
+    // Nominativ (Subject - The Doer)
+    'ich': { case: 'Nominativ', role: 'Subject (The Doer)', person: '1st Person Singular', en: 'I', reason: 'The person doing the action (Wer? = Who?). In German, the subject is ALWAYS in the Nominative case.' },
+    'du': { case: 'Nominativ', role: 'Subject (The Doer)', person: '2nd Person Singular', en: 'you (informal)', reason: 'The person doing the action (Wer? = Who?). Always in the Nominative case.' },
+    'er': { case: 'Nominativ', role: 'Subject (The Doer)', person: '3rd Person Singular (masc)', en: 'he', reason: 'The person/thing doing the action (Wer? = Who?). Always in the Nominative case.' },
+    'sie': { case: 'Nominativ / Akkusativ', role: 'Subject or Direct Object', person: '3rd Person', en: 'she / they / her', reason: 'Acts as Subject (Nominativ: she/they) or Direct Object (Akkusativ: her/them).' },
+    'es': { case: 'Nominativ / Akkusativ', role: 'Subject or Direct Object', person: '3rd Person Singular (neut)', en: 'it', reason: 'Acts as Subject (Nominativ) or Direct Object (Akkusativ).' },
+    'wir': { case: 'Nominativ', role: 'Subject (The Doers)', person: '1st Person Plural', en: 'we', reason: 'The group doing the action (Wer? = Who?). Always in the Nominative case.' },
+    'ihr': { case: 'Nominativ / Dativ', role: 'Subject (You all) or Indirect Object', person: '2nd Person Plural', en: 'you all / her', reason: 'Nominative subject (you all) or Dative indirect object (to her).' },
+    'Sie': { case: 'Nominativ / Akkusativ', role: 'Subject or Direct Object (Formal)', person: 'Formal Polite', en: 'you (formal)', reason: 'Formal polite address. Acts as subject in Nominative or object in Akkusativ.' },
+    'man': { case: 'Nominativ', role: 'Subject (General One / People)', person: '3rd Person Singular', en: 'one / people in general', reason: 'General indefinite subject pronoun (e.g. Man spricht Deutsch).' },
 
-    // haben (to have)
-    'habe': { inf: 'haben', person: '1st Sing. (ich)', tense: 'Präsens', en: 'have', irregular: false, note: 'Requires Accusative direct object (e.g. Ich habe einen Hund)' },
-    'hast': { inf: 'haben', person: '2nd Sing. (du)', tense: 'Präsens', en: 'have', irregular: true, note: 'Stem change: -b- drops (du hast)' },
-    'hat': { inf: 'haben', person: '3rd Sing. (er/sie/es/man)', tense: 'Präsens', en: 'has', irregular: true, note: 'Stem change: -b- drops (er hat)' },
-    'haben': { inf: 'haben', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'have', irregular: false },
-    'habt': { inf: 'haben', person: '2nd Plur. (ihr)', tense: 'Präsens', en: 'have', irregular: false },
-    'hatte': { inf: 'haben', person: '1st/3rd Sing. (ich/er/sie/es)', tense: 'Präteritum', en: 'had', irregular: true },
-    'hatten': { inf: 'haben', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präteritum', en: 'had', irregular: true },
+    // Akkusativ (Direct Object - The Receiver)
+    'mich': { case: 'Akkusativ', role: 'Direct Object (The Receiver)', person: '1st Person Singular', en: 'me', base: 'ich', reason: 'Direct object receiving the action (Wen? = Whom?). Form of "ich" in the Accusative case.' },
+    'dich': { case: 'Akkusativ', role: 'Direct Object (The Receiver)', person: '2nd Person Singular', en: 'you (informal)', base: 'du', reason: 'Direct object receiving the action (Wen? = Whom?). Form of "du" in the Accusative case. Triggered because the verb directs its action directly onto you!' },
+    'ihn': { case: 'Akkusativ', role: 'Direct Object (The Receiver)', person: '3rd Person Singular (masc)', en: 'him', base: 'er', reason: 'Direct object receiving the action (Wen? = Whom?). Form of "er" in the Accusative case.' },
+    'uns': { case: 'Akkusativ / Dativ', role: 'Object (Us / To us)', person: '1st Person Plural', en: 'us', base: 'wir', reason: 'Acts as Accusative (direct object) or Dative (indirect object) for "wir".' },
+    'euch': { case: 'Akkusativ / Dativ', role: 'Object (You all / To you all)', person: '2nd Person Plural', en: 'you all', base: 'ihr', reason: 'Acts as Accusative or Dative for "ihr".' },
+
+    // Dativ (Indirect Object / Recipient)
+    'mir': { case: 'Dativ', role: 'Indirect Object (Recipient: To/For me)', person: '1st Person Singular', en: 'me / to me', base: 'ich', reason: 'Dative case (Wem? = To whom?). Triggered by a Dative verb (helfen, schmecken, gefallen) or a Dative preposition (mit, bei, zu).' },
+    'dir': { case: 'Dativ', role: 'Indirect Object (Recipient: To/For you)', person: '2nd Person Singular', en: 'you / to you', base: 'du', reason: 'Dative case (Wem? = To whom?). Triggered by a Dative verb (helfen, danken) or a Dative preposition (mit, bei).' },
+    'ihm': { case: 'Dativ', role: 'Indirect Object (To/For him or it)', person: '3rd Person Singular (masc/neut)', en: 'him / it', base: 'er / es', reason: 'Dative case for masculine or neuter pronoun.' },
+    'ihnen': { case: 'Dativ', role: 'Indirect Object (To/For them)', person: '3rd Person Plural', en: 'them / to them', base: 'sie', reason: 'Dative case for plural third person.' },
+    'Ihnen': { case: 'Dativ', role: 'Indirect Object (To/For you formal)', person: 'Formal Polite', en: 'you (formal) / to you', base: 'Sie', reason: 'Dative case for polite formal address (e.g. "Wie geht es Ihnen?").' }
+  };
+
+  const KNOWN_VERB_CONJUGATIONS = {
+    // sein (to be) - Copula / Equal sign
+    'bin': { inf: 'sein', person: '1st Sing. (ich)', tense: 'Present (Präsens)', en: 'am', copula: true, note: 'Acts like an equal sign (=). Both sides stay in Nominative!' },
+    'bist': { inf: 'sein', person: '2nd Sing. (du)', tense: 'Present (Präsens)', en: 'are', copula: true, note: 'Acts like an equal sign (=).' },
+    'ist': { inf: 'sein', person: '3rd Sing. (er/sie/es/man)', tense: 'Present (Präsens)', en: 'is', copula: true, note: 'Acts like an equal sign (=).' },
+    'sind': { inf: 'sein', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Present (Präsens)', en: 'are', copula: true, note: 'Acts like an equal sign (=).' },
+    'seid': { inf: 'sein', person: '2nd Plur. (ihr)', tense: 'Present (Präsens)', en: 'are', copula: true, note: 'Acts like an equal sign (=).' },
+    'war': { inf: 'sein', person: '1st/3rd Sing. (ich/er/sie/es)', tense: 'Past (Präteritum)', en: 'was', copula: true },
+    'waren': { inf: 'sein', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Past (Präteritum)', en: 'were', copula: true },
+
+    // haben (to have) - Takes Akkusativ!
+    'habe': { inf: 'haben', person: '1st Sing. (ich)', tense: 'Present (Präsens)', en: 'have', governs: 'Akkusativ', note: 'Takes an Accusative direct object (e.g. Ich habe einen Hund)' },
+    'hast': { inf: 'haben', person: '2nd Sing. (du)', tense: 'Present (Präsens)', en: 'have', governs: 'Akkusativ', note: 'Stem change: -b- drops (du hast)' },
+    'hat': { inf: 'haben', person: '3rd Sing. (er/sie/es/man)', tense: 'Present (Präsens)', en: 'has', governs: 'Akkusativ', note: 'Stem change: -b- drops (er hat)' },
+    'haben': { inf: 'haben', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Present (Präsens)', en: 'have', governs: 'Akkusativ' },
+    'habt': { inf: 'haben', person: '2nd Plur. (ihr)', tense: 'Present (Präsens)', en: 'have', governs: 'Akkusativ' },
+    'hatte': { inf: 'haben', person: '1st/3rd Sing. (ich/er/sie/es)', tense: 'Past (Präteritum)', en: 'had', governs: 'Akkusativ' },
+    'hatten': { inf: 'haben', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Past (Präteritum)', en: 'had', governs: 'Akkusativ' },
+
+    // lieben (to love) - Takes Akkusativ!
+    'liebe': { inf: 'lieben', person: '1st Sing. (ich)', tense: 'Present (Präsens)', en: 'love', governs: 'Akkusativ', note: 'Takes an Accusative direct object (e.g. Ich liebe dich)' },
+    'liebst': { inf: 'lieben', person: '2nd Sing. (du)', tense: 'Present (Präsens)', en: 'love', governs: 'Akkusativ' },
+    'liebt': { inf: 'lieben', person: '3rd Sing. / 2nd Plur.', tense: 'Present (Präsens)', en: 'loves / love', governs: 'Akkusativ' },
+    'lieben': { inf: 'lieben', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Present (Präsens)', en: 'love', governs: 'Akkusativ' },
 
     // werden (to become / auxiliary for future)
     'werde': { inf: 'werden', person: '1st Sing. (ich)', tense: 'Präsens', en: 'become / will', irregular: false },
@@ -5228,7 +5261,103 @@ document.addEventListener('DOMContentLoaded', () => {
     'bleibe': { inf: 'bleiben', person: '1st Sing. (ich)', tense: 'Präsens', en: 'stay / remain', regular: true },
     'bleibst': { inf: 'bleiben', person: '2nd Sing. (du)', tense: 'Präsens', en: 'stay / remain', regular: true },
     'bleibt': { inf: 'bleiben', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'stays / stay', regular: true },
-    'bleiben': { inf: 'bleiben', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'stay / remain', regular: true }
+    'bleiben': { inf: 'bleiben', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'stay / remain', regular: true },
+
+    // machen (to make / do)
+    'mache': { inf: 'machen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'do / make', governs: 'Akkusativ' },
+    'machst': { inf: 'machen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'do / make', governs: 'Akkusativ' },
+    'macht': { inf: 'machen', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'does / make', governs: 'Akkusativ' },
+    'machen': { inf: 'machen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'do / make', governs: 'Akkusativ' },
+
+    // sagen (to say)
+    'sage': { inf: 'sagen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'say' },
+    'sagst': { inf: 'sagen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'say' },
+    'sagt': { inf: 'sagen', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'says' },
+    'sagen': { inf: 'sagen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'say' },
+
+    // fragen (to ask)
+    'frage': { inf: 'fragen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'ask', governs: 'Akkusativ' },
+    'fragst': { inf: 'fragen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'ask', governs: 'Akkusativ' },
+    'fragt': { inf: 'fragen', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'asks', governs: 'Akkusativ' },
+    'fragen': { inf: 'fragen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'ask', governs: 'Akkusativ' },
+
+    // geben (to give)
+    'gebe': { inf: 'geben', person: '1st Sing. (ich)', tense: 'Präsens', en: 'give' },
+    'gibst': { inf: 'geben', person: '2nd Sing. (du)', tense: 'Präsens', en: 'give', note: 'Strong verb with vowel shift: e -> i' },
+    'gibt': { inf: 'geben', person: '3rd Sing. (er/sie/es/man)', tense: 'Präsens', en: 'gives', note: 'Strong verb with vowel shift: e -> i. "es gibt" takes Akkusativ.' },
+    'geben': { inf: 'geben', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'give' },
+
+    // nehmen (to take)
+    'nehme': { inf: 'nehmen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'take', governs: 'Akkusativ' },
+    'nimmst': { inf: 'nehmen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'take', governs: 'Akkusativ', note: 'Strong verb with vowel shift: e -> i' },
+    'nimmt': { inf: 'nehmen', person: '3rd Sing. (er/sie/es)', tense: 'Präsens', en: 'takes', governs: 'Akkusativ', note: 'Strong verb with vowel shift: e -> i' },
+    'nehmen': { inf: 'nehmen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'take', governs: 'Akkusativ' },
+
+    // finden (to find)
+    'finde': { inf: 'finden', person: '1st Sing. (ich)', tense: 'Präsens', en: 'find / think', governs: 'Akkusativ' },
+    'findest': { inf: 'finden', person: '2nd Sing. (du)', tense: 'Präsens', en: 'find', governs: 'Akkusativ' },
+    'findet': { inf: 'finden', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'finds', governs: 'Akkusativ' },
+    'finden': { inf: 'finden', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'find', governs: 'Akkusativ' },
+
+    // kennen (to know someone/place)
+    'kenne': { inf: 'kennen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'know', governs: 'Akkusativ' },
+    'kennst': { inf: 'kennen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'know', governs: 'Akkusativ' },
+    'kennt': { inf: 'kennen', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'knows', governs: 'Akkusativ' },
+    'kennen': { inf: 'kennen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'know', governs: 'Akkusativ' },
+
+    // hören (to hear / listen)
+    'höre': { inf: 'hören', person: '1st Sing. (ich)', tense: 'Präsens', en: 'hear / listen', governs: 'Akkusativ' },
+    'hörst': { inf: 'hören', person: '2nd Sing. (du)', tense: 'Präsens', en: 'hear', governs: 'Akkusativ' },
+    'hört': { inf: 'hören', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'hears', governs: 'Akkusativ' },
+    'hören': { inf: 'hören', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'hear', governs: 'Akkusativ' },
+
+    // schreiben (to write)
+    'schreibe': { inf: 'schreiben', person: '1st Sing. (ich)', tense: 'Präsens', en: 'write', governs: 'Akkusativ' },
+    'schreibst': { inf: 'schreiben', person: '2nd Sing. (du)', tense: 'Präsens', en: 'write', governs: 'Akkusativ' },
+    'schreibt': { inf: 'schreiben', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'writes', governs: 'Akkusativ' },
+    'schreiben': { inf: 'schreiben', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'write', governs: 'Akkusativ' },
+
+    // spielen (to play)
+    'spiele': { inf: 'spielen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'play', governs: 'Akkusativ' },
+    'spielst': { inf: 'spielen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'play', governs: 'Akkusativ' },
+    'spielt': { inf: 'spielen', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'plays', governs: 'Akkusativ' },
+    'spielen': { inf: 'spielen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'play', governs: 'Akkusativ' },
+
+    // treffen (to meet)
+    'treffe': { inf: 'treffen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'meet', governs: 'Akkusativ' },
+    'triffst': { inf: 'treffen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'meet', governs: 'Akkusativ', note: 'Vowel shift: e -> i' },
+    'trifft': { inf: 'treffen', person: '3rd Sing. (er/sie/es)', tense: 'Präsens', en: 'meets', governs: 'Akkusativ', note: 'Vowel shift: e -> i' },
+    'treffen': { inf: 'treffen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'meet', governs: 'Akkusativ' },
+
+    // verstehen (to understand)
+    'verstehe': { inf: 'verstehen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'understand', governs: 'Akkusativ' },
+    'verstehst': { inf: 'verstehen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'understand', governs: 'Akkusativ' },
+    'versteht': { inf: 'verstehen', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'understands', governs: 'Akkusativ' },
+    'verstehen': { inf: 'verstehen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'understand', governs: 'Akkusativ' },
+
+    // danken (to thank) - DATIV
+    'danke': { inf: 'danken', person: '1st Sing. (ich)', tense: 'Präsens', en: 'thank', governs: 'Dativ', note: 'Strictly requires a DATIVE object (e.g. Ich danke dir!)' },
+    'dankst': { inf: 'danken', person: '2nd Sing. (du)', tense: 'Präsens', en: 'thank', governs: 'Dativ' },
+    'dankt': { inf: 'danken', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'thanks', governs: 'Dativ' },
+    'danken': { inf: 'danken', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'thank', governs: 'Dativ' },
+
+    // gefallen (to appeal to / like) - DATIV
+    'gefällt': { inf: 'gefallen', person: '3rd Sing. (er/sie/es)', tense: 'Präsens', en: 'pleases / appeals to', governs: 'Dativ', note: 'Requires DATIVE (e.g. Das gefällt mir!)' },
+    'gefallen': { inf: 'gefallen', person: '3rd Plur.', tense: 'Präsens', en: 'please / appeal to', governs: 'Dativ' },
+
+    // schmecken (to taste good to) - DATIV
+    'schmeckt': { inf: 'schmecken', person: '3rd Sing. (er/sie/es)', tense: 'Präsens', en: 'tastes good to', governs: 'Dativ', note: 'Requires DATIVE recipient (e.g. Das schmeckt mir!)' },
+    'schmecken': { inf: 'schmecken', person: '3rd Plur.', tense: 'Präsens', en: 'taste good to', governs: 'Dativ' },
+
+    // antworten (to answer) - DATIV
+    'antworte': { inf: 'antworten', person: '1st Sing. (ich)', tense: 'Präsens', en: 'answer', governs: 'Dativ' },
+    'antwortest': { inf: 'antworten', person: '2nd Sing. (du)', tense: 'Präsens', en: 'answer', governs: 'Dativ' },
+    'antwortet': { inf: 'antworten', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'answers', governs: 'Dativ' },
+    'antworten': { inf: 'antworten', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'answer', governs: 'Dativ' },
+
+    // passen (to suit / fit) - DATIV
+    'passt': { inf: 'passen', person: '3rd Sing.', tense: 'Präsens', en: 'fits / suits', governs: 'Dativ', note: 'Requires DATIVE (e.g. Das passt mir gut)' },
+    'passen': { inf: 'passen', person: '3rd Plur.', tense: 'Präsens', en: 'fit / suit', governs: 'Dativ' }
   };
 
   const COMMON_GERMAN_NOUNS = {
@@ -5479,9 +5608,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const isExclamation = (lastChar === '!');
     const firstWord = tokens[0]?.lower || '';
 
-    let sentenceType = 'Aussagesatz (Declarative Main Clause)';
-    let sentenceBadgeColor = 'bg-sky-100 text-sky-800 border-sky-300';
-    let sentenceDesc = 'A standard German main clause where the conjugated verb strictly stands in **Position 2 (V2 Rule)**.';
+    // 1. Identify Finite Verb Token & Subject Agreement
+    let finiteVerbToken = null;
+    for (let i = 0; i < tokens.length; i++) {
+      const t = tokens[i];
+      let verbInfo = KNOWN_VERB_CONJUGATIONS[t.lower];
+      // Algorithmic detection for regular verbs if not in dictionary
+      if (!verbInfo && i > 0 && !KNOWN_VERB_CONJUGATIONS[tokens[0].lower]) {
+        if (t.lower.endsWith('e') && i === 1) {
+          verbInfo = { inf: t.lower + 'n', person: '1st Sing. (ich)', tense: 'Present (Präsens)', en: t.lower, regular: true, governs: 'Akkusativ' };
+        } else if (t.lower.endsWith('st') && i === 1) {
+          verbInfo = { inf: t.lower.slice(0, -2) + 'en', person: '2nd Sing. (du)', tense: 'Present (Präsens)', en: t.lower, regular: true, governs: 'Akkusativ' };
+        } else if (t.lower.endsWith('t') && i === 1) {
+          verbInfo = { inf: t.lower.slice(0, -1) + 'en', person: '3rd Sing. (er/sie/es)', tense: 'Present (Präsens)', en: t.lower, regular: true, governs: 'Akkusativ' };
+        }
+      }
+      if (verbInfo && !finiteVerbToken) {
+        finiteVerbToken = { token: t, index: i, info: verbInfo };
+      }
+    }
+
+    // 2. Sentence Architecture & Word Order Rules (Newbie-Friendly)
+    let sentenceType = 'Standard Sentence (Subject First)';
+    let sentenceBadgeColor = 'bg-emerald-100 text-emerald-800 border-emerald-300';
+    let sentenceDesc = '';
     let wordOrderExplanation = '';
     let isSubordinate = false;
 
@@ -5489,10 +5639,10 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let t of tokens) {
       if (SUBORDINATING_CONJUNCTIONS_DICT[t.lower]) {
         isSubordinate = true;
-        sentenceType = 'Nebensatz (Subordinate Clause)';
+        sentenceType = 'Subordinate Clause (Nebensatz)';
         sentenceBadgeColor = 'bg-indigo-100 text-indigo-800 border-indigo-300';
-        sentenceDesc = `Introduced by subordinator <strong>„${t.clean}“</strong> (${SUBORDINATING_CONJUNCTIONS_DICT[t.lower]}). In German subordinate clauses, the conjugated verb is pushed to the <strong>absolute end (Verbletzt-Stellung)</strong>.`;
-        wordOrderExplanation = `The conjunction <strong>„${t.clean}“</strong> sends the finite verb to the sentence-final position before the punctuation.`;
+        sentenceDesc = `Starts with the conjunction <strong>"${t.clean}"</strong> (${SUBORDINATING_CONJUNCTIONS_DICT[t.lower]}).`;
+        wordOrderExplanation = `💡 <strong>The Verb-Kicker Rule</strong>: In German, subordinate conjunctions like <strong>"${t.clean}"</strong> kick the conjugated verb all the way to the <strong>very end of the sentence</strong>!`;
         break;
       }
     }
@@ -5500,178 +5650,345 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!isSubordinate) {
       if (isQuestion) {
         if (QUESTION_WORDS_DICT[firstWord]) {
-          sentenceType = 'W-Frage (Information Question)';
+          sentenceType = 'W-Question (Information Question)';
           sentenceBadgeColor = 'bg-amber-100 text-amber-800 border-amber-300';
-          sentenceDesc = `Starts with the interrogative word <strong>„${tokens[0].clean}“</strong> (${QUESTION_WORDS_DICT[firstWord]}).`;
-          wordOrderExplanation = `Position 1 is reserved for the W-word (<strong>„${tokens[0].clean}“</strong>), the finite verb is locked in <strong>Position 2</strong>, and the subject follows in <strong>Position 3</strong>.`;
+          sentenceDesc = `Starts with the question word <strong>"${tokens[0].clean}"</strong> (${QUESTION_WORDS_DICT[firstWord]}).`;
+          wordOrderExplanation = `💡 <strong>W-Question Rule</strong>: <strong>Position 1</strong> is the question word (<em>${tokens[0].clean}</em>), the verb is locked in <strong>Position 2</strong>, and the subject follows in <strong>Position 3</strong>.`;
         } else {
-          sentenceType = 'Ja/Nein-Frage (Yes/No Question)';
+          sentenceType = 'Yes/No Question (Ja/Nein-Frage)';
           sentenceBadgeColor = 'bg-purple-100 text-purple-800 border-purple-300';
-          sentenceDesc = 'A polar question answered with Ja (Yes) or Nein (No) or Doch.';
-          wordOrderExplanation = `The conjugated verb is placed in <strong>Position 1 (Verb-Erst-Stellung)</strong> at the beginning, followed directly by the subject in <strong>Position 2</strong>.`;
+          sentenceDesc = 'A polar question answered with Yes (Ja) or No (Nein).';
+          wordOrderExplanation = `💡 <strong>Yes/No Question Rule</strong>: The verb jumps to <strong>Position 1</strong> at the very start of the sentence, followed directly by the subject in <strong>Position 2</strong>!`;
         }
       } else if (isExclamation && (KNOWN_VERB_CONJUGATIONS[firstWord] || firstWord.endsWith('en') || firstWord.endsWith('t'))) {
-        sentenceType = 'Imperativ (Command / Request)';
+        sentenceType = 'Command / Imperative (Imperativ)';
         sentenceBadgeColor = 'bg-rose-100 text-rose-800 border-rose-300';
         sentenceDesc = 'An imperative command or instruction.';
-        wordOrderExplanation = 'The base command verb occupies <strong>Position 1</strong> at the very beginning of the clause.';
+        wordOrderExplanation = '💡 <strong>Command Rule</strong>: The action verb occupies <strong>Position 1</strong> at the very beginning of the sentence.';
       } else {
         const isSubjectFirst = ['ich', 'du', 'er', 'sie', 'es', 'wir', 'ihr', 'Sie', 'man'].includes(firstWord) ||
                                ['der', 'die', 'das', 'ein', 'eine', 'mein', 'dein', 'ihr', 'unser'].includes(firstWord);
         
         if (isSubjectFirst) {
-          wordOrderExplanation = `📌 <strong>Standard Order (Subjekt-Verb-Objekt)</strong>: The subject occupies <strong>Position 1 (Vorfeld)</strong>. Under the fundamental German <strong>V2 Rule (Verb-Zweit-Stellung)</strong>, the finite conjugated verb strictly occupies <strong>Position 2</strong>.`;
+          sentenceType = 'Standard Sentence (Subject First)';
+          sentenceBadgeColor = 'bg-emerald-100 text-emerald-800 border-emerald-300';
+          sentenceDesc = 'A classic German sentence starting with the person or thing doing the action.';
+          wordOrderExplanation = `💡 <strong>The Golden German Rule (Verb in Position 2)</strong>: In normal German sentences, the conjugated verb (action word) ALWAYS occupies <strong>Position 2</strong>. The subject (<strong>"${tokens[0].clean}"</strong>) takes <strong>Position 1</strong>, followed immediately by the verb in <strong>Position 2</strong>.`;
         } else {
-          wordOrderExplanation = `⚡ <strong>Inversion Rule Applied (Inversion / Umstellung)</strong>: <strong>Position 1 (Vorfeld)</strong> is occupied by an adverbial or prepositional phrase (<strong>„${tokens[0].clean}“</strong>) for topicalization. Because German main clauses strictly require the conjugated verb in <strong>Position 2</strong>, the subject inverts into <strong>Position 3</strong>!`;
+          sentenceType = 'Inverted Sentence (Time/Adverb First)';
+          sentenceBadgeColor = 'bg-teal-100 text-teal-800 border-teal-300';
+          sentenceDesc = `Starts with <strong>"${tokens[0].clean}"</strong> to set the time, place, or emphasis.`;
+          wordOrderExplanation = `💡 <strong>The Inversion Hop Rule</strong>: Because <strong>Position 1</strong> is occupied by <strong>"${tokens[0].clean}"</strong>, and the verb MUST stay in <strong>Position 2</strong>, the subject (<strong>"${tokens[2] ? tokens[2].clean : 'subject'}"</strong>) politely hops into <strong>Position 3</strong> right after the verb!`;
         }
       }
     }
 
-    // Identify Finite Verb Token
-    let finiteVerbToken = null;
-    for (let i = 0; i < tokens.length; i++) {
-      const t = tokens[i];
-      const verbInfo = KNOWN_VERB_CONJUGATIONS[t.lower];
-      if (verbInfo && !finiteVerbToken) {
-        finiteVerbToken = { token: t, index: i, info: verbInfo };
-      }
-    }
-
-    // Check Satzklammer (Sentence Bracket)
+    // Check Satzklammer (Sentence Bracket: modal verbs, separable verbs, Perfekt past tense)
     let bracketInfo = null;
     if (tokens.length > 2) {
       const lastTok = tokens[tokens.length - 1];
       const SEPARABLE_PREFIXES = ['auf', 'an', 'ab', 'aus', 'ein', 'mit', 'nach', 'vor', 'zu', 'zurück', 'fern'];
       if (SEPARABLE_PREFIXES.includes(lastTok.lower)) {
         bracketInfo = {
-          type: 'Separable Verb (Trennbare Verben)',
-          desc: `The prefix <strong>„${lastTok.clean}“</strong> has detached and moved to the <strong>very end of the clause (Satzende)</strong>, while the conjugated stem occupies Position 2.`
+          type: 'Separable Verb Bracket (Trennbare Verben)',
+          desc: `💡 <strong>The Separable Prefix Bracket</strong>: The main conjugated stem occupies <strong>Position 2</strong>, while the detached prefix <strong>"${lastTok.clean}"</strong> moves all the way to the <strong>very end of the sentence</strong> (like a bracket holding the sentence together!).`
         };
       } else if (finiteVerbToken && finiteVerbToken.info.modal && (lastTok.lower.endsWith('en') || lastTok.lower.endsWith('ern') || lastTok.lower.endsWith('eln'))) {
         bracketInfo = {
           type: 'Modal Verb Bracket (Modalverb-Satzklammer)',
-          desc: `The conjugated modal verb <strong>„${finiteVerbToken.token.clean}“</strong> occupies Position 2, while the complementary action verb <strong>„${lastTok.clean}“</strong> is placed at the <strong>sentence end in base infinitive form</strong>.`
+          desc: `💡 <strong>The Modal Verb Bracket</strong>: The helping modal verb <strong>"${finiteVerbToken.token.clean}"</strong> takes <strong>Position 2</strong>, and the main action verb <strong>"${lastTok.clean}"</strong> is placed at the <strong>sentence end in base infinitive form</strong>.`
         };
-      } else if (finiteVerbToken && (finiteVerbToken.info.inf === 'haben' || finiteVerbToken.info.inf === 'sein') && (lastTok.lower.startsWith('ge') || lastTok.lower.includes('t') || lastTok.lower.includes('en'))) {
+      } else if (finiteVerbToken && (finiteVerbToken.info.inf === 'haben' || finiteVerbToken.info.inf === 'sein') && (lastTok.lower.startsWith('ge') || lastTok.lower.includes('t') || lastTok.lower.includes('en')) && lastTok.lower !== finiteVerbToken.token.lower) {
         bracketInfo = {
-          type: 'Perfekt Tense Bracket (Perfekt-Satzklammer)',
-          desc: `The auxiliary verb <strong>„${finiteVerbToken.token.clean}“</strong> occupies Position 2, and the past participle (Partizip II) <strong>„${lastTok.clean}“</strong> closes the clause bracket at the <strong>sentence end</strong>.`
+          type: 'Perfekt Past Tense Bracket (Perfekt-Satzklammer)',
+          desc: `💡 <strong>The Past Tense Bracket (Perfekt)</strong>: The auxiliary helping verb <strong>"${finiteVerbToken.token.clean}"</strong> sits in <strong>Position 2</strong>, and the past participle (Partizip II) <strong>"${lastTok.clean}"</strong> closes the sentence bracket at the <strong>sentence end</strong>.`
         };
       }
     }
 
-    // Verb details
+    // Visual Position Pills Strip
+    let positionPillsHtml = tokens.map((t, idx) => {
+      const posNum = idx + 1;
+      let posLabel = `Pos ${posNum}`;
+      let pillBg = 'bg-sky-50 text-sky-900 border-sky-300';
+      let roleNote = '';
+
+      if (finiteVerbToken && idx === finiteVerbToken.index) {
+        pillBg = 'bg-rose-50 text-rose-900 border-rose-300 ring-2 ring-rose-400/30';
+        roleNote = 'Verb ⭐';
+      } else if (GERMAN_PRONOUNS_DICT[t.lower]) {
+        const pr = GERMAN_PRONOUNS_DICT[t.lower];
+        if (pr.case === 'Nominativ') {
+          pillBg = 'bg-emerald-50 text-emerald-900 border-emerald-300';
+          roleNote = 'Subject (Nom)';
+        } else if (pr.case === 'Akkusativ') {
+          pillBg = 'bg-blue-50 text-blue-900 border-blue-300';
+          roleNote = 'Object (Akk)';
+        } else if (pr.case === 'Dativ') {
+          pillBg = 'bg-purple-50 text-purple-900 border-purple-300';
+          roleNote = 'Object (Dat)';
+        }
+      } else if (QUESTION_WORDS_DICT[t.lower]) {
+        pillBg = 'bg-amber-50 text-amber-900 border-amber-300';
+        roleNote = 'Question';
+      } else if (GERMAN_PREPOSITIONS_DICT[t.lower]) {
+        pillBg = 'bg-indigo-50 text-indigo-900 border-indigo-300';
+        roleNote = 'Preposition';
+      } else if (['der', 'die', 'das', 'den', 'dem', 'ein', 'eine', 'einen', 'einem'].includes(t.lower)) {
+        pillBg = 'bg-sky-50 text-sky-900 border-sky-200';
+        roleNote = 'Article';
+      } else if (/^[A-ZÄÖÜ]/.test(t.clean)) {
+        pillBg = 'bg-cyan-50 text-cyan-900 border-cyan-300';
+        roleNote = 'Noun';
+      }
+
+      return `
+        <div class="flex flex-col items-center px-2.5 py-1.5 rounded-xl border ${pillBg} shadow-2xs text-center min-w-[70px]">
+          <span class="text-[9px] font-black uppercase tracking-wider opacity-75">${posLabel}</span>
+          <span class="text-xs font-black my-0.5">${t.clean}</span>
+          ${roleNote ? `<span class="text-[9px] font-bold px-1 rounded bg-white/80 border border-current/20">${roleNote}</span>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    // Verb Details (Newbie-Friendly)
     let verbDetailsHtml = '';
     if (finiteVerbToken) {
       const v = finiteVerbToken.info;
+      const governsDesc = v.governs === 'Akkusativ'
+        ? `🎯 <strong>A1 Object Requirement</strong>: <em>${v.inf}</em> is an <strong>Accusative verb</strong>! The direct object receiving the action takes the <strong>Akkusativ</strong> case (e.g. <em>ich liebe dich</em>, <em>ich trinke einen Kaffee</em>).`
+        : (v.governs === 'Dativ'
+            ? `🎯 <strong>A1 Special Dative Verb</strong>: <em>${v.inf}</em> strictly demands a <strong>Dative recipient</strong> (e.g. <em>ich helfe dir</em>, never <em>dich</em>!).`
+            : (v.copula ? `🎯 <strong>A1 Equal Sign Rule (=)</strong>: The verb <em>sein</em> links two sides together like an equation ($A = B$). Both sides stay in <strong>Nominativ</strong>!` : ''));
+
       verbDetailsHtml = `
-        <div class="p-3.5 bg-emerald-50/80 rounded-2xl border border-emerald-200 text-xs">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-2 pb-1.5 border-b border-emerald-200">
-            <span class="font-extrabold text-emerald-950 flex items-center gap-1.5">
-              <span>⚡</span>
-              <span>Finite Verb: <strong>${finiteVerbToken.token.clean}</strong> (Infinitive: <em>${v.inf}</em>)</span>
+        <div class="p-3.5 bg-emerald-50/90 rounded-2xl border border-emerald-200 text-xs space-y-2">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-emerald-200/80">
+            <div class="flex items-center gap-2">
+              <span class="text-base">⚡</span>
+              <span class="font-extrabold text-emerald-950 text-sm">
+                Conjugated Verb: <strong class="text-emerald-800">"${finiteVerbToken.token.clean}"</strong>
+              </span>
+              <span class="text-[11px] text-emerald-700 font-bold bg-white px-2 py-0.5 rounded-lg border border-emerald-200">Base: <em>${v.inf}</em> (${v.en || ''})</span>
+            </div>
+            <span class="text-[10px] bg-emerald-200 text-emerald-900 font-extrabold px-2 py-0.5 rounded-md">
+              Position #${finiteVerbToken.index + 1}
             </span>
-            <span class="text-[10px] bg-emerald-200 text-emerald-900 font-bold px-2 py-0.5 rounded-md">${v.tense} • ${v.person}</span>
           </div>
-          <div class="space-y-1.5 text-emerald-900 font-medium">
-            <p>• <strong>Subject-Verb Agreement</strong>: Conjugated for <strong>${v.person}</strong> to agree with the subject of the clause.</p>
-            <p>• <strong>Clause Position</strong>: Position <strong>#${finiteVerbToken.index + 1}</strong> in this sentence ${finiteVerbToken.index === 1 ? '(Position 2 — Standard V2 Rule)' : (finiteVerbToken.index === 0 ? '(Position 1 — Question/Imperative)' : '(Inversion / End position)')}.</p>
-            ${v.note ? `<p class="text-emerald-800 bg-emerald-100/70 p-2 rounded-xl border border-emerald-300">💡 <em>Linguistic Note:</em> ${v.note}</p>` : ''}
+
+          <div class="space-y-1.5 text-emerald-900 font-medium leading-relaxed">
+            <p>• <strong>Why does it end this way?</strong> In German, verbs change their endings like a uniform to match WHO is doing the action. Because the subject is <strong>${v.person}</strong>, the verb takes the ending for that person (e.g. <em>ich lieb<strong>e</strong></em>, <em>du lieb<strong>st</strong></em>, <em>er lieb<strong>t</strong></em>).</p>
+            ${governsDesc ? `<div class="p-2 bg-white/90 rounded-xl border border-emerald-200 text-emerald-950">${governsDesc}</div>` : ''}
+            ${v.note ? `<p class="p-2 bg-emerald-100/60 rounded-xl border border-emerald-300 text-emerald-900">💡 <em>Helpful Tip:</em> ${v.note}</p>` : ''}
+          </div>
+
+          <!-- A1 Conjugation Cheat Sheet -->
+          <div class="mt-2 pt-2 border-t border-emerald-200/60">
+            <span class="text-[10px] font-black uppercase text-emerald-800 tracking-wider">A1 Verb Endings Cheat-Sheet:</span>
+            <div class="grid grid-cols-3 sm:grid-cols-6 gap-1 mt-1 text-[10px] text-center font-bold">
+              <span class="p-1 rounded bg-white border border-emerald-200">ich: <strong>-e</strong></span>
+              <span class="p-1 rounded bg-white border border-emerald-200">du: <strong>-st</strong></span>
+              <span class="p-1 rounded bg-white border border-emerald-200">er/sie/es: <strong>-t</strong></span>
+              <span class="p-1 rounded bg-white border border-emerald-200">wir: <strong>-en</strong></span>
+              <span class="p-1 rounded bg-white border border-emerald-200">ihr: <strong>-t</strong></span>
+              <span class="p-1 rounded bg-white border border-emerald-200">sie/Sie: <strong>-en</strong></span>
+            </div>
           </div>
         </div>
       `;
     } else {
       verbDetailsHtml = `
         <div class="p-3 bg-sky-50 rounded-xl border border-sky-200 text-xs text-sky-800">
-          <p>• Finite verb detected with regular present-tense conjugation matching the clause subject.</p>
+          <p>• Regular verb detected matching the clause subject.</p>
         </div>
       `;
     }
 
-    // Noun & Case Analysis
-    let nounDetails = [];
+    // 3. Cases & Roles Engine (Pronouns, Prepositions, Nouns & Articles)
+    let caseItems = [];
     for (let i = 0; i < tokens.length; i++) {
       const t = tokens[i];
       const prev = i > 0 ? tokens[i - 1] : null;
       const prevPrev = i > 1 ? tokens[i - 2] : null;
 
-      const lookup = VOCAB_LOOKUP_MAP[t.lower] || COMMON_GERMAN_NOUNS[t.lower];
-      const isCapitalized = /^[A-ZÄÖÜ]/.test(t.clean) && i > 0;
+      // Check Pronouns
+      if (GERMAN_PRONOUNS_DICT[t.lower]) {
+        const pr = GERMAN_PRONOUNS_DICT[t.lower];
+        let detectedCase = pr.case;
+        let detectedRole = pr.role;
+        let reason = pr.reason;
 
-      if (lookup || (isCapitalized && !KNOWN_VERB_CONJUGATIONS[t.lower])) {
+        if (t.lower === 'dich' || t.lower === 'mich' || t.lower === 'ihn') {
+          detectedCase = 'Akkusativ';
+          detectedRole = 'Direct Object (The Receiver)';
+          const vName = finiteVerbToken ? finiteVerbToken.token.clean : 'the verb';
+          reason = `<strong>Who is receiving the action?</strong> <strong>"${t.clean}"</strong> (${pr.en}). In German, the base pronoun <em>${pr.base}</em> changes to <strong>"${t.clean}"</strong> in the <strong>Akkusativ</strong> case because the verb <strong>"${vName}"</strong> directs its action directly onto it!`;
+        } else if (t.lower === 'dir' || t.lower === 'mir' || t.lower === 'ihm' || t.lower === 'ihnen' || t.lower === 'Ihnen') {
+          detectedCase = 'Dativ';
+          detectedRole = 'Indirect Object / Recipient';
+          const trigger = (prev && GERMAN_PREPOSITIONS_DICT[prev.lower]) ? `preposition "${prev.clean}"` : (finiteVerbToken ? `verb "${finiteVerbToken.token.clean}"` : 'Dative rule');
+          reason = `<strong>Who is receiving the benefit or object?</strong> <strong>"${t.clean}"</strong> (${pr.en}). Form of <em>${pr.base}</em> in the <strong>Dativ</strong> case, triggered by ${trigger}.`;
+        } else if (['ich', 'du', 'er', 'wir', 'ihr', 'man'].includes(t.lower)) {
+          detectedCase = 'Nominativ';
+          detectedRole = 'Subject (The Doer)';
+          reason = `<strong>Who is doing the action?</strong> <strong>"${t.clean}"</strong> (${pr.en}) is the <strong>Subject</strong> (*Wer oder was?*). In German, the subject is ALWAYS in the <strong>Nominative (Nominativ)</strong> case.`;
+        } else if (t.lower === 'sie' || t.lower === 'es') {
+          if (i === 0 || (i === 2 && finiteVerbToken && finiteVerbToken.index === 1 && !['ich','du','er','wir','ihr'].includes(tokens[0].lower))) {
+            detectedCase = 'Nominativ';
+            detectedRole = 'Subject (The Doer)';
+            reason = `Acts as the grammatical subject performing the action (${t.lower === 'es' ? 'it' : 'she / they'}).`;
+          } else {
+            detectedCase = 'Akkusativ';
+            detectedRole = 'Direct Object (The Receiver)';
+            reason = `Direct object receiving the verb\'s action (${t.lower === 'es' ? 'it' : 'her / them'}).`;
+          }
+        }
+
+        caseItems.push({
+          word: t.clean,
+          type: 'Personal Pronoun',
+          role: detectedRole,
+          case: detectedCase,
+          reason: reason
+        });
+        continue;
+      }
+
+      // Check Prepositions & Prepositional Phrases
+      if (GERMAN_PREPOSITIONS_DICT[t.lower]) {
+        const prep = GERMAN_PREPOSITIONS_DICT[t.lower];
+        const next = i + 1 < tokens.length ? tokens[i + 1] : null;
+        const nextNext = i + 2 < tokens.length ? tokens[i + 2] : null;
+        let phrase = t.clean;
+        if (next && ['der','die','das','dem','den','des','ein','eine','einen','einem','einer','kein','keinem','meinem','meiner','deinem'].includes(next.lower)) {
+          phrase += ' ' + next.clean;
+          if (nextNext && /^[A-ZÄÖÜ]/.test(nextNext.clean)) phrase += ' ' + nextNext.clean;
+        } else if (next && (GERMAN_PRONOUNS_DICT[next.lower] || /^[A-ZÄÖÜ]/.test(next.clean))) {
+          phrase += ' ' + next.clean;
+        }
+
+        let caseExpl = '';
+        if (prep.case === 'Dativ') {
+          caseExpl = `The preposition <strong>"${t.clean}"</strong> (${prep.meaning}) strictly requires the <strong>Dativ</strong> case! ${prep.contraction ? `(Contraction of <em>${prep.contraction}</em>).` : ''} Any noun or pronoun following it must be in Dativ.`;
+        } else if (prep.case === 'Akkusativ') {
+          caseExpl = `The preposition <strong>"${t.clean}"</strong> (${prep.meaning}) strictly requires the <strong>Akkusativ</strong> case! ${prep.contraction ? `(Contraction of <em>${prep.contraction}</em>).` : ''} Any noun or pronoun following it must be in Akkusativ.`;
+        } else {
+          caseExpl = `Two-way preposition (Wechselpräposition). Takes <strong>Dativ</strong> for location (*Wo?* = Where at?) and <strong>Akkusativ</strong> for destination (*Wohin?* = Where to?).`;
+        }
+
+        caseItems.push({
+          word: phrase,
+          type: 'Prepositional Phrase',
+          role: `${prep.case} Trigger`,
+          case: prep.case,
+          reason: caseExpl
+        });
+        continue;
+      }
+
+      // Check Nouns & Articles
+      const lookup = VOCAB_LOOKUP_MAP[t.lower] || COMMON_GERMAN_NOUNS[t.lower];
+      const isCapitalized = /^[A-ZÄÖÜ]/.test(t.clean);
+
+      if ((lookup || isCapitalized) && !KNOWN_VERB_CONJUGATIONS[t.lower]) {
+        if (prev && GERMAN_PREPOSITIONS_DICT[prev.lower]) continue;
+        if (prevPrev && GERMAN_PREPOSITIONS_DICT[prevPrev.lower]) continue;
+
         const nounName = lookup ? lookup.noun || t.clean : t.clean;
         const gender = lookup ? lookup.gender : 'noun';
         let detectedCase = 'Nominativ';
-        let caseReason = 'Acts as grammatical subject of the sentence (Wer oder was?).';
+        let detectedRole = 'Subject';
+        let reason = '';
 
-        if (prev && GERMAN_PREPOSITIONS_DICT[prev.lower]) {
-          const prep = GERMAN_PREPOSITIONS_DICT[prev.lower];
-          detectedCase = prep.case;
-          caseReason = `Governed by preposition <strong>„${prev.clean}“</strong> (${prep.rule}).`;
-        } else if (prevPrev && GERMAN_PREPOSITIONS_DICT[prevPrev.lower]) {
-          const prep = GERMAN_PREPOSITIONS_DICT[prevPrev.lower];
-          detectedCase = prep.case;
-          caseReason = `Governed by preposition <strong>„${prevPrev.clean}“</strong> with article <strong>„${prev.clean}“</strong> (${prep.rule}).`;
-        } else if (prev && ['den', 'einen', 'keinen', 'meinen', 'deinen'].includes(prev.lower)) {
+        if (prev && ['den', 'einen', 'keinen', 'meinen', 'deinen'].includes(prev.lower)) {
           detectedCase = 'Akkusativ';
-          caseReason = `Accusative direct object receiving the verb\'s action (Wen oder was?). Masculine article changes: <em>der &rarr; den</em>, <em>ein &rarr; einen</em>.`;
-        } else if (prev && ['dem', 'einem', 'keinem', 'meinem'].includes(prev.lower)) {
+          detectedRole = 'Direct Object (Akkusativ)';
+          reason = `<strong>Masculine Accusative Change</strong>: <strong>${prev.clean} ${t.clean}</strong> is the direct object receiving the action. In German, ONLY masculine articles change in Akkusativ: <em>der &rarr; den</em>, <em>ein &rarr; einen</em>!`;
+        } else if (prev && ['dem', 'einem', 'keinem', 'meinem', 'deinem'].includes(prev.lower)) {
           detectedCase = 'Dativ';
-          caseReason = `Dative case indicating indirect object or location. Masculine/Neuter article changes: <em>der/das &rarr; dem</em>.`;
+          detectedRole = 'Dative Object (Dativ)';
+          reason = `<strong>Dative Case</strong>: Article changes to <strong>${prev.clean}</strong> in the Dative case (<em>der/das &rarr; dem</em>, <em>ein &rarr; einem</em>).`;
         } else if (prev && ['der', 'einer'].includes(prev.lower) && gender === 'die') {
           detectedCase = 'Dativ';
-          caseReason = `Feminine noun in Dative case (die &rarr; der).`;
-        } else if (i > 1 && finiteVerbToken) {
+          detectedRole = 'Feminine in Dative';
+          reason = `<strong>Feminine Dative Shift</strong>: In Dative, the feminine article turns into <strong>${prev.clean}</strong> (<em>die Frau &rarr; der Frau</em>).`;
+        } else if (i > 1 && finiteVerbToken && finiteVerbToken.info.copula) {
+          detectedCase = 'Nominativ';
+          detectedRole = 'Predicate Noun (Equal Sign =)';
+          reason = `Linked by the verb <em>sein</em> (is/are). Acts like an equal sign, so <strong>${t.clean}</strong> stays in the base <strong>Nominative</strong> case.`;
+        } else if (i > 1 && finiteVerbToken && finiteVerbToken.info.governs === 'Akkusativ') {
           detectedCase = 'Akkusativ';
-          caseReason = `Direct object of transitive verb <strong>„${finiteVerbToken.token.clean}“</strong> (Wen oder was?).`;
+          detectedRole = 'Direct Object (Akkusativ)';
+          reason = `Direct object receiving the action of the verb <strong>"${finiteVerbToken.token.clean}"</strong> (*Wen oder was?*). Feminine and neuter nouns keep their standard articles in Akkusativ!`;
+        } else {
+          detectedCase = 'Nominativ';
+          detectedRole = 'Subject (The Doer)';
+          reason = `Acts as the grammatical subject (*Wer oder was?*) performing the action. Always in the base Nominative case.`;
         }
 
-        nounDetails.push({
-          noun: nounName,
-          gender: gender,
+        caseItems.push({
+          word: (prev && ['der','die','das','den','dem','ein','eine','einen','einem','kein','keinen','mein','meinen'].includes(prev.lower) ? prev.clean + ' ' : '') + t.clean,
+          type: gender !== 'noun' ? `Noun (${gender})` : 'Noun',
+          role: detectedRole,
           case: detectedCase,
-          reason: caseReason,
-          article: prev ? prev.clean : ''
+          reason: reason
         });
       }
     }
 
-    let nounCardsHtml = '';
-    if (nounDetails.length > 0) {
-      nounCardsHtml = nounDetails.map(n => {
-        let genderBadge = 'bg-sky-100 text-sky-800 border-sky-300';
-        let genderLabel = 'Nomen';
-        if (n.gender === 'der') { genderBadge = 'bg-blue-100 text-blue-800 border-blue-300'; genderLabel = 'Maskulin (der)'; }
-        if (n.gender === 'die') { genderBadge = 'bg-rose-100 text-rose-800 border-rose-300'; genderLabel = 'Feminin (die)'; }
-        if (n.gender === 'das') { genderBadge = 'bg-emerald-100 text-emerald-800 border-emerald-300'; genderLabel = 'Neutral (das)'; }
+    let caseCardsHtml = '';
+    if (caseItems.length > 0) {
+      caseCardsHtml = caseItems.map(c => {
+        let caseBadge = 'bg-emerald-100 text-emerald-900 border-emerald-300';
+        if (c.case === 'Akkusativ') caseBadge = 'bg-blue-100 text-blue-900 border-blue-300';
+        if (c.case === 'Dativ') caseBadge = 'bg-purple-100 text-purple-900 border-purple-300';
 
         return `
-          <div class="p-3 bg-white rounded-xl border border-sky-200 shadow-2xs text-xs space-y-1">
+          <div class="p-3 bg-white rounded-xl border border-sky-200 shadow-2xs text-xs space-y-1.5">
             <div class="flex items-center justify-between gap-2">
-              <span class="font-extrabold text-sky-950 text-sm">${n.article ? n.article + ' ' : ''}${n.noun}</span>
+              <span class="font-black text-sky-950 text-sm">${c.word}</span>
               <div class="flex items-center gap-1">
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${genderBadge}">${genderLabel}</span>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded border bg-amber-100 text-amber-900 border-amber-300">${n.case}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded border bg-sky-100 text-sky-800 border-sky-200">${c.role}</span>
+                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded border ${caseBadge}">${c.case}</span>
               </div>
             </div>
-            <p class="text-sky-700 leading-snug">${n.reason}</p>
+            <p class="text-sky-800 leading-snug">${c.reason}</p>
           </div>
         `;
       }).join('');
     } else {
-      nounCardsHtml = `<p class="text-sky-600 italic text-xs">No complex noun phrases or articles requiring declension in this short clause.</p>`;
+      caseCardsHtml = `<p class="text-sky-600 italic text-xs">No complex noun phrases or pronouns requiring case declension in this short clause.</p>`;
     }
 
-    // Word-by-Word Interactive Token Grid
-    let tokenCardsHtml = tokens.map(t => {
+    // 4. Word-by-Word Interactive Token Grid
+    let tokenCardsHtml = tokens.map((t, idx) => {
       let pos = 'Word';
       let posColor = 'bg-slate-100 text-slate-800 border-slate-300';
-      let note = 'Word in clause';
+      let note = 'Word in sentence';
 
-      if (GERMAN_PREPOSITIONS_DICT[t.lower]) {
+      if (finiteVerbToken && idx === finiteVerbToken.index) {
+        pos = 'Verb (Pos 2)';
+        posColor = 'bg-emerald-100 text-emerald-900 border-emerald-300';
+        note = `${finiteVerbToken.info.person} • Base: ${finiteVerbToken.info.inf}`;
+      } else if (GERMAN_PRONOUNS_DICT[t.lower]) {
+        const pr = GERMAN_PRONOUNS_DICT[t.lower];
+        if (pr.case === 'Nominativ') {
+          pos = 'Subject (Nom)';
+          posColor = 'bg-emerald-100 text-emerald-900 border-emerald-300';
+          note = `Pronoun: ${pr.en} • The Doer`;
+        } else if (pr.case === 'Akkusativ') {
+          pos = 'Object (Akk)';
+          posColor = 'bg-blue-100 text-blue-900 border-blue-300';
+          note = `Pronoun: ${pr.en} • The Receiver`;
+        } else if (pr.case === 'Dativ') {
+          pos = 'Object (Dat)';
+          posColor = 'bg-purple-100 text-purple-900 border-purple-300';
+          note = `Pronoun: ${pr.en} • Recipient`;
+        }
+      } else if (GERMAN_PREPOSITIONS_DICT[t.lower]) {
         pos = 'Preposition';
-        posColor = 'bg-purple-100 text-purple-900 border-purple-300';
-        note = `${GERMAN_PREPOSITIONS_DICT[t.lower].case} (${GERMAN_PREPOSITIONS_DICT[t.lower].meaning})`;
+        posColor = 'bg-indigo-100 text-indigo-900 border-indigo-300';
+        note = `${GERMAN_PREPOSITIONS_DICT[t.lower].case} • ${GERMAN_PREPOSITIONS_DICT[t.lower].meaning}`;
       } else if (QUESTION_WORDS_DICT[t.lower]) {
         pos = 'Question Word';
         posColor = 'bg-amber-100 text-amber-900 border-amber-300';
@@ -5679,28 +5996,20 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (SUBORDINATING_CONJUNCTIONS_DICT[t.lower] || COORDINATING_CONJUNCTIONS_DICT[t.lower]) {
         pos = 'Conjunction';
         posColor = 'bg-sky-100 text-sky-900 border-sky-300';
-        note = SUBORDINATING_CONJUNCTIONS_DICT[t.lower] ? 'Subordinator (Verb-Letzt)' : 'Coordinator (Pos 0)';
+        note = SUBORDINATING_CONJUNCTIONS_DICT[t.lower] ? 'Subordinator (Verb-Kicker)' : 'Coordinator (Pos 0)';
       } else if (INVERSION_ADVERBS_DICT[t.lower]) {
         pos = 'Adverb';
         posColor = 'bg-teal-100 text-teal-900 border-teal-300';
         note = INVERSION_ADVERBS_DICT[t.lower];
-      } else if (KNOWN_VERB_CONJUGATIONS[t.lower]) {
-        pos = 'Verb';
-        posColor = 'bg-emerald-100 text-emerald-900 border-emerald-300';
-        note = `${KNOWN_VERB_CONJUGATIONS[t.lower].person} (${KNOWN_VERB_CONJUGATIONS[t.lower].inf})`;
       } else if (['der', 'die', 'das', 'den', 'dem', 'des', 'ein', 'eine', 'einen', 'einem', 'einer', 'kein', 'keine', 'keinen', 'keinem'].includes(t.lower)) {
         pos = 'Article';
         posColor = 'bg-blue-100 text-blue-900 border-blue-300';
         note = 'Determiner / Article';
-      } else if (['ich', 'du', 'er', 'sie', 'es', 'wir', 'ihr', 'Sie', 'man', 'mir', 'dir', 'ihm', 'uns', 'euch', 'ihnen', 'Ihnen', 'mich', 'dich', 'ihn'].includes(t.lower)) {
-        pos = 'Pronoun';
-        posColor = 'bg-amber-100 text-amber-900 border-amber-300';
-        note = 'Personal pronoun';
       } else if (/^[A-ZÄÖÜ]/.test(t.clean)) {
         pos = 'Noun';
-        posColor = 'bg-sky-100 text-sky-900 border-sky-300';
+        posColor = 'bg-cyan-100 text-cyan-900 border-cyan-300';
         const lk = VOCAB_LOOKUP_MAP[t.lower] || COMMON_GERMAN_NOUNS[t.lower];
-        note = lk ? `${lk.gender.toUpperCase()} (${lk.en})` : 'Capitalized German Noun';
+        note = lk ? `${lk.gender.toUpperCase()} (${lk.en})` : 'Noun';
       }
 
       const escapedWord = t.clean.replace(/'/g, "\\'");
@@ -5708,7 +6017,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="bg-white p-2.5 rounded-xl border border-sky-200 shadow-2xs flex flex-col justify-between hover:border-sky-400 transition">
           <div class="flex items-center justify-between gap-1 mb-1">
             <span class="text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded border ${posColor}">${pos}</span>
-            <button onclick="playGermanSpeech('${escapedWord}', this)" class="p-1 rounded-md text-sky-600 hover:bg-sky-100 transition cursor-pointer" title="Pronounce: ${escapedWord}">
+            <button onclick="playGermanSpeech('${escapedWord}', this)" class="p-1 rounded-md text-sky-600 hover:bg-sky-100 transition cursor-pointer" title="Listen to pronunciation">
               🔊
             </button>
           </div>
@@ -5718,32 +6027,38 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }).join('');
 
-    // Assemble comprehensive analysis HTML
     return `
       <!-- Grammar Analysis Header -->
       <div class="flex items-center justify-between pb-2 border-b border-sky-200">
         <h4 class="font-extrabold text-sm text-sky-950 flex items-center gap-2">
           <span>📑</span>
-          <span>In-Depth German Grammar Breakdown (Die Grammatikanalyse)</span>
+          <span>A1 Beginner-Friendly German Grammar Breakdown</span>
         </h4>
-        <span class="text-[10px] bg-sky-100 text-sky-800 font-bold px-2 py-0.5 rounded-full border border-sky-300">
-          Native Rules & Syntax
+        <span class="text-[10px] bg-emerald-100 text-emerald-900 font-bold px-2 py-0.5 rounded-full border border-emerald-300">
+          A1 Level Guide
         </span>
       </div>
 
-      <!-- Card 1: Satzbau & Word Order Rules -->
-      <div class="p-4 bg-gradient-to-r from-sky-50 to-blue-50/70 rounded-2xl border border-sky-200 shadow-2xs space-y-2.5">
+      <!-- Card 1: Sentence Architecture & Word Positions -->
+      <div class="p-4 bg-gradient-to-r from-sky-50 to-blue-50/70 rounded-2xl border border-sky-200 shadow-2xs space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div class="flex items-center gap-2">
-            <span class="text-base">🏛️</span>
-            <span class="font-extrabold text-xs text-sky-950">Sentence Architecture & Word Order:</span>
+            <span class="text-base">🧩</span>
+            <span class="font-extrabold text-xs text-sky-950">Sentence Structure & Word Positions:</span>
           </div>
           <span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border ${sentenceBadgeColor}">${sentenceType}</span>
         </div>
-        <p class="text-xs text-sky-800 font-medium leading-relaxed">${sentenceDesc}</p>
-        <div class="p-2.5 bg-white/90 rounded-xl border border-sky-200 text-xs text-sky-900 leading-relaxed">
-          ${wordOrderExplanation}
+
+        <!-- Visual Position Pills -->
+        <div class="flex flex-wrap items-center gap-2 pt-1 pb-1">
+          ${positionPillsHtml}
         </div>
+
+        <div class="p-2.5 bg-white/95 rounded-xl border border-sky-200 text-xs text-sky-900 leading-relaxed space-y-1">
+          <p>${sentenceDesc}</p>
+          <p>${wordOrderExplanation}</p>
+        </div>
+
         ${bracketInfo ? `
           <div class="p-2.5 bg-purple-50 rounded-xl border border-purple-200 text-xs text-purple-900 flex items-start gap-2">
             <span class="text-sm">🔗</span>
@@ -5758,19 +6073,22 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="space-y-2">
         <div class="flex items-center gap-2">
           <span class="text-base">⚡</span>
-          <span class="font-extrabold text-xs text-sky-950">Verb Conjugation & Agreement (Verbanalyse):</span>
+          <span class="font-extrabold text-xs text-sky-950">Verb & Conjugation (Why does the verb end this way?):</span>
         </div>
         ${verbDetailsHtml}
       </div>
 
-      <!-- Card 3: Nouns, Articles & Case Declension -->
+      <!-- Card 3: Cases & Roles Engine -->
       <div class="space-y-2">
-        <div class="flex items-center gap-2">
-          <span class="text-base">🏷️</span>
-          <span class="font-extrabold text-xs text-sky-950">Nouns, Gender & Cases (Genus & Kasus):</span>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-base">🎯</span>
+            <span class="font-extrabold text-xs text-sky-950">Cases & Roles: Who Does What? (Nominativ, Akkusativ, Dativ):</span>
+          </div>
+          <span class="text-[10px] text-sky-600 font-bold">${caseItems.length} items identified</span>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-          ${nounCardsHtml}
+          ${caseCardsHtml}
         </div>
       </div>
 
@@ -5779,7 +6097,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="text-base">🔍</span>
-            <span class="font-extrabold text-xs text-sky-950">Interactive Word-by-Word Breakdown (Click 🔊 to hear each word):</span>
+            <span class="font-extrabold text-xs text-sky-950">Interactive Word-by-Word Breakdown (Click 🔊 to listen to each word):</span>
           </div>
           <span class="text-[10px] text-sky-600 font-semibold">${tokens.length} words analyzed</span>
         </div>
