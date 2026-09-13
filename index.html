@@ -379,6 +379,14 @@
               <span class="text-sky-400 text-xs font-medium italic">Translation and grammar breakdown will appear here...</span>
             </div>
 
+            <!-- Live Phonetic Pronunciation Guide in Translator -->
+            <div id="transPhoneticBar" class="hidden mt-1 pt-2 border-t border-sky-200/80 text-xs">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-[10px] font-black uppercase text-purple-800 tracking-wider">🗣️ How to pronounce:</span>
+                <span id="transPhoneticText" class="font-bold text-purple-950 font-mono text-[11px] tracking-wide bg-purple-100/70 px-2 py-0.5 rounded-md border border-purple-200"></span>
+              </div>
+            </div>
+
             <!-- Speaking Practice Feedback Banner -->
             <div id="speakingPracticeFeedback" class="hidden mt-2 p-2.5 rounded-xl border text-xs"></div>
 
@@ -1293,15 +1301,36 @@
       <p class="text-xs text-sky-700 font-medium mb-2">Read and speak the German sentence below into your microphone:</p>
 
       <!-- Target Sentence Box -->
-      <div class="p-3.5 bg-sky-50 rounded-2xl border border-sky-200 text-base md:text-lg font-black text-sky-950 mb-3" id="speakingModalTarget">
+      <div class="p-3.5 bg-sky-50 rounded-2xl border border-sky-200 text-base md:text-lg font-black text-sky-950 mb-2.5 shadow-2xs" id="speakingModalTarget">
         <!-- e.g. "Ich habe einen Hund" -->
       </div>
 
-      <!-- Audio Reference Button -->
-      <div class="mb-4">
-        <button id="speakingModalAudioRef" onclick="playSpeakingReferenceAudio()" class="px-3 py-1 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold inline-flex items-center gap-1.5 transition cursor-pointer">
+      <!-- Phonetic Pronunciation Guide Card -->
+      <div id="speakingPhoneticGuideBox" class="p-3 bg-gradient-to-r from-purple-50 via-indigo-50/70 to-sky-50 rounded-2xl border border-purple-200 text-left mb-3.5 shadow-2xs">
+        <div class="flex items-center justify-between text-[10px] font-black text-purple-900 uppercase tracking-wider mb-1">
+          <span class="flex items-center gap-1">
+            <span>🗣️</span>
+            <span>How to Pronounce (Phonetic Guide):</span>
+          </span>
+          <span class="text-[9px] text-purple-600 font-bold bg-white px-1.5 py-0.5 rounded border border-purple-200">Stress capital syllables</span>
+        </div>
+        <div id="speakingPhoneticText" class="text-sm font-black text-purple-950 font-mono tracking-wide leading-relaxed py-0.5">
+          <!-- e.g. [ IKH • HAH-buh • EYE-nuhn • HOONT ] -->
+        </div>
+        <div id="speakingPronunciationTips" class="text-[11px] text-purple-800 font-medium mt-1 leading-snug">
+          <!-- Helpful letter tips -->
+        </div>
+      </div>
+
+      <!-- Dual Audio Comparison Buttons (Native vs My Voice Recording) -->
+      <div class="flex flex-wrap items-center justify-center gap-2 mb-3.5">
+        <button id="speakingModalAudioRef" onclick="playSpeakingReferenceAudio()" class="px-3 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold inline-flex items-center gap-1.5 transition cursor-pointer shadow-xs" title="Listen to authentic German pronunciation">
           <span>🔊</span>
-          <span>Listen to correct pronunciation first</span>
+          <span>1. Native German Audio</span>
+        </button>
+        <button id="speakingPlayUserVoiceBtn" onclick="playUserRecordedVoice()" class="hidden px-3 py-1.5 rounded-xl bg-pink-100 hover:bg-pink-200 border border-pink-300 text-pink-900 text-xs font-bold inline-flex items-center gap-1.5 transition cursor-pointer shadow-xs animate-bounce" title="Listen to your own voice recording">
+          <span id="userVoicePlayIcon">▶️</span>
+          <span>2. Listen to My Voice 🎧</span>
         </button>
       </div>
 
@@ -1325,6 +1354,6 @@
 
   <!-- SCRIPT LOGIC -->
   <script src="media-data.js?v=20260913_360q"></script>
-  <script src="app.js?v=20260913_all_6_features"></script>
+  <script src="app.js?v=20260913_voice_recording_phonetics"></script>
 </body>
 </html>

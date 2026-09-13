@@ -5619,6 +5619,8 @@ document.addEventListener('DOMContentLoaded', () => {
       analysisContainer.innerHTML = '';
       analysisContainer.classList.add('hidden');
     }
+    const phoneticBar = document.getElementById('transPhoneticBar');
+    if (phoneticBar) phoneticBar.classList.add('hidden');
     currentTargetGermanText = '';
   };
 
@@ -5692,6 +5694,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (outputEl) {
         outputEl.innerHTML = `<span class="text-sky-950 font-extrabold leading-relaxed text-base md:text-lg">${translatedText}</span>`;
+      }
+
+      // Update live phonetic pronunciation guide in translator card
+      const phoneticBar = document.getElementById('transPhoneticBar');
+      const phoneticTextEl = document.getElementById('transPhoneticText');
+      if (currentTargetGermanText && typeof generateGermanPhonetics === 'function') {
+        const ph = generateGermanPhonetics(currentTargetGermanText);
+        if (phoneticTextEl) phoneticTextEl.textContent = ph.phoneticText;
+        if (phoneticBar) phoneticBar.classList.remove('hidden');
+      } else if (phoneticBar) {
+        phoneticBar.classList.add('hidden');
       }
 
       // If either source or target is German, run deep German Grammar Analysis
@@ -7376,10 +7389,277 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
-  // ================= 26. SPEECH RECOGNITION & SPEAKING PRACTICE =================
+  // ================= 26. SPEECH RECOGNITION, PHONETICS & SPEAKING PRACTICE =================
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   let activeSpeechRecognition = null;
   let currentSpeakingTargetText = '';
+
+  // User Voice Recording State (MediaRecorder)
+  let userMediaStream = null;
+  let userMediaRecorder = null;
+  let userRecordedChunks = [];
+  let userRecordedAudioBlob = null;
+  let userRecordedAudioUrl = null;
+  let userAudioPlayerInstance = null;
+
+  // German Phonetic Dictionary & Transliteration Engine
+  const GERMAN_PHONETIC_DICT = {
+    'ich': 'IKH',
+    'habe': 'HAH-buh',
+    'haben': 'HAH-bən',
+    'hast': 'HAHST',
+    'hat': 'HAHT',
+    'hatte': 'HAHT-tuh',
+    'ein': 'EYE-n',
+    'eine': 'EYE-nuh',
+    'einen': 'EYE-nən',
+    'einem': 'EYE-nəm',
+    'einer': 'EYE-nər',
+    'eines': 'EYE-nəs',
+    'der': 'DAIR',
+    'die': 'DEE',
+    'das': 'DAHS',
+    'den': 'DAYN',
+    'dem': 'DAYM',
+    'des': 'DEHS',
+    'hund': 'HOONT',
+    'hunde': 'HOON-duh',
+    'katze': 'KAHT-tsuh',
+    'buch': 'BOOKH',
+    'bücher': 'BEW-khər',
+    'frau': 'FROW',
+    'frauen': 'FROW-ən',
+    'mann': 'MAHN',
+    'männer': 'MEHN-nər',
+    'kind': 'KEENT',
+    'kinder': 'KEEN-dər',
+    'liebe': 'LEE-buh',
+    'lieben': 'LEE-bən',
+    'liebst': 'LEEPST',
+    'liebt': 'LEEPT',
+    'dich': 'DEEKH',
+    'dir': 'DEER',
+    'du': 'DOO',
+    'wir': 'VEER',
+    'sie': 'ZEE',
+    'er': 'AIR',
+    'es': 'EHS',
+    'ihr': 'EER',
+    'ihm': 'EEM',
+    'ihn': 'EEN',
+    'ihnen': 'EE-nən',
+    'deutsch': 'DOYTCH',
+    'deutschland': 'DOYTCH-lahnt',
+    'lerne': 'LAIR-nuh',
+    'lernen': 'LAIR-nən',
+    'lernt': 'LAIRNT',
+    'geht': 'GAYT',
+    'gehen': 'GAY-ən',
+    'gehe': 'GAY-uh',
+    'gehst': 'GAYST',
+    'ging': 'GEENG',
+    'komme': 'KOM-muh',
+    'kommen': 'KOM-mən',
+    'kommst': 'KOMST',
+    'kommt': 'KOMT',
+    'aus': 'OWS',
+    'mit': 'MIT',
+    'nach': 'NAHKH',
+    'zu': 'TSOO',
+    'zum': 'TSOOM',
+    'zur': 'TSOOR',
+    'bei': 'BYE',
+    'beim': 'BYEM',
+    'von': 'FON',
+    'vom': 'FOM',
+    'für': 'FEWR',
+    'ohne': 'OH-nuh',
+    'durch': 'DOORKH',
+    'zug': 'TSOOK',
+    'bus': 'BOOS',
+    'bahn': 'BAHN',
+    'u-bahn': 'OO-bahn',
+    's-bahn': 'EHS-bahn',
+    'auto': 'OW-toh',
+    'guten': 'GOO-tən',
+    'tag': 'TAHK',
+    'tage': 'TAH-guh',
+    'morgen': 'MOR-gən',
+    'abend': 'AH-bənt',
+    'abende': 'AH-bən-duh',
+    'nacht': 'NAHKHT',
+    'nächte': 'NEHKH-tuh',
+    'hallo': 'HAH-loh',
+    'tschüss': 'TCHEWSS',
+    'bitte': 'BIT-tuh',
+    'danke': 'DAHNG-kuh',
+    'schön': 'SHERN',
+    'sehr': 'ZAIR',
+    'schlafen': 'SHLAH-fən',
+    'schläft': 'SHLEHFT',
+    'trinken': 'TRING-kən',
+    'trinke': 'TRING-kuh',
+    'trinkt': 'TRINGKT',
+    'essen': 'EHS-sən',
+    'esse': 'EHS-suh',
+    'isst': 'EEST',
+    'kaffee': 'KAHF-fay',
+    'tee': 'TAY',
+    'wasser': 'VAHS-sər',
+    'brot': 'BROHT',
+    'apfel': 'AHP-fəl',
+    'äpfel': 'EHP-fəl',
+    'heute': 'HOY-tuh',
+    'jetzt': 'YETST',
+    'hier': 'HEER',
+    'dort': 'DORT',
+    'wo': 'VOH',
+    'wie': 'VEE',
+    'was': 'VAHS',
+    'wer': 'VAIR',
+    'warum': 'VAH-room',
+    'woher': 'voh-HAIR',
+    'wohin': 'voh-HEEN',
+    'ja': 'YAH',
+    'nein': 'NYNE',
+    'nicht': 'NEEKHT',
+    'nichts': 'NEEKHTS',
+    'kein': 'KYNE',
+    'keine': 'KY-nuh',
+    'keinen': 'KY-nən',
+    'keinem': 'KY-nəm',
+    'keiner': 'KY-nər',
+    'helfe': 'HEHL-fuh',
+    'helfen': 'HEHL-fən',
+    'hilfst': 'HEELFST',
+    'hilft': 'HEELFT',
+    'brauche': 'BROW-khuh',
+    'brauchen': 'BROW-khən',
+    'braucht': 'BROWKHT',
+    'kaufe': 'KOW-fuh',
+    'kaufen': 'KOW-fən',
+    'kauft': 'KOWFT',
+    'sehe': 'ZAY-uh',
+    'sehen': 'ZAY-ən',
+    'siehst': 'ZEEST',
+    'sieht': 'ZEET',
+    'lese': 'LAY-zuh',
+    'lesen': 'LAY-zən',
+    'liest': 'LEEST',
+    'verstehe': 'fair-SHTAY-uh',
+    'verstehen': 'fair-SHTAY-ən',
+    'entschuldigung': 'ent-SHOOL-dee-goong',
+    'auf': 'OWF',
+    'wiedersehen': 'VEE-dər-zay-ən',
+    'name': 'NAH-muh',
+    'heiße': 'HY-ssuh',
+    'heißen': 'HY-ssən',
+    'heißt': 'HYST',
+    'freund': 'FROYNT',
+    'freundin': 'FROYN-din',
+    'haus': 'HOWS',
+    'hause': 'HOW-zuh',
+    'schule': 'SHOO-luh',
+    'lehrer': 'LAY-rər',
+    'lehrerin': 'LAY-rə-rin',
+    'student': 'shtoo-DENT',
+    'zeit': 'TSYTE',
+    'geld': 'GEHLT',
+    'arbeit': 'AHR-byte',
+    'arbeiten': 'AHR-bye-tən',
+    'wohne': 'VOH-nuh',
+    'wohnen': 'VOH-nən',
+    'wohnt': 'VOHNT',
+    'stadt': 'SHTAHT',
+    'land': 'LAHNT',
+    'zwei': 'TSVYE',
+    'drei': 'DRYE',
+    'vier': 'FEER',
+    'fünf': 'FEWNF',
+    'sechs': 'ZEKHS',
+    'sieben': 'ZEE-bən',
+    'acht': 'AHKHT',
+    'neun': 'NOYN',
+    'zehn': 'TSAYN'
+  };
+
+  function transliterateGermanWord(word) {
+    const clean = word.toLowerCase().replace(/[^a-zäöüß]/g, '');
+    if (!clean) return word;
+    if (GERMAN_PHONETIC_DICT[clean]) {
+      return GERMAN_PHONETIC_DICT[clean];
+    }
+    
+    // Algorithmic German phonetic conversion
+    let res = clean;
+    res = res.replace(/tsch/g, 'tch')
+             .replace(/sch/g, 'sh')
+             .replace(/^sp/g, 'shp')
+             .replace(/^st/g, 'sht')
+             .replace(/([aou])ch/g, '$1kh')
+             .replace(/ch/g, 'kh')
+             .replace(/ei|ai|ey/g, 'eye')
+             .replace(/ie/g, 'ee')
+             .replace(/eu|äu/g, 'oy')
+             .replace(/au/g, 'ow')
+             .replace(/ä/g, 'eh')
+             .replace(/ö/g, 'er')
+             .replace(/ü/g, 'ew')
+             .replace(/ß/g, 'ss')
+             .replace(/w/g, 'v')
+             .replace(/^v/g, 'f')
+             .replace(/z/g, 'ts')
+             .replace(/^j/g, 'y')
+             .replace(/er$/g, '-er')
+             .replace(/en$/g, '-ən')
+             .replace(/e$/g, '-uh');
+             
+    return res.toUpperCase();
+  }
+
+  function generateGermanPhonetics(sentence) {
+    if (!sentence) return { phoneticText: '', tips: '' };
+    const words = sentence.trim().split(/\s+/);
+    const phoneticWords = words.map(w => {
+      const punctMatch = w.match(/^([^a-zA-ZäöüÄÖÜß]*)([a-zA-ZäöüÄÖÜß\-]+)([^a-zA-ZäöüÄÖÜß]*)$/);
+      if (punctMatch) {
+        const lead = punctMatch[1] || '';
+        const core = punctMatch[2];
+        const trail = punctMatch[3] || '';
+        return lead + transliterateGermanWord(core) + trail;
+      }
+      return transliterateGermanWord(w);
+    });
+
+    const phoneticText = `[ ${phoneticWords.join(' • ')} ]`;
+
+    // Contextual Pronunciation Tips
+    const lower = sentence.toLowerCase();
+    const tipsList = [];
+    if (lower.includes('ch')) {
+      tipsList.push("🗣️ <strong>'ch'</strong>: Soft hissing sound after e/i (<em>ich</em>), or guttural after a/o/u (<em>Buch</em>).");
+    }
+    if (lower.includes('w')) {
+      tipsList.push("🗣️ <strong>'w'</strong>: Always sounds like English <strong>'v'</strong> (e.g. <em>wir</em> = 'veer').");
+    }
+    if (lower.includes('z')) {
+      tipsList.push("🗣️ <strong>'z'</strong>: Always pronounced like <strong>'ts'</strong> as in 'cats' (e.g. <em>Zug</em> = 'tsook').");
+    }
+    if (lower.includes('v')) {
+      tipsList.push("🗣️ <strong>'v'</strong>: Almost always sounds like English <strong>'f'</strong> (e.g. <em>von</em> = 'fon').");
+    }
+    if (lower.includes('ä') || lower.includes('ö') || lower.includes('ü')) {
+      tipsList.push("🗣️ <strong>Umlauts</strong>: <strong>ä</strong> = 'eh', <strong>ö</strong> = rounded 'er', <strong>ü</strong> = whistle lips saying 'ee'.");
+    }
+    if (lower.includes('ie') || lower.includes('ei')) {
+      tipsList.push("🗣️ <strong>Vowel pairs</strong>: <strong>ie</strong> = long 'ee' (<em>sie</em>), while <strong>ei</strong> = 'eye' (<em>mein</em>)!");
+    }
+
+    const tips = tipsList.length > 0 ? tipsList.slice(0, 2).join('<br/>') : "💡 <em>Tip: Speak naturally with clear vowel sounds and syllable stress!</em>";
+
+    return { phoneticText, tips };
+  }
+  window.generateGermanPhonetics = generateGermanPhonetics;
 
   window.startTranslatorVoiceInput = function() {
     if (!SpeechRecognition) {
@@ -7442,6 +7722,64 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  async function startRecordingUserVoice() {
+    try {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        userMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        userRecordedChunks = [];
+        userMediaRecorder = new MediaRecorder(userMediaStream);
+        userMediaRecorder.ondataavailable = function(e) {
+          if (e.data && e.data.size > 0) userRecordedChunks.push(e.data);
+        };
+        userMediaRecorder.onstop = function() {
+          if (userMediaStream) {
+            userMediaStream.getTracks().forEach(t => t.stop());
+            userMediaStream = null;
+          }
+          if (userRecordedChunks.length > 0) {
+            userRecordedAudioBlob = new Blob(userRecordedChunks, { type: 'audio/webm' });
+            if (userRecordedAudioUrl) URL.revokeObjectURL(userRecordedAudioUrl);
+            userRecordedAudioUrl = URL.createObjectURL(userRecordedAudioBlob);
+            
+            // Reveal "Play My Voice" button in the modal!
+            const playMyVoiceBtn = document.getElementById('speakingPlayUserVoiceBtn');
+            if (playMyVoiceBtn) {
+              playMyVoiceBtn.classList.remove('hidden');
+              playMyVoiceBtn.classList.add('inline-flex');
+            }
+          }
+        };
+        userMediaRecorder.start();
+      }
+    } catch(err) {
+      console.warn("Could not start MediaRecorder (microphone capture):", err);
+    }
+  }
+
+  function stopRecordingUserVoice() {
+    if (userMediaRecorder && userMediaRecorder.state !== 'inactive') {
+      try { userMediaRecorder.stop(); } catch(e) {}
+    }
+  }
+
+  window.playUserRecordedVoice = function() {
+    if (!userRecordedAudioUrl) {
+      showFloatingToast("⚠️ Record your voice first by clicking the microphone button!");
+      return;
+    }
+    if (userAudioPlayerInstance) {
+      userAudioPlayerInstance.pause();
+      userAudioPlayerInstance.currentTime = 0;
+    }
+    const icon = document.getElementById('userVoicePlayIcon');
+    if (icon) icon.textContent = '🔊';
+    userAudioPlayerInstance = new Audio(userRecordedAudioUrl);
+    userAudioPlayerInstance.play();
+    userAudioPlayerInstance.onended = function() {
+      if (icon) icon.textContent = '▶️';
+    };
+  };
+
   window.startSpeakingPractice = function(customTarget) {
     let target = customTarget;
     if (!target) {
@@ -7457,12 +7795,28 @@ document.addEventListener('DOMContentLoaded', () => {
     currentSpeakingTargetText = target;
     const modal = document.getElementById('speakingPracticeModal');
     const targetEl = document.getElementById('speakingModalTarget');
+    const phoneticTextEl = document.getElementById('speakingPhoneticText');
+    const phoneticTipsEl = document.getElementById('speakingPronunciationTips');
+    const playMyVoiceBtn = document.getElementById('speakingPlayUserVoiceBtn');
     const resBox = document.getElementById('speakingResultBox');
+
     if (targetEl) targetEl.textContent = target;
+
+    // Generate & Display Phonetic Guide
+    const phonetics = generateGermanPhonetics(target);
+    if (phoneticTextEl) phoneticTextEl.textContent = phonetics.phoneticText;
+    if (phoneticTipsEl) phoneticTipsEl.innerHTML = phonetics.tips;
+
+    // Reset user recording button & feedback box
+    if (playMyVoiceBtn) {
+      playMyVoiceBtn.classList.remove('inline-flex');
+      playMyVoiceBtn.classList.add('hidden');
+    }
     if (resBox) {
       resBox.className = 'hidden';
       resBox.innerHTML = '';
     }
+
     if (modal) modal.classList.remove('hidden');
   };
 
@@ -7470,6 +7824,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (activeSpeechRecognition) {
       try { activeSpeechRecognition.stop(); } catch(e) {}
       activeSpeechRecognition = null;
+    }
+    stopRecordingUserVoice();
+    if (userAudioPlayerInstance) {
+      userAudioPlayerInstance.pause();
+      userAudioPlayerInstance = null;
     }
     const modal = document.getElementById('speakingPracticeModal');
     if (modal) modal.classList.add('hidden');
@@ -7493,6 +7852,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (activeSpeechRecognition) {
       try { activeSpeechRecognition.stop(); } catch(e) {}
       activeSpeechRecognition = null;
+      stopRecordingUserVoice();
       if (micBtn) micBtn.classList.remove('mic-recording-active');
       if (statusLabel) {
         statusLabel.textContent = "Click to Speak";
@@ -7508,20 +7868,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     recognition.onstart = function() {
       activeSpeechRecognition = recognition;
+      startRecordingUserVoice();
       if (micBtn) micBtn.classList.add('mic-recording-active');
       if (statusLabel) {
-        statusLabel.textContent = "Listening... Speak now in German!";
+        statusLabel.textContent = "🔴 Recording your voice... Speak now in German!";
         statusLabel.className = "text-xs font-extrabold text-rose-600 animate-pulse";
       }
     };
 
     recognition.onresult = function(event) {
       const spokenText = event.results[0][0].transcript;
+      stopRecordingUserVoice();
       evaluatePronunciation(spokenText, currentSpeakingTargetText);
     };
 
     recognition.onerror = function(err) {
       console.warn('Speech recognition error:', err);
+      stopRecordingUserVoice();
       if (statusLabel) {
         statusLabel.textContent = "Microphone error or permission denied.";
         statusLabel.className = "text-xs font-extrabold text-rose-600";
@@ -7530,6 +7893,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     recognition.onend = function() {
       activeSpeechRecognition = null;
+      stopRecordingUserVoice();
       if (micBtn) micBtn.classList.remove('mic-recording-active');
       if (statusLabel) {
         statusLabel.textContent = "Click to Speak Again";
@@ -7584,14 +7948,26 @@ document.addEventListener('DOMContentLoaded', () => {
       awardXP(5, 'Speaking Attempt');
     }
 
-    resBox.className = `p-3.5 rounded-2xl border text-xs space-y-1.5 ${badgeClass}`;
+    const phonetics = generateGermanPhonetics(target);
+
+    resBox.className = `p-3.5 rounded-2xl border text-xs space-y-2 ${badgeClass}`;
     resBox.innerHTML = `
       <div class="flex items-center justify-between">
         <span class="font-black text-sm">${verdict}</span>
-        <span class="px-2 py-0.5 rounded-full bg-white/80 font-black text-xs border border-current/20">${tokenAccuracy}% Match</span>
+        <span class="px-2 py-0.5 rounded-full bg-white/90 font-black text-xs border border-current/20">${tokenAccuracy}% Match</span>
       </div>
-      <p><strong>You said:</strong> <em class="italic">"${escapeHtml(spoken)}"</em></p>
-      <p class="text-[11px] opacity-90">${tip}</p>
+      <div class="p-2 bg-white/90 rounded-xl border border-current/20 space-y-1">
+        <p><strong>You said:</strong> <em class="italic text-sky-900">"${escapeHtml(spoken)}"</em></p>
+        <p><strong>Target:</strong> <strong class="text-sky-950 font-bold">"${escapeHtml(target)}"</strong></p>
+        <p class="text-[11px] font-mono text-purple-900 font-bold">Phonetics: ${phonetics.phoneticText}</p>
+      </div>
+      <div class="flex items-center justify-between gap-2 pt-1">
+        <p class="text-[11px] opacity-90">${tip}</p>
+        <button onclick="playUserRecordedVoice()" class="px-2.5 py-1 rounded-lg bg-pink-500 hover:bg-pink-600 text-white font-bold text-[11px] flex items-center gap-1 transition shadow-xs cursor-pointer flex-shrink-0" title="Listen to your recording">
+          <span>▶️</span>
+          <span>My Recording</span>
+        </button>
+      </div>
     `;
   }
 
@@ -7696,6 +8072,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="flex items-center gap-1.5 flex-shrink-0">
               <button onclick="playGermanSpeech('${escapeHtml(item.german)}', this)" class="p-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-700 text-xs font-bold transition cursor-pointer" title="Listen to pronunciation">
                 🔊
+              </button>
+              <button onclick="startSpeakingPractice('${escapeHtml(item.german)}')" class="px-2 py-0.5 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-900 text-[11px] font-bold transition cursor-pointer" title="Practice Speaking">
+                🎙️ Speak
               </button>
               <button onclick="reAnalyzeFromNotebook('${escapeHtml(item.german)}')" class="px-2 py-0.5 rounded-lg bg-purple-100 hover:bg-purple-200 text-purple-900 text-[11px] font-bold transition cursor-pointer" title="Load into Grammar Analyzer">
                 🔍 Analyze
