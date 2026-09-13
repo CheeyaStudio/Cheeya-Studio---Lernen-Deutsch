@@ -40,13 +40,25 @@
       </div>
     </div>
 
-    <!-- Right Controls: ONLY Progress, Music (20 Options), Font Scaler, Quick Grammar -->
+    <!-- Right Controls: Streak, Progress, Notebook, Music, Font Scaler, Quick Grammar, Theme -->
     <div class="flex items-center gap-2 md:gap-3 flex-shrink-0">
+
+      <!-- 0. Daily Study Streak & Achievements Trigger -->
+      <button id="streakBadgeBtn" onclick="openStreakModal()" class="px-3 py-1.5 rounded-xl bg-amber-100/90 hover:bg-amber-200 border border-amber-300 text-amber-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Daily Study Streak & Achievements Gallery">
+        <span class="text-sm">🔥</span>
+        <span id="streakBadgeCount">1 Day</span>
+      </button>
 
       <!-- 1. Progress Tracker Trigger Button -->
       <button id="navTab-progress" onclick="switchView('progress')" class="px-3.5 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="View Learning Progress & Exercise History">
         <span>📊</span>
         <span>Progress</span>
+      </button>
+
+      <!-- 1.5. Starred Sentences Notebook -->
+      <button id="navNotebookBtn" onclick="openNotebookModal()" class="px-3 py-1.5 rounded-xl bg-purple-100/90 hover:bg-purple-200 border border-purple-300 text-purple-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="My Starred German Sentences Notebook">
+        <span>⭐</span>
+        <span class="hidden xl:inline">Notebook</span>
       </button>
 
       <!-- 2. Relaxing Study Music Controller (2 Categories: 10 Ambient + 10 Instrumental Songs) -->
@@ -110,6 +122,11 @@
       <button onclick="openGrammarModal()" class="px-3 py-1.5 rounded-xl bg-blue-100 hover:bg-blue-200 border border-blue-300 text-blue-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Comprehensive German Grammar Reference">
         <span>📑</span>
         <span>Quick Grammar</span>
+      </button>
+
+      <!-- 5. Theme Mode Switcher: Light / Dark / Sepia -->
+      <button id="themeModeBtn" onclick="toggleThemeMode()" class="px-2.5 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-black flex items-center gap-1 transition shadow-xs cursor-pointer" title="Switch Theme (Light, Dark, Sepia)">
+        <span id="themeModeIcon">🌙</span>
       </button>
 
     </div>
@@ -223,6 +240,26 @@
         </div>
       </div>
 
+      <!-- ================= DASHBOARD: DAILY 5-MINUTE MIXED REVIEW BANNER ================= -->
+      <div class="p-4 md:p-5 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-xl flex flex-wrap items-center justify-between gap-4 relative overflow-hidden flex-shrink-0">
+        <div class="flex items-center gap-3.5 z-10">
+          <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shadow-inner flex-shrink-0">
+            🧠
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-base md:text-lg font-black tracking-wide">Daily 5-Minute Mixed Review Challenge</h3>
+              <span class="text-[10px] bg-white/25 text-white font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider backdrop-blur-xs">Spaced Repetition</span>
+            </div>
+            <p class="text-xs text-white/90 font-medium mt-0.5">Quickly test your retention with 5 randomized A1 questions from all chapters! Earn +50 XP and boost your streak 🔥</p>
+          </div>
+        </div>
+        <button onclick="startDailyMixedQuiz()" class="px-5 py-2.5 rounded-xl bg-white hover:bg-white/90 text-purple-900 text-xs font-black transition shadow-md hover:scale-105 flex items-center gap-2 cursor-pointer z-10 flex-shrink-0">
+          <span>⚡ Start 5-Min Quiz</span>
+          <span>➔</span>
+        </button>
+      </div>
+
       <!-- ================= DASHBOARD: AI SMART TRANSLATOR & GERMAN GRAMMAR ANALYZER ================= -->
       <div id="translatorSection" class="blue-glass-card p-5 md:p-7 border-2 border-sky-300 shadow-xl flex-shrink-0 relative overflow-hidden bg-gradient-to-br from-white/95 via-sky-50/90 to-blue-50/90 mb-2">
         
@@ -298,7 +335,13 @@
           <div class="flex flex-col bg-white rounded-2xl border-2 border-sky-200 p-4 shadow-sm focus-within:border-sky-500 transition">
             <div class="flex items-center justify-between pb-2 mb-2 border-b border-sky-100 text-xs">
               <span id="transSourceLabel" class="font-black text-sky-900 uppercase tracking-wider text-[11px]">🇬🇧 English Sentence</span>
-              <button onclick="clearTranslatorInput()" class="text-sky-400 hover:text-sky-700 font-bold transition">Clear</button>
+              <div class="flex items-center gap-2">
+                <button id="transVoiceInputBtn" onclick="startTranslatorVoiceInput()" class="px-2 py-0.5 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-[11px] font-bold flex items-center gap-1 transition cursor-pointer" title="Voice Input: Speak to type">
+                  <span id="transVoiceMicIcon">🎙️</span>
+                  <span>Voice Input</span>
+                </button>
+                <button onclick="clearTranslatorInput()" class="text-sky-400 hover:text-sky-700 font-bold transition">Clear</button>
+              </div>
             </div>
             <textarea id="transInputText" rows="4" placeholder="Enter or paste your sentence here..." class="w-full resize-none text-sm text-sky-950 font-medium focus:outline-none placeholder-sky-300" onkeydown="if(event.ctrlKey && event.key === 'Enter') translateAndAnalyze()"></textarea>
             
@@ -316,6 +359,13 @@
             <div class="flex items-center justify-between pb-2 mb-2 border-b border-sky-200 text-xs">
               <span id="transTargetLabel" class="font-black text-sky-900 uppercase tracking-wider text-[11px]">🇩🇪 German Translation</span>
               <div class="flex items-center gap-1.5">
+                <button id="transSpeakPracticeBtn" onclick="startSpeakingPractice()" class="px-2 py-1 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300 text-[11px] font-bold flex items-center gap-1 transition cursor-pointer" title="Practice Speaking: Test your German pronunciation">
+                  <span>🎙️</span>
+                  <span class="hidden sm:inline">Practice Speaking</span>
+                </button>
+                <button id="transSaveNotebookBtn" onclick="toggleSaveCurrentSentence()" class="p-1.5 rounded-lg bg-white hover:bg-amber-100 text-amber-700 border border-sky-200 transition cursor-pointer" title="Save this sentence to My Notebook">
+                  <span id="transSaveStarIcon">⭐</span>
+                </button>
                 <button id="transAudioBtn" onclick="playTranslatorTargetAudio()" class="p-1.5 rounded-lg bg-white hover:bg-sky-100 text-sky-700 border border-sky-200 transition cursor-pointer" title="Listen to pronunciation">
                   🔊
                 </button>
@@ -328,6 +378,9 @@
             <div id="transOutputText" class="text-base md:text-lg font-bold text-sky-950 min-h-[70px] flex items-center">
               <span class="text-sky-400 text-xs font-medium italic">Translation and grammar breakdown will appear here...</span>
             </div>
+
+            <!-- Speaking Practice Feedback Banner -->
+            <div id="speakingPracticeFeedback" class="hidden mt-2 p-2.5 rounded-xl border text-xs"></div>
 
             <div id="transLoadingIndicator" class="hidden absolute inset-0 bg-white/80 rounded-2xl backdrop-blur-xs flex items-center justify-center gap-2 text-sky-800 font-bold text-xs">
               <div class="w-5 h-5 border-2 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
@@ -685,10 +738,21 @@
             </h2>
             <p class="text-xs md:text-sm text-sky-700">Track your completed chapters across the entire Netzwerk Neu A1 curriculum and view recent exercise scores.</p>
           </div>
-          <button onclick="switchView('dashboard')" class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-extrabold flex items-center gap-1.5 transition shadow-xs cursor-pointer">
-            <span>🏠</span>
-            <span>Dashboard</span>
-          </button>
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="exportStudyProgress()" class="px-3 py-1.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 text-emerald-900 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Export study progress & notebook to a JSON file">
+              <span>💾</span>
+              <span>Export JSON</span>
+            </button>
+            <label for="importProgressFileInput" class="px-3 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-900 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Import and restore study progress from JSON">
+              <span>📥</span>
+              <span>Import JSON</span>
+            </label>
+            <input type="file" id="importProgressFileInput" accept=".json" class="hidden" onchange="importStudyProgress(this)">
+            <button onclick="switchView('dashboard')" class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-extrabold flex items-center gap-1.5 transition shadow-xs cursor-pointer">
+              <span>🏠</span>
+              <span>Dashboard</span>
+            </button>
+          </div>
         </div>
 
         <div id="historyContainer">
@@ -1086,8 +1150,181 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: DAILY STREAK & ACHIEVEMENTS ================= -->
+  <div id="streakAchievementsModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-3 md:p-6 hidden">
+    <div class="blue-glass-card max-w-2xl w-full max-h-[90vh] p-5 md:p-6 shadow-2xl flex flex-col border-2 border-amber-300 overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-sky-200">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-xl flex-shrink-0 shadow-xs">
+            🔥
+          </div>
+          <div>
+            <h3 class="font-extrabold text-base text-sky-950">Daily Study Streak & Achievements</h3>
+            <p class="text-xs text-sky-600 font-medium">Keep your study momentum alive & collect learning trophies! ✨</p>
+          </div>
+        </div>
+        <button onclick="closeStreakModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Streak & XP Cards -->
+      <div class="grid grid-cols-3 gap-3 my-4">
+        <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-3.5 rounded-2xl border border-amber-200 text-center shadow-xs">
+          <div class="text-2xl font-black text-amber-600 mb-0.5" id="streakModalCurrent">1</div>
+          <div class="text-xs font-bold text-amber-950">Current Streak</div>
+          <div class="text-[10px] text-amber-700">Days Active 🔥</div>
+        </div>
+        <div class="bg-gradient-to-br from-purple-50 to-indigo-50 p-3.5 rounded-2xl border border-purple-200 text-center shadow-xs">
+          <div class="text-2xl font-black text-purple-600 mb-0.5" id="streakModalXP">120</div>
+          <div class="text-xs font-bold text-purple-950">Total XP</div>
+          <div class="text-[10px] text-purple-700">Learning Points ⚡</div>
+        </div>
+        <div class="bg-gradient-to-br from-sky-50 to-blue-50 p-3.5 rounded-2xl border border-sky-200 text-center shadow-xs">
+          <div class="text-2xl font-black text-sky-600 mb-0.5" id="streakModalLongest">1</div>
+          <div class="text-xs font-bold text-sky-950">Longest Streak</div>
+          <div class="text-[10px] text-sky-700">Best Record 🏆</div>
+        </div>
+      </div>
+
+      <!-- 7-Day Visual Tracker -->
+      <div class="bg-white/90 p-3.5 rounded-2xl border border-sky-200 mb-4">
+        <h4 class="text-xs font-black text-sky-900 uppercase tracking-wider mb-2 flex items-center justify-between">
+          <span>This Week's Activity:</span>
+          <span class="text-[10px] text-emerald-700 font-bold">Study at least 5 mins daily</span>
+        </h4>
+        <div class="grid grid-cols-7 gap-1.5 text-center text-xs" id="streakWeekDaysContainer">
+          <!-- Populated from JS -->
+        </div>
+      </div>
+
+      <!-- Badges Gallery -->
+      <div class="space-y-2">
+        <h4 class="text-xs font-black text-sky-900 uppercase tracking-wider flex items-center justify-between">
+          <span>Achievement Badges:</span>
+          <span class="text-[10px] text-sky-600 font-bold" id="streakBadgeProgressText">0 of 8 Unlocked</span>
+        </h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="streakBadgesList">
+          <!-- Populated from JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: 5-MINUTE MIXED REVIEW QUIZ ================= -->
+  <div id="mixedQuizModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-3 md:p-6 hidden">
+    <div class="blue-glass-card max-w-xl w-full p-5 md:p-7 shadow-2xl flex flex-col border-2 border-purple-300">
+      
+      <!-- Quiz Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-sky-200 mb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">🧠</span>
+          <div>
+            <h3 class="font-black text-base text-sky-950">Daily 5-Minute Mixed Review</h3>
+            <p class="text-xs text-sky-600 font-medium">Spaced Repetition across Netzwerk NEU A1</p>
+          </div>
+        </div>
+        <button onclick="closeMixedQuizModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Progress & Score Bar -->
+      <div class="flex items-center justify-between text-xs font-black text-sky-800 mb-2">
+        <span id="quizQuestionCount">Question 1 of 5</span>
+        <span id="quizScoreBadge" class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-900 border border-purple-200">+50 XP Potential</span>
+      </div>
+      <div class="w-full bg-sky-100 rounded-full h-2 mb-4 overflow-hidden border border-sky-200">
+        <div id="quizProgressBar" class="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300" style="width: 20%"></div>
+      </div>
+
+      <!-- Question & Options Area -->
+      <div id="quizContentArea" class="space-y-4">
+        <!-- Populated from JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: SAVED SENTENCES NOTEBOOK ================= -->
+  <div id="savedNotebookModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-3 md:p-6 hidden">
+    <div class="blue-glass-card max-w-3xl w-full max-h-[90vh] p-5 md:p-7 shadow-2xl flex flex-col border-2 border-purple-300 overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-sky-200 mb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">⭐</span>
+          <div>
+            <h3 class="font-extrabold text-base text-sky-950">My Saved German Sentences Notebook</h3>
+            <p class="text-xs text-sky-600 font-medium">Your personal collection of starred sentences and grammar breakdowns</p>
+          </div>
+        </div>
+        <button onclick="closeNotebookModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Search & Count Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+        <div class="flex items-center gap-2 flex-1 min-w-[220px]">
+          <input type="text" id="notebookSearchInput" oninput="renderSavedNotebook()" placeholder="Search saved sentences..." class="w-full bg-white text-sky-950 border border-sky-300 rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none focus:border-sky-500">
+        </div>
+        <span class="text-xs font-bold text-sky-700" id="notebookCountBadge">0 Sentences Saved</span>
+      </div>
+
+      <!-- Notebook Items List -->
+      <div id="notebookItemsList" class="space-y-2.5 max-h-96 overflow-y-auto pr-1">
+        <!-- Populated from JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: SPEAKING PRACTICE & SPEECH EVALUATION ================= -->
+  <div id="speakingPracticeModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-3 md:p-6 hidden">
+    <div class="blue-glass-card max-w-lg w-full p-5 md:p-6 shadow-2xl flex flex-col border-2 border-emerald-300 text-center">
+      
+      <div class="flex items-center justify-between pb-2 border-b border-sky-200 mb-3">
+        <h3 class="font-black text-sm text-sky-950 flex items-center gap-1.5">
+          <span>🎙️</span>
+          <span>German Speaking & Pronunciation Practice</span>
+        </h3>
+        <button onclick="closeSpeakingPracticeModal()" class="p-1 text-sky-400 hover:text-sky-700 rounded-lg transition cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <p class="text-xs text-sky-700 font-medium mb-2">Read and speak the German sentence below into your microphone:</p>
+
+      <!-- Target Sentence Box -->
+      <div class="p-3.5 bg-sky-50 rounded-2xl border border-sky-200 text-base md:text-lg font-black text-sky-950 mb-3" id="speakingModalTarget">
+        <!-- e.g. "Ich habe einen Hund" -->
+      </div>
+
+      <!-- Audio Reference Button -->
+      <div class="mb-4">
+        <button id="speakingModalAudioRef" onclick="playSpeakingReferenceAudio()" class="px-3 py-1 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold inline-flex items-center gap-1.5 transition cursor-pointer">
+          <span>🔊</span>
+          <span>Listen to correct pronunciation first</span>
+        </button>
+      </div>
+
+      <!-- Microphone Action Button -->
+      <div class="py-2 flex flex-col items-center justify-center gap-2">
+        <button id="speakingMicBtn" onclick="toggleSpeechRecording()" class="w-16 h-16 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center text-2xl shadow-lg transition cursor-pointer">
+          <span id="speakingMicIcon">🎙️</span>
+        </button>
+        <span id="speakingStatusLabel" class="text-xs font-extrabold text-emerald-700">Click to Speak</span>
+      </div>
+
+      <!-- Spoken Transcript & Feedback -->
+      <div id="speakingResultBox" class="hidden mt-3 p-3 rounded-xl border text-xs text-left space-y-1.5">
+        <!-- Populated from JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating XP Toast Container -->
+  <div id="floatingXPContainer" class="fixed top-20 right-6 z-50 pointer-events-none flex flex-col gap-2"></div>
+
   <!-- SCRIPT LOGIC -->
   <script src="media-data.js?v=20260913_360q"></script>
-  <script src="app.js?v=20260913_object_engine"></script>
+  <script src="app.js?v=20260913_all_6_features"></script>
 </body>
 </html>

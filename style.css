@@ -556,3 +556,130 @@ body {
     background-color: #f1f5f9 !important;
   }
 }
+
+/* ================= THEME MODES: DARK & SEPIA ================= */
+[data-theme="dark"] {
+  --sky-primary: #38bdf8;
+  --sky-hover: #7dd3fc;
+  --sky-light: #0f172a;
+  --sky-card: rgba(30, 41, 59, 0.95);
+  --sky-border: rgba(51, 65, 85, 0.9);
+  --sky-glow: rgba(56, 189, 248, 0.2);
+  --text-dark: #f1f5f9;
+  --text-muted: #94a3b8;
+}
+[data-theme="dark"] body {
+  background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #1e293b 100%) !important;
+  color: #f1f5f9 !important;
+}
+[data-theme="dark"] header {
+  background: rgba(15, 23, 42, 0.94) !important;
+  border-color: #334155 !important;
+}
+[data-theme="dark"] .blue-glass-card,
+[data-theme="dark"] .bg-white\/95,
+[data-theme="dark"] .bg-white\/90,
+[data-theme="dark"] .bg-white\/80,
+[data-theme="dark"] .bg-white {
+  background-color: rgba(30, 41, 59, 0.92) !important;
+  border-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+[data-theme="dark"] .text-sky-950,
+[data-theme="dark"] .text-sky-900,
+[data-theme="dark"] .text-sky-800,
+[data-theme="dark"] .text-blue-950,
+[data-theme="dark"] .text-blue-900 {
+  color: #f8fafc !important;
+}
+[data-theme="dark"] .text-sky-700,
+[data-theme="dark"] .text-sky-600,
+[data-theme="dark"] .text-blue-700 {
+  color: #93c5fd !important;
+}
+[data-theme="dark"] .bg-sky-50,
+[data-theme="dark"] .bg-sky-100,
+[data-theme="dark"] .bg-blue-50 {
+  background-color: rgba(30, 41, 59, 0.65) !important;
+}
+[data-theme="dark"] .border-sky-200,
+[data-theme="dark"] .border-sky-300,
+[data-theme="dark"] .border-blue-200 {
+  border-color: #334155 !important;
+}
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #475569 !important;
+}
+
+/* SEPIA MODE */
+[data-theme="sepia"] {
+  --sky-primary: #d97706;
+  --sky-hover: #b45309;
+  --sky-light: #fef3c7;
+  --sky-card: rgba(254, 252, 246, 0.96);
+  --sky-border: rgba(217, 180, 130, 0.7);
+  --sky-glow: rgba(217, 119, 6, 0.2);
+  --text-dark: #451a03;
+  --text-muted: #78350f;
+}
+[data-theme="sepia"] body {
+  background: linear-gradient(135deg, #fbf7ee 0%, #f5eedb 50%, #eee4c9 100%) !important;
+  color: #451a03 !important;
+}
+[data-theme="sepia"] header {
+  background: rgba(254, 252, 246, 0.94) !important;
+  border-color: #d9b482 !important;
+}
+[data-theme="sepia"] .blue-glass-card,
+[data-theme="sepia"] .bg-white\/95,
+[data-theme="sepia"] .bg-white {
+  background-color: #fdfbf7 !important;
+  border-color: #e5d3b3 !important;
+  color: #451a03 !important;
+}
+[data-theme="sepia"] .text-sky-950,
+[data-theme="sepia"] .text-sky-900,
+[data-theme="sepia"] .text-sky-800 {
+  color: #451a03 !important;
+}
+[data-theme="sepia"] .text-sky-700,
+[data-theme="sepia"] .text-sky-600 {
+  color: #92400e !important;
+}
+[data-theme="sepia"] .bg-sky-50,
+[data-theme="sepia"] .bg-sky-100 {
+  background-color: #f9f2e3 !important;
+}
+[data-theme="sepia"] .border-sky-200,
+[data-theme="sepia"] .border-sky-300 {
+  border-color: #dfcdb0 !important;
+}
+
+/* Microphone Pulse & Speaking Animations */
+@keyframes mic-pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7); }
+  50% { transform: scale(1.08); box-shadow: 0 0 0 12px rgba(244, 63, 94, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+}
+.mic-recording-active {
+  animation: mic-pulse 1.3s infinite ease-in-out !important;
+  background-color: #f43f5e !important;
+  color: white !important;
+  border-color: #e11d48 !important;
+}
+
+/* Floating XP Toast Animation */
+@keyframes xp-float {
+  0% { opacity: 0; transform: translateY(12px) scale(0.85); }
+  25% { opacity: 1; transform: translateY(0px) scale(1.08); }
+  75% { opacity: 1; transform: translateY(-15px) scale(1); }
+  100% { opacity: 0; transform: translateY(-30px) scale(0.9); }
+}
+.xp-toast-anim {
+  animation: xp-float 1.9s forwards cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+

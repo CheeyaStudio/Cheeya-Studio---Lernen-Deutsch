@@ -3648,6 +3648,10 @@ document.addEventListener('DOMContentLoaded', () => {
       feedback: isCorrect ? `Correct! ${foundQ.explanation}` : `Expected: ${foundQ.expected[0]}. ${foundQ.explanation}`,
       date: new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
     });
+    if (isCorrect) {
+      if (typeof awardXP === 'function') awardXP(15, 'Exercise Correct');
+      if (typeof unlockBadge === 'function') unlockBadge('first_step');
+    }
     saveStudyData();
     renderHistoryTab();
   };
@@ -3849,19 +3853,49 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="bg-gradient-to-r from-sky-400 to-blue-600 h-3.5 rounded-full transition-all duration-500" style="width: ${percent}%"></div>
         </div>
 
-        <div class="grid grid-cols-3 gap-3 text-center text-xs">
-          <div class="bg-white/90 p-3 rounded-2xl border border-sky-200">
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-center text-xs">
+          <div class="bg-white/90 p-2.5 rounded-2xl border border-sky-200">
             <div class="font-extrabold text-sky-600 text-lg">${completedCount}/${totalChapters}</div>
-            <div class="text-[11px] text-sky-700 font-bold">Chapters Done</div>
+            <div class="text-[10px] text-sky-700 font-bold">Chapters Done</div>
           </div>
-          <div class="bg-white/90 p-3 rounded-2xl border border-sky-200">
+          <div class="bg-white/90 p-2.5 rounded-2xl border border-sky-200">
             <div class="font-extrabold text-blue-600 text-lg">${answeredQuizzesCount}</div>
-            <div class="text-[11px] text-blue-700 font-bold">Quizzes Solved</div>
+            <div class="text-[10px] text-blue-700 font-bold">Quizzes Solved</div>
           </div>
-          <div class="bg-white/90 p-3 rounded-2xl border border-sky-200">
+          <div class="bg-white/90 p-2.5 rounded-2xl border border-sky-200">
             <div class="font-extrabold text-indigo-600 text-lg">${answeredExercisesCount}</div>
-            <div class="text-[11px] text-indigo-700 font-bold">Exercises Checked</div>
+            <div class="text-[10px] text-indigo-700 font-bold">Exercises Checked</div>
           </div>
+          <div class="bg-white/90 p-2.5 rounded-2xl border border-amber-200 cursor-pointer hover:bg-amber-50 transition" onclick="openStreakModal()" title="View Streak Details">
+            <div class="font-extrabold text-amber-600 text-lg flex items-center justify-center gap-1">
+              <span>🔥</span>
+              <span>${typeof streakData !== 'undefined' ? streakData.currentStreak : 1}d</span>
+            </div>
+            <div class="text-[10px] text-amber-700 font-bold">Study Streak</div>
+          </div>
+          <div class="bg-white/90 p-2.5 rounded-2xl border border-purple-200 cursor-pointer hover:bg-purple-50 transition" onclick="openStreakModal()" title="View XP & Badges">
+            <div class="font-extrabold text-purple-600 text-lg flex items-center justify-center gap-1">
+              <span>⚡</span>
+              <span>${typeof streakData !== 'undefined' ? streakData.xp : 0}</span>
+            </div>
+            <div class="text-[10px] text-purple-700 font-bold">Total XP</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Achievements & Badges Showcase -->
+      <div class="blue-glass-card p-5 mb-5 border border-amber-300">
+        <div class="flex items-center justify-between mb-3">
+          <h5 class="font-bold text-xs text-amber-950 uppercase tracking-wider flex items-center gap-1.5">
+            <span>🏆</span>
+            <span>Achievement Badges Showcase</span>
+          </h5>
+          <button onclick="openStreakModal()" class="text-[11px] font-bold text-amber-800 hover:underline cursor-pointer">
+            View All Badges ➔
+          </button>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          ${typeof renderProgressBadgesHtml === 'function' ? renderProgressBadgesHtml() : ''}
         </div>
       </div>
 
@@ -5672,6 +5706,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
       showFloatingToast('✨ Translation & Grammar Analysis ready!');
 
+      // Update notebook star state
+      const starIcon = document.getElementById('transSaveStarIcon');
+      if (starIcon) {
+        const savedList = typeof loadSavedSentences === 'function' ? loadSavedSentences() : [];
+        const isAlreadySaved = savedList.some(item => item.german === (currentTargetGermanText || translatedText));
+        starIcon.textContent = isAlreadySaved ? '🌟' : '⭐';
+      }
+
+      // Gamification tracking
+      window.totalSentencesAnalyzed = (window.totalSentencesAnalyzed || 0) + 1;
+      if (typeof awardXP === 'function') awardXP(10, 'Grammar Analyzed');
+      if (window.totalSentencesAnalyzed >= 5 && typeof unlockBadge === 'function') {
+        unlockBadge('grammar_detective');
+      }
+
     } catch (err) {
       console.error("Translation or grammar analysis error:", err);
       if (outputEl) {
@@ -6827,9 +6876,874 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
+  // ================= 22. THEME MODE SWITCHER (LIGHT, DARK, SEPIA) =================
+  const THEME_STORAGE_KEY = 'netzwerk_theme_mode';
+  let currentTheme = localStorage.getItem(THEME_STORAGE_KEY) || 'light';
+
+  function applyTheme(theme) {
+    currentTheme = theme;
+    const root = document.documentElement;
+    const icon = document.getElementById('themeModeIcon');
+    if (theme === 'dark') {
+      root.setAttribute('data-theme', 'dark');
+      if (icon) icon.textContent = '☀️';
+    } else if (theme === 'sepia') {
+      root.setAttribute('data-theme', 'sepia');
+      if (icon) icon.textContent = '📜';
+    } else {
+      root.removeAttribute('data-theme');
+      if (icon) icon.textContent = '🌙';
+    }
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+  }
+
+  window.toggleThemeMode = function() {
+    if (currentTheme === 'light') {
+      applyTheme('dark');
+      showFloatingToast('🌙 Dark Mode enabled! Perfect for night study.');
+    } else if (currentTheme === 'dark') {
+      applyTheme('sepia');
+      showFloatingToast('📜 Warm Sepia Eye-Care Mode enabled!');
+    } else {
+      applyTheme('light');
+      showFloatingToast('☀️ Soft Blue Pastel Mode enabled!');
+    }
+  };
+
+  function initTheme() {
+    applyTheme(currentTheme);
+  }
+
+  // ================= 23. GAMIFICATION: DAILY STREAK & ACHIEVEMENTS =================
+  const STREAK_STORAGE_KEY = 'netzwerk_streak_gamification_v1';
+
+  const BADGES_DEFINITIONS = [
+    { id: 'first_step', title: 'First Step', emoji: '🎯', desc: 'Complete your first exercise', xp: 50 },
+    { id: 'streak_3', title: 'Flame Keeper', emoji: '🔥', desc: 'Reach a 3-day study streak', xp: 100 },
+    { id: 'streak_7', title: 'Consistency Master', emoji: '⚡', desc: 'Reach a 7-day study streak', xp: 200 },
+    { id: 'grammar_detective', title: 'Grammar Detective', emoji: '🔍', desc: 'Analyze 5 sentences with AI Translator', xp: 75 },
+    { id: 'voice_virtuoso', title: 'Voice Virtuoso', emoji: '🎙️', desc: 'Score 80%+ on German pronunciation practice', xp: 100 },
+    { id: 'quiz_whiz', title: 'Mixed Quiz Whiz', emoji: '🧠', desc: 'Score 100% on the 5-Minute Mixed Review Quiz', xp: 100 },
+    { id: 'vocab_collector', title: 'Star Collector', emoji: '⭐', desc: 'Save 3 sentences in My Notebook', xp: 75 },
+    { id: 'a1_explorer', title: 'A1 Explorer', emoji: '🗺️', desc: 'Complete 6 chapters in Netzwerk A1', xp: 250 }
+  ];
+
+  let streakData = {
+    currentStreak: 1,
+    longestStreak: 1,
+    lastActiveDate: '',
+    xp: 0,
+    unlockedBadges: [],
+    activityDates: []
+  };
+
+  function loadStreakData() {
+    try {
+      const saved = localStorage.getItem(STREAK_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        streakData = Object.assign(streakData, parsed);
+      }
+    } catch(e) {}
+  }
+
+  function saveStreakData() {
+    localStorage.setItem(STREAK_STORAGE_KEY, JSON.stringify(streakData));
+    updateStreakUI();
+  }
+
+  function getTodayDateStr() {
+    const d = new Date();
+    return d.toISOString().split('T')[0];
+  }
+
+  function initStreakAndGamification() {
+    loadStreakData();
+    const today = getTodayDateStr();
+    
+    if (!streakData.lastActiveDate) {
+      streakData.currentStreak = 1;
+      streakData.longestStreak = 1;
+      streakData.lastActiveDate = today;
+      streakData.activityDates = [today];
+      awardXP(50, 'Welcome to Cheeya Studio!');
+    } else if (streakData.lastActiveDate !== today) {
+      const last = new Date(streakData.lastActiveDate);
+      const now = new Date(today);
+      const diffDays = Math.round((now - last) / (1000 * 60 * 60 * 24));
+      
+      if (diffDays === 1) {
+        streakData.currentStreak += 1;
+        if (streakData.currentStreak > streakData.longestStreak) {
+          streakData.longestStreak = streakData.currentStreak;
+        }
+        awardXP(25, `${streakData.currentStreak} Day Streak Maintained! 🔥`);
+        if (streakData.currentStreak >= 3) unlockBadge('streak_3');
+        if (streakData.currentStreak >= 7) unlockBadge('streak_7');
+      } else if (diffDays > 1) {
+        streakData.currentStreak = 1;
+      }
+      streakData.lastActiveDate = today;
+      if (!streakData.activityDates.includes(today)) {
+        streakData.activityDates.push(today);
+      }
+    }
+    saveStreakData();
+  }
+
+  function awardXP(amount, reason) {
+    streakData.xp = (streakData.xp || 0) + amount;
+    saveStreakData();
+    showFloatingXP(amount, reason);
+  }
+
+  function showFloatingXP(amount, reason) {
+    const container = document.getElementById('floatingXPContainer');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = 'xp-toast-anim px-3 py-1.5 rounded-xl bg-purple-600 text-white font-black text-xs shadow-lg border border-purple-300 flex items-center gap-1.5 backdrop-blur-md';
+    toast.innerHTML = `<span>⚡ +${amount} XP</span> <span class="text-[10px] font-semibold opacity-90">${reason || ''}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => {
+      if (toast.parentNode) toast.parentNode.removeChild(toast);
+    }, 2000);
+  }
+
+  function unlockBadge(badgeId) {
+    if (!streakData.unlockedBadges) streakData.unlockedBadges = [];
+    if (streakData.unlockedBadges.includes(badgeId)) return;
+    streakData.unlockedBadges.push(badgeId);
+    const badge = BADGES_DEFINITIONS.find(b => b.id === badgeId);
+    if (badge) {
+      awardXP(badge.xp, `Badge Unlocked: ${badge.title}`);
+      showFloatingToast(`🏆 Achievement Unlocked: ${badge.title} (+${badge.xp} XP)!`);
+      if (typeof playConfettiEffect === 'function') playConfettiEffect();
+    }
+    saveStreakData();
+  }
+
+  function updateStreakUI() {
+    const countEl = document.getElementById('streakBadgeCount');
+    if (countEl) countEl.textContent = `${streakData.currentStreak} ${streakData.currentStreak === 1 ? 'Day' : 'Days'}`;
+    const modalCurr = document.getElementById('streakModalCurrent');
+    if (modalCurr) modalCurr.textContent = streakData.currentStreak;
+    const modalXp = document.getElementById('streakModalXP');
+    if (modalXp) modalXp.textContent = streakData.xp;
+    const modalLong = document.getElementById('streakModalLongest');
+    if (modalLong) modalLong.textContent = streakData.longestStreak;
+  }
+
+  window.openStreakModal = function() {
+    const modal = document.getElementById('streakAchievementsModal');
+    if (!modal) return;
+    renderStreakModalDetails();
+    modal.classList.remove('hidden');
+  };
+
+  window.closeStreakModal = function() {
+    const modal = document.getElementById('streakAchievementsModal');
+    if (modal) modal.classList.add('hidden');
+  };
+
+  function renderStreakModalDetails() {
+    updateStreakUI();
+    const weekContainer = document.getElementById('streakWeekDaysContainer');
+    if (weekContainer) {
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const today = new Date();
+      let weekHtml = '';
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(today.getDate() - i);
+        const dStr = d.toISOString().split('T')[0];
+        const dayName = days[d.getDay()];
+        const isActive = streakData.activityDates && streakData.activityDates.includes(dStr);
+        weekHtml += `
+          <div class="flex flex-col items-center p-2 rounded-xl border ${isActive ? 'bg-amber-100 border-amber-300 text-amber-950 font-black' : 'bg-slate-50 border-slate-200 text-slate-400 font-medium'}">
+            <span class="text-[9px] uppercase tracking-wider">${dayName}</span>
+            <span class="text-sm my-0.5">${isActive ? '🔥' : '⚪'}</span>
+            <span class="text-[10px]">${d.getDate()}</span>
+          </div>
+        `;
+      }
+      weekContainer.innerHTML = weekHtml;
+    }
+
+    const badgesList = document.getElementById('streakBadgesList');
+    const badgeProgressText = document.getElementById('streakBadgeProgressText');
+    if (badgesList) {
+      const unlockedCount = (streakData.unlockedBadges || []).length;
+      if (badgeProgressText) badgeProgressText.textContent = `${unlockedCount} of ${BADGES_DEFINITIONS.length} Unlocked`;
+      
+      let bHtml = '';
+      BADGES_DEFINITIONS.forEach(b => {
+        const isUnlocked = (streakData.unlockedBadges || []).includes(b.id);
+        bHtml += `
+          <div class="flex items-center gap-2.5 p-2.5 rounded-xl border ${isUnlocked ? 'bg-amber-50/70 border-amber-200 text-amber-950 shadow-2xs' : 'bg-slate-50/60 border-slate-200 text-slate-400 opacity-60'}">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xl ${isUnlocked ? 'bg-amber-100 border border-amber-300' : 'bg-slate-200 border border-slate-300 grayscale'}">
+              ${b.emoji}
+            </div>
+            <div class="flex-1 truncate">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black truncate">${b.title}</span>
+                <span class="text-[10px] font-bold ${isUnlocked ? 'text-amber-700' : 'text-slate-400'}">+${b.xp} XP</span>
+              </div>
+              <p class="text-[10px] truncate leading-tight">${b.desc}</p>
+            </div>
+            <span>${isUnlocked ? '✅' : '🔒'}</span>
+          </div>
+        `;
+      });
+      badgesList.innerHTML = bHtml;
+    }
+  }
+
+  function renderProgressBadgesHtml() {
+    let bHtml = '';
+    BADGES_DEFINITIONS.forEach(b => {
+      const isUnlocked = (streakData.unlockedBadges || []).includes(b.id);
+      bHtml += `
+        <div class="flex items-center gap-2 p-2 rounded-xl border ${isUnlocked ? 'bg-amber-50 border-amber-300 text-amber-950 font-bold' : 'bg-slate-50 border-slate-200 text-slate-400 opacity-60'} text-xs">
+          <span class="text-xl ${isUnlocked ? '' : 'grayscale'}">${b.emoji}</span>
+          <div class="truncate flex-1">
+            <p class="text-[11px] font-black truncate">${b.title}</p>
+            <p class="text-[9px] truncate opacity-80">+${b.xp} XP</p>
+          </div>
+          <span>${isUnlocked ? '✅' : '🔒'}</span>
+        </div>
+      `;
+    });
+    return bHtml;
+  }
+
+  // ================= 24. STUDY DATA BACKUP & RESTORE =================
+  window.exportStudyProgress = function() {
+    try {
+      const backupData = {
+        app: 'CheeyaStudio_NetzwerkA1',
+        version: '20260913_all_6_features',
+        exportDate: new Date().toISOString(),
+        studyData: studyData,
+        streakData: streakData,
+        savedSentences: loadSavedSentences(),
+        theme: currentTheme,
+        musicVolume: localStorage.getItem('netzwerk_music_vol') || '0.35'
+      };
+
+      const jsonStr = JSON.stringify(backupData, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const dateStr = getTodayDateStr();
+      a.href = url;
+      a.download = `cheeya_deutsch_progress_backup_${dateStr}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showFloatingToast('💾 Study progress backup downloaded successfully!');
+      awardXP(20, 'Progress Backup Saved');
+    } catch(e) {
+      console.error('Export error:', e);
+      alert('Failed to export study progress: ' + e.message);
+    }
+  };
+
+  window.importStudyProgress = function(input) {
+    if (!input || !input.files || input.files.length === 0) return;
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (!data || typeof data !== 'object') {
+          throw new Error('Invalid backup file format');
+        }
+
+        if (data.studyData) {
+          studyData = Object.assign(studyData, data.studyData);
+          saveStudyData();
+        }
+        if (data.streakData) {
+          streakData = Object.assign(streakData, data.streakData);
+          saveStreakData();
+        }
+        if (Array.isArray(data.savedSentences)) {
+          localStorage.setItem('netzwerk_saved_notebook', JSON.stringify(data.savedSentences));
+        }
+        if (data.theme) {
+          applyTheme(data.theme);
+        }
+
+        renderDashboardChapters();
+        renderHistoryTab();
+        updateStreakUI();
+        input.value = '';
+        showFloatingToast('📥 Study progress successfully restored from JSON!');
+        if (typeof playConfettiEffect === 'function') playConfettiEffect();
+      } catch(err) {
+        console.error('Import error:', err);
+        alert('Could not restore study progress: Please make sure this is a valid Cheeya Studio JSON backup file.');
+        input.value = '';
+      }
+    };
+
+    reader.readAsText(file);
+  };
+
+  // ================= 25. DAILY 5-MINUTE MIXED REVIEW QUIZ ENGINE =================
+  const MIXED_QUIZ_POOL = [
+    {
+      q: "Welcher Artikel passt? '_____ Hund bellt im Garten.'",
+      options: ["Der", "Die", "Das"],
+      answer: 0,
+      rule: "Hund is masculine in Nominativ: 'Der Hund'."
+    },
+    {
+      q: "Ergänze den Akkusativ: 'Ich trinke jeden Morgen _____ Kaffee.'",
+      options: ["einen", "ein", "eine"],
+      answer: 0,
+      rule: "Kaffee is masculine (der Kaffee). In Akkusativ, ein becomes einen."
+    },
+    {
+      q: "Konjugiere das Verb: 'Wir _____ heute Deutsch.' (lernen)",
+      options: ["lernt", "lernen", "lerne"],
+      answer: 1,
+      rule: "For 'wir', standard regular verbs take the -en ending: lernen."
+    },
+    {
+      q: "Welcher Fall wird nach 'mit' verlangt? 'Ich fahre mit _____ Bus.'",
+      options: ["dem", "den", "der"],
+      answer: 0,
+      rule: "'Mit' is a dative preposition. Masculine der Bus becomes dem Bus."
+    },
+    {
+      q: "Was ist das Gegenteil von 'groß'?",
+      options: ["klein", "schnell", "alt"],
+      answer: 0,
+      rule: "'Groß' means big, 'klein' means small."
+    },
+    {
+      q: "Wo steht das Verb im Hauptsatz? 'Heute _____ wir ins Kino.'",
+      options: ["gehen", "gehe", "geht"],
+      answer: 0,
+      rule: "Golden Rule: Verb occupies Position 2. Subject 'wir' matches 'gehen'."
+    },
+    {
+      q: "Welcher Artikel passt? '_____ Buch liegt auf dem Tisch.'",
+      options: ["Das", "Der", "Die"],
+      answer: 0,
+      rule: "Buch is neuter: 'Das Buch'."
+    },
+    {
+      q: "Welches Pronomen ist Akkusativ von 'du'?",
+      options: ["dich", "dir", "dein"],
+      answer: 0,
+      rule: "'Dich' is the accusative direct object pronoun (e.g. Ich liebe dich)."
+    },
+    {
+      q: "Welche Zahl ist 'siebzehn'?",
+      options: ["17", "70", "7"],
+      answer: 0,
+      rule: "Siebzehn is 17. Note the dropped '-en' from sieben."
+    },
+    {
+      q: "Ergänze den Dativ: 'Ich helfe _____ Frau.'",
+      options: ["der", "die", "den"],
+      answer: 0,
+      rule: "Helfen triggers Dative. Feminine die shifts to der in Dativ: 'der Frau'."
+    }
+  ];
+
+  let currentMixedQuiz = {
+    questions: [],
+    currentIndex: 0,
+    score: 0,
+    userAnswers: []
+  };
+
+  window.startDailyMixedQuiz = function() {
+    const shuffled = [...MIXED_QUIZ_POOL].sort(() => 0.5 - Math.random());
+    currentMixedQuiz = {
+      questions: shuffled.slice(0, 5),
+      currentIndex: 0,
+      score: 0,
+      userAnswers: []
+    };
+    const modal = document.getElementById('mixedQuizModal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    renderMixedQuizQuestion();
+  };
+
+  window.closeMixedQuizModal = function() {
+    const modal = document.getElementById('mixedQuizModal');
+    if (modal) modal.classList.add('hidden');
+  };
+
+  function renderMixedQuizQuestion() {
+    const q = currentMixedQuiz.questions[currentMixedQuiz.currentIndex];
+    const total = currentMixedQuiz.questions.length;
+    const countEl = document.getElementById('quizQuestionCount');
+    const barEl = document.getElementById('quizProgressBar');
+    const content = document.getElementById('quizContentArea');
+    if (!q || !content) return;
+
+    if (countEl) countEl.textContent = `Question ${currentMixedQuiz.currentIndex + 1} of ${total}`;
+    if (barEl) barEl.style.width = `${((currentMixedQuiz.currentIndex + 1) / total) * 100}%`;
+
+    let optionsHtml = '';
+    q.options.forEach((opt, idx) => {
+      optionsHtml += `
+        <button onclick="handleMixedQuizAnswer(${idx})" class="w-full p-3.5 rounded-2xl bg-white/95 hover:bg-sky-50 border-2 border-sky-200 text-sky-950 font-bold text-xs flex items-center justify-between transition cursor-pointer shadow-xs hover:border-sky-400">
+          <span>${escapeHtml(opt)}</span>
+          <span class="w-6 h-6 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center text-[10px] font-black">${String.fromCharCode(65 + idx)}</span>
+        </button>
+      `;
+    });
+
+    content.innerHTML = `
+      <div class="p-4 bg-sky-50 rounded-2xl border border-sky-200 space-y-1">
+        <span class="text-[10px] font-black uppercase text-sky-600 tracking-wider">A1 German Practice:</span>
+        <p class="text-sm font-black text-sky-950">${escapeHtml(q.q)}</p>
+      </div>
+      <div class="space-y-2">
+        ${optionsHtml}
+      </div>
+      <div id="quizFeedbackBox" class="hidden p-3 rounded-xl border text-xs"></div>
+    `;
+  }
+
+  window.handleMixedQuizAnswer = function(chosenIdx) {
+    const q = currentMixedQuiz.questions[currentMixedQuiz.currentIndex];
+    const fb = document.getElementById('quizFeedbackBox');
+    if (!q || !fb) return;
+
+    const isCorrect = (chosenIdx === q.answer);
+    if (isCorrect) currentMixedQuiz.score++;
+    currentMixedQuiz.userAnswers.push({ question: q.q, isCorrect, chosen: q.options[chosenIdx], rule: q.rule });
+
+    fb.className = `p-3 rounded-xl border text-xs font-bold ${isCorrect ? 'bg-emerald-50 border-emerald-300 text-emerald-900' : 'bg-rose-50 border-rose-300 text-rose-900'}`;
+    fb.innerHTML = `
+      <div class="flex items-center gap-1.5 mb-1 font-black text-sm">
+        <span>${isCorrect ? '✅ Richtig! (Correct!)' : '❌ Nicht ganz! (Not quite)'}</span>
+      </div>
+      <p class="font-medium text-[11px]">${q.rule}</p>
+    `;
+    fb.classList.remove('hidden');
+
+    setTimeout(() => {
+      currentMixedQuiz.currentIndex++;
+      if (currentMixedQuiz.currentIndex < currentMixedQuiz.questions.length) {
+        renderMixedQuizQuestion();
+      } else {
+        renderMixedQuizFinalResult();
+      }
+    }, 1400);
+  };
+
+  function renderMixedQuizFinalResult() {
+    const content = document.getElementById('quizContentArea');
+    const total = currentMixedQuiz.questions.length;
+    const score = currentMixedQuiz.score;
+    const isPerfect = (score === total);
+    
+    awardXP(score * 10, 'Mixed Quiz Solved');
+    if (isPerfect) unlockBadge('quiz_whiz');
+
+    if (isPerfect && typeof playConfettiEffect === 'function') {
+      playConfettiEffect();
+    }
+
+    content.innerHTML = `
+      <div class="text-center py-4 space-y-3">
+        <div class="text-5xl">${isPerfect ? '🎉' : score >= 3 ? '👏' : '💪'}</div>
+        <h4 class="text-lg font-black text-sky-950">${isPerfect ? 'Flawless Mastery!' : 'Well Done! Keep Practicing!'}</h4>
+        <p class="text-xs text-sky-700">You scored <strong>${score} out of ${total}</strong> on today's mixed review!</p>
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-100 text-purple-900 text-xs font-black border border-purple-300">
+          <span>⚡ +${score * 10} XP Earned</span>
+        </div>
+        <div class="pt-3 flex items-center justify-center gap-2">
+          <button onclick="startDailyMixedQuiz()" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs transition cursor-pointer shadow-md">
+            🔄 Try Another Quiz
+          </button>
+          <button onclick="closeMixedQuizModal()" class="px-4 py-2 rounded-xl bg-white hover:bg-sky-100 border border-sky-300 text-sky-800 font-bold text-xs transition cursor-pointer">
+            Close
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  // ================= 26. SPEECH RECOGNITION & SPEAKING PRACTICE =================
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let activeSpeechRecognition = null;
+  let currentSpeakingTargetText = '';
+
+  window.startTranslatorVoiceInput = function() {
+    if (!SpeechRecognition) {
+      showFloatingToast("⚠️ Speech recognition requires Chrome or Edge.");
+      return;
+    }
+
+    const srcLangSel = document.getElementById('transSourceLang');
+    const lang = (srcLangSel && srcLangSel.value === 'de') ? 'de-DE' : (srcLangSel && srcLangSel.value === 'id') ? 'id-ID' : 'en-US';
+    const btn = document.getElementById('transVoiceInputBtn');
+    const micIcon = document.getElementById('transVoiceMicIcon');
+
+    if (activeSpeechRecognition) {
+      try { activeSpeechRecognition.stop(); } catch(e) {}
+      activeSpeechRecognition = null;
+      if (btn) btn.classList.remove('mic-recording-active');
+      if (micIcon) micIcon.textContent = '🎙️';
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = lang;
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = function() {
+      activeSpeechRecognition = recognition;
+      if (btn) btn.classList.add('mic-recording-active');
+      if (micIcon) micIcon.textContent = '🔴';
+      showFloatingToast(`🎙️ Listening in ${lang}... Speak now!`);
+    };
+
+    recognition.onresult = function(event) {
+      const transcript = event.results[0][0].transcript;
+      const input = document.getElementById('transInputText');
+      if (input) {
+        input.value = transcript;
+        const charCount = document.getElementById('transCharCount');
+        if (charCount) charCount.textContent = `${transcript.length} / 500`;
+        translateAndAnalyze();
+      }
+      awardXP(10, 'Voice Input Used');
+    };
+
+    recognition.onerror = function(err) {
+      console.warn('Speech error:', err);
+      showFloatingToast("⚠️ Microphone error or permission denied.");
+    };
+
+    recognition.onend = function() {
+      activeSpeechRecognition = null;
+      if (btn) btn.classList.remove('mic-recording-active');
+      if (micIcon) micIcon.textContent = '🎙️';
+    };
+
+    try {
+      recognition.start();
+    } catch(e) {
+      console.error(e);
+    }
+  };
+
+  window.startSpeakingPractice = function(customTarget) {
+    let target = customTarget;
+    if (!target) {
+      const outText = document.getElementById('transOutputText');
+      if (outText && outText.textContent && !outText.textContent.includes('appear here')) {
+        target = outText.textContent.trim();
+      }
+    }
+    if (!target) {
+      target = "Ich lerne Deutsch";
+    }
+
+    currentSpeakingTargetText = target;
+    const modal = document.getElementById('speakingPracticeModal');
+    const targetEl = document.getElementById('speakingModalTarget');
+    const resBox = document.getElementById('speakingResultBox');
+    if (targetEl) targetEl.textContent = target;
+    if (resBox) {
+      resBox.className = 'hidden';
+      resBox.innerHTML = '';
+    }
+    if (modal) modal.classList.remove('hidden');
+  };
+
+  window.closeSpeakingPracticeModal = function() {
+    if (activeSpeechRecognition) {
+      try { activeSpeechRecognition.stop(); } catch(e) {}
+      activeSpeechRecognition = null;
+    }
+    const modal = document.getElementById('speakingPracticeModal');
+    if (modal) modal.classList.add('hidden');
+  };
+
+  window.playSpeakingReferenceAudio = function() {
+    if (currentSpeakingTargetText && typeof playGermanSpeech === 'function') {
+      playGermanSpeech(currentSpeakingTargetText);
+    }
+  };
+
+  window.toggleSpeechRecording = function() {
+    if (!SpeechRecognition) {
+      showFloatingToast("⚠️ Speech recognition requires Chrome or Edge.");
+      return;
+    }
+
+    const micBtn = document.getElementById('speakingMicBtn');
+    const statusLabel = document.getElementById('speakingStatusLabel');
+
+    if (activeSpeechRecognition) {
+      try { activeSpeechRecognition.stop(); } catch(e) {}
+      activeSpeechRecognition = null;
+      if (micBtn) micBtn.classList.remove('mic-recording-active');
+      if (statusLabel) {
+        statusLabel.textContent = "Click to Speak";
+        statusLabel.className = "text-xs font-extrabold text-emerald-700";
+      }
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'de-DE';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = function() {
+      activeSpeechRecognition = recognition;
+      if (micBtn) micBtn.classList.add('mic-recording-active');
+      if (statusLabel) {
+        statusLabel.textContent = "Listening... Speak now in German!";
+        statusLabel.className = "text-xs font-extrabold text-rose-600 animate-pulse";
+      }
+    };
+
+    recognition.onresult = function(event) {
+      const spokenText = event.results[0][0].transcript;
+      evaluatePronunciation(spokenText, currentSpeakingTargetText);
+    };
+
+    recognition.onerror = function(err) {
+      console.warn('Speech recognition error:', err);
+      if (statusLabel) {
+        statusLabel.textContent = "Microphone error or permission denied.";
+        statusLabel.className = "text-xs font-extrabold text-rose-600";
+      }
+    };
+
+    recognition.onend = function() {
+      activeSpeechRecognition = null;
+      if (micBtn) micBtn.classList.remove('mic-recording-active');
+      if (statusLabel) {
+        statusLabel.textContent = "Click to Speak Again";
+        statusLabel.className = "text-xs font-extrabold text-emerald-700";
+      }
+    };
+
+    try {
+      recognition.start();
+    } catch(e) {
+      console.error(e);
+    }
+  };
+
+  function evaluatePronunciation(spoken, target) {
+    const cleanSpoken = (spoken || '').toLowerCase().replace(/[^a-zäöüß0-9 ]/gi, '').trim();
+    const cleanTarget = (target || '').toLowerCase().replace(/[^a-zäöüß0-9 ]/gi, '').trim();
+
+    const spokenTokens = cleanSpoken.split(/\s+/).filter(Boolean);
+    const targetTokens = cleanTarget.split(/\s+/).filter(Boolean);
+
+    let matchCount = 0;
+    targetTokens.forEach(token => {
+      if (spokenTokens.includes(token)) matchCount++;
+    });
+
+    const tokenAccuracy = targetTokens.length > 0 ? Math.round((matchCount / targetTokens.length) * 100) : 0;
+    const resBox = document.getElementById('speakingResultBox');
+    if (!resBox) return;
+
+    resBox.classList.remove('hidden');
+
+    let badgeClass = '';
+    let verdict = '';
+    let tip = '';
+
+    if (tokenAccuracy >= 80) {
+      badgeClass = 'bg-emerald-50 border-emerald-300 text-emerald-900';
+      verdict = '🌟 Ausgezeichnet! (Excellent Pronunciation!)';
+      tip = 'Your German accent and pronunciation matched clearly!';
+      awardXP(30, 'Pronunciation 80%+');
+      unlockBadge('voice_virtuoso');
+    } else if (tokenAccuracy >= 50) {
+      badgeClass = 'bg-amber-50 border-amber-300 text-amber-900';
+      verdict = '👍 Gut gemacht! (Good attempt!)';
+      tip = 'Try pronouncing the vowels more cleanly and distinctly.';
+      awardXP(15, 'Speaking Practice');
+    } else {
+      badgeClass = 'bg-rose-50 border-rose-300 text-rose-900';
+      verdict = '🔁 Noch einmal! (Try once more!)';
+      tip = 'Listen to the native audio reference above, then repeat.';
+      awardXP(5, 'Speaking Attempt');
+    }
+
+    resBox.className = `p-3.5 rounded-2xl border text-xs space-y-1.5 ${badgeClass}`;
+    resBox.innerHTML = `
+      <div class="flex items-center justify-between">
+        <span class="font-black text-sm">${verdict}</span>
+        <span class="px-2 py-0.5 rounded-full bg-white/80 font-black text-xs border border-current/20">${tokenAccuracy}% Match</span>
+      </div>
+      <p><strong>You said:</strong> <em class="italic">"${escapeHtml(spoken)}"</em></p>
+      <p class="text-[11px] opacity-90">${tip}</p>
+    `;
+  }
+
+  // ================= 27. SAVED SENTENCES NOTEBOOK =================
+  const NOTEBOOK_STORAGE_KEY = 'netzwerk_saved_notebook';
+
+  function loadSavedSentences() {
+    try {
+      const saved = localStorage.getItem(NOTEBOOK_STORAGE_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch(e) {
+      return [];
+    }
+  }
+  window.loadSavedSentences = loadSavedSentences;
+
+  function saveSavedSentences(list) {
+    localStorage.setItem(NOTEBOOK_STORAGE_KEY, JSON.stringify(list));
+    updateNotebookCountBadge();
+  }
+  window.saveSavedSentences = saveSavedSentences;
+
+  function updateNotebookCountBadge() {
+    const list = loadSavedSentences();
+    const badge = document.getElementById('notebookCountBadge');
+    if (badge) badge.textContent = `${list.length} ${list.length === 1 ? 'Sentence' : 'Sentences'} Saved`;
+  }
+
+  window.toggleSaveCurrentSentence = function() {
+    const outText = document.getElementById('transOutputText');
+    const inText = document.getElementById('transInputText');
+    const starIcon = document.getElementById('transSaveStarIcon');
+    if (!outText || !outText.textContent || outText.textContent.includes('appear here')) {
+      showFloatingToast('Translate a sentence first before saving!');
+      return;
+    }
+
+    const germanText = outText.textContent.trim();
+    const sourceText = (inText && inText.value) ? inText.value.trim() : '';
+    let list = loadSavedSentences();
+
+    const existingIdx = list.findIndex(item => item.german === germanText);
+    if (existingIdx >= 0) {
+      list.splice(existingIdx, 1);
+      saveSavedSentences(list);
+      if (starIcon) starIcon.textContent = '⭐';
+      showFloatingToast('Removed from My Notebook');
+    } else {
+      list.unshift({
+        id: Date.now().toString(),
+        german: germanText,
+        source: sourceText,
+        date: getTodayDateStr()
+      });
+      saveSavedSentences(list);
+      if (starIcon) starIcon.textContent = '🌟';
+      showFloatingToast('Saved to My Notebook ⭐!');
+      awardXP(15, 'Sentence Saved');
+      if (list.length >= 3) unlockBadge('vocab_collector');
+    }
+  };
+
+  window.openNotebookModal = function() {
+    const modal = document.getElementById('savedNotebookModal');
+    if (!modal) return;
+    renderSavedNotebook();
+    modal.classList.remove('hidden');
+  };
+
+  window.closeNotebookModal = function() {
+    const modal = document.getElementById('savedNotebookModal');
+    if (modal) modal.classList.add('hidden');
+  };
+
+  window.renderSavedNotebook = function() {
+    updateNotebookCountBadge();
+    const container = document.getElementById('notebookItemsList');
+    const searchInput = document.getElementById('notebookSearchInput');
+    const query = (searchInput && searchInput.value) ? searchInput.value.toLowerCase().trim() : '';
+    if (!container) return;
+
+    let list = loadSavedSentences();
+    if (query) {
+      list = list.filter(item => (item.german && item.german.toLowerCase().includes(query)) || (item.source && item.source.toLowerCase().includes(query)));
+    }
+
+    if (list.length === 0) {
+      container.innerHTML = `
+        <div class="p-6 text-center bg-white/70 rounded-2xl border border-sky-100 text-sky-500 italic text-xs">
+          ${query ? 'No matching sentences found.' : 'No sentences starred yet. Translate any sentence and click the ⭐ button to collect it here!'}
+        </div>
+      `;
+      return;
+    }
+
+    let html = '';
+    list.forEach(item => {
+      html += `
+        <div class="p-3.5 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-1.5 transition hover:border-purple-300">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-black text-sky-950">${escapeHtml(item.german)}</span>
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+              <button onclick="playGermanSpeech('${escapeHtml(item.german)}', this)" class="p-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-700 text-xs font-bold transition cursor-pointer" title="Listen to pronunciation">
+                🔊
+              </button>
+              <button onclick="reAnalyzeFromNotebook('${escapeHtml(item.german)}')" class="px-2 py-0.5 rounded-lg bg-purple-100 hover:bg-purple-200 text-purple-900 text-[11px] font-bold transition cursor-pointer" title="Load into Grammar Analyzer">
+                🔍 Analyze
+              </button>
+              <button onclick="deleteSavedSentence('${item.id}')" class="p-1 rounded-lg hover:bg-rose-100 text-rose-500 transition cursor-pointer" title="Delete from Notebook">
+                🗑️
+              </button>
+            </div>
+          </div>
+          ${item.source ? `<p class="text-[11px] text-sky-700 font-medium">${escapeHtml(item.source)}</p>` : ''}
+          <div class="text-[9px] text-sky-400 font-medium pt-0.5 flex items-center justify-between">
+            <span>Saved on ${item.date}</span>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  };
+
+  window.deleteSavedSentence = function(id) {
+    let list = loadSavedSentences();
+    list = list.filter(item => item.id !== id);
+    saveSavedSentences(list);
+    renderSavedNotebook();
+    showFloatingToast('Sentence removed from Notebook');
+  };
+
+  window.reAnalyzeFromNotebook = function(germanSentence) {
+    closeNotebookModal();
+    switchView('dashboard');
+    const input = document.getElementById('transInputText');
+    const srcSel = document.getElementById('transSourceLang');
+    const tgtSel = document.getElementById('transTargetLang');
+    if (srcSel) srcSel.value = 'de';
+    if (tgtSel) tgtSel.value = 'en';
+    handleTranslatorLangChange();
+    if (input) {
+      input.value = germanSentence;
+      translateAndAnalyze();
+    }
+  };
+
   // ================= RUN INITIALIZATION =================
   initSpeech();
   initFontSize();
+  initTheme();
+  initStreakAndGamification();
+  updateNotebookCountBadge();
   initChapters();
   initVocabLookupMap();
   initTranslatorListeners();
