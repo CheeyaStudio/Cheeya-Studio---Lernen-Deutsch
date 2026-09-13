@@ -2462,104 +2462,79 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkScribbleToErase(stroke, strokes) {
       const pts = stroke.points;
-      if (!pts || pts.length < 12) return false;
+      if (!pts || pts.length < 8) return false;
 
       const w = canvas.width;
       const h = canvas.height;
 
+      // 1. Simplify points (filter out tiny jitter < 4px)
+      const simplified = [];
+      const minDist = 4.0;
+      for (let i = 0; i < pts.length; i++) {
+        const px = pts[i].x * w;
+        const py = pts[i].y * h;
+        if (simplified.length === 0) {
+          simplified.push({ x: px, y: py, normX: pts[i].x, normY: pts[i].y });
+        } else {
+          const last = simplified[simplified.length - 1];
+          const dist = Math.hypot(px - last.x, py - last.y);
+          if (dist >= minDist) {
+            simplified.push({ x: px, y: py, normX: pts[i].x, normY: pts[i].y });
+          }
+        }
+      }
+
+      if (simplified.length < 5) return false;
+
+      // 2. Measure normalized directional vectors and sharp angle reversals
+      const vectors = [];
+      for (let i = 1; i < simplified.length; i++) {
+        const dx = simplified[i].x - simplified[i - 1].x;
+        const dy = simplified[i].y - simplified[i - 1].y;
+        const len = Math.hypot(dx, dy);
+        if (len > 0) {
+          vectors.push({ dx: dx / len, dy: dy / len, len });
+        }
+      }
+
+      // Count sharp reversals (dot product < -0.3, meaning angle > 107 degrees)
+      let reversals = 0;
+      for (let i = 1; i < vectors.length; i++) {
+        const dot = (vectors[i].dx * vectors[i - 1].dx) + (vectors[i].dy * vectors[i - 1].dy);
+        if (dot < -0.3) {
+          reversals++;
+        }
+      }
+
+      // 3. Compute bounding box and path length
       let minX = 1.0, maxX = 0.0, minY = 1.0, maxY = 0.0;
       let totalPath = 0;
-
-      for (let i = 0; i < pts.length; i++) {
-        const p = pts[i];
-        if (p.x < minX) minX = p.x;
-        if (p.x > maxX) maxX = p.x;
-        if (p.y < minY) minY = p.y;
-        if (p.y > maxY) maxY = p.y;
-
+      for (let i = 0; i < simplified.length; i++) {
+        const p = simplified[i];
+        if (p.normX < minX) minX = p.normX;
+        if (p.normX > maxX) maxX = p.normX;
+        if (p.normY < minY) minY = p.normY;
+        if (p.normY > maxY) maxY = p.normY;
         if (i > 0) {
-          const prev = pts[i - 1];
-          const dx = (p.x - prev.x) * w;
-          const dy = (p.y - prev.y) * h;
-          totalPath += Math.sqrt(dx * dx + dy * dy);
+          const prev = simplified[i - 1];
+          totalPath += Math.hypot(p.x - prev.x, p.y - prev.y);
         }
       }
 
       const boxW = (maxX - minX) * w;
       const boxH = (maxY - minY) * h;
-      const boxDiag = Math.sqrt(boxW * boxW + boxH * boxH);
-      if (boxDiag < 15) return false;
+      const boxDiag = Math.hypot(boxW, boxH);
+      if (boxDiag < 12) return false;
 
       const ratio = totalPath / Math.max(1.0, boxDiag);
-      if (ratio < 2.8) return false;
 
-      const minSpanX = Math.max(8, boxW * 0.3);
-      let revX = 0;
-      let dirX = 0;
-      let lastX = pts[0].x * w;
-
-      for (let i = 1; i < pts.length; i++) {
-        const curX = pts[i].x * w;
-        if (dirX === 0) {
-          if (Math.abs(curX - lastX) >= minSpanX) {
-            dirX = curX > lastX ? 1 : -1;
-            lastX = curX;
-          }
-        } else if (dirX === 1) {
-          if (curX > lastX) {
-            lastX = curX;
-          } else if (lastX - curX >= minSpanX) {
-            revX++;
-            dirX = -1;
-            lastX = curX;
-          }
-        } else if (dirX === -1) {
-          if (curX < lastX) {
-            lastX = curX;
-          } else if (curX - lastX >= minSpanX) {
-            revX++;
-            dirX = 1;
-            lastX = curX;
-          }
-        }
-      }
-
-      const minSpanY = Math.max(8, boxH * 0.3);
-      let revY = 0;
-      let dirY = 0;
-      let lastY = pts[0].y * h;
-
-      for (let i = 1; i < pts.length; i++) {
-        const curY = pts[i].y * h;
-        if (dirY === 0) {
-          if (Math.abs(curY - lastY) >= minSpanY) {
-            dirY = curY > lastY ? 1 : -1;
-            lastY = curY;
-          }
-        } else if (dirY === 1) {
-          if (curY > lastY) {
-            lastY = curY;
-          } else if (lastY - curY >= minSpanY) {
-            revY++;
-            dirY = -1;
-            lastY = curY;
-          }
-        } else if (dirY === -1) {
-          if (curY < lastY) {
-            lastY = curY;
-          } else if (curY - lastY >= minSpanY) {
-            revY++;
-            dirY = 1;
-            lastY = curY;
-          }
-        }
-      }
-
-      const isScribble = (revX >= 3 || revY >= 3 || (revX + revY) >= 4);
+      // A scribble has at least 3 sharp reversals (back-and-forth) AND ratio >= 1.7
+      const isScribble = (reversals >= 3 && ratio >= 1.7) || (reversals >= 4);
       if (!isScribble) return false;
 
-      const padX = 20 / w;
-      const padY = 20 / h;
+      // Expand bounding box with generous padding (40px)
+      const padX = 40 / w;
+      const padY = 40 / h;
       const sMinX = minX - padX;
       const sMaxX = maxX + padX;
       const sMinY = minY - padY;
@@ -2591,10 +2566,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (erasedCount > 0) {
         savePageStrokes(remainingStrokes);
         showScribbleErasedFeedback();
-        return true;
-      } else {
-        return true;
       }
+      return true; // Always discard the scribble itself!
     }
 
     const finishStroke = (e) => {
