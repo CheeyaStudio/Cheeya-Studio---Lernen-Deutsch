@@ -380,11 +380,15 @@
             </div>
 
             <!-- Live Phonetic Pronunciation Guide in Translator -->
-            <div id="transPhoneticBar" class="hidden mt-1 pt-2 border-t border-sky-200/80 text-xs">
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="text-[10px] font-black uppercase text-purple-800 tracking-wider">🗣️ How to pronounce:</span>
-                <span id="transPhoneticText" class="font-bold text-purple-950 font-mono text-[11px] tracking-wide bg-purple-100/70 px-2 py-0.5 rounded-md border border-purple-200"></span>
+            <div id="transPhoneticBar" class="hidden mt-2 pt-2 border-t border-purple-200/80 text-xs bg-purple-50/70 -mx-4 -mb-4 p-3.5 rounded-b-2xl">
+              <div class="flex items-center gap-1.5 flex-wrap mb-1">
+                <span class="text-[10px] font-black uppercase text-purple-800 tracking-wider flex items-center gap-1">
+                  <span>🗣️</span>
+                  <span>How to pronounce:</span>
+                </span>
+                <span id="transPhoneticText" class="font-bold text-purple-950 font-mono text-[11px] tracking-wide bg-white px-2 py-0.5 rounded-md border border-purple-300 shadow-2xs"></span>
               </div>
+              <div id="transPhoneticTips" class="text-[11px] text-purple-900 font-medium leading-snug pt-0.5"></div>
             </div>
 
             <!-- Speaking Practice Feedback Banner -->

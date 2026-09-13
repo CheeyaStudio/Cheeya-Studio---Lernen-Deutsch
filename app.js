@@ -5699,9 +5699,11 @@ document.addEventListener('DOMContentLoaded', () => {
       // Update live phonetic pronunciation guide in translator card
       const phoneticBar = document.getElementById('transPhoneticBar');
       const phoneticTextEl = document.getElementById('transPhoneticText');
+      const phoneticTipsEl = document.getElementById('transPhoneticTips');
       if (currentTargetGermanText && typeof generateGermanPhonetics === 'function') {
         const ph = generateGermanPhonetics(currentTargetGermanText);
         if (phoneticTextEl) phoneticTextEl.textContent = ph.phoneticText;
+        if (phoneticTipsEl) phoneticTipsEl.innerHTML = ph.tips;
         if (phoneticBar) phoneticBar.classList.remove('hidden');
       } else if (phoneticBar) {
         phoneticBar.classList.add('hidden');
@@ -7654,8 +7656,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (lower.includes('ie') || lower.includes('ei')) {
       tipsList.push("🗣️ <strong>Vowel pairs</strong>: <strong>ie</strong> = long 'ee' (<em>sie</em>), while <strong>ei</strong> = 'eye' (<em>mein</em>)!");
     }
+    if (lower.includes('ß') || lower.includes('ss')) {
+      tipsList.push("🗣️ <strong>'ß' / 'ss'</strong>: Sharp unvoiced <strong>'s'</strong> sound (like 'sun', never buzzing 'z').");
+    }
+    if (/\b(st|sp)/.test(lower)) {
+      tipsList.push("🗣️ <strong>'st' / 'sp'</strong> at start of words: Pronounced like <strong>'sht'</strong> / <strong>'shp'</strong> (e.g. <em>Stadt</em> = 'shtaht').");
+    }
 
-    const tips = tipsList.length > 0 ? tipsList.slice(0, 2).join('<br/>') : "💡 <em>Tip: Speak naturally with clear vowel sounds and syllable stress!</em>";
+    const tips = tipsList.length > 0 ? tipsList.slice(0, 3).join('<br/>') : "💡 <em>Tip: Speak naturally with clear vowel sounds and syllable stress!</em>";
 
     return { phoneticText, tips };
   }
