@@ -101,15 +101,40 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
-  window.playGermanSpeech = function(text) {
+  window.playGermanSpeech = function(text, triggerBtn = null) {
     if (!synth) return;
-    const cleanText = text.replace(/[*_#`]/g, '').trim();
-    synth.cancel();
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = 'de-DE';
-    utterance.rate = 0.9;
-    if (germanVoice) utterance.voice = germanVoice;
-    synth.speak(utterance);
+    if (!text || typeof text !== 'string') return;
+    
+    // Clean markdown formatting
+    let spoken = text.replace(/[*_#`]/g, '').trim();
+    
+    // For German nouns with plural annotations (e.g. "das Alphabet, -e", "das Land, -\"er", "der Herr, -en", "die Stadt, -\"e")
+    // extract base form up to the comma so the voice speaks clean natural German
+    if (spoken.includes(',')) {
+      const parts = spoken.split(',');
+      spoken = parts[0].trim();
+    }
+    // Clean slashes e.g. "Hallo / Guten Tag" -> natural pause
+    spoken = spoken.replace(/\s*\/\s*/g, ', ');
+
+    try {
+      synth.cancel();
+      const utterance = new SpeechSynthesisUtterance(spoken);
+      utterance.lang = 'de-DE';
+      utterance.rate = 0.88; // Comfortable learning speed
+      if (germanVoice) utterance.voice = germanVoice;
+      
+      // Visual feedback on button if provided
+      if (triggerBtn && triggerBtn.classList) {
+        triggerBtn.classList.add('audio-playing-pulse');
+        utterance.onend = () => triggerBtn.classList.remove('audio-playing-pulse');
+        utterance.onerror = () => triggerBtn.classList.remove('audio-playing-pulse');
+      }
+      
+      synth.speak(utterance);
+    } catch (e) {
+      console.warn("Speech synthesis error:", e);
+    }
   };
 
   // ================= 2. ROOT HTML FONT SIZE SCALER (VISIBLY SCALES ALL REM UNITS!) =================
@@ -1716,6 +1741,16 @@ document.addEventListener('DOMContentLoaded', () => {
               <button onclick="selectChapter(${idx}); switchView('vocab');" class="py-1.5 rounded-xl bg-sky-50 hover:bg-sky-200 border border-sky-200 text-sky-800 text-xs font-bold flex items-center justify-center gap-1 transition shadow-xs cursor-pointer" title="View Vocabulary">
                 <span>📚</span>
                 <span>Vocab</span>
+              </button>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 pt-0.5">
+              <button onclick="selectChapter(${idx}); openFlashcardModal(${idx});" class="py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 text-[11px] font-bold flex items-center justify-center gap-1 transition shadow-2xs cursor-pointer" title="Practice Chapter Flashcards">
+                <span>🎴</span>
+                <span>Flashcards</span>
+              </button>
+              <button onclick="selectChapter(${idx}); openArticleGameModal(${idx});" class="py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 text-[11px] font-bold flex items-center justify-center gap-1 transition shadow-2xs cursor-pointer" title="Play Der, Die, Das Mini-Game">
+                <span>🎯</span>
+                <span>Der Die Das</span>
               </button>
             </div>
           </div>
@@ -3698,7 +3733,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <p class="text-[11px] text-sky-600 font-medium truncate">${v.en || v.id}</p>
             </div>
           </div>
-          <button class="p-2 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-700 transition cursor-pointer flex-shrink-0 ml-2" onclick="playGermanSpeech('${v.de.replace(/'/g, "\\'")}')" title="Listen to German pronunciation">
+          <button class="p-2 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-700 transition cursor-pointer flex-shrink-0 ml-2" onclick="playGermanSpeech('${v.de.replace(/'/g, "\\'")}', this)" title="Listen to German pronunciation">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
           </button>
         </div>
@@ -4140,6 +4175,548 @@ document.addEventListener('DOMContentLoaded', () => {
       return entityMap[s];
     });
   }
+
+  // ================= 17. 3D INTERACTIVE FLASHCARD TRAINER ENGINE =================
+  const FC_STORAGE_KEY = 'netzwerk_fc_mastered_v1';
+  let fcMasteredKeys = new Set();
+  try {
+    const savedFc = localStorage.getItem(FC_STORAGE_KEY);
+    if (savedFc) fcMasteredKeys = new Set(JSON.parse(savedFc));
+  } catch (e) {}
+
+  function saveFcMastery() {
+    try {
+      localStorage.setItem(FC_STORAGE_KEY, JSON.stringify(Array.from(fcMasteredKeys)));
+    } catch (e) {}
+  }
+
+  let fcActiveChapterIndex = 0;
+  let fcCurrentFilter = 'all';
+  let fcCardList = [];
+  let fcCurrentCardIndex = 0;
+  let fcIsFlipped = false;
+
+  window.openFlashcardModal = function(chapterIdx = null) {
+    if (chapterIdx !== null && chapterIdx !== undefined) {
+      fcActiveChapterIndex = chapterIdx;
+    } else {
+      fcActiveChapterIndex = currentChapterIndex;
+    }
+    const modal = document.getElementById('flashcardModal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    initFlashcardsForChapter();
+  };
+
+  window.closeFlashcardModal = function() {
+    const modal = document.getElementById('flashcardModal');
+    if (modal) modal.classList.add('hidden');
+    if (synth) synth.cancel();
+  };
+
+  function initFlashcardsForChapter() {
+    const chapter = NETZWERK_DATA.chapters[fcActiveChapterIndex];
+    if (!chapter) return;
+    const badge = document.getElementById('fcChapterBadge');
+    if (badge) badge.textContent = `Kapitel ${chapter.id}: ${chapter.title.split(':')[1]?.trim() || chapter.title}`;
+
+    applyFlashcardFilter(fcCurrentFilter);
+  }
+
+  window.setFlashcardFilter = function(filter) {
+    fcCurrentFilter = filter;
+    ['all', 'nouns', 'verbs', 'phrases'].forEach(f => {
+      const btn = document.getElementById(`fcFilter-${f}`);
+      if (!btn) return;
+      if (f === filter) {
+        btn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold bg-sky-600 text-white shadow-2xs cursor-pointer';
+      } else {
+        btn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white text-sky-800 border border-sky-200 hover:bg-sky-100 cursor-pointer';
+      }
+    });
+    applyFlashcardFilter(filter);
+  };
+
+  function applyFlashcardFilter(filter) {
+    const chapter = NETZWERK_DATA.chapters[fcActiveChapterIndex];
+    if (!chapter || !chapter.vocabList) return;
+    const all = chapter.vocabList;
+    if (filter === 'nouns') {
+      fcCardList = all.filter(v => v.type === 'der' || v.type === 'die' || v.type === 'das');
+    } else if (filter === 'verbs') {
+      fcCardList = all.filter(v => v.type === 'verb');
+    } else if (filter === 'phrases') {
+      fcCardList = all.filter(v => v.type === 'phrase');
+    } else {
+      fcCardList = [...all];
+    }
+
+    fcCurrentCardIndex = 0;
+    renderCurrentFlashcard();
+  }
+
+  function renderCurrentFlashcard() {
+    const cardEl = document.getElementById('flashcardCard');
+    if (cardEl) {
+      cardEl.classList.remove('is-flipped');
+      fcIsFlipped = false;
+    }
+
+    const counterEl = document.getElementById('fcCounter');
+    const masteryEl = document.getElementById('fcMasteryStats');
+
+    if (!fcCardList || fcCardList.length === 0) {
+      if (counterEl) counterEl.textContent = '0 / 0';
+      const frontWord = document.getElementById('fcFrontWord');
+      if (frontWord) frontWord.textContent = 'Tidak ada kata di kategori ini';
+      return;
+    }
+
+    const currentWord = fcCardList[fcCurrentCardIndex];
+    const total = fcCardList.length;
+    if (counterEl) counterEl.textContent = `${fcCurrentCardIndex + 1} / ${total}`;
+
+    // Calculate mastered count in current list
+    const masteredInList = fcCardList.filter(w => fcMasteredKeys.has(w.de)).length;
+    if (masteryEl) masteryEl.textContent = `🌟 Hafal: ${masteredInList} / ${total}`;
+
+    // Front Face
+    const frontBadge = document.getElementById('fcFrontBadge');
+    const frontWord = document.getElementById('fcFrontWord');
+    const frontHint = document.getElementById('fcFrontHint');
+    if (frontBadge) {
+      frontBadge.textContent = currentWord.type.toUpperCase();
+      let bClass = 'badge-phrase';
+      if (currentWord.type === 'der') bClass = 'badge-der';
+      if (currentWord.type === 'die') bClass = 'badge-die';
+      if (currentWord.type === 'das') bClass = 'badge-das';
+      if (currentWord.type === 'verb') bClass = 'badge-verb';
+      frontBadge.className = `${bClass} px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase tracking-wider`;
+    }
+    if (frontWord) frontWord.textContent = currentWord.de;
+    if (frontHint) {
+      if (currentWord.type === 'der' || currentWord.type === 'die' || currentWord.type === 'das') {
+        frontHint.textContent = `Nomen (Kata Benda) • ${currentWord.type.toUpperCase()}`;
+      } else if (currentWord.type === 'verb') {
+        frontHint.textContent = `Verb (Kata Kerja)`;
+      } else {
+        frontHint.textContent = `Redemittel / Frasa`;
+      }
+    }
+
+    // Back Face
+    const backBadge = document.getElementById('fcBackBadge');
+    const backDeWord = document.getElementById('fcBackDeWord');
+    const backMeaning = document.getElementById('fcBackMeaning');
+    if (backBadge) backBadge.textContent = currentWord.type.toUpperCase();
+    if (backDeWord) backDeWord.textContent = currentWord.de;
+    if (backMeaning) backMeaning.textContent = currentWord.en || currentWord.id || '';
+  }
+
+  window.flipFlashcard = function() {
+    const cardEl = document.getElementById('flashcardCard');
+    if (!cardEl) return;
+    fcIsFlipped = !fcIsFlipped;
+    if (fcIsFlipped) {
+      cardEl.classList.add('is-flipped');
+    } else {
+      cardEl.classList.remove('is-flipped');
+    }
+  };
+
+  window.prevFlashcard = function() {
+    if (!fcCardList.length) return;
+    fcCurrentCardIndex = (fcCurrentCardIndex - 1 + fcCardList.length) % fcCardList.length;
+    renderCurrentFlashcard();
+  };
+
+  window.nextFlashcard = function() {
+    if (!fcCardList.length) return;
+    fcCurrentCardIndex = (fcCurrentCardIndex + 1) % fcCardList.length;
+    renderCurrentFlashcard();
+  };
+
+  window.shuffleFlashcards = function() {
+    if (!fcCardList.length) return;
+    for (let i = fcCardList.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [fcCardList[i], fcCardList[j]] = [fcCardList[j], fcCardList[i]];
+    }
+    fcCurrentCardIndex = 0;
+    renderCurrentFlashcard();
+    showFloatingToast('🔀 Kartu berhasil diacak!');
+  };
+
+  window.markFlashcardMastery = function(isMastered) {
+    if (!fcCardList.length) return;
+    const currentWord = fcCardList[fcCurrentCardIndex];
+    if (isMastered) {
+      fcMasteredKeys.add(currentWord.de);
+      showFloatingToast(`🌟 Ditandai Hafal: "${currentWord.de}"`);
+    } else {
+      fcMasteredKeys.delete(currentWord.de);
+      showFloatingToast(`📖 Ditandai Belajar Lagi: "${currentWord.de}"`);
+    }
+    saveFcMastery();
+    nextFlashcard();
+  };
+
+  window.playGermanSpeechForFlashcard = function() {
+    if (!fcCardList.length) return;
+    const currentWord = fcCardList[fcCurrentCardIndex];
+    const btn = document.getElementById('fcAudioBtn');
+    playGermanSpeech(currentWord.de, btn);
+  };
+
+  // ================= 18. DER DIE DAS ARTICLE TRAINER MINI-GAME ENGINE =================
+  let agNouns = [];
+  let agCurrentIdx = 0;
+  let agScore = 0;
+  let agStreak = 0;
+  let agBestStreak = 0;
+  let agTotalAnswered = 0;
+  let agCorrectCount = 0;
+  let agIsWaiting = false;
+
+  window.openArticleGameModal = function(chapterIdx = null) {
+    const modal = document.getElementById('articleGameModal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    const targetIdx = (chapterIdx !== null && chapterIdx !== undefined) ? chapterIdx : currentChapterIndex;
+    startArticleGame(targetIdx);
+  };
+
+  window.closeArticleGameModal = function() {
+    const modal = document.getElementById('articleGameModal');
+    if (modal) modal.classList.add('hidden');
+    if (synth) synth.cancel();
+  };
+
+  window.startArticleGame = function(chapterIdx) {
+    const chapter = NETZWERK_DATA.chapters[chapterIdx];
+    if (!chapter || !chapter.vocabList) return;
+
+    // Filter nouns
+    const nouns = chapter.vocabList.filter(v => v.type === 'der' || v.type === 'die' || v.type === 'das');
+    if (nouns.length === 0) {
+      showFloatingToast("⚠️ Tidak ada kata benda di bab ini.", '⚠️');
+      return;
+    }
+
+    // Shuffle nouns
+    agNouns = [...nouns].sort(() => Math.random() - 0.5);
+    agCurrentIdx = 0;
+    agScore = 0;
+    agStreak = 0;
+    agBestStreak = 0;
+    agTotalAnswered = 0;
+    agCorrectCount = 0;
+    agIsWaiting = false;
+
+    // Update UI elements
+    const playArea = document.getElementById('agPlayArea');
+    const summaryArea = document.getElementById('agSummaryArea');
+    if (playArea) playArea.classList.remove('hidden');
+    if (summaryArea) summaryArea.classList.add('hidden');
+
+    renderArticleQuestion();
+  };
+
+  function renderArticleQuestion() {
+    if (agCurrentIdx >= agNouns.length) {
+      showArticleSummary();
+      return;
+    }
+
+    agIsWaiting = false;
+    const currentNoun = agNouns[agCurrentIdx];
+    
+    // Update Score & Streak
+    const scoreEl = document.getElementById('agScore');
+    const streakEl = document.getElementById('agStreak');
+    const progressEl = document.getElementById('agProgress');
+    if (scoreEl) scoreEl.textContent = agScore;
+    if (streakEl) streakEl.textContent = agStreak;
+    if (progressEl) progressEl.textContent = `${agCurrentIdx + 1} / ${agNouns.length}`;
+
+    // Extract word without article (e.g. "der Tisch, -e" -> "Tisch, -e")
+    let wordWithoutArticle = currentNoun.de.replace(/^(der|die|das)\s+/i, '').trim();
+    
+    const wordDisplay = document.getElementById('agWordDisplay');
+    const meaningDisplay = document.getElementById('agMeaningDisplay');
+    const feedback = document.getElementById('agFeedback');
+    const wordBox = document.getElementById('agWordBox');
+
+    if (wordDisplay) wordDisplay.textContent = wordWithoutArticle;
+    if (meaningDisplay) meaningDisplay.textContent = currentNoun.en || '';
+    if (feedback) feedback.innerHTML = '';
+    if (wordBox) {
+      wordBox.className = 'w-full py-8 px-4 rounded-2xl bg-gradient-to-b from-white to-sky-50 border-2 border-sky-200 shadow-sm flex flex-col items-center justify-center text-center transition';
+    }
+
+    // Reset buttons
+    ['der', 'die', 'das'].forEach(art => {
+      const btn = document.getElementById(`agBtn-${art}`);
+      if (btn) {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.transform = '';
+      }
+    });
+  }
+
+  window.handleArticleChoice = function(selectedArticle) {
+    if (agIsWaiting || agCurrentIdx >= agNouns.length) return;
+    agIsWaiting = true;
+
+    const currentNoun = agNouns[agCurrentIdx];
+    const isCorrect = (selectedArticle === currentNoun.type);
+    agTotalAnswered++;
+
+    const wordBox = document.getElementById('agWordBox');
+    const feedback = document.getElementById('agFeedback');
+    const chosenBtn = document.getElementById(`agBtn-${selectedArticle}`);
+    const correctBtn = document.getElementById(`agBtn-${currentNoun.type}`);
+
+    // Disable buttons
+    ['der', 'die', 'das'].forEach(art => {
+      const b = document.getElementById(`agBtn-${art}`);
+      if (b) b.disabled = true;
+    });
+
+    if (isCorrect) {
+      agCorrectCount++;
+      agStreak++;
+      if (agStreak > agBestStreak) agBestStreak = agStreak;
+      agScore += 10 + (agStreak * 2);
+
+      const scoreEl = document.getElementById('agScore');
+      const streakEl = document.getElementById('agStreak');
+      if (scoreEl) scoreEl.textContent = agScore;
+      if (streakEl) streakEl.textContent = agStreak;
+
+      if (wordBox) {
+        wordBox.classList.add('pop-correct-anim');
+        wordBox.style.borderColor = '#10b981';
+      }
+
+      if (feedback) {
+        feedback.innerHTML = `<span class="text-emerald-700 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-xl text-xs font-black animate-pulse">🎉 Richtig! ${currentNoun.de}</span>`;
+      }
+
+      // Speak native German word with article!
+      playGermanSpeech(currentNoun.de);
+
+      setTimeout(() => {
+        agCurrentIdx++;
+        renderArticleQuestion();
+      }, 950);
+
+    } else {
+      agStreak = 0;
+      const streakEl = document.getElementById('agStreak');
+      if (streakEl) streakEl.textContent = '0';
+
+      if (wordBox) {
+        wordBox.classList.add('shake-anim');
+        wordBox.style.borderColor = '#ef4444';
+      }
+
+      if (chosenBtn) {
+        chosenBtn.style.opacity = '0.4';
+      }
+      if (correctBtn) {
+        correctBtn.style.transform = 'scale(1.08)';
+      }
+
+      if (feedback) {
+        feedback.innerHTML = `<span class="text-rose-700 bg-rose-100 border border-rose-300 px-3 py-1 rounded-xl text-xs font-black">❌ Kurang tepat! Jawaban benar: <span class="underline">${currentNoun.de}</span></span>`;
+      }
+
+      // Speak correct pronunciation
+      playGermanSpeech(currentNoun.de);
+
+      setTimeout(() => {
+        agCurrentIdx++;
+        renderArticleQuestion();
+      }, 1800);
+    }
+  };
+
+  function showArticleSummary() {
+    const playArea = document.getElementById('agPlayArea');
+    const summaryArea = document.getElementById('agSummaryArea');
+    if (playArea) playArea.classList.add('hidden');
+    if (summaryArea) summaryArea.classList.remove('hidden');
+
+    const finalScoreEl = document.getElementById('agFinalScore');
+    const accuracyEl = document.getElementById('agAccuracy');
+    const bestStreakEl = document.getElementById('agBestStreak');
+
+    const accuracy = agTotalAnswered > 0 ? Math.round((agCorrectCount / agTotalAnswered) * 100) : 0;
+    if (finalScoreEl) finalScoreEl.textContent = agScore;
+    if (accuracyEl) accuracyEl.textContent = `${accuracy}%`;
+    if (bestStreakEl) bestStreakEl.textContent = agBestStreak;
+
+    showFloatingToast('🏆 Sesi Der, Die, Das Selesai!');
+  }
+
+  // ================= 19. EXPORT & DOWNLOAD ANNOTATED PDF PAGE ENGINE =================
+  window.exportAnnotatedPdfPage = function() {
+    const modal = document.getElementById('exportModal');
+    if (modal) modal.classList.remove('hidden');
+  };
+
+  window.closeExportModal = function() {
+    const modal = document.getElementById('exportModal');
+    if (modal) modal.classList.add('hidden');
+  };
+
+  function getMergedAnnotatedCanvas() {
+    const renderCanvas = document.getElementById('pdfRenderCanvas');
+    const annotCanvas = document.getElementById('pdfAnnotationCanvas');
+    if (!renderCanvas || renderCanvas.width === 0 || renderCanvas.height === 0) {
+      showFloatingToast('⚠️ Halaman PDF belum terbuka sepenuhnya!', '⚠️');
+      return null;
+    }
+
+    const exportCanvas = document.createElement('canvas');
+    exportCanvas.width = renderCanvas.width;
+    exportCanvas.height = renderCanvas.height;
+    const ctx = exportCanvas.getContext('2d');
+
+    // 1. Fill solid white background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+
+    // 2. Draw rendered PDF page
+    ctx.drawImage(renderCanvas, 0, 0);
+
+    // 3. Draw annotations layer if present
+    if (annotCanvas && annotCanvas.width > 0 && annotCanvas.height > 0) {
+      ctx.drawImage(annotCanvas, 0, 0);
+    }
+
+    return exportCanvas;
+  }
+
+  window.triggerExportPng = function() {
+    closeExportModal();
+    const mergedCanvas = getMergedAnnotatedCanvas();
+    if (!mergedCanvas) return;
+
+    try {
+      const dataUrl = mergedCanvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      const chapNum = currentChapterIndex + 1;
+      a.download = `Cheeya_Netzwerk_A1_Kapitel_${chapNum}_Hal_${currentPdfPage}_annotated.png`;
+      a.href = dataUrl;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      showFloatingToast('✨ Gambar halaman beranotasi berhasil diunduh (PNG)!');
+    } catch (e) {
+      console.error("Export PNG failed:", e);
+      showFloatingToast('❌ Gagal mengunduh gambar halaman.', '❌');
+    }
+  };
+
+  window.triggerPrintAnnotatedPdf = function() {
+    closeExportModal();
+    const mergedCanvas = getMergedAnnotatedCanvas();
+    if (!mergedCanvas) return;
+
+    try {
+      const dataUrl = mergedCanvas.toDataURL('image/png');
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        showFloatingToast('⚠️ Pop-up diblokir browser. Izinkan pop-up untuk mencetak!', '⚠️');
+        return;
+      }
+
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Cheeya Studio - Print Netzwerk A1 Page ${currentPdfPage}</title>
+          <style>
+            @page { size: auto; margin: 0; }
+            body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; background: #fff; }
+            img { width: 100%; height: auto; max-width: 100vw; display: block; }
+          </style>
+        </head>
+        <body>
+          <img src="${dataUrl}" onload="window.print(); setTimeout(function(){ window.close(); }, 1000);" />
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+      showFloatingToast('🖨️ Membuka dialog cetak / Save as PDF...');
+    } catch (e) {
+      console.error("Print failed:", e);
+      showFloatingToast('❌ Gagal membuka print preview.', '❌');
+    }
+  };
+
+  // ================= 20. FLOATING TOAST NOTIFICATION UTILITY =================
+  window.showFloatingToast = function(message, icon = '✨') {
+    const existing = document.querySelector('.floating-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'floating-toast';
+    toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(15px)';
+      setTimeout(() => toast.remove(), 320);
+    }, 3200);
+  };
+
+  // Global Keyboard Shortcuts for Modals
+  window.addEventListener('keydown', (e) => {
+    const fcModal = document.getElementById('flashcardModal');
+    const agModal = document.getElementById('articleGameModal');
+
+    // Flashcard shortcuts
+    if (fcModal && !fcModal.classList.contains('hidden')) {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        flipFlashcard();
+      } else if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        nextFlashcard();
+      } else if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        prevFlashcard();
+      } else if (e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        playGermanSpeechForFlashcard();
+      } else if (e.code === 'Escape') {
+        closeFlashcardModal();
+      }
+    }
+
+    // Article Game shortcuts (1 = der, 2 = die, 3 = das)
+    if (agModal && !agModal.classList.contains('hidden')) {
+      if (e.key === '1' || e.key === 'd' || e.key === 'D') {
+        e.preventDefault();
+        handleArticleChoice('der');
+      } else if (e.key === '2' || e.key === 'e' || e.key === 'E') {
+        e.preventDefault();
+        handleArticleChoice('die');
+      } else if (e.key === '3' || e.key === 'a' || e.key === 'A') {
+        e.preventDefault();
+        handleArticleChoice('das');
+      } else if (e.code === 'Escape') {
+        closeArticleGameModal();
+      }
+    }
+  });
 
   // ================= RUN INITIALIZATION =================
   initSpeech();
