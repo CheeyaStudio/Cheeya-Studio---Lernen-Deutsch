@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- PWA Manifest & App Icons -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0284c7">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="logo_192x192.png">
+
   <title>Cheeya Studio - Netzwerk Neu A1 Interactive German Learning ❄️</title>
   <link rel="icon" type="image/jpeg" href="LOGO.jpeg">
   
@@ -53,6 +60,24 @@
       <button id="navTab-progress" onclick="switchView('progress')" class="px-3.5 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="View Learning Progress & Exercise History">
         <span>📊</span>
         <span>Progress</span>
+      </button>
+
+      <!-- 1.1 AI German Conversational Roleplay Trigger -->
+      <button id="navRoleplayBtn" onclick="openRoleplayModal()" class="px-3 py-1.5 rounded-xl bg-emerald-100/90 hover:bg-emerald-200 border border-emerald-300 text-emerald-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="AI German Conversational Roleplay: Practice 5 Real-Life A1 Scenarios">
+        <span>🤖</span>
+        <span class="hidden lg:inline">Roleplay</span>
+      </button>
+
+      <!-- 1.2 Goethe A1 Mock Exam Hub Trigger -->
+      <button id="navGoetheExamBtn" onclick="openGoetheExamModal()" class="px-3 py-1.5 rounded-xl bg-indigo-100/90 hover:bg-indigo-200 border border-indigo-300 text-indigo-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Official Goethe-Zertifikat A1 Mock Exam Hub (Hören, Lesen, Schreiben, Sprechen)">
+        <span>🎓</span>
+        <span class="hidden lg:inline">A1 Exam</span>
+      </button>
+
+      <!-- 1.3 Smart SRS Flashcards Trigger -->
+      <button id="navSrsBtn" onclick="openSrsModal()" class="px-3 py-1.5 rounded-xl bg-pink-100/90 hover:bg-pink-200 border border-pink-300 text-pink-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Smart Spaced Repetition (SRS) 3D Flashcard Trainer">
+        <span>🧠</span>
+        <span class="hidden lg:inline">Flashcards</span>
       </button>
 
       <!-- 1.5. Starred Sentences Notebook -->
@@ -117,6 +142,18 @@
           A+
         </button>
       </div>
+
+      <!-- Master Grammar Reference Hub & Printable PDF -->
+      <button onclick="openGrammarHubModal()" class="px-3 py-1.5 rounded-xl bg-blue-100 hover:bg-blue-200 border border-blue-300 text-blue-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Master German Grammar Reference & Printable PDF Cheat Sheets">
+        <span>ðŸ“‘</span>
+        <span class="hidden md:inline">Grammar Hub</span>
+      </button>
+
+      <!-- PWA Install Button (Shown on supported browsers) -->
+      <button id="pwaInstallBtn" onclick="triggerPwaInstall()" class="hidden px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black items-center gap-1.5 transition shadow-xs cursor-pointer animate-pulse" title="Install Cheeya Studio App on your device for offline practice">
+        <span>ðŸ“²</span>
+        <span class="hidden xl:inline">Install App</span>
+      </button>
 
       <!-- 4. Quick Grammar Reference Modal Trigger -->
       <button onclick="openGrammarModal()" class="px-3 py-1.5 rounded-xl bg-blue-100 hover:bg-blue-200 border border-blue-300 text-blue-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Comprehensive German Grammar Reference">
@@ -259,6 +296,84 @@
           <span>➔</span>
         </button>
       </div>
+
+      <!-- ================= DASHBOARD: 4 ELITE POWER TOOLS GRID ================= -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 flex-shrink-0 mb-2">
+        
+        <!-- 1. AI Conversational Roleplay Card -->
+        <div onclick="openRoleplayModal()" class="blue-glass-card p-4 border border-emerald-300 hover:border-emerald-500 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer shadow-sm group bg-gradient-to-br from-white via-emerald-50/40 to-teal-50/40">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-xl shadow-xs group-hover:scale-110 transition-transform">
+              🤖
+            </div>
+            <div>
+              <div class="text-[10px] font-black uppercase tracking-wider text-emerald-700">Interactive Partner</div>
+              <h4 class="text-xs font-black text-sky-950 group-hover:text-emerald-700 transition">AI Dialog Roleplay</h4>
+            </div>
+          </div>
+          <p class="text-[11px] text-sky-700 font-medium leading-relaxed">Practice 5 real-life A1 dialogues (Café, Doctor, Train Station, Supermarket) with quick suggestion chips & voice input!</p>
+          <div class="mt-2.5 flex items-center justify-between text-[10px] font-black text-emerald-800">
+            <span>5 Scenarios • Voice Audio</span>
+            <span class="group-hover:translate-x-1 transition-transform">Start Chat ➔</span>
+          </div>
+        </div>
+
+        <!-- 2. Goethe-Zertifikat A1 Mock Exam Hub Card -->
+        <div onclick="openGoetheExamModal()" class="blue-glass-card p-4 border border-indigo-300 hover:border-indigo-500 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer shadow-sm group bg-gradient-to-br from-white via-indigo-50/40 to-purple-50/40">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xl shadow-xs group-hover:scale-110 transition-transform">
+              🎓
+            </div>
+            <div>
+              <div class="text-[10px] font-black uppercase tracking-wider text-indigo-700">Official Format</div>
+              <h4 class="text-xs font-black text-sky-950 group-hover:text-indigo-700 transition">Goethe A1 Exam Hub</h4>
+            </div>
+          </div>
+          <p class="text-[11px] text-sky-700 font-medium leading-relaxed">Simulate the real exam: Hören (audio), Lesen, Schreiben (forms/email), and Sprechen cards with grading & certificate!</p>
+          <div class="mt-2.5 flex items-center justify-between text-[10px] font-black text-indigo-800">
+            <span>60 Pts • Pass 60%+</span>
+            <span class="group-hover:translate-x-1 transition-transform">Take Exam ➔</span>
+          </div>
+        </div>
+
+        <!-- 3. Smart SRS Flashcards Card -->
+        <div onclick="openSrsModal()" class="blue-glass-card p-4 border border-pink-300 hover:border-pink-500 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer shadow-sm group bg-gradient-to-br from-white via-pink-50/40 to-rose-50/40">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 rounded-xl bg-pink-500 text-white flex items-center justify-center text-xl shadow-xs group-hover:scale-110 transition-transform">
+              🧠
+            </div>
+            <div>
+              <div class="text-[10px] font-black uppercase tracking-wider text-pink-700">Anki / Leitner System</div>
+              <h4 class="text-xs font-black text-sky-950 group-hover:text-pink-700 transition">Smart SRS Flashcards</h4>
+            </div>
+          </div>
+          <p class="text-[11px] text-sky-700 font-medium leading-relaxed">Spaced repetition memory trainer with 3D flip cards, color-coded der/die/das, audio, and automatic daily review intervals.</p>
+          <div class="mt-2.5 flex items-center justify-between text-[10px] font-black text-pink-800">
+            <span id="srsDashboardDueBadge">Daily Reviews Ready</span>
+            <span class="group-hover:translate-x-1 transition-transform">Review Now ➔</span>
+          </div>
+        </div>
+
+        <!-- 4. Master Grammar Reference & PDF Card -->
+        <div onclick="openGrammarHubModal()" class="blue-glass-card p-4 border border-sky-300 hover:border-sky-500 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer shadow-sm group bg-gradient-to-br from-white via-sky-50/50 to-blue-50/40">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 rounded-xl bg-sky-600 text-white flex items-center justify-center text-xl shadow-xs group-hover:scale-110 transition-transform">
+              📑
+            </div>
+            <div>
+              <div class="text-[10px] font-black uppercase tracking-wider text-sky-700">Master Cheat-Sheets</div>
+              <h4 class="text-xs font-black text-sky-950 group-hover:text-sky-700 transition">Grammar Reference & PDF</h4>
+            </div>
+          </div>
+          <p class="text-[11px] text-sky-700 font-medium leading-relaxed">Comprehensive visual charts for der/die/das rules, Nom/Akk/Dat case grids, prepositions, and one-click printable A4 summary.</p>
+          <div class="mt-2.5 flex items-center justify-between text-[10px] font-black text-sky-800">
+            <span>5 Master Tables • Printable A4</span>
+            <span class="group-hover:translate-x-1 transition-transform">View Charts ➔</span>
+          </div>
+        </div>
+
+      </div>
+
 
       <!-- ================= DASHBOARD: AI SMART TRANSLATOR & GERMAN GRAMMAR ANALYZER ================= -->
       <div id="translatorSection" class="blue-glass-card p-5 md:p-7 border-2 border-sky-300 shadow-xl flex-shrink-0 relative overflow-hidden bg-gradient-to-br from-white/95 via-sky-50/90 to-blue-50/90 mb-2">
@@ -491,6 +606,19 @@
           <input type="range" id="audioProgress" min="0" max="100" value="0" class="w-24 md:w-36 h-1.5 bg-sky-200 rounded-lg appearance-none cursor-pointer accent-sky-500">
           <span id="audioDuration">0:00</span>
         </div>
+
+        <!-- Audio Speed Controller (0.75x, 1.0x, 1.25x) -->
+        <button id="audioSpeedBtn" onclick="cycleAudioSpeed()" class="px-2.5 py-1 rounded-xl bg-white hover:bg-sky-50 border border-sky-300 text-sky-800 text-xs font-black flex items-center gap-1 transition shadow-2xs cursor-pointer flex-shrink-0" title="Change Playback Speed (0.75x Slow / 1.0x Normal / 1.25x Fast)">
+          <span>⚡</span>
+          <span id="audioSpeedLabel">1.0x</span>
+        </button>
+
+        <!-- A-B Repeat Sentence Looper -->
+        <button id="audioAbLoopBtn" onclick="toggleAbLoop()" class="px-2.5 py-1 rounded-xl bg-white hover:bg-purple-50 border border-sky-300 text-sky-800 text-xs font-black flex items-center gap-1 transition shadow-2xs cursor-pointer flex-shrink-0" title="A-B Repeat Looper: Click once to set Start (A), click again to set End (B), click 3rd time to reset loop">
+          <span>🔁</span>
+          <span id="audioAbLoopLabel">A-B Loop</span>
+        </button>
+
 
         <!-- Audio Element -->
         <audio id="audioPlayer" preload="none"></audio>
@@ -1353,11 +1481,320 @@
     </div>
   </div>
 
+  <!-- ================= 1. MODAL: AI GERMAN CONVERSATIONAL ROLEPLAY ================= -->
+  <div id="roleplayModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-3 md:p-6 hidden">
+    <div class="blue-glass-card max-w-2xl w-full max-h-[92vh] p-4 md:p-6 shadow-2xl flex flex-col border-2 border-emerald-300">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-sky-200 mb-3 flex-shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-xl shadow-xs">
+            &#x1F916;
+          </div>
+          <div>
+            <h3 class="font-extrabold text-base text-sky-950 flex items-center gap-1.5">
+              <span>AI German Conversational Roleplay</span>
+              <span class="text-[10px] bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded-full border border-emerald-300">A1 Dialog Partner</span>
+            </h3>
+            <p class="text-xs text-sky-600 font-medium">Practice real-life everyday German conversations with helpful suggestion chips!</p>
+          </div>
+        </div>
+        <button onclick="closeRoleplayModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Scenario Selector Tabs -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-2 mb-3 flex-shrink-0" id="roleplayScenarioTabs">
+        <button onclick="switchRoleplayScenario('cafe')" id="roleplayTab-cafe" class="px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-emerald-600 text-white shadow-xs">
+          &#x2615; Im Caf&eacute; (Ordering)
+        </button>
+        <button onclick="switchRoleplayScenario('intro')" id="roleplayTab-intro" class="px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-sky-800 hover:bg-sky-100 border border-sky-200">
+          &#x1F44B; Sich vorstellen (Intro)
+        </button>
+        <button onclick="switchRoleplayScenario('station')" id="roleplayTab-station" class="px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-sky-800 hover:bg-sky-100 border border-sky-200">
+          &#x1F686; Am Bahnhof (Tickets)
+        </button>
+        <button onclick="switchRoleplayScenario('market')" id="roleplayTab-market" class="px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-sky-800 hover:bg-sky-100 border border-sky-200">
+          &#x1F6D2; Im Supermarkt (Shopping)
+        </button>
+        <button onclick="switchRoleplayScenario('doctor')" id="roleplayTab-doctor" class="px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-sky-800 hover:bg-sky-100 border border-sky-200">
+          &#x1FA7A; Beim Arzt (Health)
+        </button>
+      </div>
+
+      <!-- Chat Messages Scrollable Window -->
+      <div id="roleplayChatArea" class="flex-1 overflow-y-auto p-3.5 bg-sky-50/70 rounded-2xl border border-sky-200 space-y-3 mb-3 roleplay-chat-scroll min-h-[220px]">
+        <!-- Populated dynamically by app.js -->
+      </div>
+
+      <!-- Quick Reply Suggestion Chips -->
+      <div class="space-y-1.5 flex-shrink-0 mb-3">
+        <div class="flex items-center justify-between text-[11px] text-sky-600 font-bold px-1">
+          <span>&#x1F4A1; Recommended A1 Replies:</span>
+          <span class="text-[10px] text-sky-400">Click any chip to respond</span>
+        </div>
+        <div id="roleplaySuggestionChips" class="flex flex-wrap gap-1.5">
+          <!-- Populated from JS -->
+        </div>
+      </div>
+
+      <!-- Text & Voice Input Bar -->
+      <div class="flex items-center gap-2 pt-2 border-t border-sky-200 flex-shrink-0">
+        <button id="roleplayVoiceBtn" onclick="toggleRoleplayVoiceInput()" class="p-2.5 rounded-xl bg-pink-100 hover:bg-pink-200 border border-pink-300 text-pink-700 text-sm font-bold transition cursor-pointer flex-shrink-0 shadow-2xs" title="Speak in German (Speech-to-Text)">
+          <span id="roleplayVoiceIcon">&#x1F399;&#xFE0F;</span>
+        </button>
+        <input type="text" id="roleplayInputText" placeholder="Type your German response here or click a suggestion above..." onkeydown="if(event.key==='Enter') sendRoleplayMessage()" class="flex-1 px-3.5 py-2.5 bg-white border border-sky-300 rounded-xl text-xs text-sky-950 font-medium focus:outline-none focus:border-emerald-500 shadow-2xs">
+        <button onclick="sendRoleplayMessage()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black transition shadow-sm cursor-pointer flex items-center gap-1">
+          <span>Send</span>
+          <span>&#x2794;</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= 2. MODAL: GOETHE-ZERTIFIKAT A1 MOCK EXAM HUB ================= -->
+  <div id="goetheExamModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-3 md:p-6 hidden">
+    <div class="blue-glass-card max-w-3xl w-full max-h-[92vh] p-5 md:p-7 shadow-2xl flex flex-col border-2 border-indigo-300 overflow-hidden">
+      
+      <!-- Modal Header with Timer & Points -->
+      <div class="flex flex-wrap items-center justify-between pb-3 border-b border-sky-200 mb-3 flex-shrink-0 gap-2">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xl shadow-xs">
+            &#x1F393;
+          </div>
+          <div>
+            <h3 class="font-extrabold text-base text-sky-950 flex items-center gap-2">
+              <span>Goethe-Zertifikat A1 Mock Exam Hub</span>
+              <span class="text-[10px] bg-indigo-100 text-indigo-900 font-extrabold px-2 py-0.5 rounded-full border border-indigo-300">Start Deutsch 1</span>
+            </h3>
+            <p class="text-xs text-sky-600 font-medium">Official 4-module exam simulation &bull; Passing score: 60% (36/60 Pts)</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Timer Display -->
+          <div class="px-3 py-1 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-xs font-black flex items-center gap-1">
+            <span>&#x23F1;&#xFE0F;</span>
+            <span id="examTimerDisplay">30:00</span>
+          </div>
+          <button onclick="closeGoetheExamModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 Module Navigation Tabs -->
+      <div class="grid grid-cols-4 gap-1.5 p-1 bg-sky-100/80 rounded-xl mb-3 border border-sky-200 flex-shrink-0 text-center text-xs font-black">
+        <button id="examTab-hoeren" onclick="switchExamModule('hoeren')" class="py-1.5 px-2 rounded-lg bg-indigo-600 text-white shadow-xs transition">
+          &#x1F3A7; 1. H&ouml;ren (15 Pts)
+        </button>
+        <button id="examTab-lesen" onclick="switchExamModule('lesen')" class="py-1.5 px-2 rounded-lg text-sky-700 hover:bg-white/60 transition">
+          &#x1F4D6; 2. Lesen (15 Pts)
+        </button>
+        <button id="examTab-schreiben" onclick="switchExamModule('schreiben')" class="py-1.5 px-2 rounded-lg text-sky-700 hover:bg-white/60 transition">
+          &#x270D;&#xFE0F; 3. Schreiben (15 Pts)
+        </button>
+        <button id="examTab-sprechen" onclick="switchExamModule('sprechen')" class="py-1.5 px-2 rounded-lg text-sky-700 hover:bg-white/60 transition">
+          &#x1F5E3;&#xFE0F; 4. Sprechen (15 Pts)
+        </button>
+      </div>
+
+      <!-- Module Content Scrollable Area -->
+      <div id="examModuleContainer" class="flex-1 overflow-y-auto p-3.5 bg-sky-50/70 rounded-2xl border border-sky-200 space-y-4 mb-3">
+        <!-- Populated from JS -->
+      </div>
+
+      <!-- Footer Controls (Submit Module / Final Evaluation) -->
+      <div class="flex items-center justify-between pt-2 border-t border-sky-200 flex-shrink-0">
+        <div class="text-xs font-bold text-sky-800">
+          <span id="examScoreStatus">Current Module Score: 0 / 15 Pts</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="examNextModuleBtn" onclick="nextExamModule()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black transition shadow-sm cursor-pointer">
+            <span>Next Module</span>
+            <span>&#x2794;</span>
+          </button>
+          <button id="examFinishBtn" onclick="finishGoetheExam()" class="hidden px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black transition shadow-sm cursor-pointer">
+            <span>Finish &amp; Calculate Total Score</span>
+            <span>&#x1F3C6;</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= 3. MODAL: SMART SPACED REPETITION (SRS) FLASHCARDS ================= -->
+  <div id="srsFlashcardModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-3 md:p-6 hidden">
+    <div class="blue-glass-card max-w-xl w-full max-h-[92vh] p-5 md:p-6 shadow-2xl flex flex-col border-2 border-pink-300 text-center">
+      
+      <!-- Header & Deck Selector -->
+      <div class="flex items-center justify-between pb-3 border-b border-sky-200 mb-3 flex-shrink-0">
+        <div class="flex items-center gap-2 text-left">
+          <span class="text-2xl">&#x1F9E0;</span>
+          <div>
+            <h3 class="font-extrabold text-base text-sky-950">Smart SRS 3D Flashcards</h3>
+            <p class="text-[11px] text-sky-600 font-medium">SuperMemo-2 Spaced Repetition Memory Deck</p>
+          </div>
+        </div>
+        <button onclick="closeSrsModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Filter Controls: Chapter + Category Filter -->
+      <div class="flex items-center gap-2 mb-3 flex-shrink-0">
+        <select id="srsChapterSelect" onchange="filterSrsDeck()" class="flex-1 bg-white border border-sky-300 text-xs rounded-xl px-2.5 py-1.5 font-bold text-sky-900 focus:outline-none">
+          <option value="all">All Chapters (1-12)</option>
+          <option value="1">Chapter 1: Guten Tag!</option>
+          <option value="2">Chapter 2: Freunde, Kollegen</option>
+          <option value="3">Chapter 3: In der Stadt</option>
+          <option value="4">Chapter 4: Guten Appetit!</option>
+          <option value="5">Chapter 5: Tag f&uuml;r Tag</option>
+          <option value="6">Chapter 6: Zeit mit Freunden</option>
+          <option value="7">Chapter 7: Kontakte</option>
+          <option value="8">Chapter 8: Meine Wohnung</option>
+          <option value="9">Chapter 9: Alles neu!</option>
+          <option value="10">Chapter 10: Die Kleidung</option>
+          <option value="11">Chapter 11: Gesund und fit</option>
+          <option value="12">Chapter 12: Sch&ouml;ne Ferien!</option>
+        </select>
+        <select id="srsCategorySelect" onchange="filterSrsDeck()" class="bg-white border border-sky-300 text-xs rounded-xl px-2.5 py-1.5 font-bold text-sky-900 focus:outline-none">
+          <option value="all">All Types</option>
+          <option value="nouns">Nouns (der/die/das)</option>
+          <option value="verbs">Verbs</option>
+          <option value="adjectives">Adjectives</option>
+        </select>
+      </div>
+
+      <!-- Status Indicator (Cards Remaining & Due Status) -->
+      <div class="flex items-center justify-between text-xs font-bold text-sky-700 mb-2 px-1">
+        <span id="srsCardCountLabel">Card 1 of 15</span>
+        <span id="srsDueStatusBadge" class="px-2 py-0.5 rounded-full bg-pink-100 text-pink-900 border border-pink-200 text-[10px]">Due Today</span>
+      </div>
+
+      <!-- 3D Flip Card Container -->
+      <div class="perspective-1000 w-full h-64 cursor-pointer my-2 flex-shrink-0" onclick="flipCurrentSrsCard()" id="srsFlashcardContainer">
+        <div class="flashcard-inner relative w-full h-full shadow-lg rounded-2xl" id="srsFlashcardCard">
+          
+          <!-- Front Face -->
+          <div class="flashcard-front bg-gradient-to-br from-white via-sky-50 to-blue-50/70 border-2 border-sky-300 p-6 flex flex-col items-center justify-between">
+            <div class="flex items-center justify-between w-full">
+              <span id="srsFrontGenderBadge" class="px-2.5 py-1 rounded-full text-xs font-black bg-blue-100 text-blue-900 border border-blue-300">der</span>
+              <button onclick="event.stopPropagation(); playSrsAudio()" class="p-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-800 text-sm transition cursor-pointer" title="Listen to pronunciation">&#x1F50A;</button>
+            </div>
+            <div>
+              <h2 id="srsFrontWord" class="text-3xl font-black text-sky-950 tracking-wide mb-1">Hund</h2>
+              <p id="srsFrontPhonetic" class="text-xs font-mono font-bold text-purple-900">[ HOONT ]</p>
+            </div>
+            <p class="text-[11px] text-sky-400 font-bold uppercase tracking-wider">Click or spacebar to reveal meaning &#x2794;</p>
+          </div>
+
+          <!-- Back Face -->
+          <div class="flashcard-back bg-gradient-to-br from-purple-50 via-indigo-50 to-pink-50 border-2 border-purple-300 p-6 flex flex-col items-center justify-between">
+            <div class="flex items-center justify-between w-full">
+              <span id="srsBackPlural" class="text-xs font-black text-purple-800">Plural: die Hunde</span>
+              <span class="text-[10px] font-bold bg-white px-2 py-0.5 rounded-md border border-purple-200 text-purple-700">Answer Revealed</span>
+            </div>
+            <div>
+              <h3 id="srsBackEnglish" class="text-2xl font-black text-purple-950 mb-1.5">Dog</h3>
+              <p id="srsBackExample" class="text-xs font-medium text-purple-900 italic">"Der Hund spielt im Garten."</p>
+            </div>
+            <p class="text-[10px] text-purple-600 font-medium">Rate your recall below to schedule next review:</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 4 SuperMemo SRS Rating Buttons -->
+      <div class="grid grid-cols-4 gap-2 pt-2 border-t border-sky-200 flex-shrink-0">
+        <button onclick="gradeCurrentSrsCard(1)" class="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-300 text-rose-900 text-xs font-black flex flex-col items-center transition cursor-pointer">
+          <span>Again</span>
+          <span class="text-[9px] font-medium opacity-80">&lt; 1 min</span>
+        </button>
+        <button onclick="gradeCurrentSrsCard(2)" class="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 text-xs font-black flex flex-col items-center transition cursor-pointer">
+          <span>Hard</span>
+          <span class="text-[9px] font-medium opacity-80">1 day</span>
+        </button>
+        <button onclick="gradeCurrentSrsCard(3)" class="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-black flex flex-col items-center transition cursor-pointer">
+          <span>Good</span>
+          <span class="text-[9px] font-medium opacity-80">3 days</span>
+        </button>
+        <button onclick="gradeCurrentSrsCard(4)" class="p-2 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-300 text-sky-900 text-xs font-black flex flex-col items-center transition cursor-pointer">
+          <span>Easy</span>
+          <span class="text-[9px] font-medium opacity-80">7 days</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= 4. MODAL: MASTER GRAMMAR REFERENCE HUB & PRINTABLE PDF ================= -->
+  <div id="grammarHubModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-3 md:p-6 hidden">
+    <div class="blue-glass-card max-w-4xl w-full max-h-[92vh] p-5 md:p-7 shadow-2xl flex flex-col border-2 border-blue-300 overflow-hidden">
+      
+      <!-- Modal Header with Print Button -->
+      <div class="flex items-center justify-between pb-3 border-b border-sky-200 mb-3 flex-shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-sky-600 text-white flex items-center justify-center text-xl shadow-xs">
+            &#x1F4D1;
+          </div>
+          <div>
+            <h3 class="font-extrabold text-base text-sky-950 flex items-center gap-2">
+              <span>Master German Grammar Reference Hub</span>
+              <span class="text-[10px] bg-sky-100 text-sky-800 font-extrabold px-2 py-0.5 rounded-full border border-sky-300">Netzwerk A1 Master Charts</span>
+            </h3>
+            <p class="text-xs text-sky-600 font-medium">Complete visual cheat-sheets for Der/Die/Das, Nominativ, Akkusativ, Dativ &amp; Verbs</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Print / Save Clean PDF Button -->
+          <button onclick="printGrammarCheatSheet()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-black flex items-center gap-1.5 transition shadow-sm cursor-pointer" title="Print this complete reference onto A4 paper or save as clean PDF">
+            <span>&#x1F5A8;&#xFE0F;</span>
+            <span>Print / Save PDF</span>
+          </button>
+          <button onclick="closeGrammarHubModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 5 Grammar Categories Selector Tabs -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-2 mb-3 flex-shrink-0 text-xs font-black" id="grammarHubTabs">
+        <button onclick="switchGrammarHubTab('articles')" id="gramTab-articles" class="px-3 py-1.5 rounded-xl bg-blue-600 text-white shadow-xs transition whitespace-nowrap">
+          &#x1F3A8; Der-Die-Das Rules
+        </button>
+        <button onclick="switchGrammarHubTab('cases')" id="gramTab-cases" class="px-3 py-1.5 rounded-xl bg-white text-sky-800 hover:bg-sky-100 border border-sky-200 transition whitespace-nowrap">
+          &#x1F4D0; Complete Case Grid (Nom/Akk/Dat)
+        </button>
+        <button onclick="switchGrammarHubTab('pronouns')" id="gramTab-pronouns" class="px-3 py-1.5 rounded-xl bg-white text-sky-800 hover:bg-sky-100 border border-sky-200 transition whitespace-nowrap">
+          &#x1F464; Personal Pronouns (mich / mir)
+        </button>
+        <button onclick="switchGrammarHubTab('prepositions')" id="gramTab-prepositions" class="px-3 py-1.5 rounded-xl bg-white text-sky-800 hover:bg-sky-100 border border-sky-200 transition whitespace-nowrap">
+          &#x1F4CD; Prepositions (Akk / Dat / Two-Way)
+        </button>
+        <button onclick="switchGrammarHubTab('verbs')" id="gramTab-verbs" class="px-3 py-1.5 rounded-xl bg-white text-sky-800 hover:bg-sky-100 border border-sky-200 transition whitespace-nowrap">
+          &#x2699;&#xFE0F; Conjugations &amp; Separable Verbs
+        </button>
+      </div>
+
+      <!-- Printable Grammar Tables Content Area -->
+      <div id="printableGrammarArea" class="flex-1 overflow-y-auto p-4 bg-white rounded-2xl border border-sky-200 space-y-4">
+        <!-- Populated dynamically by app.js -->
+      </div>
+
+    </div>
+  </div>
+
+
   <!-- Floating XP Toast Container -->
   <div id="floatingXPContainer" class="fixed top-20 right-6 z-50 pointer-events-none flex flex-col gap-2"></div>
 
   <!-- SCRIPT LOGIC -->
   <script src="media-data.js?v=20260913_360q"></script>
-  <script src="app.js?v=20260913_voice_recording_phonetics"></script>
+  <script src="app.js?v=20260914_6_elite_features"></script>
 </body>
 </html>

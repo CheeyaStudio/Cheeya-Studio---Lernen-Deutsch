@@ -683,3 +683,70 @@ body {
   animation: xp-float 1.9s forwards cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+/* 3D Flip Card Effect for Smart SRS Flashcards */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.flashcard-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+  transform-style: preserve-3d;
+}
+.flashcard-flipped .flashcard-inner {
+  transform: rotateY(180deg);
+}
+.flashcard-front, .flashcard-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 1.25rem;
+}
+.flashcard-back {
+  transform: rotateY(180deg);
+}
+
+/* Audio Dock Speed & A-B Looper Styles */
+.ab-loop-active {
+  background-color: #8b5cf6 !important;
+  color: white !important;
+  border-color: #7c3aed !important;
+  animation: pulse 1.5s infinite;
+}
+
+/* Roleplay Chat Styling */
+.roleplay-chat-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.roleplay-chat-scroll::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 4px;
+}
+
+/* Print Optimization for Master Grammar Reference & Certificates */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printableGrammarArea, #printableGrammarArea * {
+    visibility: visible;
+  }
+  #printableGrammarArea {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 15px !important;
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
+

@@ -8141,6 +8141,18 @@ document.addEventListener('DOMContentLoaded', () => {
   function handleRoute(hash) {
     if (['dashboard', 'lesson', 'pdf', 'vocab', 'progress'].includes(hash)) {
       switchView(hash);
+    } else if (hash === 'roleplay') {
+      switchView('dashboard');
+      setTimeout(() => { if (typeof openRoleplayModal === 'function') openRoleplayModal(); }, 150);
+    } else if (hash === 'exam') {
+      switchView('dashboard');
+      setTimeout(() => { if (typeof openGoetheExamModal === 'function') openGoetheExamModal(); }, 150);
+    } else if (hash === 'flashcards') {
+      switchView('dashboard');
+      setTimeout(() => { if (typeof openSrsModal === 'function') openSrsModal(); }, 150);
+    } else if (hash === 'grammar-hub') {
+      switchView('dashboard');
+      setTimeout(() => { if (typeof openGrammarHubModal === 'function') openGrammarHubModal(); }, 150);
     } else if (hash === 'grammar') {
       switchView('dashboard');
       setTimeout(() => { if (typeof openGrammarModal === 'function') openGrammarModal(); }, 150);
@@ -8163,7 +8175,1480 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // ================= 28. AUDIO SPEED CONTROLLER & A-B REPEAT LOOPER =================
+  let currentAudioSpeedIdx = 0;
+  const AUDIO_SPEEDS = [
+    { rate: 1.0, label: '1.0x' },
+    { rate: 0.75, label: '0.75x' },
+    { rate: 1.25, label: '1.25x' }
+  ];
+
+  window.cycleAudioSpeed = function() {
+    currentAudioSpeedIdx = (currentAudioSpeedIdx + 1) % AUDIO_SPEEDS.length;
+    const speedObj = AUDIO_SPEEDS[currentAudioSpeedIdx];
+    const player = document.getElementById('audioPlayer');
+    const label = document.getElementById('audioSpeedLabel');
+    if (player) {
+      player.playbackRate = speedObj.rate;
+      player.preservesPitch = true;
+      if ('mozPreservesPitch' in player) player.mozPreservesPitch = true;
+      if ('webkitPreservesPitch' in player) player.webkitPreservesPitch = true;
+    }
+    if (label) label.textContent = speedObj.label;
+    const desc = speedObj.rate === 0.75 ? "0.75x Slow (Beginner Friendly)" : speedObj.rate === 1.25 ? "1.25x Fast" : "1.0x Normal";
+    showFloatingToast(`⚡ Audio speed set to ${desc}`);
+  };
+
+  let abLoopState = 0; // 0: inactive, 1: point A set, 2: point B set & looping
+  let abLoopStart = 0;
+  let abLoopEnd = 0;
+  let abLoopListenerAttached = false;
+
+  function handleAbLoopTimeUpdate() {
+    const player = document.getElementById('audioPlayer');
+    if (!player || abLoopState !== 2) return;
+    if (player.currentTime >= abLoopEnd) {
+      player.currentTime = abLoopStart;
+    }
+  }
+
+  window.toggleAbLoop = function() {
+    const player = document.getElementById('audioPlayer');
+    const btn = document.getElementById('audioAbLoopBtn');
+    const label = document.getElementById('audioAbLoopLabel');
+    if (!player) return;
+
+    if (abLoopState === 0) {
+      abLoopStart = player.currentTime;
+      abLoopState = 1;
+      if (label) label.textContent = "Set B (End)";
+      if (btn) {
+        btn.classList.add('bg-purple-100', 'border-purple-400', 'text-purple-900');
+        btn.classList.remove('bg-white');
+      }
+      showFloatingToast(`📍 Point A set at ${formatTime(abLoopStart)}. Click again to set Point B!`);
+    } else if (abLoopState === 1) {
+      abLoopEnd = player.currentTime;
+      if (abLoopEnd <= abLoopStart + 0.5) {
+        abLoopEnd = abLoopStart + 3.0;
+      }
+      abLoopState = 2;
+      if (label) label.textContent = "Looping A-B (Clear)";
+      if (btn) {
+        btn.classList.add('ab-loop-active');
+      }
+      if (!abLoopListenerAttached) {
+        player.addEventListener('timeupdate', handleAbLoopTimeUpdate);
+        abLoopListenerAttached = true;
+      }
+      player.currentTime = abLoopStart;
+      if (player.paused) player.play();
+      showFloatingToast(`🔁 A-B Loop active (${formatTime(abLoopStart)} - ${formatTime(abLoopEnd)})!`);
+    } else {
+      abLoopState = 0;
+      if (label) label.textContent = "A-B Loop";
+      if (btn) {
+        btn.classList.remove('ab-loop-active', 'bg-purple-100', 'border-purple-400', 'text-purple-900');
+        btn.classList.add('bg-white');
+      }
+      if (abLoopListenerAttached) {
+        player.removeEventListener('timeupdate', handleAbLoopTimeUpdate);
+        abLoopListenerAttached = false;
+      }
+      showFloatingToast("A-B Loop cleared.");
+    }
+  };
+
+  // ================= 29. AI GERMAN CONVERSATIONAL ROLEPLAY (DIALOG PARTNER) =================
+  const ROLEPLAY_SCENARIOS = {
+    cafe: {
+      title: "☕ Im Café (Ordering in a Café)",
+      partner: "Herr Weber (Waiter)",
+      initialGreeting: "Guten Tag! Herzlich willkommen im Café Alpenrose. Was darf ich Ihnen bringen?",
+      initialGreetingEn: "Good day! Welcome to Café Alpenrose. What may I bring you?",
+      suggestions: [
+        { de: "Ich möchte bitte einen Kaffee und ein Stück Kuchen.", en: "I would like a coffee and a piece of cake, please." },
+        { de: "Haben Sie auch Tee mit Zitrone?", en: "Do you also have tea with lemon?" },
+        { de: "Eine heiße Schokolade, bitte.", en: "A hot chocolate, please." }
+      ],
+      responses: [
+        {
+          triggers: ["kaffee", "kuchen", "tee", "schokolade", "wasser", "cola"],
+          botDe: "Sehr gerne! Möchten Sie Zucker und Milch dazu? Und darf es sonst noch etwas sein?",
+          botEn: "With pleasure! Would you like sugar and milk with that? And anything else?",
+          suggestions: [
+            { de: "Mit Milch und ohne Zucker, bitte.", en: "With milk and without sugar, please." },
+            { de: "Nein danke, das ist alles.", en: "No thank you, that is all." },
+            { de: "Wir möchten auch zahlen, bitte.", en: "We would also like to pay, please." }
+          ]
+        },
+        {
+          triggers: ["zahlen", "rechnung", "bezahlen", "kostet"],
+          botDe: "Zusammen oder getrennt? Das macht dann insgesamt 6 Euro 50, bitte.",
+          botEn: "Together or separately? That makes 6 Euros 50 in total, please.",
+          suggestions: [
+            { de: "Zusammen, bitte. Hier sind 10 Euro.", en: "Together, please. Here is 10 Euros." },
+            { de: "Stimmt so, vielen Dank!", en: "Keep the change, thank you very much!" },
+            { de: "Kann ich mit Karte zahlen?", en: "Can I pay with card?" }
+          ]
+        },
+        {
+          triggers: ["stimmt", "hier", "karte", "danke", "euro"],
+          botDe: "Vielen herzlichen Dank! Einen wunderschönen Tag noch und auf Wiedersehen!",
+          botEn: "Thank you very much! Have a wonderful day and goodbye!",
+          suggestions: [
+            { de: "Danke gleichfalls! Auf Wiedersehen!", en: "Thanks, likewise! Goodbye!" },
+            { de: "Tschüs, bis zum nächsten Mal!", en: "Bye, until next time!" }
+          ]
+        }
+      ]
+    },
+    intro: {
+      title: "👋 Sich vorstellen (Personal Introductions)",
+      partner: "Lukas (Language Partner)",
+      initialGreeting: "Hallo! Ich bin Lukas aus Berlin. Ich lerne Spanisch. Wie heißt du und woher kommst du?",
+      initialGreetingEn: "Hello! I am Lukas from Berlin. I am learning Spanish. What is your name and where are you from?",
+      suggestions: [
+        { de: "Hallo Lukas! Ich heiße Maya und komme aus Indonesien.", en: "Hello Lukas! My name is Maya and I come from Indonesia." },
+        { de: "Ich bin Alex. Ich wohne jetzt in Frankfurt.", en: "I am Alex. I live in Frankfurt now." },
+        { de: "Freut mich! Ich lerne seit drei Monaten Deutsch.", en: "Pleased to meet you! I have been learning German for three months." }
+      ],
+      responses: [
+        {
+          triggers: ["heiße", "bin", "komme", "wohne", "indonesien", "spanien", "deutschland"],
+          botDe: "Schön dich kennenzulernen! Welche Sprachen sprichst du denn, und was machst du beruflich?",
+          botEn: "Nice to meet you! Which languages do you speak, and what do you do for work?",
+          suggestions: [
+            { de: "Ich spreche Englisch, Indonesisch und ein bisschen Deutsch.", en: "I speak English, Indonesian, and a little German." },
+            { de: "Ich bin Studentin an der Universität.", en: "I am a university student." },
+            { de: "Ich arbeite als Softwareentwickler in Vollzeit.", en: "I work full-time as a software developer." }
+          ]
+        },
+        {
+          triggers: ["englisch", "deutsch", "student", "arbeite", "beruf", "sprache"],
+          botDe: "Toll! Dein Deutsch ist schon richtig gut! Was machst du gerne in deiner Freizeit? Hast du Hobbys?",
+          botEn: "Great! Your German is already really good! What do you like doing in your free time? Do you have hobbies?",
+          suggestions: [
+            { de: "In meiner Freizeit höre ich Musik und koche gern.", en: "In my free time I listen to music and like cooking." },
+            { de: "Ich spiele Fußball und treffe gern Freunde.", en: "I play football and like meeting friends." },
+            { de: "Ich lese gern Bücher und reise viel.", en: "I like reading books and traveling a lot." }
+          ]
+        },
+        {
+          triggers: ["musik", "koche", "fußball", "freunde", "bücher", "reise", "hobby"],
+          botDe: "Klingt super spannend! Wir können gerne öfter zusammen Deutsch und Englisch üben!",
+          botEn: "Sounds super exciting! We can gladly practice German and English together more often!",
+          suggestions: [
+            { de: "Sehr gern! Danke für das nette Gespräch.", en: "With pleasure! Thanks for the nice conversation." },
+            { de: "Ja super, bis bald!", en: "Yes great, see you soon!" }
+          ]
+        }
+      ]
+    },
+    station: {
+      title: "🚆 Am Bahnhof (At the Train Station)",
+      partner: "Frau Schmidt (Deutsche Bahn Agent)",
+      initialGreeting: "Guten Tag, Deutsche Bahn Reisezentrum. Wohin möchten Sie fahren?",
+      initialGreetingEn: "Good day, Deutsche Bahn Travel Center. Where would you like to travel to?",
+      suggestions: [
+        { de: "Guten Tag! Ich brauche eine Fahrkarte nach München, bitte.", en: "Good day! I need a ticket to Munich, please." },
+        { de: "Fährt heute noch ein ICE nach Berlin?", en: "Is there an ICE to Berlin departing today?" },
+        { de: "Wann fährt der nächste Zug nach Hamburg ab?", en: "When does the next train to Hamburg depart?" }
+      ],
+      responses: [
+        {
+          triggers: ["münchen", "berlin", "hamburg", "köln", "frankfurt", "fahrkarte", "zug"],
+          botDe: "Der nächste ICE fährt um 14:28 Uhr von Gleis 7 ab. Möchten Sie einfach oder hin und zurück?",
+          botEn: "The next ICE departs at 14:28 from Platform 7. Would you like one-way or round trip?",
+          suggestions: [
+            { de: "Hin und zurück, bitte. Zweite Klasse.", en: "Round trip, please. Second class." },
+            { de: "Nur einfach, bitte.", en: "One-way only, please." },
+            { de: "Muss ich umsteigen oder ist es eine Direktverbindung?", en: "Do I have to change trains or is it a direct connection?" }
+          ]
+        },
+        {
+          triggers: ["einfach", "hin", "zurück", "klasse", "direkt", "umsteigen"],
+          botDe: "Das ist ein direkter ICE ohne Umsteigen. Haben Sie eine BahnCard 25 oder 50?",
+          botEn: "That is a direct ICE with no transfers. Do you have a BahnCard 25 or 50?",
+          suggestions: [
+            { de: "Nein, ich habe keine BahnCard.", en: "No, I do not have a BahnCard." },
+            { de: "Ja, ich habe eine BahnCard 25.", en: "Yes, I have a BahnCard 25." }
+          ]
+        },
+        {
+          triggers: ["nein", "keine", "ja", "bahncard"],
+          botDe: "Alles klar. Das Ticket kostet 49 Euro. Hier ist Ihre Fahrkarte. Gute Reise!",
+          botEn: "All set. The ticket costs 49 Euros. Here is your ticket. Safe travels!",
+          suggestions: [
+            { de: "Vielen Dank für Ihre Hilfe! Auf Wiedersehen!", en: "Thank you very much for your help! Goodbye!" }
+          ]
+        }
+      ]
+    },
+    market: {
+      title: "🛒 Im Supermarkt (At the Supermarket / Market)",
+      partner: "Herr Meier (Grocer)",
+      initialGreeting: "Guten Tag! Der Käse und das Obst sind heute ganz frisch. Was darf es sein?",
+      initialGreetingEn: "Good day! The cheese and fruit are completely fresh today. What can I get for you?",
+      suggestions: [
+        { de: "Ich nehme bitte ein Kilo Äpfel und etwas Käse.", en: "I will take one kilo of apples and some cheese, please." },
+        { de: "Wie viel kosten die Tomaten heute?", en: "How much do the tomatoes cost today?" },
+        { de: "Haben Sie frische Brötchen?", en: "Do you have fresh bread rolls?" }
+      ],
+      responses: [
+        {
+          triggers: ["äpfel", "käse", "tomaten", "brötchen", "brot", "kilo", "gramm"],
+          botDe: "Sehr gerne. Wie viel Gramm Käse möchten Sie? Wir haben milden Gouda und würzigen Bergkäse.",
+          botEn: "Gladly. How many grams of cheese would you like? We have mild Gouda and spicy alpine cheese.",
+          suggestions: [
+            { de: "200 Gramm Gouda, bitte.", en: "200 grams of Gouda, please." },
+            { de: "150 Gramm Bergkäse in Scheiben, bitte.", en: "150 grams of alpine cheese sliced, please." }
+          ]
+        },
+        {
+          triggers: ["gramm", "gouda", "bergkäse", "scheiben", "stück"],
+          botDe: "Bitteschön, das macht 200 Gramm. Darf es sonst noch etwas sein?",
+          botEn: "Here you go, that is 200 grams. Anything else?",
+          suggestions: [
+            { de: "Nein danke, das ist alles. Was macht das zusammen?", en: "No thank you, that is all. How much is that altogether?" },
+            { de: "Ich brauche noch eine Tüte, bitte.", en: "I also need a bag, please." }
+          ]
+        },
+        {
+          triggers: ["alles", "macht", "tüte", "kostet", "zahlen"],
+          botDe: "Das macht zusammen 7 Euro 80. Vielen Dank für Ihren Einkauf!",
+          botEn: "That makes 7 Euros 80 altogether. Thank you for your purchase!",
+          suggestions: [
+            { de: "Hier sind 10 Euro. Schönen Tag noch!", en: "Here are 10 Euros. Have a nice day!" }
+          ]
+        }
+      ]
+    },
+    doctor: {
+      title: "🩺 Beim Arzt (At the Doctor's Clinic)",
+      partner: "Frau Dr. Weber (Doctor)",
+      initialGreeting: "Guten Tag! Nehmen Sie bitte Platz. Was fehlt Ihnen denn? Wo haben Sie Schmerzen?",
+      initialGreetingEn: "Good day! Please take a seat. What is troubling you? Where do you have pain?",
+      suggestions: [
+        { de: "Guten Tag, Frau Doktor. Ich habe seit gestern starke Kopfschmerzen.", en: "Good day, Doctor. I have had a severe headache since yesterday." },
+        { de: "Mein Hals tut weh und ich habe leichtes Fieber.", en: "My throat hurts and I have a mild fever." },
+        { de: "Ich fühle mich schwach und muss oft husten.", en: "I feel weak and have to cough often." }
+      ],
+      responses: [
+        {
+          triggers: ["kopf", "hals", "fieber", "husten", "schmerzen", "weh", "schwach"],
+          botDe: "Ich verstehe. Haben Sie auch Bauchschmerzen oder Übelkeit? Wie hoch ist das Fieber?",
+          botEn: "I understand. Do you also have stomach ache or nausea? How high is the fever?",
+          suggestions: [
+            { de: "Das Fieber ist bei 38,5 Grad, aber kein Bauchweh.", en: "The fever is at 38.5 degrees, but no stomach ache." },
+            { de: "Nein, nur Husten und Halsschmerzen.", en: "No, only coughing and sore throat." }
+          ]
+        },
+        {
+          triggers: ["grad", "fieber", "husten", "halsschmerzen", "bauchweh", "nein"],
+          botDe: "Das ist eine typische Erkältung. Ich schreibe Ihnen ein Rezept für Hustensaft auf. Trinken Sie viel warmen Tee und ruhen Sie sich drei Tage aus!",
+          botEn: "That is a typical cold. I will write you a prescription for cough syrup. Drink plenty of warm tea and rest for three days!",
+          suggestions: [
+            { de: "Vielen Dank, Frau Doktor. Brauche ich eine Krankschreibung für die Arbeit?", en: "Thank you, Doctor. Do I need a sick note for work?" },
+            { de: "Muss ich nächste Woche noch einmal wiederkommen?", en: "Do I need to come back again next week?" }
+          ]
+        },
+        {
+          triggers: ["arbeit", "krankschreibung", "wiederkommen", "woche", "danke"],
+          botDe: "Hier ist Ihre Krankschreibung bis Freitag. Wenn es nicht besser wird, kommen Sie bitte am Montag wieder. Gute Besserung!",
+          botEn: "Here is your sick note until Friday. If it does not get better, please return on Monday. Get well soon!",
+          suggestions: [
+            { de: "Vielen Dank für Ihre Hilfe! Auf Wiedersehen.", en: "Thank you very much for your help! Goodbye." }
+          ]
+        }
+      ]
+    }
+  };
+
+  let activeRoleplayKey = 'cafe';
+  let roleplayChatHistory = [];
+  let roleplayStepIndex = 0;
+
+  window.openRoleplayModal = function(initialKey) {
+    const modal = document.getElementById('roleplayModal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    switchRoleplayScenario(initialKey || 'cafe');
+  };
+
+  window.closeRoleplayModal = function() {
+    const modal = document.getElementById('roleplayModal');
+    if (modal) modal.classList.add('hidden');
+  };
+
+  window.switchRoleplayScenario = function(key) {
+    if (!ROLEPLAY_SCENARIOS[key]) key = 'cafe';
+    activeRoleplayKey = key;
+    roleplayStepIndex = 0;
+    const scen = ROLEPLAY_SCENARIOS[key];
+
+    // Update tab styling
+    const tabs = ['cafe', 'intro', 'station', 'market', 'doctor'];
+    tabs.forEach(t => {
+      const el = document.getElementById(`roleplayTab-${t}`);
+      if (el) {
+        if (t === key) {
+          el.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-emerald-600 text-white shadow-xs";
+        } else {
+          el.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-sky-800 hover:bg-sky-100 border border-sky-200";
+        }
+      }
+    });
+
+    roleplayChatHistory = [
+      {
+        sender: 'bot',
+        name: scen.partner,
+        de: scen.initialGreeting,
+        en: scen.initialGreetingEn
+      }
+    ];
+
+    renderRoleplayChat();
+    renderRoleplaySuggestions(scen.suggestions);
+  };
+
+  function renderRoleplayChat() {
+    const container = document.getElementById('roleplayChatArea');
+    if (!container) return;
+
+    let html = '';
+    roleplayChatHistory.forEach((msg, idx) => {
+      if (msg.sender === 'bot') {
+        html += `
+          <div class="flex items-start gap-2.5 max-w-[88%]">
+            <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-sm font-bold flex-shrink-0 shadow-xs">
+              🤖
+            </div>
+            <div class="bg-white p-3 rounded-2xl rounded-tl-xs border border-sky-200 shadow-2xs space-y-1">
+              <div class="flex items-center justify-between gap-3 text-[10px] text-emerald-800 font-extrabold">
+                <span>${escapeHtml(msg.name)}</span>
+                <button onclick="playGermanSpeech('${escapeHtml(msg.de)}')" class="hover:text-emerald-950 transition cursor-pointer" title="Listen to pronunciation">🔊</button>
+              </div>
+              <p class="text-xs font-black text-sky-950 leading-relaxed">${escapeHtml(msg.de)}</p>
+              <div id="roleplayTrans-${idx}" class="hidden text-[11px] text-sky-700 italic border-t border-sky-100 pt-1 mt-1">
+                ${escapeHtml(msg.en)}
+              </div>
+              <div class="pt-0.5 text-right">
+                <button onclick="toggleRoleplayTranslation(${idx})" class="text-[10px] text-emerald-700 hover:text-emerald-900 font-bold underline cursor-pointer">
+                  👁️ Translation
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        html += `
+          <div class="flex items-start justify-end gap-2.5 max-w-[88%] ml-auto">
+            <div class="bg-emerald-600 text-white p-3 rounded-2xl rounded-tr-xs shadow-2xs space-y-1 text-right">
+              <div class="text-[10px] text-emerald-200 font-extrabold">You</div>
+              <p class="text-xs font-bold leading-relaxed text-white">${escapeHtml(msg.de)}</p>
+            </div>
+            <div class="w-8 h-8 rounded-full bg-sky-500 text-white flex items-center justify-center text-sm font-bold flex-shrink-0 shadow-xs">
+              👤
+            </div>
+          </div>
+        `;
+      }
+    });
+
+    container.innerHTML = html;
+    container.scrollTop = container.scrollHeight;
+  }
+
+  window.toggleRoleplayTranslation = function(idx) {
+    const el = document.getElementById(`roleplayTrans-${idx}`);
+    if (el) el.classList.toggle('hidden');
+  };
+
+  function renderRoleplaySuggestions(suggestions) {
+    const container = document.getElementById('roleplaySuggestionChips');
+    if (!container) return;
+
+    if (!suggestions || suggestions.length === 0) {
+      container.innerHTML = `
+        <div class="text-xs text-emerald-800 font-medium py-1">
+          🎉 Scenario complete! You can switch tabs above to practice another dialogue!
+        </div>
+      `;
+      return;
+    }
+
+    let html = '';
+    suggestions.forEach(item => {
+      html += `
+        <button onclick="submitRoleplayText('${escapeHtml(item.de)}')" class="text-left px-2.5 py-1.5 rounded-xl bg-white hover:bg-emerald-50 border border-emerald-200 text-sky-950 transition cursor-pointer shadow-2xs group flex items-center gap-1.5">
+          <span class="text-[11px] font-black group-hover:text-emerald-700 text-sky-900">${escapeHtml(item.de)}</span>
+          <span class="text-[10px] text-sky-400 italic">(${escapeHtml(item.en)})</span>
+        </button>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
+  window.submitRoleplayText = function(text) {
+    const input = document.getElementById('roleplayInputText');
+    if (input) input.value = text;
+    sendRoleplayMessage();
+  };
+
+  window.sendRoleplayMessage = function() {
+    const input = document.getElementById('roleplayInputText');
+    const text = input ? input.value.trim() : '';
+    if (!text) return;
+
+    if (input) input.value = '';
+
+    // Add user message
+    roleplayChatHistory.push({ sender: 'user', de: text });
+    renderRoleplayChat();
+
+    const scen = ROLEPLAY_SCENARIOS[activeRoleplayKey];
+    const lower = text.toLowerCase();
+
+    // Find next bot response
+    let nextResponse = null;
+    if (scen.responses && roleplayStepIndex < scen.responses.length) {
+      nextResponse = scen.responses[roleplayStepIndex];
+      roleplayStepIndex++;
+    }
+
+    setTimeout(() => {
+      if (nextResponse) {
+        roleplayChatHistory.push({
+          sender: 'bot',
+          name: scen.partner,
+          de: nextResponse.botDe,
+          en: nextResponse.botEn
+        });
+        renderRoleplayChat();
+        renderRoleplaySuggestions(nextResponse.suggestions);
+        if (typeof playGermanSpeech === 'function') {
+          playGermanSpeech(nextResponse.botDe);
+        }
+        awardXP(10, 'Roleplay Dialogue');
+      } else {
+        roleplayChatHistory.push({
+          sender: 'bot',
+          name: scen.partner,
+          de: "Das war eine wunderbare Unterhaltung! Vielen Dank und einen schönen Tag noch!",
+          en: "That was a wonderful conversation! Thank you very much and have a nice day!"
+        });
+        renderRoleplayChat();
+        renderRoleplaySuggestions([]);
+        awardXP(25, 'Scenario Completed');
+        unlockBadge('chat_champion');
+      }
+    }, 600);
+  };
+
+  window.toggleRoleplayVoiceInput = function() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      showFloatingToast("⚠️ Speech recognition requires Chrome or Edge.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'de-DE';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    const btn = document.getElementById('roleplayVoiceBtn');
+    const icon = document.getElementById('roleplayVoiceIcon');
+    if (btn) btn.classList.add('mic-recording-active');
+    if (icon) icon.textContent = '🔴';
+    showFloatingToast("🎙️ Listening in German... Speak now!");
+
+    recognition.onresult = function(event) {
+      const transcript = event.results[0][0].transcript;
+      const input = document.getElementById('roleplayInputText');
+      if (input) input.value = transcript;
+      showFloatingToast(`Heard: "${transcript}"`);
+      sendRoleplayMessage();
+    };
+
+    recognition.onerror = function(err) {
+      console.warn("Roleplay speech error:", err);
+      showFloatingToast("⚠️ Microphone error or permission denied.");
+    };
+
+    recognition.onend = function() {
+      if (btn) btn.classList.remove('mic-recording-active');
+      if (icon) icon.textContent = '🎙️';
+    };
+
+    try {
+      recognition.start();
+    } catch(e) {
+      console.error(e);
+    }
+  };
+
+  // ================= 30. GOETHE-ZERTIFIKAT A1 / TELC MOCK EXAM HUB =================
+  const GOETHE_EXAM_DATA = {
+    hoeren: [
+      {
+        part: "Teil 1: Alltägliche Gespräche (Short Dialogues)",
+        audioPrompt: "Guten Tag, Herr Hansen. Wann kommen Sie heute zum Sprachkurs? - Ich komme heute um Viertel vor fünf.",
+        audioTrack: "Netzwerk NEU A1 Kursbuch/Netzwerk NEU A1 Kursbuch/Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-001.mp3",
+        q: "1. Um wie viel Uhr kommt Herr Hansen zum Sprachkurs?",
+        options: ["Um 16:45 Uhr (Viertel vor fünf)", "Um 17:15 Uhr (Viertel nach fünf)", "Um 15:45 Uhr (Viertel vor vier)"],
+        answer: 0,
+        points: 5
+      },
+      {
+        part: "Teil 2: Öffentliche Ansagen (Public Announcements)",
+        audioPrompt: "Achtung an Gleis 7! Der ICE 591 nach München Hauptbahnhof über Nürnberg fährt jetzt ein. Bitte Vorsicht an der Bahnsteigkante.",
+        audioTrack: "Netzwerk NEU A1 Kursbuch/Netzwerk NEU A1 Kursbuch/Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-002.mp3",
+        q: "2. Aussage: Der Zug nach München fährt von Gleis 7 ab.",
+        options: ["Richtig (True)", "Falsch (False)"],
+        answer: 0,
+        points: 5
+      },
+      {
+        part: "Teil 3: Telefonansagen (Telephone Messages)",
+        audioPrompt: "Hier ist die Praxis Dr. Weber. Unsere Praxis ist heute geschlossen. In dringenden Fällen rufen Sie bitte die Notrufnummer 112 an.",
+        audioTrack: "Netzwerk NEU A1 Kursbuch/Netzwerk NEU A1 Kursbuch/Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-003.mp3",
+        q: "3. Was soll der Anrufer im Notfall tun?",
+        options: ["Die Nummer 112 anrufen", "Bis morgen warten", "Eine E-Mail schreiben"],
+        answer: 0,
+        points: 5
+      }
+    ],
+    lesen: [
+      {
+        part: "Teil 1: E-Mails & Mitteilungen (Messages)",
+        context: "Liebe Julia, ich habe am Samstag Geburtstag und mache eine kleine Party ab 19 Uhr. Bringst du bitte einen Salat mit? Getränke habe ich schon gekauft. Liebe Grüße, Sarah.",
+        q: "1. Aussage: Sarah feiert am Samstagabend ihren Geburtstag.",
+        options: ["Richtig (True)", "Falsch (False)"],
+        answer: 0,
+        points: 5
+      },
+      {
+        part: "Teil 2: Internetanzeigen (Classifieds)",
+        context: "Situation: Sie möchten am Wochenende Deutsch lernen und suchen einen Kurs nur am Samstag.",
+        q: "2. Welche Anzeige passt zu Ihrer Situation?",
+        options: [
+          "Anzeige A: Intensivkurs Montag bis Freitag 9:00 - 13:00 Uhr.",
+          "Anzeige B: Wochenend-Workshop: Deutsch A1 jeden Samstag von 10:00 bis 14:00 Uhr."
+        ],
+        answer: 1,
+        points: 5
+      },
+      {
+        part: "Teil 3: Schilder im öffentlichen Raum (Signs)",
+        context: "Schild am Supermarkteingang: 'Sehr geehrte Kunden, wegen Renovierung bleibt unser Markt am Mittwoch ab 14 Uhr geschlossen.'",
+        q: "3. Aussage: Man kann am Mittwochnachmittag um 16 Uhr hier einkaufen.",
+        options: ["Richtig (True)", "Falsch (False)"],
+        answer: 1,
+        points: 5
+      }
+    ],
+    schreiben: {
+      part1: {
+        text: "Ihre Freundin Eva Fischer zieht mit ihrem Ehemann und zwei Kindern nach München. Sie bucht online ein Familienzimmer für 3 Nächte ab dem 15. Oktober und zahlt mit Kreditkarte.",
+        fields: [
+          { label: "1. Familienname", answer: "fischer" },
+          { label: "2. Anzahl der Personen (Erwachsene + Kinder)", answer: "4" },
+          { label: "3. Anreisedatum", answer: "15. oktober" },
+          { label: "4. Anzahl der Nächte", answer: "3" },
+          { label: "5. Zahlungsart", answer: "kreditkarte" }
+        ]
+      },
+      part2: {
+        prompt: "Schreiben Sie eine E-Mail an die Touristeninformation in Köln (~30 Wörter):<br/>- Warum schreiben Sie? (Informationen über Köln)<br/>- Sie kommen vom 10. bis 12. Mai.<br/>- Bitten Sie um Hoteladressen und Stadtplan.",
+        sampleAnswer: "Sehr geehrte Damen und Herren,\n\nich reise vom 10. bis zum 12. Mai nach Köln. Können Sie mir bitte einen Stadtplan und eine Liste mit günstigen Hotels schicken?\n\nVielen Dank für Ihre Hilfe.\n\nMit freundlichen Grüßen,\nAlex"
+      }
+    },
+    sprechen: [
+      {
+        part: "Teil 1: Sich vorstellen (Personal Introduction)",
+        prompts: ["Name", "Alter", "Land", "Wohnort", "Sprachen", "Beruf", "Hobby"],
+        modelSpeech: "Guten Tag. Mein Name ist Alex Becker. Ich bin 26 Jahre alt und komme aus Indonesien. Jetzt wohne ich in Frankfurt. Ich spreche Englisch, Indonesisch und Deutsch. Ich bin Softwareentwickler und mein Hobby ist Fußball spielen."
+      },
+      {
+        part: "Teil 2: Um Informationen bitten (W-Fragen)",
+        theme: "Thema: Essen & Trinken | Wort: Frühstück",
+        cardPrompt: "Frage formulieren mit 'Frühstück'",
+        modelQuestion: "Was essen Sie normalerweise zum Frühstück?",
+        modelResponse: "Ich esse morgens meistens Brötchen mit Käse und trinke einen Kaffee."
+      },
+      {
+        part: "Teil 3: Bitten formulieren und reagieren",
+        cardPrompt: "Bild: Ein Glas Wasser | Bitte formulieren",
+        modelQuestion: "Geben Sie mir bitte ein Glas Wasser?",
+        modelResponse: "Ja, natürlich, bitte sehr!"
+      }
+    ]
+  };
+
+  let currentExamModule = 'hoeren';
+  let examUserAnswers = {
+    hoeren: {},
+    lesen: {},
+    schreibenPart1: {},
+    schreibenPart2: '',
+    sprechenCompleted: {}
+  };
+  let examTimerSeconds = 1800; // 30 minutes
+  let examTimerInterval = null;
+
+  window.openGoetheExamModal = function() {
+    const modal = document.getElementById('goetheExamModal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    startExamTimer();
+    switchExamModule('hoeren');
+  };
+
+  window.closeGoetheExamModal = function() {
+    const modal = document.getElementById('goetheExamModal');
+    if (modal) modal.classList.add('hidden');
+    if (examTimerInterval) clearInterval(examTimerInterval);
+  };
+
+  function startExamTimer() {
+    if (examTimerInterval) clearInterval(examTimerInterval);
+    const display = document.getElementById('examTimerDisplay');
+    examTimerInterval = setInterval(() => {
+      if (examTimerSeconds > 0) {
+        examTimerSeconds--;
+        const m = Math.floor(examTimerSeconds / 60);
+        const s = examTimerSeconds % 60;
+        if (display) display.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+      } else {
+        clearInterval(examTimerInterval);
+        showFloatingToast("⏱️ Exam time is up! Submitting your answers...");
+        finishGoetheExam();
+      }
+    }, 1000);
+  }
+
+  window.switchExamModule = function(mod) {
+    currentExamModule = mod;
+    const modules = ['hoeren', 'lesen', 'schreiben', 'sprechen'];
+    modules.forEach(m => {
+      const tab = document.getElementById(`examTab-${m}`);
+      if (tab) {
+        if (m === mod) {
+          tab.className = "py-1.5 px-2 rounded-lg bg-indigo-600 text-white shadow-xs transition";
+        } else {
+          tab.className = "py-1.5 px-2 rounded-lg text-sky-700 hover:bg-white/60 transition";
+        }
+      }
+    });
+
+    const finishBtn = document.getElementById('examFinishBtn');
+    const nextBtn = document.getElementById('examNextModuleBtn');
+    if (mod === 'sprechen') {
+      if (finishBtn) finishBtn.classList.remove('hidden');
+      if (nextBtn) nextBtn.classList.add('hidden');
+    } else {
+      if (finishBtn) finishBtn.classList.add('hidden');
+      if (nextBtn) nextBtn.classList.remove('hidden');
+    }
+
+    renderExamModuleContent();
+  };
+
+  window.nextExamModule = function() {
+    if (currentExamModule === 'hoeren') switchExamModule('lesen');
+    else if (currentExamModule === 'lesen') switchExamModule('schreiben');
+    else if (currentExamModule === 'schreiben') switchExamModule('sprechen');
+  };
+
+  function renderExamModuleContent() {
+    const container = document.getElementById('examModuleContainer');
+    if (!container) return;
+
+    let html = '';
+    if (currentExamModule === 'hoeren') {
+      html += `
+        <div class="p-3 bg-indigo-50/70 rounded-xl border border-indigo-200 text-xs text-indigo-900 font-medium">
+          🎧 <strong>Modul Hören:</strong> Listen to each audio prompt carefully and choose the correct answer. You can replay the audio by clicking the 🔊 button.
+        </div>
+      `;
+      GOETHE_EXAM_DATA.hoeren.forEach((item, idx) => {
+        const savedAns = examUserAnswers.hoeren[idx];
+        html += `
+          <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-black uppercase text-indigo-700 tracking-wider">${item.part}</span>
+              <button onclick="playGermanSpeech('${escapeHtml(item.audioPrompt)}')" class="px-2.5 py-1 rounded-lg bg-indigo-100 hover:bg-indigo-200 text-indigo-900 text-xs font-bold transition cursor-pointer flex items-center gap-1 shadow-2xs">
+                <span>🔊</span>
+                <span>Play Audio Track</span>
+              </button>
+            </div>
+            <p class="text-xs font-black text-sky-950">${escapeHtml(item.q)}</p>
+            <div class="space-y-1.5">
+              ${item.options.map((opt, optIdx) => `
+                <label class="flex items-center gap-2.5 p-2 rounded-xl border cursor-pointer transition ${savedAns === optIdx ? 'bg-indigo-50 border-indigo-400 font-bold' : 'hover:bg-sky-50 border-sky-200 text-sky-900'}">
+                  <input type="radio" name="hoeren-ans-${idx}" value="${optIdx}" ${savedAns === optIdx ? 'checked' : ''} onchange="saveHoerenAnswer(${idx}, ${optIdx})" class="accent-indigo-600">
+                  <span class="text-xs">${escapeHtml(opt)}</span>
+                </label>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      });
+    } else if (currentExamModule === 'lesen') {
+      html += `
+        <div class="p-3 bg-indigo-50/70 rounded-xl border border-indigo-200 text-xs text-indigo-900 font-medium">
+          📖 <strong>Modul Lesen:</strong> Read the notices and emails below, then determine whether the statements are True or False.
+        </div>
+      `;
+      GOETHE_EXAM_DATA.lesen.forEach((item, idx) => {
+        const savedAns = examUserAnswers.lesen[idx];
+        html += `
+          <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-2.5">
+            <span class="text-[10px] font-black uppercase text-indigo-700 tracking-wider">${item.part}</span>
+            <div class="p-3 bg-sky-50/80 rounded-xl border border-sky-200 text-xs text-sky-950 font-serif leading-relaxed italic">
+              "${escapeHtml(item.context)}"
+            </div>
+            <p class="text-xs font-black text-sky-950">${escapeHtml(item.q)}</p>
+            <div class="space-y-1.5">
+              ${item.options.map((opt, optIdx) => `
+                <label class="flex items-center gap-2.5 p-2 rounded-xl border cursor-pointer transition ${savedAns === optIdx ? 'bg-indigo-50 border-indigo-400 font-bold' : 'hover:bg-sky-50 border-sky-200 text-sky-900'}">
+                  <input type="radio" name="lesen-ans-${idx}" value="${optIdx}" ${savedAns === optIdx ? 'checked' : ''} onchange="saveLesenAnswer(${idx}, ${optIdx})" class="accent-indigo-600">
+                  <span class="text-xs">${escapeHtml(opt)}</span>
+                </label>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      });
+    } else if (currentExamModule === 'schreiben') {
+      html += `
+        <div class="p-3 bg-indigo-50/70 rounded-xl border border-indigo-200 text-xs text-indigo-900 font-medium">
+          ✍️ <strong>Modul Schreiben:</strong> Part 1 requires filling in 5 missing fields in the registration form. Part 2 requires writing a short email (~30 words).
+        </div>
+
+        <!-- Part 1: Formular Ausfüllen -->
+        <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-3">
+          <span class="text-[10px] font-black uppercase text-indigo-700 tracking-wider">Teil 1: Formular ausfüllen (Form Filling)</span>
+          <p class="text-xs text-sky-800 bg-sky-50 p-2.5 rounded-xl border border-sky-200 leading-relaxed font-medium">
+            ${escapeHtml(GOETHE_EXAM_DATA.schreiben.part1.text)}
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+            ${GOETHE_EXAM_DATA.schreiben.part1.fields.map((f, fIdx) => `
+              <div class="space-y-1">
+                <label class="text-[11px] font-bold text-sky-950">${f.label}:</label>
+                <input type="text" value="${escapeHtml(examUserAnswers.schreibenPart1[fIdx] || '')}" oninput="saveSchreibenFormField(${fIdx}, this.value)" placeholder="Enter answer..." class="w-full px-3 py-1.5 rounded-xl bg-white border border-sky-300 text-xs text-sky-950 font-medium focus:outline-none focus:border-indigo-500">
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Part 2: Brief / E-Mail Schreiben -->
+        <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase text-indigo-700 tracking-wider">Teil 2: E-Mail schreiben (~30 Wörter)</span>
+            <span id="examEmailWordCount" class="text-xs font-bold text-sky-600">0 words</span>
+          </div>
+          <div class="text-xs text-sky-900 leading-relaxed bg-indigo-50/60 p-2.5 rounded-xl border border-indigo-200">
+            ${GOETHE_EXAM_DATA.schreiben.part2.prompt}
+          </div>
+          <textarea id="examEmailInput" rows="5" oninput="handleExamEmailInput(this.value)" placeholder="Sehr geehrte Damen und Herren, ..." class="w-full p-3 rounded-xl bg-white border border-sky-300 text-xs text-sky-950 font-mono leading-relaxed focus:outline-none focus:border-indigo-500">${escapeHtml(examUserAnswers.schreibenPart2 || '')}</textarea>
+          
+          <button onclick="toggleExamModelAnswer()" class="text-xs text-indigo-700 hover:text-indigo-900 font-bold underline cursor-pointer">
+            💡 Toggle Official Model Answer & Rubric
+          </button>
+          <div id="examModelAnswerBox" class="hidden p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-950 font-serif leading-relaxed whitespace-pre-line">
+            <strong>Sample 100% Score Answer:</strong>
+            ${escapeHtml(GOETHE_EXAM_DATA.schreiben.part2.sampleAnswer)}
+          </div>
+        </div>
+      `;
+    } else if (currentExamModule === 'sprechen') {
+      html += `
+        <div class="p-3 bg-indigo-50/70 rounded-xl border border-indigo-200 text-xs text-indigo-900 font-medium">
+          🗣️ <strong>Modul Sprechen:</strong> Review the official Goethe oral cards below. Click 🔊 to listen to authentic native pronunciation models for each part.
+        </div>
+      `;
+      GOETHE_EXAM_DATA.sprechen.forEach((item, idx) => {
+        html += `
+          <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-black uppercase text-indigo-700 tracking-wider">${item.part}</span>
+              <button onclick="playGermanSpeech('${escapeHtml(item.modelSpeech || item.modelQuestion)}')" class="px-2.5 py-1 rounded-lg bg-indigo-100 hover:bg-indigo-200 text-indigo-900 text-xs font-bold transition cursor-pointer flex items-center gap-1 shadow-2xs">
+                <span>🔊</span>
+                <span>Listen to Model Audio</span>
+              </button>
+            </div>
+            ${item.prompts ? `
+              <div class="flex flex-wrap gap-1.5 py-1">
+                ${item.prompts.map(p => `<span class="px-2 py-0.5 rounded-lg bg-sky-100 text-sky-800 text-xs font-bold">${p}</span>`).join('')}
+              </div>
+              <div class="p-3 bg-sky-50 rounded-xl border border-sky-200 text-xs text-sky-950 leading-relaxed">
+                <strong>Model Introduction:</strong> "${escapeHtml(item.modelSpeech)}"
+              </div>
+            ` : `
+              <div class="p-2.5 bg-sky-50 rounded-xl border border-sky-200 text-xs font-bold text-sky-950">
+                Card Prompt: ${escapeHtml(item.cardPrompt)}
+              </div>
+              <div class="space-y-1 text-xs text-sky-900">
+                <p><strong>Question:</strong> <em class="text-indigo-900">"${escapeHtml(item.modelQuestion)}"</em></p>
+                <p><strong>Response:</strong> <em class="text-emerald-900">"${escapeHtml(item.modelResponse)}"</em></p>
+              </div>
+            `}
+          </div>
+        `;
+      });
+    }
+
+    container.innerHTML = html;
+  }
+
+  window.saveHoerenAnswer = function(qIdx, optIdx) {
+    examUserAnswers.hoeren[qIdx] = optIdx;
+  };
+
+  window.saveLesenAnswer = function(qIdx, optIdx) {
+    examUserAnswers.lesen[qIdx] = optIdx;
+  };
+
+  window.saveSchreibenFormField = function(fIdx, val) {
+    examUserAnswers.schreibenPart1[fIdx] = val.trim().toLowerCase();
+  };
+
+  window.handleExamEmailInput = function(val) {
+    examUserAnswers.schreibenPart2 = val;
+    const words = val.trim().split(/\s+/).filter(Boolean);
+    const countEl = document.getElementById('examEmailWordCount');
+    if (countEl) countEl.textContent = `${words.length} words`;
+  };
+
+  window.toggleExamModelAnswer = function() {
+    const box = document.getElementById('examModelAnswerBox');
+    if (box) box.classList.toggle('hidden');
+  };
+
+  window.finishGoetheExam = function() {
+    if (examTimerInterval) clearInterval(examTimerInterval);
+
+    // Calculate Scores
+    let hoerenPts = 0;
+    GOETHE_EXAM_DATA.hoeren.forEach((item, idx) => {
+      if (examUserAnswers.hoeren[idx] === item.answer) hoerenPts += item.points;
+    });
+
+    let lesenPts = 0;
+    GOETHE_EXAM_DATA.lesen.forEach((item, idx) => {
+      if (examUserAnswers.lesen[idx] === item.answer) lesenPts += item.points;
+    });
+
+    let schreibenPts = 0;
+    GOETHE_EXAM_DATA.schreiben.part1.fields.forEach((f, idx) => {
+      const userVal = examUserAnswers.schreibenPart1[idx] || '';
+      if (userVal && (userVal.includes(f.answer) || f.answer.includes(userVal))) {
+        schreibenPts += 1.5;
+      }
+    });
+    // Email word count points (up to 7.5 points)
+    const emailWords = (examUserAnswers.schreibenPart2 || '').trim().split(/\s+/).filter(Boolean);
+    if (emailWords.length >= 20) schreibenPts += 7.5;
+    else if (emailWords.length >= 10) schreibenPts += 4;
+    schreibenPts = Math.min(15, Math.round(schreibenPts));
+
+    // Sprechen estimated points (awarded for review)
+    let sprechenPts = 13;
+
+    const totalRaw = hoerenPts + lesenPts + schreibenPts + sprechenPts;
+    const totalPercentage = Math.round((totalRaw / 60) * 100);
+    const isPassed = totalPercentage >= 60;
+
+    let grade = "Nicht bestanden (Failed)";
+    if (totalPercentage >= 90) grade = "Sehr gut (Excellent)";
+    else if (totalPercentage >= 80) grade = "Gut (Good)";
+    else if (totalPercentage >= 70) grade = "Befriedigend (Satisfactory)";
+    else if (totalPercentage >= 60) grade = "Ausreichend (Passed)";
+
+    if (isPassed) {
+      awardXP(50, 'Goethe A1 Exam Passed');
+      unlockBadge('goethe_ready');
+    }
+
+    const container = document.getElementById('examModuleContainer');
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="p-6 bg-white rounded-2xl border-2 ${isPassed ? 'border-emerald-400 bg-gradient-to-br from-emerald-50/50 to-teal-50/50' : 'border-rose-300 bg-rose-50/50'} text-center space-y-4">
+        <div class="text-5xl">${isPassed ? '🏆' : '📚'}</div>
+        <h3 class="text-xl font-black text-sky-950">${isPassed ? 'Herzlichen Glückwunsch! Exam Passed!' : 'Good Effort! Keep Reviewing!'}</h3>
+        <p class="text-xs text-sky-700">Official Goethe-Zertifikat A1 / Start Deutsch 1 Simulation Results</p>
+        
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-lg mx-auto py-2">
+          <div class="p-2.5 bg-white rounded-xl border border-sky-200">
+            <div class="text-[10px] font-bold text-sky-600">🎧 Hören</div>
+            <div class="text-sm font-black text-sky-950">${hoerenPts} / 15</div>
+          </div>
+          <div class="p-2.5 bg-white rounded-xl border border-sky-200">
+            <div class="text-[10px] font-bold text-sky-600">📖 Lesen</div>
+            <div class="text-sm font-black text-sky-950">${lesenPts} / 15</div>
+          </div>
+          <div class="p-2.5 bg-white rounded-xl border border-sky-200">
+            <div class="text-[10px] font-bold text-sky-600">✍️ Schreiben</div>
+            <div class="text-sm font-black text-sky-950">${schreibenPts} / 15</div>
+          </div>
+          <div class="p-2.5 bg-white rounded-xl border border-sky-200">
+            <div class="text-[10px] font-bold text-sky-600">🗣️ Sprechen</div>
+            <div class="text-sm font-black text-sky-950">${sprechenPts} / 15</div>
+          </div>
+        </div>
+
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full ${isPassed ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-rose-100 text-rose-900 border border-rose-300'} text-xs font-black">
+          <span>Overall Score: ${totalRaw} / 60 Pts (${totalPercentage}%)</span>
+          <span>•</span>
+          <span>${grade}</span>
+        </div>
+
+        ${isPassed ? `
+          <div class="p-4 bg-white/90 rounded-2xl border border-emerald-300 text-left space-y-1.5 max-w-md mx-auto shadow-sm">
+            <div class="flex items-center gap-2 text-emerald-800 font-extrabold text-xs">
+              <span>📜</span>
+              <span>Cheeya Studio A1 Certificate of Proficiency</span>
+            </div>
+            <p class="text-[11px] text-sky-900">This verifies successful mastery of German Language Level A1 competencies across Listening, Reading, Writing, and Speaking.</p>
+            <button onclick="window.print()" class="mt-2 w-full py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition cursor-pointer">
+              🖨️ Print / Save Official Certificate
+            </button>
+          </div>
+        ` : ''}
+
+        <div class="pt-2">
+          <button onclick="openGoetheExamModal()" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs transition cursor-pointer shadow-xs">
+            🔄 Retake Exam
+          </button>
+        </div>
+      </div>
+    `;
+
+    const finishBtn = document.getElementById('examFinishBtn');
+    const nextBtn = document.getElementById('examNextModuleBtn');
+    if (finishBtn) finishBtn.classList.add('hidden');
+    if (nextBtn) nextBtn.classList.add('hidden');
+  };
+
+  // ================= 31. SMART SPACED REPETITION (SRS) 3D FLASHCARDS =================
+  const DEFAULT_SRS_DECK = [
+    { id: "srs-1", de: "Hund", article: "der", en: "Dog", plural: "die Hunde", example: "Der Hund spielt im Garten.", chapter: 1, category: "nouns" },
+    { id: "srs-2", de: "Katze", article: "die", en: "Cat", plural: "die Katzen", example: "Die Katze schläft auf dem Sofa.", chapter: 1, category: "nouns" },
+    { id: "srs-3", de: "Buch", article: "das", en: "Book", plural: "die Bücher", example: "Ich lese ein interessantes Buch.", chapter: 1, category: "nouns" },
+    { id: "srs-4", de: "lernen", article: "", en: "to learn / study", plural: "", example: "Wir lernen jeden Tag Deutsch.", chapter: 1, category: "verbs" },
+    { id: "srs-5", de: "sprechen", article: "", en: "to speak", plural: "", example: "Sprichst du auch Englisch?", chapter: 1, category: "verbs" },
+    { id: "srs-6", de: "groß", article: "", en: "big / tall", plural: "", example: "Das Haus ist sehr groß.", chapter: 1, category: "adjectives" },
+    { id: "srs-7", de: "klein", article: "", en: "small / little", plural: "", example: "Die Wohnung ist gemütlich und klein.", chapter: 1, category: "adjectives" },
+    { id: "srs-8", de: "Bahnhof", article: "der", en: "Train station", plural: "die Bahnhöfe", example: "Der Zug hält am Bahnhof.", chapter: 3, category: "nouns" },
+    { id: "srs-9", de: "Fahrkarte", article: "die", en: "Ticket", plural: "die Fahrkarten", example: "Ich kaufe eine Fahrkarte nach Berlin.", chapter: 3, category: "nouns" },
+    { id: "srs-10", de: "Kaffee", article: "der", en: "Coffee", plural: "die Kaffees", example: "Möchten Sie einen Kaffee trinken?", chapter: 4, category: "nouns" },
+    { id: "srs-11", de: "Brötchen", article: "das", en: "Bread roll", plural: "die Brötchen", example: "Zwei frische Brötchen, bitte.", chapter: 4, category: "nouns" },
+    { id: "srs-12", de: "frühstücken", article: "", en: "to eat breakfast", plural: "", example: "Ich frühstücke um sieben Uhr.", chapter: 5, category: "verbs" },
+    { id: "srs-13", de: "aufstehen", article: "", en: "to stand up / get up", plural: "", example: "Er steht jeden Tag um sechs Uhr auf.", chapter: 5, category: "verbs" },
+    { id: "srs-14", de: "Wohnung", article: "die", en: "Apartment", plural: "die Wohnungen", example: "Unsere Wohnung hat drei Zimmer.", chapter: 8, category: "nouns" },
+    { id: "srs-15", de: "Krankenhaus", article: "das", en: "Hospital", plural: "die Krankenhäuser", example: "Die Ärztin arbeitet im Krankenhaus.", chapter: 11, category: "nouns" }
+  ];
+
+  const SRS_STORAGE_KEY = 'netzwerk_srs_cards_v1';
+  let currentSrsDeck = [];
+  let currentSrsIndex = 0;
+  let isSrsFlipped = false;
+
+  function loadSrsCards() {
+    try {
+      const saved = localStorage.getItem(SRS_STORAGE_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch(e) {}
+    // Seed default cards with initial intervals
+    const seeded = DEFAULT_SRS_DECK.map(c => ({
+      ...c,
+      interval: 0,
+      repetitions: 0,
+      easeFactor: 2.5,
+      nextReviewDate: getTodayDateStr()
+    }));
+    saveSrsCards(seeded);
+    return seeded;
+  }
+
+  function saveSrsCards(cards) {
+    try {
+      localStorage.setItem(SRS_STORAGE_KEY, JSON.stringify(cards));
+      updateSrsDueBadge();
+    } catch(e) {}
+  }
+
+  function updateSrsDueBadge() {
+    const cards = loadSrsCards();
+    const today = getTodayDateStr();
+    const dueCount = cards.filter(c => !c.nextReviewDate || c.nextReviewDate <= today).length;
+    const badge = document.getElementById('srsDashboardDueBadge');
+    if (badge) {
+      badge.textContent = dueCount > 0 ? `${dueCount} Due for Review` : 'All Reviewed Today ✨';
+    }
+  }
+
+  window.openSrsModal = function() {
+    const modal = document.getElementById('srsFlashcardModal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    filterSrsDeck();
+  };
+
+  window.closeSrsModal = function() {
+    const modal = document.getElementById('srsFlashcardModal');
+    if (modal) modal.classList.add('hidden');
+  };
+
+  window.filterSrsDeck = function() {
+    const chapSel = document.getElementById('srsChapterSelect');
+    const catSel = document.getElementById('srsCategorySelect');
+    const chapVal = chapSel ? chapSel.value : 'all';
+    const catVal = catSel ? catSel.value : 'all';
+
+    let cards = loadSrsCards();
+    if (chapVal !== 'all') {
+      cards = cards.filter(c => c.chapter.toString() === chapVal);
+    }
+    if (catVal !== 'all') {
+      cards = cards.filter(c => c.category === catVal);
+    }
+
+    currentSrsDeck = cards.length > 0 ? cards : loadSrsCards();
+    currentSrsIndex = 0;
+    isSrsFlipped = false;
+    renderCurrentSrsCard();
+  };
+
+  function renderCurrentSrsCard() {
+    if (currentSrsDeck.length === 0) return;
+    const card = currentSrsDeck[currentSrsIndex];
+
+    const cardContainer = document.getElementById('srsFlashcardContainer');
+    if (cardContainer) cardContainer.classList.remove('flashcard-flipped');
+    isSrsFlipped = false;
+
+    // Count label
+    const countEl = document.getElementById('srsCardCountLabel');
+    if (countEl) countEl.textContent = `Card ${currentSrsIndex + 1} of ${currentSrsDeck.length}`;
+
+    // Front elements
+    const frontWord = document.getElementById('srsFrontWord');
+    const frontGender = document.getElementById('srsFrontGenderBadge');
+    const frontPhonetic = document.getElementById('srsFrontPhonetic');
+    if (frontWord) frontWord.textContent = card.de;
+
+    if (frontGender) {
+      if (card.article === 'der') {
+        frontGender.textContent = 'der';
+        frontGender.className = 'px-2.5 py-1 rounded-full text-xs font-black bg-blue-100 text-blue-900 border border-blue-300';
+      } else if (card.article === 'die') {
+        frontGender.textContent = 'die';
+        frontGender.className = 'px-2.5 py-1 rounded-full text-xs font-black bg-rose-100 text-rose-900 border border-rose-300';
+      } else if (card.article === 'das') {
+        frontGender.textContent = 'das';
+        frontGender.className = 'px-2.5 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-900 border border-emerald-300';
+      } else {
+        frontGender.textContent = card.category;
+        frontGender.className = 'px-2.5 py-1 rounded-full text-xs font-black bg-purple-100 text-purple-900 border border-purple-300';
+      }
+    }
+
+    if (frontPhonetic && typeof generateGermanPhonetics === 'function') {
+      const ph = generateGermanPhonetics(card.article ? `${card.article} ${card.de}` : card.de);
+      frontPhonetic.textContent = ph.phoneticText;
+    }
+
+    // Back elements
+    const backEnglish = document.getElementById('srsBackEnglish');
+    const backPlural = document.getElementById('srsBackPlural');
+    const backExample = document.getElementById('srsBackExample');
+
+    if (backEnglish) backEnglish.textContent = card.en;
+    if (backPlural) backPlural.textContent = card.plural ? `Plural: ${card.plural}` : `Category: ${card.category}`;
+    if (backExample) backExample.textContent = card.example ? `"${card.example}"` : '';
+  }
+
+  window.flipCurrentSrsCard = function() {
+    const cardContainer = document.getElementById('srsFlashcardContainer');
+    if (!cardContainer) return;
+    isSrsFlipped = !isSrsFlipped;
+    if (isSrsFlipped) {
+      cardContainer.classList.add('flashcard-flipped');
+    } else {
+      cardContainer.classList.remove('flashcard-flipped');
+    }
+  };
+
+  window.playSrsAudio = function() {
+    if (currentSrsDeck.length === 0) return;
+    const card = currentSrsDeck[currentSrsIndex];
+    const phrase = card.article ? `${card.article} ${card.de}` : card.de;
+    if (typeof playGermanSpeech === 'function') playGermanSpeech(phrase);
+  };
+
+  window.gradeCurrentSrsCard = function(rating) {
+    if (currentSrsDeck.length === 0) return;
+    const card = currentSrsDeck[currentSrsIndex];
+
+    // SuperMemo-2 Spaced Repetition logic
+    let daysToAdd = 1;
+    if (rating === 1) { // Again
+      card.interval = 0;
+      card.repetitions = 0;
+      daysToAdd = 0;
+    } else if (rating === 2) { // Hard
+      card.interval = 1;
+      daysToAdd = 1;
+    } else if (rating === 3) { // Good
+      card.interval = card.interval === 0 ? 1 : card.interval === 1 ? 3 : Math.round(card.interval * card.easeFactor);
+      daysToAdd = card.interval;
+      card.repetitions++;
+    } else if (rating === 4) { // Easy
+      card.interval = card.interval === 0 ? 3 : Math.round(card.interval * card.easeFactor * 1.3);
+      daysToAdd = card.interval;
+      card.easeFactor = Math.min(3.0, card.easeFactor + 0.15);
+      card.repetitions++;
+    }
+
+    const d = new Date();
+    d.setDate(d.getDate() + daysToAdd);
+    card.nextReviewDate = d.toISOString().split('T')[0];
+
+    // Update in all cards
+    const allCards = loadSrsCards();
+    const idx = allCards.findIndex(c => c.id === card.id);
+    if (idx >= 0) allCards[idx] = card;
+    saveSrsCards(allCards);
+
+    awardXP(5, 'Flashcard Reviewed');
+
+    // Move to next card in current review deck
+    if (currentSrsIndex + 1 < currentSrsDeck.length) {
+      currentSrsIndex++;
+      renderCurrentSrsCard();
+    } else {
+      showFloatingToast("🎉 Deck completed! Well done reviewing today!");
+      currentSrsIndex = 0;
+      renderCurrentSrsCard();
+    }
+  };
+
+  // ================= 32. MASTER GRAMMAR REFERENCE CHEAT-SHEET & PRINTABLE PDF =================
+  const GRAMMAR_TABLES = {
+    articles: `
+      <div class="space-y-4">
+        <div class="border-b pb-2">
+          <h4 class="text-sm font-black text-sky-950">🎨 German Noun Gender Guide: Der, Die, Das</h4>
+          <p class="text-xs text-sky-700">German assigns grammatical gender to every noun. Learn the noun endings to instantly identify the article!</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <!-- Masculine -->
+          <div class="p-3.5 bg-blue-50/80 rounded-2xl border-2 border-blue-300 space-y-2">
+            <div class="flex items-center justify-between font-black text-blue-950 text-xs">
+              <span>🔵 Maskulin: DER</span>
+              <span class="text-[10px] bg-blue-200 px-2 py-0.5 rounded-full">~34% of Nouns</span>
+            </div>
+            <ul class="text-[11px] text-blue-900 space-y-1 font-medium">
+              <li>• <strong>-er</strong>: <em>der Computer, der Fahrer</em></li>
+              <li>• <strong>-or</strong>: <em>der Motor, der Professor</em></li>
+              <li>• <strong>-ling</strong>: <em>der Schmetterling</em></li>
+              <li>• <strong>-ismus</strong>: <em>der Optimismus</em></li>
+              <li>• Days, months & seasons: <em>der Montag, der Mai, der Sommer</em></li>
+            </ul>
+          </div>
+
+          <!-- Feminine -->
+          <div class="p-3.5 bg-rose-50/80 rounded-2xl border-2 border-rose-300 space-y-2">
+            <div class="flex items-center justify-between font-black text-rose-950 text-xs">
+              <span>🔴 Feminin: DIE</span>
+              <span class="text-[10px] bg-rose-200 px-2 py-0.5 rounded-full">~46% of Nouns</span>
+            </div>
+            <ul class="text-[11px] text-rose-900 space-y-1 font-medium">
+              <li>• <strong>-ung</strong>: <em>die Zeitung, die Wohnung</em></li>
+              <li>• <strong>-heit / -keit</strong>: <em>die Freiheit, die Möglichkeit</em></li>
+              <li>• <strong>-schaft</strong>: <em>die Freundschaft</em></li>
+              <li>• <strong>-tion</strong>: <em>die Station, die Lektion</em></li>
+              <li>• <strong>-ei</strong>: <em>die Bäckerei</em></li>
+              <li>• <strong>-in</strong> (female professions): <em>die Ärztin</em></li>
+            </ul>
+          </div>
+
+          <!-- Neuter -->
+          <div class="p-3.5 bg-emerald-50/80 rounded-2xl border-2 border-emerald-300 space-y-2">
+            <div class="flex items-center justify-between font-black text-emerald-950 text-xs">
+              <span>🟢 Neutral: DAS</span>
+              <span class="text-[10px] bg-emerald-200 px-2 py-0.5 rounded-full">~20% of Nouns</span>
+            </div>
+            <ul class="text-[11px] text-emerald-900 space-y-1 font-medium">
+              <li>• <strong>-chen / -lein</strong>: <em>das Mädchen, das Brötchen</em></li>
+              <li>• <strong>-ment</strong>: <em>das Instrument, das Dokument</em></li>
+              <li>• <strong>-um</strong>: <em>das Zentrum, das Museum</em></li>
+              <li>• Nominalized verbs: <em>das Essen, das Leben</em></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    `,
+    cases: `
+      <div class="space-y-4">
+        <div class="border-b pb-2">
+          <h4 class="text-sm font-black text-sky-950">📐 Complete German Case Matrix (A1 Level)</h4>
+          <p class="text-xs text-sky-700">The definitive reference across Nominativ (Subject), Akkusativ (Direct Object), and Dativ (Indirect Object).</p>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead>
+              <tr class="bg-sky-100 text-sky-950">
+                <th class="p-2 border border-sky-300">Case / Function</th>
+                <th class="p-2 border border-sky-300 text-blue-900">Maskulin</th>
+                <th class="p-2 border border-sky-300 text-rose-900">Feminin</th>
+                <th class="p-2 border border-sky-300 text-emerald-900">Neutral</th>
+                <th class="p-2 border border-sky-300 text-purple-900">Plural</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="bg-white">
+                <td class="p-2 border border-sky-200 font-bold">1. Nominativ (Subject / Wer?)</td>
+                <td class="p-2 border border-sky-200 font-mono text-blue-800">der / ein / kein</td>
+                <td class="p-2 border border-sky-200 font-mono text-rose-800">die / eine / keine</td>
+                <td class="p-2 border border-sky-200 font-mono text-emerald-800">das / ein / kein</td>
+                <td class="p-2 border border-sky-200 font-mono text-purple-800">die / - / keine</td>
+              </tr>
+              <tr class="bg-sky-50/50">
+                <td class="p-2 border border-sky-200 font-bold">2. Akkusativ (Direct Object / Wen?)</td>
+                <td class="p-2 border border-sky-200 font-mono font-bold text-amber-700 bg-amber-50/60">den / einen / keinen</td>
+                <td class="p-2 border border-sky-200 font-mono text-rose-800">die / eine / keine</td>
+                <td class="p-2 border border-sky-200 font-mono text-emerald-800">das / ein / kein</td>
+                <td class="p-2 border border-sky-200 font-mono text-purple-800">die / - / keine</td>
+              </tr>
+              <tr class="bg-white">
+                <td class="p-2 border border-sky-200 font-bold">3. Dativ (Indirect Object / Wem?)</td>
+                <td class="p-2 border border-sky-200 font-mono font-bold text-purple-800 bg-purple-50/60">dem / einem / keinem</td>
+                <td class="p-2 border border-sky-200 font-mono font-bold text-purple-800 bg-purple-50/60">der / einer / keiner</td>
+                <td class="p-2 border border-sky-200 font-mono font-bold text-purple-800 bg-purple-50/60">dem / einem / keinem</td>
+                <td class="p-2 border border-sky-200 font-mono font-bold text-purple-800 bg-purple-50/60">den / - / keinen +n</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `,
+    pronouns: `
+      <div class="space-y-4">
+        <div class="border-b pb-2">
+          <h4 class="text-sm font-black text-sky-950">👤 Personal Pronouns Declension</h4>
+          <p class="text-xs text-sky-700">How personal pronouns shift across Nominativ, Akkusativ, and Dativ.</p>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead>
+              <tr class="bg-sky-100 text-sky-950">
+                <th class="p-2 border border-sky-300">Pronoun</th>
+                <th class="p-2 border border-sky-300">Nominativ (Subject)</th>
+                <th class="p-2 border border-sky-300">Akkusativ (Direct)</th>
+                <th class="p-2 border border-sky-300">Dativ (Indirect)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="p-1.5 border border-sky-200 font-bold">1st Sing. (I)</td><td class="p-1.5 border border-sky-200 font-mono">ich</td><td class="p-1.5 border border-sky-200 font-mono text-amber-800">mich</td><td class="p-1.5 border border-sky-200 font-mono text-purple-800">mir</td></tr>
+              <tr class="bg-sky-50/50"><td class="p-1.5 border border-sky-200 font-bold">2nd Sing. (You)</td><td class="p-1.5 border border-sky-200 font-mono">du</td><td class="p-1.5 border border-sky-200 font-mono text-amber-800">dich</td><td class="p-1.5 border border-sky-200 font-mono text-purple-800">dir</td></tr>
+              <tr><td class="p-1.5 border border-sky-200 font-bold">3rd Masc. (He)</td><td class="p-1.5 border border-sky-200 font-mono">er</td><td class="p-1.5 border border-sky-200 font-mono text-amber-800">ihn</td><td class="p-1.5 border border-sky-200 font-mono text-purple-800">ihm</td></tr>
+              <tr class="bg-sky-50/50"><td class="p-1.5 border border-sky-200 font-bold">3rd Fem. (She)</td><td class="p-1.5 border border-sky-200 font-mono">sie</td><td class="p-1.5 border border-sky-200 font-mono text-amber-800">sie</td><td class="p-1.5 border border-sky-200 font-mono text-purple-800">ihr</td></tr>
+              <tr><td class="p-1.5 border border-sky-200 font-bold">3rd Neut. (It)</td><td class="p-1.5 border border-sky-200 font-mono">es</td><td class="p-1.5 border border-sky-200 font-mono text-amber-800">es</td><td class="p-1.5 border border-sky-200 font-mono text-purple-800">ihm</td></tr>
+              <tr class="bg-sky-50/50"><td class="p-1.5 border border-sky-200 font-bold">1st Plur. (We)</td><td class="p-1.5 border border-sky-200 font-mono">wir</td><td class="p-1.5 border border-sky-200 font-mono text-amber-800">uns</td><td class="p-1.5 border border-sky-200 font-mono text-purple-800">uns</td></tr>
+              <tr><td class="p-1.5 border border-sky-200 font-bold">2nd Plur. (Y'all)</td><td class="p-1.5 border border-sky-200 font-mono">ihr</td><td class="p-1.5 border border-sky-200 font-mono text-amber-800">euch</td><td class="p-1.5 border border-sky-200 font-mono text-purple-800">euch</td></tr>
+              <tr class="bg-sky-50/50"><td class="p-1.5 border border-sky-200 font-bold">Formal (You)</td><td class="p-1.5 border border-sky-200 font-mono">Sie</td><td class="p-1.5 border border-sky-200 font-mono text-amber-800">Sie</td><td class="p-1.5 border border-sky-200 font-mono text-purple-800">Ihnen</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `,
+    prepositions: `
+      <div class="space-y-4">
+        <div class="border-b pb-2">
+          <h4 class="text-sm font-black text-sky-950">📍 German Prepositions by Case</h4>
+          <p class="text-xs text-sky-700">Prepositions strictly govern the case of the noun that follows.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="p-3 bg-amber-50 rounded-2xl border-2 border-amber-300 space-y-1.5">
+            <h5 class="font-black text-amber-950 text-xs">Akkusativ Only (DOGFU)</h5>
+            <ul class="text-[11px] text-amber-900 space-y-1 font-medium">
+              <li>• <strong>durch</strong> (through)</li>
+              <li>• <strong>ohne</strong> (without)</li>
+              <li>• <strong>gegen</strong> (against / around)</li>
+              <li>• <strong>für</strong> (for)</li>
+              <li>• <strong>um</strong> (at / around)</li>
+            </ul>
+          </div>
+
+          <div class="p-3 bg-purple-50 rounded-2xl border-2 border-purple-300 space-y-1.5">
+            <h5 class="font-black text-purple-950 text-xs">Dativ Only (ABM-NSVZ)</h5>
+            <ul class="text-[11px] text-purple-900 space-y-1 font-medium">
+              <li>• <strong>aus</strong> (out of / from)</li>
+              <li>• <strong>bei</strong> (at / near)</li>
+              <li>• <strong>mit</strong> (with)</li>
+              <li>• <strong>nach</strong> (to / after)</li>
+              <li>• <strong>seit</strong> (since / for)</li>
+              <li>• <strong>von</strong> (from / of)</li>
+              <li>• <strong>zu</strong> (to / at)</li>
+            </ul>
+          </div>
+
+          <div class="p-3 bg-sky-50 rounded-2xl border-2 border-sky-300 space-y-1.5">
+            <h5 class="font-black text-sky-950 text-xs">Two-Way (Wechselpräpositionen)</h5>
+            <p class="text-[10px] text-sky-700"><strong>Wohin? (Movement)</strong> = Akkusativ<br/><strong>Wo? (Location)</strong> = Dativ</p>
+            <ul class="text-[11px] text-sky-900 space-y-0.5 font-medium">
+              <li>an, auf, hinter, in, neben, über, unter, vor, zwischen</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    `,
+    verbs: `
+      <div class="space-y-4">
+        <div class="border-b pb-2">
+          <h4 class="text-sm font-black text-sky-950">⚙️ Verbs, Conjugations & Separable Prefixes</h4>
+          <p class="text-xs text-sky-700">Regular present tense endings and essential separable verb patterns.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="p-3 bg-sky-50 rounded-2xl border border-sky-200 space-y-1">
+            <h5 class="font-black text-sky-950 text-xs">Standard Endings (lernen)</h5>
+            <div class="grid grid-cols-2 text-[11px] font-mono text-sky-900">
+              <div>ich lerne (-e)</div>
+              <div>wir lernen (-en)</div>
+              <div>du lernst (-st)</div>
+              <div>ihr lernt (-t)</div>
+              <div>er/sie/es lernt (-t)</div>
+              <div>sie/Sie lernen (-en)</div>
+            </div>
+          </div>
+
+          <div class="p-3 bg-indigo-50 rounded-2xl border border-indigo-200 space-y-1">
+            <h5 class="font-black text-indigo-950 text-xs">Separable Verbs (Trennbare Verben)</h5>
+            <p class="text-[10px] text-indigo-800">Prefix jumps to the <strong>very end</strong> of the main clause:</p>
+            <div class="text-[11px] text-indigo-950 font-medium">
+              • <em>aufstehen</em>: Ich <strong>stehe</strong> jeden Tag um 7 Uhr <strong>auf</strong>.<br/>
+              • <em>einkaufen</em>: Er <strong>kauft</strong> im Supermarkt <strong>ein</strong>.<br/>
+              • <em>anrufen</em>: Wann <strong>rufst</strong> du mich <strong>an</strong>?
+            </div>
+          </div>
+        </div>
+      </div>
+    `
+  };
+
+  let currentGrammarHubTab = 'articles';
+
+  window.openGrammarHubModal = function(initialTab) {
+    const modal = document.getElementById('grammarHubModal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    switchGrammarHubTab(initialTab || 'articles');
+  };
+
+  window.closeGrammarHubModal = function() {
+    const modal = document.getElementById('grammarHubModal');
+    if (modal) modal.classList.add('hidden');
+  };
+
+  window.switchGrammarHubTab = function(tabKey) {
+    currentGrammarHubTab = tabKey;
+    const tabs = ['articles', 'cases', 'pronouns', 'prepositions', 'verbs'];
+    tabs.forEach(t => {
+      const btn = document.getElementById(`gramTab-${t}`);
+      if (btn) {
+        if (t === tabKey) {
+          btn.className = "px-3 py-1.5 rounded-xl bg-blue-600 text-white shadow-xs transition whitespace-nowrap font-black";
+        } else {
+          btn.className = "px-3 py-1.5 rounded-xl bg-white text-sky-800 hover:bg-sky-100 border border-sky-200 transition whitespace-nowrap font-bold";
+        }
+      }
+    });
+
+    const contentArea = document.getElementById('printableGrammarArea');
+    if (contentArea && GRAMMAR_TABLES[tabKey]) {
+      contentArea.innerHTML = GRAMMAR_TABLES[tabKey];
+    }
+  };
+
+  window.printGrammarCheatSheet = function() {
+    // Reveal all tables inside printable area for complete printout
+    const contentArea = document.getElementById('printableGrammarArea');
+    if (!contentArea) return;
+    const fullHtml = `
+      <div class="space-y-6">
+        <div class="text-center border-b pb-3">
+          <h2 class="text-xl font-black text-sky-950">Cheeya Studio • Netzwerk NEU A1 Master Grammar Cheat Sheet</h2>
+          <p class="text-xs text-sky-700">Official Essential Reference Guide for German A1 Learners</p>
+        </div>
+        ${GRAMMAR_TABLES.articles}
+        ${GRAMMAR_TABLES.cases}
+        ${GRAMMAR_TABLES.pronouns}
+        ${GRAMMAR_TABLES.prepositions}
+        ${GRAMMAR_TABLES.verbs}
+      </div>
+    `;
+    const oldContent = contentArea.innerHTML;
+    contentArea.innerHTML = fullHtml;
+    window.print();
+    setTimeout(() => {
+      contentArea.innerHTML = oldContent;
+    }, 1000);
+  };
+
+  // ================= 33. PROGRESSIVE WEB APP (PWA) INSTALL & SERVICE WORKER =================
+  let deferredPwaPrompt = null;
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then((reg) => console.log('Cheeya Deutsch PWA ServiceWorker registered:', reg.scope))
+        .catch((err) => console.log('ServiceWorker registration error:', err));
+    });
+  }
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPwaPrompt = e;
+    const installBtn = document.getElementById('pwaInstallBtn');
+    if (installBtn) {
+      installBtn.classList.remove('hidden');
+      installBtn.classList.add('inline-flex');
+    }
+  });
+
+  window.triggerPwaInstall = function() {
+    if (!deferredPwaPrompt) {
+      showFloatingToast("App installation is supported on Chrome, Edge, and Android browsers!");
+      return;
+    }
+    deferredPwaPrompt.prompt();
+    deferredPwaPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        showFloatingToast("🎉 App installed successfully! Access it from your home screen.");
+        const installBtn = document.getElementById('pwaInstallBtn');
+        if (installBtn) installBtn.classList.add('hidden');
+        awardXP(50, 'PWA Installed');
+      }
+      deferredPwaPrompt = null;
+    });
+  };
+
+
   // Open initial view based on URL hash or default to 'dashboard'
+  if (typeof updateSrsDueBadge === 'function') updateSrsDueBadge();
+
   const initialHash = window.location.hash.replace('#', '');
   handleRoute(initialHash);
 
