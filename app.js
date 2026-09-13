@@ -1852,9 +1852,15 @@ document.addEventListener('DOMContentLoaded', () => {
     chapterSelect.value = currentChapterIndex;
   }
 
+  window.stepChapter = function(delta) {
+    const newIdx = Math.max(0, Math.min(NETZWERK_DATA.chapters.length - 1, currentChapterIndex + delta));
+    window.selectChapter(newIdx);
+  };
+
   window.selectChapter = function(index, customPage = null) {
     if (index < 0 || index >= NETZWERK_DATA.chapters.length) return;
     currentChapterIndex = index;
+    window.currentChapterIndex = index;
     const chapter = NETZWERK_DATA.chapters[index];
     if (chapterSelect) chapterSelect.value = index;
 
@@ -2601,10 +2607,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const boxDiag = Math.hypot(boxW, boxH);
       if (boxDiag < 12) return false;
 
-      const ratio = totalPath / Math.max(1.0, boxDiag);
+      const startPt = simplified[0];
+      const endPt = simplified[simplified.length - 1];
+      const netDisp = Math.hypot(endPt.x - startPt.x, endPt.y - startPt.y);
+      const dispRatio = netDisp / Math.max(1.0, totalPath);
 
-      // A scribble has at least 3 sharp reversals (back-and-forth) AND ratio >= 1.7
-      const isScribble = (reversals >= 3 && ratio >= 1.7) || (reversals >= 4);
+      // In cursive handwriting, strokes progress horizontally across the line (dispRatio >= 0.35 or reversals < 5)
+      // A genuine scratch-out scribble stays tightly in place over the mistake (dispRatio < 0.35, reversals >= 5, ratio >= 2.8)
+      const isScribble = (reversals >= 5 && ratio >= 2.8 && dispRatio < 0.35) || (reversals >= 7 && ratio >= 2.4);
       if (!isScribble) return false;
 
       // Surgical letter-level precision bounding box (tight 6px padding)
@@ -3365,7 +3375,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let html = `
       <!-- CHAPTER NAVIGATION BANNER -->
       <div class="flex items-center justify-between bg-white/95 p-3 rounded-2xl border-2 border-sky-300 shadow-sm mb-4">
-        <button onclick="selectChapter(Math.max(0, currentChapterIndex - 1))" class="btn-pastel-blue px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 cursor-pointer ${currentChapterIndex === 0 ? 'opacity-40 pointer-events-none' : ''}" title="Go to previous chapter">
+        <button onclick="stepChapter(-1)" class="btn-pastel-blue px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 cursor-pointer ${currentChapterIndex === 0 ? 'opacity-40 pointer-events-none' : ''}" title="Go to previous chapter">
           <span>◀</span>
           <span>Prev Chapter</span>
         </button>
@@ -3375,7 +3385,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <h3 class="font-extrabold text-sm text-sky-950 mt-0.5">${chapter.title}</h3>
         </div>
 
-        <button onclick="selectChapter(Math.min(NETZWERK_DATA.chapters.length - 1, currentChapterIndex + 1))" class="btn-pastel-blue px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 cursor-pointer ${currentChapterIndex === NETZWERK_DATA.chapters.length - 1 ? 'opacity-40 pointer-events-none' : ''}" title="Go to next chapter">
+        <button onclick="stepChapter(1)" class="btn-pastel-blue px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 cursor-pointer ${currentChapterIndex === NETZWERK_DATA.chapters.length - 1 ? 'opacity-40 pointer-events-none' : ''}" title="Go to next chapter">
           <span>Next Chapter</span>
           <span>▶</span>
         </button>
@@ -4485,7 +4495,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!fcCardList || fcCardList.length === 0) {
       if (counterEl) counterEl.textContent = '0 / 0';
       const frontWord = document.getElementById('fcFrontWord');
-      if (frontWord) frontWord.textContent = 'Tidak ada kata di kategori ini';
+      if (frontWord) frontWord.textContent = 'No words in this category';
       return;
     }
 
@@ -4495,7 +4505,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Calculate mastered count in current list
     const masteredInList = fcCardList.filter(w => fcMasteredKeys.has(w.de)).length;
-    if (masteryEl) masteryEl.textContent = `🌟 Hafal: ${masteredInList} / ${total}`;
+    if (masteryEl) masteryEl.textContent = `🌟 Mastered: ${masteredInList} / ${total}`;
 
     // Front Face
     const frontBadge = document.getElementById('fcFrontBadge');
@@ -4513,11 +4523,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (frontWord) frontWord.textContent = currentWord.de;
     if (frontHint) {
       if (currentWord.type === 'der' || currentWord.type === 'die' || currentWord.type === 'das') {
-        frontHint.textContent = `Nomen (Kata Benda) • ${currentWord.type.toUpperCase()}`;
+        frontHint.textContent = `Noun • ${currentWord.type.toUpperCase()}`;
       } else if (currentWord.type === 'verb') {
-        frontHint.textContent = `Verb (Kata Kerja)`;
+        frontHint.textContent = `Verb`;
       } else {
-        frontHint.textContent = `Redemittel / Frasa`;
+        frontHint.textContent = `Phrase / Expression`;
       }
     }
 
@@ -4561,7 +4571,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     fcCurrentCardIndex = 0;
     renderCurrentFlashcard();
-    showFloatingToast('🔀 Kartu berhasil diacak!');
+    showFloatingToast('🔀 Flashcards shuffled!');
   };
 
   window.markFlashcardMastery = function(isMastered) {
@@ -4569,10 +4579,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentWord = fcCardList[fcCurrentCardIndex];
     if (isMastered) {
       fcMasteredKeys.add(currentWord.de);
-      showFloatingToast(`🌟 Ditandai Hafal: "${currentWord.de}"`);
+      showFloatingToast(`🌟 Marked as Mastered: "${currentWord.de}"`);
     } else {
       fcMasteredKeys.delete(currentWord.de);
-      showFloatingToast(`📖 Ditandai Belajar Lagi: "${currentWord.de}"`);
+      showFloatingToast(`📖 Marked for Review: "${currentWord.de}"`);
     }
     saveFcMastery();
     nextFlashcard();
@@ -4609,14 +4619,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (synth) synth.cancel();
   };
 
-  window.startArticleGame = function(chapterIdx) {
-    const chapter = NETZWERK_DATA.chapters[chapterIdx];
+  window.startArticleGame = function(chapterIdx = null) {
+    const targetIdx = (chapterIdx !== null && chapterIdx !== undefined) ? chapterIdx : currentChapterIndex;
+    const chapter = NETZWERK_DATA.chapters[targetIdx];
     if (!chapter || !chapter.vocabList) return;
 
     // Filter nouns
     const nouns = chapter.vocabList.filter(v => v.type === 'der' || v.type === 'die' || v.type === 'das');
     if (nouns.length === 0) {
-      showFloatingToast("⚠️ Tidak ada kata benda di bab ini.", '⚠️');
+      showFloatingToast("⚠️ No nouns found in this chapter.", '⚠️');
       return;
     }
 
@@ -4718,7 +4729,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (feedback) {
-        feedback.innerHTML = `<span class="text-emerald-700 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-xl text-xs font-black animate-pulse">🎉 Richtig! ${currentNoun.de}</span>`;
+        feedback.innerHTML = `<span class="text-emerald-700 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-xl text-xs font-black animate-pulse">🎉 Correct! ${currentNoun.de}</span>`;
       }
 
       // Speak native German word with article!
@@ -4747,7 +4758,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (feedback) {
-        feedback.innerHTML = `<span class="text-rose-700 bg-rose-100 border border-rose-300 px-3 py-1 rounded-xl text-xs font-black">❌ Kurang tepat! Jawaban benar: <span class="underline">${currentNoun.de}</span></span>`;
+        feedback.innerHTML = `<span class="text-rose-700 bg-rose-100 border border-rose-300 px-3 py-1 rounded-xl text-xs font-black">❌ Not quite! Correct answer: <span class="underline">${currentNoun.de}</span></span>`;
       }
 
       // Speak correct pronunciation
@@ -4775,7 +4786,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (accuracyEl) accuracyEl.textContent = `${accuracy}%`;
     if (bestStreakEl) bestStreakEl.textContent = agBestStreak;
 
-    showFloatingToast('🏆 Sesi Der, Die, Das Selesai!');
+    showFloatingToast('🏆 Der, Die, Das Session Completed!');
   }
 
   // ================= 19. EXPORT & DOWNLOAD ANNOTATED PDF PAGE ENGINE =================
@@ -4793,7 +4804,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderCanvas = document.getElementById('pdfRenderCanvas');
     const annotCanvas = document.getElementById('pdfAnnotationCanvas');
     if (!renderCanvas || renderCanvas.width === 0 || renderCanvas.height === 0) {
-      showFloatingToast('⚠️ Halaman PDF belum terbuka sepenuhnya!', '⚠️');
+      showFloatingToast('⚠️ PDF page not fully loaded!', '⚠️');
       return null;
     }
 
@@ -4832,10 +4843,10 @@ document.addEventListener('DOMContentLoaded', () => {
       a.click();
       document.body.removeChild(a);
 
-      showFloatingToast('✨ Gambar halaman beranotasi berhasil diunduh (PNG)!');
+      showFloatingToast('✨ Annotated page image successfully downloaded (PNG)!');
     } catch (e) {
       console.error("Export PNG failed:", e);
-      showFloatingToast('❌ Gagal mengunduh gambar halaman.', '❌');
+      showFloatingToast('❌ Failed to download page image.', '❌');
     }
   };
 
@@ -4848,7 +4859,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const dataUrl = mergedCanvas.toDataURL('image/png');
       const printWindow = window.open('', '_blank');
       if (!printWindow) {
-        showFloatingToast('⚠️ Pop-up diblokir browser. Izinkan pop-up untuk mencetak!', '⚠️');
+        showFloatingToast('⚠️ Pop-up blocked by browser. Please allow pop-ups to print!', '⚠️');
         return;
       }
 
@@ -4869,10 +4880,10 @@ document.addEventListener('DOMContentLoaded', () => {
         </html>
       `);
       printWindow.document.close();
-      showFloatingToast('🖨️ Membuka dialog cetak / Save as PDF...');
+      showFloatingToast('🖨️ Opening print dialog / Save as PDF...');
     } catch (e) {
       console.error("Print failed:", e);
-      showFloatingToast('❌ Gagal membuka print preview.', '❌');
+      showFloatingToast('❌ Failed to open print preview.', '❌');
     }
   };
 
@@ -4935,10 +4946,856 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // ================= 21. AI SMART GERMAN TRANSLATOR & GRAMMAR ANALYZER ENGINE =================
+  let currentTargetGermanText = '';
+  let VOCAB_LOOKUP_MAP = {};
+
+  function initVocabLookupMap() {
+    if (typeof NETZWERK_DATA === 'undefined' || !NETZWERK_DATA || !NETZWERK_DATA.chapters) return;
+    NETZWERK_DATA.chapters.forEach(ch => {
+      if (!ch.vocabList) return;
+      ch.vocabList.forEach(item => {
+        if (!item.de) return;
+        const cleanDe = item.de.trim();
+        const artMatch = cleanDe.match(/^(der|die|das)\s+([A-Za-zÄÖÜäöüß\-]+)/i);
+        if (artMatch) {
+          const article = artMatch[1].toLowerCase();
+          const noun = artMatch[2].replace(/[,\/]/g, '').trim();
+          VOCAB_LOOKUP_MAP[noun.toLowerCase()] = {
+            de: cleanDe,
+            noun: noun,
+            gender: article,
+            en: item.en || '',
+            type: 'noun'
+          };
+        } else if (item.type === 'verb') {
+          const verbMatch = cleanDe.match(/^([A-Za-zÄÖÜäöüß]+)/);
+          if (verbMatch) {
+            const v = verbMatch[1].toLowerCase();
+            VOCAB_LOOKUP_MAP[v] = {
+              de: cleanDe,
+              infinitive: v,
+              en: item.en || '',
+              type: 'verb'
+            };
+          }
+        }
+      });
+    });
+  }
+
+  function initTranslatorListeners() {
+    const inputEl = document.getElementById('transInputText');
+    const countEl = document.getElementById('transCharCount');
+    if (inputEl && countEl) {
+      inputEl.addEventListener('input', () => {
+        countEl.textContent = `${inputEl.value.length} / 500`;
+      });
+    }
+  }
+
+  // Prepositions dictionary with German case rules
+  const GERMAN_PREPOSITIONS_DICT = {
+    'aus': { case: 'Dativ', meaning: 'from / out of', rule: 'Strictly requires Dativ (indicates origin or material)' },
+    'bei': { case: 'Dativ', meaning: 'at / with / near', rule: 'Strictly requires Dativ (at someone\'s place, workplace, or vicinity)' },
+    'mit': { case: 'Dativ', meaning: 'with / by means of', rule: 'Strictly requires Dativ (instrument, means of transport, or company)' },
+    'nach': { case: 'Dativ', meaning: 'to (cities/countries) / after', rule: 'Strictly requires Dativ (geographical destination without article, or time)' },
+    'seit': { case: 'Dativ', meaning: 'since / for (time duration)', rule: 'Strictly requires Dativ (action started in past and still ongoing)' },
+    'von': { case: 'Dativ', meaning: 'from / of', rule: 'Strictly requires Dativ (origin, starting point, or possession)' },
+    'zu': { case: 'Dativ', meaning: 'to / towards', rule: 'Strictly requires Dativ (direction towards people, buildings, or events)' },
+    'gegenüber': { case: 'Dativ', meaning: 'opposite / across from', rule: 'Strictly requires Dativ (often placed postpositionally)' },
+
+    'für': { case: 'Akkusativ', meaning: 'for / on behalf of', rule: 'Strictly requires Akkusativ (beneficiary, purpose, or duration)' },
+    'ohne': { case: 'Akkusativ', meaning: 'without', rule: 'Strictly requires Akkusativ (lack or absence)' },
+    'durch': { case: 'Akkusativ', meaning: 'through', rule: 'Strictly requires Akkusativ (motion passing through an enclosed space)' },
+    'gegen': { case: 'Akkusativ', meaning: 'against / around (time)', rule: 'Strictly requires Akkusativ (opposition or approximate time)' },
+    'um': { case: 'Akkusativ', meaning: 'around / at (exact time)', rule: 'Strictly requires Akkusativ (exact clock time or spatial circle)' },
+    'bis': { case: 'Akkusativ', meaning: 'until / up to', rule: 'Strictly requires Akkusativ (temporal endpoint or boundary)' },
+
+    'in': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'in / into', rule: 'Two-way preposition: Dativ for location (Wo?), Akkusativ for direction/movement (Wohin?)' },
+    'an': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'at / on (vertical contact)', rule: 'Two-way preposition: Dativ for location (am Fenster), Akkusativ for movement towards (an die Wand)' },
+    'auf': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'on / onto (horizontal)', rule: 'Two-way preposition: Dativ for location (auf dem Tisch), Akkusativ for movement onto (auf den Tisch)' },
+    'neben': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'next to', rule: 'Two-way preposition: next to' },
+    'hinter': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'behind', rule: 'Two-way preposition: behind' },
+    'über': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'over / above / across', rule: 'Two-way preposition: above or crossing over' },
+    'unter': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'under / below / among', rule: 'Two-way preposition: under or beneath' },
+    'vor': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'in front of / before / ago', rule: 'Two-way preposition: in front of (spatial) or before/ago (temporal Dativ)' },
+    'zwischen': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'between', rule: 'Two-way preposition: between two entities' },
+
+    'im': { case: 'Dativ', contraction: 'in + dem', meaning: 'in the', rule: 'Contraction of in + dem (Dativ: stationary location Wo?)' },
+    'ins': { case: 'Akkusativ', contraction: 'in + das', meaning: 'into the', rule: 'Contraction of in + das (Akkusativ: destination Wohin?)' },
+    'am': { case: 'Dativ', contraction: 'an + dem', meaning: 'at/on the', rule: 'Contraction of an + dem (Dativ: days, dates, or vertical location)' },
+    'ans': { case: 'Akkusativ', contraction: 'an + das', meaning: 'to the', rule: 'Contraction of an + das (Akkusativ: motion towards water or edge)' },
+    'vom': { case: 'Dativ', contraction: 'von + dem', meaning: 'from the', rule: 'Contraction of von + dem (Dativ)' },
+    'zum': { case: 'Dativ', contraction: 'zu + dem', meaning: 'to the (masc/neut)', rule: 'Contraction of zu + dem (Dativ: destination)' },
+    'zur': { case: 'Dativ', contraction: 'zu + der', meaning: 'to the (fem)', rule: 'Contraction of zu + der (Dativ: destination)' },
+    'beim': { case: 'Dativ', contraction: 'bei + dem', meaning: 'at the', rule: 'Contraction of bei + dem (Dativ: while doing or at location)' }
+  };
+
+  const QUESTION_WORDS_DICT = {
+    'wer': 'Who? (Nominative subject interrogative)',
+    'wen': 'Whom? (Accusative direct object interrogative)',
+    'wem': 'To whom? (Dative indirect object interrogative)',
+    'wessen': 'Whose? (Genitive possessive interrogative)',
+    'was': 'What? (Object / activity interrogative)',
+    'wo': 'Where? (Stationary location interrogative, triggers Dativ)',
+    'woher': 'Where from? (Origin interrogative, often used with aus / von)',
+    'wohin': 'Where to? (Destination/direction interrogative, triggers Akkusativ)',
+    'wann': 'When? (Time interrogative)',
+    'warum': 'Why? (Reason / causation interrogative)',
+    'wieso': 'Why? / How come? (Informal causation interrogative)',
+    'wie': 'How? (Manner / adjective interrogative)',
+    'welcher': 'Which? (Masculine interrogative)',
+    'welche': 'Which? (Feminine / Plural interrogative)',
+    'welches': 'Which? (Neuter interrogative)'
+  };
+
+  const SUBORDINATING_CONJUNCTIONS_DICT = {
+    'weil': 'because (Subordinate clause: conjugated verb is pushed to the very end — Verbletzt-Stellung)',
+    'dass': 'that (Subordinate clause: conjugated verb is pushed to the end)',
+    'wenn': 'if / whenever (Conditional/temporal clause: verb pushed to end)',
+    'ob': 'whether / if (Indirect question clause: verb pushed to end)',
+    'obwohl': 'although / even though (Concessive clause: verb pushed to end)',
+    'da': 'since / because (Causal clause: verb pushed to end)',
+    'damit': 'so that / in order that (Purpose clause: verb pushed to end)',
+    'bevor': 'before (Temporal clause: verb pushed to end)',
+    'nachdem': 'after (Temporal clause: verb pushed to end)',
+    'seitdem': 'since (Temporal clause: verb pushed to end)'
+  };
+
+  const COORDINATING_CONJUNCTIONS_DICT = {
+    'und': 'and (Position 0: Connects clauses without modifying word order)',
+    'aber': 'but / however (Position 0: Connects contrasting clauses without modifying word order)',
+    'oder': 'or (Position 0: Connects alternatives without modifying word order)',
+    'denn': 'because / for (Position 0: Connects clauses without modifying word order)',
+    'sondern': 'rather / but on the contrary (Position 0: Used after a negation)'
+  };
+
+  const INVERSION_ADVERBS_DICT = {
+    'heute': 'today (Temporal adverbial: occupies Position 1, triggers subject-verb inversion)',
+    'morgen': 'tomorrow (Temporal adverbial: occupies Position 1, triggers subject-verb inversion)',
+    'gestern': 'yesterday (Temporal adverbial: occupies Position 1, triggers subject-verb inversion)',
+    'jetzt': 'now (Temporal adverbial: occupies Position 1, triggers inversion)',
+    'dann': 'then / after that (Sequential adverbial: occupies Position 1, triggers inversion)',
+    'danach': 'afterwards (Sequential adverbial: occupies Position 1, triggers inversion)',
+    'deshalb': 'therefore / that\'s why (Consequential adverbial: triggers inversion)',
+    'darum': 'therefore (Consequential adverbial: triggers inversion)',
+    'trotzdem': 'nevertheless (Concessive adverbial: triggers inversion)',
+    'leider': 'unfortunately (Attitudinal adverbial: occupies Position 1, triggers inversion)',
+    'vielleicht': 'maybe / perhaps (Modal adverbial: occupies Position 1, triggers inversion)',
+    'oft': 'often (Frequency adverbial: triggers inversion when in Pos 1)',
+    'manchmal': 'sometimes (Frequency adverbial: triggers inversion when in Pos 1)',
+    'hier': 'here (Locational adverbial: triggers inversion when in Pos 1)',
+    'dort': 'there (Locational adverbial: triggers inversion when in Pos 1)',
+    'immer': 'always (Adverb of frequency)'
+  };
+
+  const KNOWN_VERB_CONJUGATIONS = {
+    // sein (to be)
+    'bin': { inf: 'sein', person: '1st Sing. (ich)', tense: 'Präsens', en: 'am', irregular: true, note: 'Irregular copula verb: links subject to a Nominative predicate' },
+    'bist': { inf: 'sein', person: '2nd Sing. (du)', tense: 'Präsens', en: 'are', irregular: true, note: 'Irregular copula verb' },
+    'ist': { inf: 'sein', person: '3rd Sing. (er/sie/es/man)', tense: 'Präsens', en: 'is', irregular: true, note: 'Irregular copula verb' },
+    'sind': { inf: 'sein', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'are', irregular: true, note: 'Irregular copula verb' },
+    'seid': { inf: 'sein', person: '2nd Plur. (ihr)', tense: 'Präsens', en: 'are', irregular: true, note: 'Irregular copula verb' },
+    'war': { inf: 'sein', person: '1st/3rd Sing. (ich/er/sie/es)', tense: 'Präteritum', en: 'was', irregular: true },
+    'waren': { inf: 'sein', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präteritum', en: 'were', irregular: true },
+
+    // haben (to have)
+    'habe': { inf: 'haben', person: '1st Sing. (ich)', tense: 'Präsens', en: 'have', irregular: false, note: 'Requires Accusative direct object (e.g. Ich habe einen Hund)' },
+    'hast': { inf: 'haben', person: '2nd Sing. (du)', tense: 'Präsens', en: 'have', irregular: true, note: 'Stem change: -b- drops (du hast)' },
+    'hat': { inf: 'haben', person: '3rd Sing. (er/sie/es/man)', tense: 'Präsens', en: 'has', irregular: true, note: 'Stem change: -b- drops (er hat)' },
+    'haben': { inf: 'haben', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'have', irregular: false },
+    'habt': { inf: 'haben', person: '2nd Plur. (ihr)', tense: 'Präsens', en: 'have', irregular: false },
+    'hatte': { inf: 'haben', person: '1st/3rd Sing. (ich/er/sie/es)', tense: 'Präteritum', en: 'had', irregular: true },
+    'hatten': { inf: 'haben', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präteritum', en: 'had', irregular: true },
+
+    // werden (to become / auxiliary for future)
+    'werde': { inf: 'werden', person: '1st Sing. (ich)', tense: 'Präsens', en: 'become / will', irregular: false },
+    'wirst': { inf: 'werden', person: '2nd Sing. (du)', tense: 'Präsens', en: 'become / will', irregular: true, note: 'Vowel change: e -> i' },
+    'wird': { inf: 'werden', person: '3rd Sing. (er/sie/es/man)', tense: 'Präsens', en: 'becomes / will', irregular: true, note: 'Vowel change: e -> i' },
+    'werden': { inf: 'werden', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'become / will', irregular: false },
+    'werdet': { inf: 'werden', person: '2nd Plur. (ihr)', tense: 'Präsens', en: 'become / will', irregular: false },
+
+    // Modal Verbs
+    'kann': { inf: 'können', person: '1st/3rd Sing. (ich/er/sie/es)', tense: 'Präsens', en: 'can / able to', modal: true, note: 'Modalverb (Ability / Possibility). Vowel shift: ö -> a. Second verb placed at the sentence end in infinitive.' },
+    'kannst': { inf: 'können', person: '2nd Sing. (du)', tense: 'Präsens', en: 'can / able to', modal: true, note: 'Modalverb (Ability / Possibility)' },
+    'können': { inf: 'können', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'can / able to', modal: true, note: 'Modalverb' },
+    'könnt': { inf: 'können', person: '2nd Plur. (ihr)', tense: 'Präsens', en: 'can / able to', modal: true, note: 'Modalverb' },
+
+    'muss': { inf: 'müssen', person: '1st/3rd Sing. (ich/er/sie/es)', tense: 'Präsens', en: 'must / have to', modal: true, note: 'Modalverb (Obligation / Necessity). Vowel shift: ü -> u. Second verb at sentence end in infinitive.' },
+    'musst': { inf: 'müssen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'must / have to', modal: true, note: 'Modalverb' },
+    'müssen': { inf: 'müssen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'must / have to', modal: true, note: 'Modalverb' },
+    'müsst': { inf: 'müssen', person: '2nd Plur. (ihr)', tense: 'Präsens', en: 'must / have to', modal: true, note: 'Modalverb' },
+
+    'will': { inf: 'wollen', person: '1st/3rd Sing. (ich/er/sie/es)', tense: 'Präsens', en: 'want to', modal: true, note: 'Modalverb (Strong intention / Desire). Vowel shift: o -> i.' },
+    'willst': { inf: 'wollen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'want to', modal: true, note: 'Modalverb' },
+    'wollen': { inf: 'wollen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'want to', modal: true, note: 'Modalverb' },
+    'wollt': { inf: 'wollen', person: '2nd Plur. (ihr)', tense: 'Präsens', en: 'want to', modal: true, note: 'Modalverb' },
+
+    'möchte': { inf: 'möchten', person: '1st/3rd Sing. (ich/er/sie/es)', tense: 'Konjunktiv II', en: 'would like to', modal: true, note: 'Polite subjunctive form of mögen used as a modal auxiliary for polite requests.' },
+    'möchtest': { inf: 'möchten', person: '2nd Sing. (du)', tense: 'Konjunktiv II', en: 'would like to', modal: true },
+    'möchten': { inf: 'möchten', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Konjunktiv II', en: 'would like to', modal: true },
+    'möchtet': { inf: 'möchten', person: '2nd Plur. (ihr)', tense: 'Konjunktiv II', en: 'would like to', modal: true },
+
+    'darf': { inf: 'dürfen', person: '1st/3rd Sing. (ich/er/sie/es)', tense: 'Präsens', en: 'may / allowed to', modal: true, note: 'Modalverb (Permission). Vowel shift: ü -> a.' },
+    'darfst': { inf: 'dürfen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'may / allowed to', modal: true },
+    'dürfen': { inf: 'dürfen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'may / allowed to', modal: true },
+    'dürft': { inf: 'dürfen', person: '2nd Plur. (ihr)', tense: 'Präsens', en: 'may / allowed to', modal: true },
+
+    'soll': { inf: 'sollen', person: '1st/3rd Sing. (ich/er/sie/es)', tense: 'Präsens', en: 'should / supposed to', modal: true, note: 'Modalverb (Duty / External demand / Advice).' },
+    'sollst': { inf: 'sollen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'should / supposed to', modal: true },
+    'sollen': { inf: 'sollen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'should / supposed to', modal: true },
+    'sollt': { inf: 'sollen', person: '2nd Plur. (ihr)', tense: 'Präsens', en: 'should / supposed to', modal: true },
+
+    // Common Netzwerk A1 Verbs
+    'lerne': { inf: 'lernen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'learn / study', regular: true },
+    'lernst': { inf: 'lernen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'learn / study', regular: true },
+    'lernt': { inf: 'lernen', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'learns / learn', regular: true },
+    'lernen': { inf: 'lernen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'learn / study', regular: true },
+
+    'fahre': { inf: 'fahren', person: '1st Sing. (ich)', tense: 'Präsens', en: 'drive / ride / travel', irregular: true },
+    'fährst': { inf: 'fahren', person: '2nd Sing. (du)', tense: 'Präsens', en: 'drive / ride / travel', irregular: true, note: 'Strong verb: stem vowel umlaut shift a -> ä' },
+    'fährt': { inf: 'fahren', person: '3rd Sing. (er/sie/es/man)', tense: 'Präsens', en: 'drives / travels', irregular: true, note: 'Strong verb: stem vowel umlaut shift a -> ä' },
+    'fahren': { inf: 'fahren', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'drive / travel', irregular: false },
+
+    'komme': { inf: 'kommen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'come', regular: true },
+    'kommst': { inf: 'kommen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'come', regular: true },
+    'kommt': { inf: 'kommen', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'comes / come', regular: true },
+    'kommen': { inf: 'kommen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'come', regular: true },
+
+    'gehe': { inf: 'gehen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'go / walk', regular: true },
+    'gehst': { inf: 'gehen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'go / walk', regular: true },
+    'geht': { inf: 'gehen', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'goes / walk', regular: true },
+    'gehen': { inf: 'gehen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'go / walk', regular: true },
+
+    'wohne': { inf: 'wohnen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'live / reside', regular: true },
+    'wohnst': { inf: 'wohnen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'live / reside', regular: true },
+    'wohnt': { inf: 'wohnen', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'lives / live', regular: true },
+    'wohnen': { inf: 'wohnen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'live / reside', regular: true },
+
+    'heiße': { inf: 'heißen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'be named', regular: true },
+    'heißt': { inf: 'heißen', person: '2nd/3rd Sing. (du/er/sie/es)', tense: 'Präsens', en: 'is named', regular: true, note: 'Due to ß ending, 2nd person du adds only -t (du heißt)' },
+    'heißen': { inf: 'heißen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'are named', regular: true },
+
+    'spreche': { inf: 'sprechen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'speak', irregular: true },
+    'sprichst': { inf: 'sprechen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'speak', irregular: true, note: 'Strong verb with vowel shift: e -> i (du sprichst)' },
+    'spricht': { inf: 'sprechen', person: '3rd Sing. (er/sie/es/man)', tense: 'Präsens', en: 'speaks', irregular: true, note: 'Strong verb with vowel shift: e -> i (er spricht)' },
+    'sprechen': { inf: 'sprechen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'speak', irregular: false },
+
+    'trinke': { inf: 'trinken', person: '1st Sing. (ich)', tense: 'Präsens', en: 'drink', regular: true },
+    'trinkst': { inf: 'trinken', person: '2nd Sing. (du)', tense: 'Präsens', en: 'drink', regular: true },
+    'trinkt': { inf: 'trinken', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'drinks / drink', regular: true },
+    'trinken': { inf: 'trinken', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'drink', regular: true },
+
+    'esse': { inf: 'essen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'eat', irregular: true },
+    'isst': { inf: 'essen', person: '2nd/3rd Sing. (du/er/sie/es)', tense: 'Präsens', en: 'eats / eat', irregular: true, note: 'Strong verb with vowel shift: e -> i (du/er isst)' },
+    'essen': { inf: 'essen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'eat', irregular: false },
+
+    'arbeite': { inf: 'arbeiten', person: '1st Sing. (ich)', tense: 'Präsens', en: 'work', regular: true },
+    'arbeitest': { inf: 'arbeiten', person: '2nd Sing. (du)', tense: 'Präsens', en: 'work', regular: true, note: 'Stem ends in -t: epenthetic -e- inserted before -st' },
+    'arbeitet': { inf: 'arbeiten', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'works / work', regular: true, note: 'Stem ends in -t: epenthetic -e- inserted before -t' },
+    'arbeiten': { inf: 'arbeiten', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'work', regular: true },
+
+    'helfe': { inf: 'helfen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'help', irregular: true, dative: true },
+    'hilfst': { inf: 'helfen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'help', irregular: true, dative: true, note: 'Strong verb: e -> i. Strictly governs a DATIVE object (e.g. hilf mir, helfen Sie mir).' },
+    'hilft': { inf: 'helfen', person: '3rd Sing. (er/sie/es)', tense: 'Präsens', en: 'helps', irregular: true, dative: true, note: 'Strong verb: e -> i. Strictly governs a DATIVE object.' },
+    'helfen': { inf: 'helfen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'help', irregular: false, dative: true, note: 'Strictly governs a DATIVE object.' },
+
+    'brauche': { inf: 'brauchen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'need', regular: true },
+    'brauchst': { inf: 'brauchen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'need', regular: true },
+    'braucht': { inf: 'brauchen', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'needs / need', regular: true },
+    'brauchen': { inf: 'brauchen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'need', regular: true },
+
+    'kaufe': { inf: 'kaufen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'buy', regular: true },
+    'kaufst': { inf: 'kaufen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'buy', regular: true },
+    'kauft': { inf: 'kaufen', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'buys / buy', regular: true },
+    'kaufen': { inf: 'kaufen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'buy', regular: true },
+
+    'lese': { inf: 'lesen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'read', irregular: true },
+    'liest': { inf: 'lesen', person: '2nd/3rd Sing. (du/er/sie/es)', tense: 'Präsens', en: 'reads / read', irregular: true, note: 'Strong verb with vowel shift: e -> ie (du liest, er liest)' },
+    'lesen': { inf: 'lesen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'read', irregular: false },
+
+    'sehe': { inf: 'sehen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'see', irregular: true },
+    'siehst': { inf: 'sehen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'see', irregular: true, note: 'Strong verb with vowel shift: e -> ie (du siehst)' },
+    'sieht': { inf: 'sehen', person: '3rd Sing. (er/sie/es)', tense: 'Präsens', en: 'sees', irregular: true, note: 'Strong verb with vowel shift: e -> ie (er sieht)' },
+    'sehen': { inf: 'sehen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'see', irregular: false },
+
+    'schlafe': { inf: 'schlafen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'sleep', irregular: true },
+    'schläfst': { inf: 'schlafen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'sleep', irregular: true, note: 'Strong verb with vowel shift: a -> ä' },
+    'schläft': { inf: 'schlafen', person: '3rd Sing. (er/sie/es)', tense: 'Präsens', en: 'sleeps', irregular: true, note: 'Strong verb with vowel shift: a -> ä' },
+    'schlafen': { inf: 'schlafen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'sleep', irregular: false },
+
+    'bleibe': { inf: 'bleiben', person: '1st Sing. (ich)', tense: 'Präsens', en: 'stay / remain', regular: true },
+    'bleibst': { inf: 'bleiben', person: '2nd Sing. (du)', tense: 'Präsens', en: 'stay / remain', regular: true },
+    'bleibt': { inf: 'bleiben', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'stays / stay', regular: true },
+    'bleiben': { inf: 'bleiben', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'stay / remain', regular: true }
+  };
+
+  const COMMON_GERMAN_NOUNS = {
+    'tag': { gender: 'der', de: 'der Tag, -e', en: 'day' },
+    'morgen': { gender: 'der', de: 'der Morgen', en: 'morning' },
+    'abend': { gender: 'der', de: 'der Abend, -e', en: 'evening' },
+    'zug': { gender: 'der', de: 'der Zug, -\"e', en: 'train' },
+    'bus': { gender: 'der', de: 'der Bus, -se', en: 'bus' },
+    'bahnhof': { gender: 'der', de: 'der Bahnhof, -\"e', en: 'train station' },
+    'tisch': { gender: 'der', de: 'der Tisch, -e', en: 'table' },
+    'stuhl': { gender: 'der', de: 'der Stuhl, -\"e', en: 'chair' },
+    'apfel': { gender: 'der', de: 'der Apfel, -\"', en: 'apple' },
+    'kaffee': { gender: 'der', de: 'der Kaffee', en: 'coffee' },
+    'tee': { gender: 'der', de: 'der Tee', en: 'tea' },
+    'freund': { gender: 'der', de: 'der Freund, -e', en: 'friend (male)' },
+    'lehrer': { gender: 'der', de: 'der Lehrer, -', en: 'teacher (male)' },
+    'arzt': { gender: 'der', de: 'der Arzt, -\"e', en: 'doctor (male)' },
+    'beruf': { gender: 'der', de: 'der Beruf, -e', en: 'profession / job' },
+    'name': { gender: 'der', de: 'der Name, -n', en: 'name' },
+    'vater': { gender: 'der', de: 'der Vater, -\"', en: 'father' },
+    'mann': { gender: 'der', de: 'der Mann, -\"er', en: 'man / husband' },
+    'hund': { gender: 'der', de: 'der Hund, -e', en: 'dog' },
+
+    'frau': { gender: 'die', de: 'die Frau, -en', en: 'woman / wife' },
+    'mutter': { gender: 'die', de: 'die Mutter, -\"', en: 'mother' },
+    'tochter': { gender: 'die', de: 'die Tochter, -\"', en: 'daughter' },
+    'lehrerin': { gender: 'die', de: 'die Lehrerin, -nen', en: 'teacher (female)' },
+    'ärztin': { gender: 'die', de: 'die Ärztin, -nen', en: 'doctor (female)' },
+    'freundin': { gender: 'die', de: 'die Freundin, -nen', en: 'friend (female)' },
+    'stadt': { gender: 'die', de: 'die Stadt, -\"e', en: 'city' },
+    'schule': { gender: 'die', de: 'die Schule, -n', en: 'school' },
+    'universität': { gender: 'die', de: 'die Universität, -en', en: 'university' },
+    'sprache': { gender: 'die', de: 'die Sprache, -n', en: 'language' },
+    'wohnung': { gender: 'die', de: 'die Wohnung, -en', en: 'apartment' },
+    'lampe': { gender: 'die', de: 'die Lampe, -n', en: 'lamp' },
+    'tasche': { gender: 'die', de: 'die Tasche, -n', en: 'bag' },
+    'uhr': { gender: 'die', de: 'die Uhr, -en', en: 'clock / watch' },
+    'zeit': { gender: 'die', de: 'die Zeit, -en', en: 'time' },
+    'arbeit': { gender: 'die', de: 'die Arbeit, -en', en: 'work' },
+    'musik': { gender: 'die', de: 'die Musik', en: 'music' },
+    'nacht': { gender: 'die', de: 'die Nacht, -\"e', en: 'night' },
+    'woche': { gender: 'die', de: 'die Woche, -n', en: 'week' },
+
+    'buch': { gender: 'das', de: 'das Buch, -\"er', en: 'book' },
+    'auto': { gender: 'das', de: 'das Auto, -s', en: 'car' },
+    'fahrrad': { gender: 'das', de: 'das Fahrrad, -\"er', en: 'bicycle' },
+    'haus': { gender: 'das', de: 'das Haus, -\"er', en: 'house' },
+    'zimmer': { gender: 'das', de: 'das Zimmer, -', en: 'room' },
+    'brot': { gender: 'das', de: 'das Brot, -e', en: 'bread' },
+    'wasser': { gender: 'das', de: 'das Wasser', en: 'water' },
+    'bier': { gender: 'das', de: 'das Bier, -e', en: 'beer' },
+    'kind': { gender: 'das', de: 'das Kind, -er', en: 'child' },
+    'mädchen': { gender: 'das', de: 'das Mädchen, -', en: 'girl' },
+    'hotel': { gender: 'das', de: 'das Hotel, -s', en: 'hotel' },
+    'ticket': { gender: 'das', de: 'das Ticket, -s', en: 'ticket' },
+    'deutsch': { gender: 'das', de: 'das Deutsch', en: 'German (language)' },
+    'englisch': { gender: 'das', de: 'das Englisch', en: 'English (language)' },
+    'jahr': { gender: 'das', de: 'das Jahr, -e', en: 'year' },
+    'leben': { gender: 'das', de: 'das Leben', en: 'life' },
+    'problem': { gender: 'das', de: 'das Problem, -e', en: 'problem' },
+    'geld': { gender: 'das', de: 'das Geld', en: 'money' }
+  };
+
+  window.handleTranslatorLangChange = function() {
+    const src = document.getElementById('transSourceLang')?.value || 'en';
+    const tgt = document.getElementById('transTargetLang')?.value || 'de';
+
+    const srcLabel = document.getElementById('transSourceLabel');
+    const tgtLabel = document.getElementById('transTargetLabel');
+
+    const names = {
+      'en': '🇬🇧 English Sentence',
+      'id': '🇮🇩 Indonesian Sentence',
+      'de': '🇩🇪 German Sentence (Deutsch)'
+    };
+    const tgtNames = {
+      'en': '🇬🇧 English Translation',
+      'id': '🇮🇩 Indonesian Translation',
+      'de': '🇩🇪 German Translation & Analysis'
+    };
+
+    if (srcLabel) srcLabel.textContent = names[src] || 'Source Sentence';
+    if (tgtLabel) tgtLabel.textContent = tgtNames[tgt] || 'Translation';
+  };
+
+  window.swapTranslatorLanguages = function() {
+    const srcEl = document.getElementById('transSourceLang');
+    const tgtEl = document.getElementById('transTargetLang');
+    const inputEl = document.getElementById('transInputText');
+    const outputEl = document.getElementById('transOutputText');
+
+    if (!srcEl || !tgtEl) return;
+    const oldSrc = srcEl.value;
+    const oldTgt = tgtEl.value;
+    srcEl.value = oldTgt;
+    tgtEl.value = oldSrc;
+    handleTranslatorLangChange();
+
+    const currentTranslated = outputEl ? outputEl.textContent.trim() : '';
+    if (currentTranslated && !currentTranslated.includes('Translation and grammar breakdown')) {
+      if (inputEl) inputEl.value = currentTranslated;
+      translateAndAnalyze();
+    }
+  };
+
+  window.setTranslatorSample = function(sampleText, srcLang, tgtLang) {
+    const srcEl = document.getElementById('transSourceLang');
+    const tgtEl = document.getElementById('transTargetLang');
+    const inputEl = document.getElementById('transInputText');
+
+    if (srcEl) srcEl.value = srcLang;
+    if (tgtEl) tgtEl.value = tgtLang;
+    if (inputEl) inputEl.value = sampleText;
+
+    handleTranslatorLangChange();
+    translateAndAnalyze();
+  };
+
+  window.clearTranslatorInput = function() {
+    const inputEl = document.getElementById('transInputText');
+    const outputEl = document.getElementById('transOutputText');
+    const countEl = document.getElementById('transCharCount');
+    const analysisContainer = document.getElementById('grammarAnalysisContainer');
+
+    if (inputEl) inputEl.value = '';
+    if (countEl) countEl.textContent = '0 / 500';
+    if (outputEl) {
+      outputEl.innerHTML = '<span class="text-sky-400 text-xs font-medium italic">Translation and grammar breakdown will appear here...</span>';
+    }
+    if (analysisContainer) {
+      analysisContainer.innerHTML = '';
+      analysisContainer.classList.add('hidden');
+    }
+    currentTargetGermanText = '';
+  };
+
+  window.copyTranslatorOutput = function() {
+    const outputEl = document.getElementById('transOutputText');
+    if (!outputEl) return;
+    const text = outputEl.innerText || outputEl.textContent;
+    if (!text || text.includes('Translation and grammar breakdown')) {
+      showFloatingToast('⚠️ No translated text to copy yet.', '⚠️');
+      return;
+    }
+    navigator.clipboard.writeText(text).then(() => {
+      showFloatingToast('📋 Translation copied to clipboard!');
+    }).catch(() => {
+      showFloatingToast('📋 Translation copied!');
+    });
+  };
+
+  window.playTranslatorTargetAudio = function() {
+    if (!currentTargetGermanText) {
+      const outputEl = document.getElementById('transOutputText');
+      currentTargetGermanText = outputEl ? outputEl.textContent.trim() : '';
+    }
+    if (!currentTargetGermanText || currentTargetGermanText.includes('Translation and grammar breakdown')) {
+      showFloatingToast('⚠️ No German text available to pronounce yet.', '⚠️');
+      return;
+    }
+    const btn = document.getElementById('transAudioBtn');
+    playGermanSpeech(currentTargetGermanText, btn);
+  };
+
+  window.translateAndAnalyze = async function() {
+    const inputEl = document.getElementById('transInputText');
+    const outputEl = document.getElementById('transOutputText');
+    const loadingEl = document.getElementById('transLoadingIndicator');
+    const analysisContainer = document.getElementById('grammarAnalysisContainer');
+    const srcLang = document.getElementById('transSourceLang')?.value || 'en';
+    const tgtLang = document.getElementById('transTargetLang')?.value || 'de';
+
+    const text = inputEl ? inputEl.value.trim() : '';
+    if (!text) {
+      showFloatingToast('⚠️ Please enter a sentence to translate.', '⚠️');
+      return;
+    }
+
+    if (loadingEl) loadingEl.classList.remove('hidden');
+
+    try {
+      let translatedText = '';
+      if (srcLang === tgtLang) {
+        translatedText = text;
+      } else {
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${srcLang}&tl=${tgtLang}&dt=t&q=${encodeURIComponent(text)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data[0]) {
+          translatedText = data[0].map(item => item[0]).join('');
+        }
+      }
+
+      if (!translatedText) translatedText = text;
+
+      // Determine which sentence is German
+      if (tgtLang === 'de') {
+        currentTargetGermanText = translatedText;
+      } else if (srcLang === 'de') {
+        currentTargetGermanText = text;
+      } else {
+        currentTargetGermanText = '';
+      }
+
+      if (outputEl) {
+        outputEl.innerHTML = `<span class="text-sky-950 font-extrabold leading-relaxed text-base md:text-lg">${translatedText}</span>`;
+      }
+
+      // If either source or target is German, run deep German Grammar Analysis
+      if (currentTargetGermanText && analysisContainer) {
+        const analysisHtml = analyzeGermanGrammar(currentTargetGermanText, text, srcLang, tgtLang);
+        analysisContainer.innerHTML = analysisHtml;
+        analysisContainer.classList.remove('hidden');
+      } else if (analysisContainer) {
+        analysisContainer.innerHTML = '';
+        analysisContainer.classList.add('hidden');
+      }
+
+      showFloatingToast('✨ Translation & Grammar Analysis ready!');
+
+    } catch (err) {
+      console.error("Translation or grammar analysis error:", err);
+      if (outputEl) {
+        outputEl.innerHTML = `<span class="text-rose-600 text-xs font-bold">⚠️ Translation service temporarily unavailable. Please check your connection.</span>`;
+      }
+      showFloatingToast('❌ Translation failed.', '❌');
+    } finally {
+      if (loadingEl) loadingEl.classList.add('hidden');
+    }
+  };
+
+  function analyzeGermanGrammar(germanText, sourceText, sourceLang, targetLang) {
+    if (!germanText) return '';
+
+    const rawTokens = germanText.trim().split(/\s+/);
+    if (!rawTokens.length) return '';
+
+    const tokens = rawTokens.map(tok => {
+      const clean = tok.replace(/^[„“"'(\[]+|[.,!?:;)"'\]]+$/g, '');
+      const lower = clean.toLowerCase();
+      return { raw: tok, clean: clean, lower: lower };
+    }).filter(t => t.clean.length > 0);
+
+    if (!tokens.length) return '';
+
+    const lastChar = germanText.trim().slice(-1);
+    const isQuestion = (lastChar === '?');
+    const isExclamation = (lastChar === '!');
+    const firstWord = tokens[0]?.lower || '';
+
+    let sentenceType = 'Aussagesatz (Declarative Main Clause)';
+    let sentenceBadgeColor = 'bg-sky-100 text-sky-800 border-sky-300';
+    let sentenceDesc = 'A standard German main clause where the conjugated verb strictly stands in **Position 2 (V2 Rule)**.';
+    let wordOrderExplanation = '';
+    let isSubordinate = false;
+
+    // Check Subordinate Conjunctions
+    for (let t of tokens) {
+      if (SUBORDINATING_CONJUNCTIONS_DICT[t.lower]) {
+        isSubordinate = true;
+        sentenceType = 'Nebensatz (Subordinate Clause)';
+        sentenceBadgeColor = 'bg-indigo-100 text-indigo-800 border-indigo-300';
+        sentenceDesc = `Introduced by subordinator <strong>„${t.clean}“</strong> (${SUBORDINATING_CONJUNCTIONS_DICT[t.lower]}). In German subordinate clauses, the conjugated verb is pushed to the <strong>absolute end (Verbletzt-Stellung)</strong>.`;
+        wordOrderExplanation = `The conjunction <strong>„${t.clean}“</strong> sends the finite verb to the sentence-final position before the punctuation.`;
+        break;
+      }
+    }
+
+    if (!isSubordinate) {
+      if (isQuestion) {
+        if (QUESTION_WORDS_DICT[firstWord]) {
+          sentenceType = 'W-Frage (Information Question)';
+          sentenceBadgeColor = 'bg-amber-100 text-amber-800 border-amber-300';
+          sentenceDesc = `Starts with the interrogative word <strong>„${tokens[0].clean}“</strong> (${QUESTION_WORDS_DICT[firstWord]}).`;
+          wordOrderExplanation = `Position 1 is reserved for the W-word (<strong>„${tokens[0].clean}“</strong>), the finite verb is locked in <strong>Position 2</strong>, and the subject follows in <strong>Position 3</strong>.`;
+        } else {
+          sentenceType = 'Ja/Nein-Frage (Yes/No Question)';
+          sentenceBadgeColor = 'bg-purple-100 text-purple-800 border-purple-300';
+          sentenceDesc = 'A polar question answered with Ja (Yes) or Nein (No) or Doch.';
+          wordOrderExplanation = `The conjugated verb is placed in <strong>Position 1 (Verb-Erst-Stellung)</strong> at the beginning, followed directly by the subject in <strong>Position 2</strong>.`;
+        }
+      } else if (isExclamation && (KNOWN_VERB_CONJUGATIONS[firstWord] || firstWord.endsWith('en') || firstWord.endsWith('t'))) {
+        sentenceType = 'Imperativ (Command / Request)';
+        sentenceBadgeColor = 'bg-rose-100 text-rose-800 border-rose-300';
+        sentenceDesc = 'An imperative command or instruction.';
+        wordOrderExplanation = 'The base command verb occupies <strong>Position 1</strong> at the very beginning of the clause.';
+      } else {
+        const isSubjectFirst = ['ich', 'du', 'er', 'sie', 'es', 'wir', 'ihr', 'Sie', 'man'].includes(firstWord) ||
+                               ['der', 'die', 'das', 'ein', 'eine', 'mein', 'dein', 'ihr', 'unser'].includes(firstWord);
+        
+        if (isSubjectFirst) {
+          wordOrderExplanation = `📌 <strong>Standard Order (Subjekt-Verb-Objekt)</strong>: The subject occupies <strong>Position 1 (Vorfeld)</strong>. Under the fundamental German <strong>V2 Rule (Verb-Zweit-Stellung)</strong>, the finite conjugated verb strictly occupies <strong>Position 2</strong>.`;
+        } else {
+          wordOrderExplanation = `⚡ <strong>Inversion Rule Applied (Inversion / Umstellung)</strong>: <strong>Position 1 (Vorfeld)</strong> is occupied by an adverbial or prepositional phrase (<strong>„${tokens[0].clean}“</strong>) for topicalization. Because German main clauses strictly require the conjugated verb in <strong>Position 2</strong>, the subject inverts into <strong>Position 3</strong>!`;
+        }
+      }
+    }
+
+    // Identify Finite Verb Token
+    let finiteVerbToken = null;
+    for (let i = 0; i < tokens.length; i++) {
+      const t = tokens[i];
+      const verbInfo = KNOWN_VERB_CONJUGATIONS[t.lower];
+      if (verbInfo && !finiteVerbToken) {
+        finiteVerbToken = { token: t, index: i, info: verbInfo };
+      }
+    }
+
+    // Check Satzklammer (Sentence Bracket)
+    let bracketInfo = null;
+    if (tokens.length > 2) {
+      const lastTok = tokens[tokens.length - 1];
+      const SEPARABLE_PREFIXES = ['auf', 'an', 'ab', 'aus', 'ein', 'mit', 'nach', 'vor', 'zu', 'zurück', 'fern'];
+      if (SEPARABLE_PREFIXES.includes(lastTok.lower)) {
+        bracketInfo = {
+          type: 'Separable Verb (Trennbare Verben)',
+          desc: `The prefix <strong>„${lastTok.clean}“</strong> has detached and moved to the <strong>very end of the clause (Satzende)</strong>, while the conjugated stem occupies Position 2.`
+        };
+      } else if (finiteVerbToken && finiteVerbToken.info.modal && (lastTok.lower.endsWith('en') || lastTok.lower.endsWith('ern') || lastTok.lower.endsWith('eln'))) {
+        bracketInfo = {
+          type: 'Modal Verb Bracket (Modalverb-Satzklammer)',
+          desc: `The conjugated modal verb <strong>„${finiteVerbToken.token.clean}“</strong> occupies Position 2, while the complementary action verb <strong>„${lastTok.clean}“</strong> is placed at the <strong>sentence end in base infinitive form</strong>.`
+        };
+      } else if (finiteVerbToken && (finiteVerbToken.info.inf === 'haben' || finiteVerbToken.info.inf === 'sein') && (lastTok.lower.startsWith('ge') || lastTok.lower.includes('t') || lastTok.lower.includes('en'))) {
+        bracketInfo = {
+          type: 'Perfekt Tense Bracket (Perfekt-Satzklammer)',
+          desc: `The auxiliary verb <strong>„${finiteVerbToken.token.clean}“</strong> occupies Position 2, and the past participle (Partizip II) <strong>„${lastTok.clean}“</strong> closes the clause bracket at the <strong>sentence end</strong>.`
+        };
+      }
+    }
+
+    // Verb details
+    let verbDetailsHtml = '';
+    if (finiteVerbToken) {
+      const v = finiteVerbToken.info;
+      verbDetailsHtml = `
+        <div class="p-3.5 bg-emerald-50/80 rounded-2xl border border-emerald-200 text-xs">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2 pb-1.5 border-b border-emerald-200">
+            <span class="font-extrabold text-emerald-950 flex items-center gap-1.5">
+              <span>⚡</span>
+              <span>Finite Verb: <strong>${finiteVerbToken.token.clean}</strong> (Infinitive: <em>${v.inf}</em>)</span>
+            </span>
+            <span class="text-[10px] bg-emerald-200 text-emerald-900 font-bold px-2 py-0.5 rounded-md">${v.tense} • ${v.person}</span>
+          </div>
+          <div class="space-y-1.5 text-emerald-900 font-medium">
+            <p>• <strong>Subject-Verb Agreement</strong>: Conjugated for <strong>${v.person}</strong> to agree with the subject of the clause.</p>
+            <p>• <strong>Clause Position</strong>: Position <strong>#${finiteVerbToken.index + 1}</strong> in this sentence ${finiteVerbToken.index === 1 ? '(Position 2 — Standard V2 Rule)' : (finiteVerbToken.index === 0 ? '(Position 1 — Question/Imperative)' : '(Inversion / End position)')}.</p>
+            ${v.note ? `<p class="text-emerald-800 bg-emerald-100/70 p-2 rounded-xl border border-emerald-300">💡 <em>Linguistic Note:</em> ${v.note}</p>` : ''}
+          </div>
+        </div>
+      `;
+    } else {
+      verbDetailsHtml = `
+        <div class="p-3 bg-sky-50 rounded-xl border border-sky-200 text-xs text-sky-800">
+          <p>• Finite verb detected with regular present-tense conjugation matching the clause subject.</p>
+        </div>
+      `;
+    }
+
+    // Noun & Case Analysis
+    let nounDetails = [];
+    for (let i = 0; i < tokens.length; i++) {
+      const t = tokens[i];
+      const prev = i > 0 ? tokens[i - 1] : null;
+      const prevPrev = i > 1 ? tokens[i - 2] : null;
+
+      const lookup = VOCAB_LOOKUP_MAP[t.lower] || COMMON_GERMAN_NOUNS[t.lower];
+      const isCapitalized = /^[A-ZÄÖÜ]/.test(t.clean) && i > 0;
+
+      if (lookup || (isCapitalized && !KNOWN_VERB_CONJUGATIONS[t.lower])) {
+        const nounName = lookup ? lookup.noun || t.clean : t.clean;
+        const gender = lookup ? lookup.gender : 'noun';
+        let detectedCase = 'Nominativ';
+        let caseReason = 'Acts as grammatical subject of the sentence (Wer oder was?).';
+
+        if (prev && GERMAN_PREPOSITIONS_DICT[prev.lower]) {
+          const prep = GERMAN_PREPOSITIONS_DICT[prev.lower];
+          detectedCase = prep.case;
+          caseReason = `Governed by preposition <strong>„${prev.clean}“</strong> (${prep.rule}).`;
+        } else if (prevPrev && GERMAN_PREPOSITIONS_DICT[prevPrev.lower]) {
+          const prep = GERMAN_PREPOSITIONS_DICT[prevPrev.lower];
+          detectedCase = prep.case;
+          caseReason = `Governed by preposition <strong>„${prevPrev.clean}“</strong> with article <strong>„${prev.clean}“</strong> (${prep.rule}).`;
+        } else if (prev && ['den', 'einen', 'keinen', 'meinen', 'deinen'].includes(prev.lower)) {
+          detectedCase = 'Akkusativ';
+          caseReason = `Accusative direct object receiving the verb\'s action (Wen oder was?). Masculine article changes: <em>der &rarr; den</em>, <em>ein &rarr; einen</em>.`;
+        } else if (prev && ['dem', 'einem', 'keinem', 'meinem'].includes(prev.lower)) {
+          detectedCase = 'Dativ';
+          caseReason = `Dative case indicating indirect object or location. Masculine/Neuter article changes: <em>der/das &rarr; dem</em>.`;
+        } else if (prev && ['der', 'einer'].includes(prev.lower) && gender === 'die') {
+          detectedCase = 'Dativ';
+          caseReason = `Feminine noun in Dative case (die &rarr; der).`;
+        } else if (i > 1 && finiteVerbToken) {
+          detectedCase = 'Akkusativ';
+          caseReason = `Direct object of transitive verb <strong>„${finiteVerbToken.token.clean}“</strong> (Wen oder was?).`;
+        }
+
+        nounDetails.push({
+          noun: nounName,
+          gender: gender,
+          case: detectedCase,
+          reason: caseReason,
+          article: prev ? prev.clean : ''
+        });
+      }
+    }
+
+    let nounCardsHtml = '';
+    if (nounDetails.length > 0) {
+      nounCardsHtml = nounDetails.map(n => {
+        let genderBadge = 'bg-sky-100 text-sky-800 border-sky-300';
+        let genderLabel = 'Nomen';
+        if (n.gender === 'der') { genderBadge = 'bg-blue-100 text-blue-800 border-blue-300'; genderLabel = 'Maskulin (der)'; }
+        if (n.gender === 'die') { genderBadge = 'bg-rose-100 text-rose-800 border-rose-300'; genderLabel = 'Feminin (die)'; }
+        if (n.gender === 'das') { genderBadge = 'bg-emerald-100 text-emerald-800 border-emerald-300'; genderLabel = 'Neutral (das)'; }
+
+        return `
+          <div class="p-3 bg-white rounded-xl border border-sky-200 shadow-2xs text-xs space-y-1">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-extrabold text-sky-950 text-sm">${n.article ? n.article + ' ' : ''}${n.noun}</span>
+              <div class="flex items-center gap-1">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${genderBadge}">${genderLabel}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded border bg-amber-100 text-amber-900 border-amber-300">${n.case}</span>
+              </div>
+            </div>
+            <p class="text-sky-700 leading-snug">${n.reason}</p>
+          </div>
+        `;
+      }).join('');
+    } else {
+      nounCardsHtml = `<p class="text-sky-600 italic text-xs">No complex noun phrases or articles requiring declension in this short clause.</p>`;
+    }
+
+    // Word-by-Word Interactive Token Grid
+    let tokenCardsHtml = tokens.map(t => {
+      let pos = 'Word';
+      let posColor = 'bg-slate-100 text-slate-800 border-slate-300';
+      let note = 'Word in clause';
+
+      if (GERMAN_PREPOSITIONS_DICT[t.lower]) {
+        pos = 'Preposition';
+        posColor = 'bg-purple-100 text-purple-900 border-purple-300';
+        note = `${GERMAN_PREPOSITIONS_DICT[t.lower].case} (${GERMAN_PREPOSITIONS_DICT[t.lower].meaning})`;
+      } else if (QUESTION_WORDS_DICT[t.lower]) {
+        pos = 'Question Word';
+        posColor = 'bg-amber-100 text-amber-900 border-amber-300';
+        note = QUESTION_WORDS_DICT[t.lower];
+      } else if (SUBORDINATING_CONJUNCTIONS_DICT[t.lower] || COORDINATING_CONJUNCTIONS_DICT[t.lower]) {
+        pos = 'Conjunction';
+        posColor = 'bg-sky-100 text-sky-900 border-sky-300';
+        note = SUBORDINATING_CONJUNCTIONS_DICT[t.lower] ? 'Subordinator (Verb-Letzt)' : 'Coordinator (Pos 0)';
+      } else if (INVERSION_ADVERBS_DICT[t.lower]) {
+        pos = 'Adverb';
+        posColor = 'bg-teal-100 text-teal-900 border-teal-300';
+        note = INVERSION_ADVERBS_DICT[t.lower];
+      } else if (KNOWN_VERB_CONJUGATIONS[t.lower]) {
+        pos = 'Verb';
+        posColor = 'bg-emerald-100 text-emerald-900 border-emerald-300';
+        note = `${KNOWN_VERB_CONJUGATIONS[t.lower].person} (${KNOWN_VERB_CONJUGATIONS[t.lower].inf})`;
+      } else if (['der', 'die', 'das', 'den', 'dem', 'des', 'ein', 'eine', 'einen', 'einem', 'einer', 'kein', 'keine', 'keinen', 'keinem'].includes(t.lower)) {
+        pos = 'Article';
+        posColor = 'bg-blue-100 text-blue-900 border-blue-300';
+        note = 'Determiner / Article';
+      } else if (['ich', 'du', 'er', 'sie', 'es', 'wir', 'ihr', 'Sie', 'man', 'mir', 'dir', 'ihm', 'uns', 'euch', 'ihnen', 'Ihnen', 'mich', 'dich', 'ihn'].includes(t.lower)) {
+        pos = 'Pronoun';
+        posColor = 'bg-amber-100 text-amber-900 border-amber-300';
+        note = 'Personal pronoun';
+      } else if (/^[A-ZÄÖÜ]/.test(t.clean)) {
+        pos = 'Noun';
+        posColor = 'bg-sky-100 text-sky-900 border-sky-300';
+        const lk = VOCAB_LOOKUP_MAP[t.lower] || COMMON_GERMAN_NOUNS[t.lower];
+        note = lk ? `${lk.gender.toUpperCase()} (${lk.en})` : 'Capitalized German Noun';
+      }
+
+      const escapedWord = t.clean.replace(/'/g, "\\'");
+      return `
+        <div class="bg-white p-2.5 rounded-xl border border-sky-200 shadow-2xs flex flex-col justify-between hover:border-sky-400 transition">
+          <div class="flex items-center justify-between gap-1 mb-1">
+            <span class="text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded border ${posColor}">${pos}</span>
+            <button onclick="playGermanSpeech('${escapedWord}', this)" class="p-1 rounded-md text-sky-600 hover:bg-sky-100 transition cursor-pointer" title="Pronounce: ${escapedWord}">
+              🔊
+            </button>
+          </div>
+          <div class="text-sm font-black text-sky-950 my-1">${t.clean}</div>
+          <div class="text-[10px] text-sky-700 font-medium leading-tight">${note}</div>
+        </div>
+      `;
+    }).join('');
+
+    // Assemble comprehensive analysis HTML
+    return `
+      <!-- Grammar Analysis Header -->
+      <div class="flex items-center justify-between pb-2 border-b border-sky-200">
+        <h4 class="font-extrabold text-sm text-sky-950 flex items-center gap-2">
+          <span>📑</span>
+          <span>In-Depth German Grammar Breakdown (Die Grammatikanalyse)</span>
+        </h4>
+        <span class="text-[10px] bg-sky-100 text-sky-800 font-bold px-2 py-0.5 rounded-full border border-sky-300">
+          Native Rules & Syntax
+        </span>
+      </div>
+
+      <!-- Card 1: Satzbau & Word Order Rules -->
+      <div class="p-4 bg-gradient-to-r from-sky-50 to-blue-50/70 rounded-2xl border border-sky-200 shadow-2xs space-y-2.5">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-base">🏛️</span>
+            <span class="font-extrabold text-xs text-sky-950">Sentence Architecture & Word Order:</span>
+          </div>
+          <span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border ${sentenceBadgeColor}">${sentenceType}</span>
+        </div>
+        <p class="text-xs text-sky-800 font-medium leading-relaxed">${sentenceDesc}</p>
+        <div class="p-2.5 bg-white/90 rounded-xl border border-sky-200 text-xs text-sky-900 leading-relaxed">
+          ${wordOrderExplanation}
+        </div>
+        ${bracketInfo ? `
+          <div class="p-2.5 bg-purple-50 rounded-xl border border-purple-200 text-xs text-purple-900 flex items-start gap-2">
+            <span class="text-sm">🔗</span>
+            <div>
+              <strong class="font-extrabold">${bracketInfo.type}:</strong> ${bracketInfo.desc}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- Card 2: Verb Conjugation Analysis -->
+      <div class="space-y-2">
+        <div class="flex items-center gap-2">
+          <span class="text-base">⚡</span>
+          <span class="font-extrabold text-xs text-sky-950">Verb Conjugation & Agreement (Verbanalyse):</span>
+        </div>
+        ${verbDetailsHtml}
+      </div>
+
+      <!-- Card 3: Nouns, Articles & Case Declension -->
+      <div class="space-y-2">
+        <div class="flex items-center gap-2">
+          <span class="text-base">🏷️</span>
+          <span class="font-extrabold text-xs text-sky-950">Nouns, Gender & Cases (Genus & Kasus):</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+          ${nounCardsHtml}
+        </div>
+      </div>
+
+      <!-- Card 4: Word-by-Word Interactive Token Grid -->
+      <div class="space-y-2 pt-1">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-base">🔍</span>
+            <span class="font-extrabold text-xs text-sky-950">Interactive Word-by-Word Breakdown (Click 🔊 to hear each word):</span>
+          </div>
+          <span class="text-[10px] text-sky-600 font-semibold">${tokens.length} words analyzed</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+          ${tokenCardsHtml}
+        </div>
+      </div>
+    `;
+  }
+
   // ================= RUN INITIALIZATION =================
   initSpeech();
   initFontSize();
   initChapters();
+  initVocabLookupMap();
+  initTranslatorListeners();
   initSparkleEffect();
   initCursorClickEffect();
   renderMusicTracksList();

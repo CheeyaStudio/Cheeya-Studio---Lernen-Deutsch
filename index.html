@@ -223,6 +223,127 @@
         </div>
       </div>
 
+      <!-- ================= DASHBOARD: AI SMART TRANSLATOR & GERMAN GRAMMAR ANALYZER ================= -->
+      <div id="translatorSection" class="blue-glass-card p-5 md:p-7 border-2 border-sky-300 shadow-xl flex-shrink-0 relative overflow-hidden bg-gradient-to-br from-white/95 via-sky-50/90 to-blue-50/90 mb-2">
+        
+        <!-- Header -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-sky-200">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-500 to-blue-600 text-white flex items-center justify-center text-2xl shadow-md flex-shrink-0">
+              🤖
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-lg md:text-xl font-black text-sky-950">AI Smart German Translator & Grammar Analyzer</h3>
+                <span class="text-[10px] bg-sky-100 text-sky-800 font-extrabold px-2.5 py-0.5 rounded-full border border-sky-300">A1-C1 Deep Analysis</span>
+              </div>
+              <p class="text-xs text-sky-700 font-medium mt-0.5">
+                Translate between English, Indonesian & German with in-depth grammatical breakdown (verb conjugations, noun articles der/die/das, Nominativ/Akkusativ/Dativ cases & V2 word order) and native audio pronunciation.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Language Selector Bar & Controls -->
+        <div class="py-3 flex flex-wrap items-center justify-between gap-2.5">
+          <div class="flex items-center gap-2">
+            <!-- Source Lang -->
+            <div class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-sky-300 shadow-2xs">
+              <span class="text-xs font-bold text-sky-700">From:</span>
+              <select id="transSourceLang" onchange="handleTranslatorLangChange()" class="bg-transparent text-xs font-extrabold text-sky-950 focus:outline-none cursor-pointer">
+                <option value="en" selected>🇬🇧 English</option>
+                <option value="id">🇮🇩 Indonesian</option>
+                <option value="de">🇩🇪 German (Deutsch)</option>
+              </select>
+            </div>
+
+            <!-- Swap Button -->
+            <button onclick="swapTranslatorLanguages()" class="p-2 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-800 border border-sky-300 transition shadow-2xs cursor-pointer" title="Swap languages">
+              ⇄
+            </button>
+
+            <!-- Target Lang -->
+            <div class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-sky-300 shadow-2xs">
+              <span class="text-xs font-bold text-sky-700">To:</span>
+              <select id="transTargetLang" onchange="handleTranslatorLangChange()" class="bg-transparent text-xs font-extrabold text-sky-950 focus:outline-none cursor-pointer">
+                <option value="de" selected>🇩🇪 German (Deutsch)</option>
+                <option value="en">🇬🇧 English</option>
+                <option value="id">🇮🇩 Indonesian</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Quick Sample Sentences Chips -->
+          <div class="flex flex-wrap items-center gap-1.5 text-[11px]">
+            <span class="font-bold text-sky-700 mr-1">Examples:</span>
+            <button onclick="setTranslatorSample('Ich lerne jeden Tag fleißig Deutsch.', 'de', 'en')" class="px-2.5 py-1 rounded-lg bg-sky-100/80 hover:bg-sky-200 border border-sky-200 text-sky-900 font-semibold cursor-pointer">
+              Ich lerne Deutsch
+            </button>
+            <button onclick="setTranslatorSample('Wir fahren morgen mit dem Zug nach Berlin.', 'de', 'en')" class="px-2.5 py-1 rounded-lg bg-sky-100/80 hover:bg-sky-200 border border-sky-200 text-sky-900 font-semibold cursor-pointer">
+              Wir fahren mit dem Zug
+            </button>
+            <button onclick="setTranslatorSample('Saya ingin belajar bahasa Jerman dengan mudah.', 'id', 'de')" class="px-2.5 py-1 rounded-lg bg-sky-100/80 hover:bg-sky-200 border border-sky-200 text-sky-900 font-semibold cursor-pointer">
+              Saya ingin belajar (ID)
+            </button>
+            <button onclick="setTranslatorSample('Where do you come from and what is your name?', 'en', 'de')" class="px-2.5 py-1 rounded-lg bg-sky-100/80 hover:bg-sky-200 border border-sky-200 text-sky-900 font-semibold cursor-pointer">
+              Where do you come from? (EN)
+            </button>
+          </div>
+        </div>
+
+        <!-- Input & Output Dual Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2">
+          
+          <!-- Source Input Box -->
+          <div class="flex flex-col bg-white rounded-2xl border-2 border-sky-200 p-4 shadow-sm focus-within:border-sky-500 transition">
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-sky-100 text-xs">
+              <span id="transSourceLabel" class="font-black text-sky-900 uppercase tracking-wider text-[11px]">🇬🇧 English Sentence</span>
+              <button onclick="clearTranslatorInput()" class="text-sky-400 hover:text-sky-700 font-bold transition">Clear</button>
+            </div>
+            <textarea id="transInputText" rows="4" placeholder="Enter or paste your sentence here..." class="w-full resize-none text-sm text-sky-950 font-medium focus:outline-none placeholder-sky-300" onkeydown="if(event.ctrlKey && event.key === 'Enter') translateAndAnalyze()"></textarea>
+            
+            <div class="flex items-center justify-between pt-3 mt-auto border-t border-sky-100 text-xs">
+              <span id="transCharCount" class="text-[11px] text-sky-400 font-medium">0 / 500</span>
+              <button onclick="translateAndAnalyze()" id="transSubmitBtn" class="btn-pastel-blue py-2 px-5 rounded-xl text-xs font-black flex items-center gap-2 shadow-sm hover:shadow-md cursor-pointer transition">
+                <span>⚡</span>
+                <span>Translate & Analyze</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Target Output Box -->
+          <div class="flex flex-col bg-sky-50/60 rounded-2xl border-2 border-sky-200 p-4 shadow-sm relative">
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-sky-200 text-xs">
+              <span id="transTargetLabel" class="font-black text-sky-900 uppercase tracking-wider text-[11px]">🇩🇪 German Translation</span>
+              <div class="flex items-center gap-1.5">
+                <button id="transAudioBtn" onclick="playTranslatorTargetAudio()" class="p-1.5 rounded-lg bg-white hover:bg-sky-100 text-sky-700 border border-sky-200 transition cursor-pointer" title="Listen to pronunciation">
+                  🔊
+                </button>
+                <button onclick="copyTranslatorOutput()" class="p-1.5 rounded-lg bg-white hover:bg-sky-100 text-sky-700 border border-sky-200 transition cursor-pointer" title="Copy text">
+                  📋
+                </button>
+              </div>
+            </div>
+
+            <div id="transOutputText" class="text-base md:text-lg font-bold text-sky-950 min-h-[70px] flex items-center">
+              <span class="text-sky-400 text-xs font-medium italic">Translation and grammar breakdown will appear here...</span>
+            </div>
+
+            <div id="transLoadingIndicator" class="hidden absolute inset-0 bg-white/80 rounded-2xl backdrop-blur-xs flex items-center justify-center gap-2 text-sky-800 font-bold text-xs">
+              <div class="w-5 h-5 border-2 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
+              <span>Analyzing grammar & translating...</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ================= IN-DEPTH GERMAN GRAMMAR ANALYSIS CONTAINER ================= -->
+        <div id="grammarAnalysisContainer" class="mt-5 space-y-4 hidden">
+          <!-- Populated dynamically by app.js -->
+        </div>
+
+      </div>
+
       <!-- Chapter Directory Grid (12 Cards) -->
       <div class="flex-shrink-0">
         <div class="flex items-center justify-between mb-4">
@@ -528,9 +649,9 @@
             <p class="text-xs md:text-sm text-sky-700">Complete vocabulary list for this chapter (Nouns with gender articles, Verbs & Essential Phrases) with native German pronunciation audio.</p>
           </div>
           <div class="flex flex-wrap items-center gap-2">
-            <button onclick="openAudioPronunciationModal()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-700 hover:to-sky-700 text-white text-xs font-extrabold flex items-center gap-1.5 transition shadow-sm cursor-pointer" title="Latih pelafalan audio bahasa Jerman (TTS Trainer)">
+            <button onclick="openAudioPronunciationModal()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-700 hover:to-sky-700 text-white text-xs font-extrabold flex items-center gap-1.5 transition shadow-sm cursor-pointer" title="Practice German audio pronunciation (TTS Trainer)">
               <span>🔊</span>
-              <span>Audio Pelafalan (TTS)</span>
+              <span>German Audio (TTS)</span>
             </button>
             <button onclick="openFlashcardModal()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-extrabold flex items-center gap-1.5 transition shadow-sm cursor-pointer" title="Practice vocabulary with interactive 3D flashcards">
               <span>🎴</span>
@@ -661,10 +782,10 @@
           <span class="text-2xl">🔊</span>
           <div>
             <h3 class="font-extrabold text-base text-sky-950 flex items-center gap-2">
-              <span>Audio Pelafalan Otomatis (German TTS)</span>
+              <span>German Audio Pronunciation (TTS)</span>
               <span id="ttsChapterBadge" class="text-[10px] bg-sky-100 text-sky-800 font-bold px-2 py-0.5 rounded-full border border-sky-300">Kapitel 1</span>
             </h3>
-            <p class="text-xs text-sky-600 font-medium">Latih pelafalan audio bahasa Jerman asli untuk melatih pendengaran & aksen 🇩🇪</p>
+            <p class="text-xs text-sky-600 font-medium">Practice authentic native German speech to improve listening comprehension & accent 🇩🇪</p>
           </div>
         </div>
         <button onclick="closeAudioPronunciationModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
@@ -676,13 +797,13 @@
       <div class="my-3 p-3.5 bg-sky-50/80 rounded-2xl border border-sky-200">
         <label for="customTtsInput" class="text-xs font-bold text-sky-900 block mb-1.5 flex items-center gap-1.5">
           <span>✍️</span>
-          <span>Tes Pelafalan Kata / Kalimat Jerman Kustom:</span>
+          <span>Test Custom German Word / Sentence Pronunciation:</span>
         </label>
         <div class="flex items-center gap-2">
-          <input type="text" id="customTtsInput" placeholder="Ketik kata bahasa Jerman, misal: Guten Tag, wie geht's?..." class="flex-1 bg-white text-sky-950 text-xs font-semibold px-3 py-2 rounded-xl border border-sky-300 focus:outline-none focus:border-sky-500 shadow-2xs" onkeydown="if(event.key==='Enter') playCustomTtsInput()">
+          <input type="text" id="customTtsInput" placeholder="Type any German text, e.g. Guten Tag, wie geht's?..." class="flex-1 bg-white text-sky-950 text-xs font-semibold px-3 py-2 rounded-xl border border-sky-300 focus:outline-none focus:border-sky-500 shadow-2xs" onkeydown="if(event.key==='Enter') playCustomTtsInput()">
           <button onclick="playCustomTtsInput()" class="btn-pastel-blue py-2 px-3.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs cursor-pointer flex-shrink-0">
             <span>🔊</span>
-            <span>Ucapkan</span>
+            <span>Speak</span>
           </button>
         </div>
       </div>
@@ -692,13 +813,13 @@
         <div class="flex items-center gap-2">
           <button id="ttsAutoPlayBtn" onclick="toggleAutoPlayAllVocab()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-xs cursor-pointer">
             <span id="ttsAutoPlayIcon">▶️</span>
-            <span id="ttsAutoPlayText">Putar Berurutan (Auto Play)</span>
+            <span id="ttsAutoPlayText">Auto Play Chapter Vocab</span>
           </button>
           <span id="ttsNowPlayingText" class="text-[11px] text-sky-600 font-semibold truncate max-w-[180px]"></span>
         </div>
         <div class="flex items-center gap-1.5">
-          <span class="text-[11px] font-bold text-sky-700">Kecepatan:</span>
-          <button id="ttsSpeedBtn-08" onclick="setTtsSpeed(0.8)" class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-white text-sky-800 border border-sky-200 hover:bg-sky-100 cursor-pointer">0.8x (Lambat)</button>
+          <span class="text-[11px] font-bold text-sky-700">Speed:</span>
+          <button id="ttsSpeedBtn-08" onclick="setTtsSpeed(0.8)" class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-white text-sky-800 border border-sky-200 hover:bg-sky-100 cursor-pointer">0.8x (Slow)</button>
           <button id="ttsSpeedBtn-10" onclick="setTtsSpeed(1.0)" class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-sky-600 text-white shadow-2xs cursor-pointer">1.0x (Normal)</button>
         </div>
       </div>
@@ -724,7 +845,7 @@
               <span>Wortschatz Flashcard Trainer</span>
               <span id="fcChapterBadge" class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full border border-amber-300">Kapitel 1</span>
             </h3>
-            <p class="text-xs text-sky-600 font-medium">Latih ingatan kosakata Jerman dengan kartu 3D bolak-balik ✨</p>
+            <p class="text-xs text-sky-600 font-medium">Practice and master German vocabulary with 3D interactive flashcards ✨</p>
           </div>
         </div>
         <button onclick="closeFlashcardModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
@@ -736,14 +857,14 @@
       <div class="py-2.5 flex flex-wrap items-center justify-between gap-2 border-b border-sky-100 text-xs">
         <div class="flex items-center gap-1.5">
           <!-- Filter: All / Nouns / Verbs / Phrases -->
-          <button id="fcFilter-all" onclick="setFlashcardFilter('all')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-sky-600 text-white shadow-2xs cursor-pointer">Semua</button>
-          <button id="fcFilter-nouns" onclick="setFlashcardFilter('nouns')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white text-sky-800 border border-sky-200 hover:bg-sky-100 cursor-pointer">Nomen</button>
-          <button id="fcFilter-verbs" onclick="setFlashcardFilter('verbs')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white text-sky-800 border border-sky-200 hover:bg-sky-100 cursor-pointer">Verben</button>
-          <button id="fcFilter-phrases" onclick="setFlashcardFilter('phrases')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white text-sky-800 border border-sky-200 hover:bg-sky-100 cursor-pointer">Redemittel</button>
+          <button id="fcFilter-all" onclick="setFlashcardFilter('all')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-sky-600 text-white shadow-2xs cursor-pointer">All</button>
+          <button id="fcFilter-nouns" onclick="setFlashcardFilter('nouns')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white text-sky-800 border border-sky-200 hover:bg-sky-100 cursor-pointer">Nouns</button>
+          <button id="fcFilter-verbs" onclick="setFlashcardFilter('verbs')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white text-sky-800 border border-sky-200 hover:bg-sky-100 cursor-pointer">Verbs</button>
+          <button id="fcFilter-phrases" onclick="setFlashcardFilter('phrases')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white text-sky-800 border border-sky-200 hover:bg-sky-100 cursor-pointer">Phrases</button>
         </div>
         <div class="flex items-center gap-2">
           <span id="fcCounter" class="font-extrabold text-sky-900 bg-sky-100 px-2 py-0.5 rounded-lg text-[11px]">1 / 30</span>
-          <span id="fcMasteryStats" class="font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-lg text-[11px]">🌟 Hafal: 0</span>
+          <span id="fcMasteryStats" class="font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-lg text-[11px]">🌟 Mastered: 0</span>
         </div>
       </div>
 
@@ -763,14 +884,14 @@
               <p id="fcFrontHint" class="text-xs text-sky-600 font-semibold mt-2">Deutsch (German)</p>
             </div>
             <div class="text-[11px] text-sky-500 font-bold flex items-center gap-1">
-              <span>🔄</span> Klik kartu untuk melihat arti
+              <span>🔄</span> Click card or press Spacebar to flip
             </div>
           </div>
 
-          <!-- BACK FACE (ENGLISH / INDONESIAN) -->
+          <!-- BACK FACE (ENGLISH / MEANING) -->
           <div class="flashcard-face flashcard-back">
             <div class="flex items-center justify-between w-full mb-3">
-              <span id="fcBackBadge" class="badge-der px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase tracking-wider">Arti / Meaning</span>
+              <span id="fcBackBadge" class="badge-der px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase tracking-wider">Meaning</span>
               <button onclick="event.stopPropagation(); playGermanSpeechForFlashcard();" class="p-2 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-700 transition cursor-pointer" title="Listen again">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
               </button>
@@ -780,7 +901,7 @@
               <h4 id="fcBackMeaning" class="text-2xl md:text-3xl font-black text-sky-950">apple</h4>
             </div>
             <div class="text-[11px] text-sky-500 font-bold flex items-center gap-1">
-              <span>🔄</span> Klik untuk membalik kembali
+              <span>🔄</span> Click to flip back
             </div>
           </div>
         </div>
@@ -791,31 +912,31 @@
         <!-- Prev, Flip, Next, Shuffle -->
         <div class="flex items-center justify-between gap-2">
           <button onclick="prevFlashcard()" class="flex-1 py-2 px-3 rounded-xl bg-white hover:bg-sky-100 border border-sky-300 text-sky-800 text-xs font-extrabold flex items-center justify-center gap-1 transition shadow-xs cursor-pointer">
-            <span>◀</span> Sebelumnya
+            <span>◀</span> Previous
           </button>
           <button onclick="flipFlashcard()" class="py-2 px-4 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-extrabold flex items-center justify-center gap-1 transition shadow-xs cursor-pointer" title="Flip Card (Spacebar)">
-            <span>🔄</span> Balik
+            <span>🔄</span> Flip
           </button>
           <button onclick="nextFlashcard()" class="flex-1 py-2 px-3 rounded-xl bg-white hover:bg-sky-100 border border-sky-300 text-sky-800 text-xs font-extrabold flex items-center justify-center gap-1 transition shadow-xs cursor-pointer">
-            Berikutnya <span>▶</span>
+            Next <span>▶</span>
           </button>
-          <button onclick="shuffleFlashcards()" class="py-2 px-3 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-800 text-xs font-extrabold flex items-center justify-center gap-1 transition shadow-xs cursor-pointer" title="Acak urutan kartu">
-            <span>🔀</span> Acak
+          <button onclick="shuffleFlashcards()" class="py-2 px-3 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-800 text-xs font-extrabold flex items-center justify-center gap-1 transition shadow-xs cursor-pointer" title="Shuffle flashcard order">
+            <span>🔀</span> Shuffle
           </button>
         </div>
 
         <!-- Mastery Buttons: Still Learning vs Mastered -->
         <div class="grid grid-cols-2 gap-2 pt-1 border-t border-sky-100">
           <button onclick="markFlashcardMastery(false)" class="py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer">
-            <span>❌</span> Masih Lupa / Belajar Lagi
+            <span>❌</span> Needs Review
           </button>
           <button onclick="markFlashcardMastery(true)" class="py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer">
-            <span>✅</span> Sudah Hafal!
+            <span>✅</span> Mastered!
           </button>
         </div>
 
         <p class="text-[10px] text-sky-500 text-center font-medium">
-          ⌨️ <em>Shortcut: [Spasi] Balik • [← / →] Pindah Kartu • [S] Putar Suara</em>
+          ⌨️ <em>Shortcut: [Space] Flip • [← / →] Navigate • [S] Audio Pronunciation</em>
         </p>
       </div>
 
@@ -835,7 +956,7 @@
               <span>Der, Die, Das Master Trainer</span>
               <span class="text-[10px] bg-sky-100 text-sky-800 font-bold px-2 py-0.5 rounded-full border border-sky-300">Mini-Game</span>
             </h3>
-            <p class="text-xs text-sky-600 font-medium">Tebak artikel yang tepat untuk setiap kata benda Jerman!</p>
+            <p class="text-xs text-sky-600 font-medium">Guess the correct article (der, die, das) for each German noun!</p>
           </div>
         </div>
         <button onclick="closeArticleGameModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
@@ -846,7 +967,7 @@
       <!-- Live Score & Streak Bar -->
       <div class="py-2.5 flex items-center justify-between border-b border-sky-100 text-xs">
         <div class="flex items-center gap-2 font-extrabold">
-          <span class="text-sky-800 bg-sky-100 px-2.5 py-1 rounded-xl">⭐ Skor: <span id="agScore" class="text-sky-600">0</span></span>
+          <span class="text-sky-800 bg-sky-100 px-2.5 py-1 rounded-xl">⭐ Score: <span id="agScore" class="text-sky-600">0</span></span>
           <span class="text-amber-800 bg-amber-100 px-2.5 py-1 rounded-xl">🔥 Streak: <span id="agStreak" class="text-amber-600">0</span></span>
         </div>
         <div class="flex items-center gap-2">
@@ -867,15 +988,15 @@
         <div class="grid grid-cols-3 gap-3 w-full mt-6">
           <button id="agBtn-der" onclick="handleArticleChoice('der')" class="btn-article-der py-3.5 px-2 rounded-2xl text-center cursor-pointer">
             <div class="text-xl font-black">der</div>
-            <div class="text-[10px] font-bold opacity-90">Maskulin (1)</div>
+            <div class="text-[10px] font-bold opacity-90">Masculine (1)</div>
           </button>
           <button id="agBtn-die" onclick="handleArticleChoice('die')" class="btn-article-die py-3.5 px-2 rounded-2xl text-center cursor-pointer">
             <div class="text-xl font-black">die</div>
-            <div class="text-[10px] font-bold opacity-90">Feminin (2)</div>
+            <div class="text-[10px] font-bold opacity-90">Feminine (2)</div>
           </button>
           <button id="agBtn-das" onclick="handleArticleChoice('das')" class="btn-article-das py-3.5 px-2 rounded-2xl text-center cursor-pointer">
             <div class="text-xl font-black">das</div>
-            <div class="text-[10px] font-bold opacity-90">Neutral (3)</div>
+            <div class="text-[10px] font-bold opacity-90">Neuter (3)</div>
           </button>
         </div>
 
@@ -888,17 +1009,17 @@
       <!-- GAME OVER SUMMARY AREA (HIDDEN INITIALLY) -->
       <div id="agSummaryArea" class="py-8 flex flex-col items-center justify-center text-center hidden">
         <div class="text-4xl mb-2">🎉🏆</div>
-        <h4 class="text-2xl font-black text-sky-950 mb-1">Latihan Selesai!</h4>
-        <p class="text-xs text-sky-600 font-medium mb-5">Kerja bagus! Kamu telah menyelesaikan semua kata benda di sesi ini.</p>
+        <h4 class="text-2xl font-black text-sky-950 mb-1">Session Complete!</h4>
+        <p class="text-xs text-sky-600 font-medium mb-5">Great job! You have practiced all nouns in this chapter.</p>
         
         <div class="grid grid-cols-3 gap-3 w-full max-w-sm mb-6 text-center text-xs">
           <div class="bg-white p-3 rounded-2xl border border-sky-200">
             <div id="agFinalScore" class="text-2xl font-black text-sky-600">0</div>
-            <div class="text-[11px] text-sky-700 font-bold">Total Skor</div>
+            <div class="text-[11px] text-sky-700 font-bold">Total Score</div>
           </div>
           <div class="bg-white p-3 rounded-2xl border border-sky-200">
             <div id="agAccuracy" class="text-2xl font-black text-emerald-600">0%</div>
-            <div class="text-[11px] text-emerald-700 font-bold">Akurasi</div>
+            <div class="text-[11px] text-emerald-700 font-bold">Accuracy</div>
           </div>
           <div class="bg-white p-3 rounded-2xl border border-sky-200">
             <div id="agBestStreak" class="text-2xl font-black text-amber-600">0</div>
@@ -907,18 +1028,18 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <button onclick="startArticleGame(currentChapterIndex)" class="btn-pastel-blue py-2.5 px-5 rounded-xl text-xs font-bold shadow-md cursor-pointer">
-            🔄 Main Lagi
+          <button onclick="startArticleGame()" class="btn-pastel-blue py-2.5 px-5 rounded-xl text-xs font-bold shadow-md cursor-pointer">
+            🔄 Play Again
           </button>
           <button onclick="closeArticleGameModal()" class="py-2.5 px-4 rounded-xl bg-white hover:bg-sky-100 border border-sky-300 text-sky-800 text-xs font-bold shadow-xs cursor-pointer">
-            Tutup
+            Close
           </button>
         </div>
       </div>
 
       <!-- Footer Note -->
       <div class="pt-2 border-t border-sky-100 text-[10px] text-sky-500 text-center font-medium">
-        ⌨️ <em>Shortcut: Tekan [1] untuk <strong>der</strong>, [2] untuk <strong>die</strong>, [3] untuk <strong>das</strong></em>
+        ⌨️ <em>Shortcut: Press [1] for <strong>der</strong>, [2] for <strong>die</strong>, [3] for <strong>das</strong></em>
       </div>
 
     </div>
@@ -930,7 +1051,7 @@
       <div class="flex items-center justify-between mb-4">
         <h3 class="font-extrabold text-sm text-sky-950 flex items-center gap-2">
           <span>📥</span>
-          <span>Simpan Halaman PDF & Catatan</span>
+          <span>Save & Export Annotated PDF Page</span>
         </h3>
         <button onclick="closeExportModal()" class="p-1 rounded-lg text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -938,7 +1059,7 @@
       </div>
 
       <p class="text-xs text-sky-700 mb-5 leading-relaxed">
-        Pilih format ekspor untuk halaman aktif saat ini lengkap dengan tulisan pena & stabilo tanganmu:
+        Choose an export format for the current active page complete with your digital pen & highlighter notes:
       </p>
 
       <div class="space-y-3">
@@ -947,8 +1068,8 @@
             🖼️
           </div>
           <div>
-            <h4 class="font-extrabold text-xs text-sky-950">Unduh Gambar PNG (High-Res)</h4>
-            <p class="text-[11px] text-sky-600">Simpan gambar halaman utuh langsung ke galeri / folder Download</p>
+            <h4 class="font-extrabold text-xs text-sky-950">Download PNG Image (High-Res)</h4>
+            <p class="text-[11px] text-sky-600">Save full page image with notes directly to your device downloads folder</p>
           </div>
         </button>
 
@@ -958,7 +1079,7 @@
           </div>
           <div>
             <h4 class="font-extrabold text-xs text-sky-950">Print / Save as PDF</h4>
-            <p class="text-[11px] text-sky-600">Buka dialog cetak browser untuk menyimpan langsung sebagai PDF</p>
+            <p class="text-[11px] text-sky-600">Open browser print dialog to save directly as a PDF document</p>
           </div>
         </button>
       </div>
@@ -967,6 +1088,6 @@
 
   <!-- SCRIPT LOGIC -->
   <script src="media-data.js?v=20260913_360q"></script>
-  <script src="app.js?v=20260913_tts_player"></script>
+  <script src="app.js?v=20260913_translator_en"></script>
 </body>
 </html>
