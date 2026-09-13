@@ -5215,43 +5215,43 @@ document.addEventListener('DOMContentLoaded', () => {
     'spricht': { inf: 'sprechen', person: '3rd Sing. (er/sie/es/man)', tense: 'Präsens', en: 'speaks', irregular: true, note: 'Strong verb with vowel shift: e -> i (er spricht)' },
     'sprechen': { inf: 'sprechen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'speak', irregular: false },
 
-    'trinke': { inf: 'trinken', person: '1st Sing. (ich)', tense: 'Präsens', en: 'drink', regular: true },
-    'trinkst': { inf: 'trinken', person: '2nd Sing. (du)', tense: 'Präsens', en: 'drink', regular: true },
-    'trinkt': { inf: 'trinken', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'drinks / drink', regular: true },
-    'trinken': { inf: 'trinken', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'drink', regular: true },
+    'trinke': { inf: 'trinken', person: '1st Sing. (ich)', tense: 'Präsens', en: 'drink', regular: true, governs: 'Akkusativ' },
+    'trinkst': { inf: 'trinken', person: '2nd Sing. (du)', tense: 'Präsens', en: 'drink', regular: true, governs: 'Akkusativ' },
+    'trinkt': { inf: 'trinken', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'drinks / drink', regular: true, governs: 'Akkusativ' },
+    'trinken': { inf: 'trinken', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'drink', regular: true, governs: 'Akkusativ' },
 
-    'esse': { inf: 'essen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'eat', irregular: true },
-    'isst': { inf: 'essen', person: '2nd/3rd Sing. (du/er/sie/es)', tense: 'Präsens', en: 'eats / eat', irregular: true, note: 'Strong verb with vowel shift: e -> i (du/er isst)' },
-    'essen': { inf: 'essen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'eat', irregular: false },
+    'esse': { inf: 'essen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'eat', irregular: true, governs: 'Akkusativ' },
+    'isst': { inf: 'essen', person: '2nd/3rd Sing. (du/er/sie/es)', tense: 'Präsens', en: 'eats / eat', irregular: true, governs: 'Akkusativ', note: 'Strong verb with vowel shift: e -> i (du/er isst)' },
+    'essen': { inf: 'essen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'eat', irregular: false, governs: 'Akkusativ' },
 
     'arbeite': { inf: 'arbeiten', person: '1st Sing. (ich)', tense: 'Präsens', en: 'work', regular: true },
     'arbeitest': { inf: 'arbeiten', person: '2nd Sing. (du)', tense: 'Präsens', en: 'work', regular: true, note: 'Stem ends in -t: epenthetic -e- inserted before -st' },
     'arbeitet': { inf: 'arbeiten', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'works / work', regular: true, note: 'Stem ends in -t: epenthetic -e- inserted before -t' },
     'arbeiten': { inf: 'arbeiten', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'work', regular: true },
 
-    'helfe': { inf: 'helfen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'help', irregular: true, dative: true },
-    'hilfst': { inf: 'helfen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'help', irregular: true, dative: true, note: 'Strong verb: e -> i. Strictly governs a DATIVE object (e.g. hilf mir, helfen Sie mir).' },
-    'hilft': { inf: 'helfen', person: '3rd Sing. (er/sie/es)', tense: 'Präsens', en: 'helps', irregular: true, dative: true, note: 'Strong verb: e -> i. Strictly governs a DATIVE object.' },
-    'helfen': { inf: 'helfen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'help', irregular: false, dative: true, note: 'Strictly governs a DATIVE object.' },
+    'helfe': { inf: 'helfen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'help', irregular: true, governs: 'Dativ', note: 'Strictly governs a DATIVE recipient (e.g. Ich helfe dir/dem Mann)' },
+    'hilfst': { inf: 'helfen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'help', irregular: true, governs: 'Dativ', note: 'Strong verb: e -> i. Strictly governs a DATIVE object.' },
+    'hilft': { inf: 'helfen', person: '3rd Sing. (er/sie/es)', tense: 'Präsens', en: 'helps', irregular: true, governs: 'Dativ', note: 'Strong verb: e -> i. Strictly governs a DATIVE object.' },
+    'helfen': { inf: 'helfen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'help', irregular: false, governs: 'Dativ', note: 'Strictly governs a DATIVE object.' },
 
-    'brauche': { inf: 'brauchen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'need', regular: true },
-    'brauchst': { inf: 'brauchen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'need', regular: true },
-    'braucht': { inf: 'brauchen', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'needs / need', regular: true },
-    'brauchen': { inf: 'brauchen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'need', regular: true },
+    'brauche': { inf: 'brauchen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'need', regular: true, governs: 'Akkusativ' },
+    'brauchst': { inf: 'brauchen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'need', regular: true, governs: 'Akkusativ' },
+    'braucht': { inf: 'brauchen', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'needs / need', regular: true, governs: 'Akkusativ' },
+    'brauchen': { inf: 'brauchen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'need', regular: true, governs: 'Akkusativ' },
 
-    'kaufe': { inf: 'kaufen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'buy', regular: true },
-    'kaufst': { inf: 'kaufen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'buy', regular: true },
-    'kauft': { inf: 'kaufen', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'buys / buy', regular: true },
-    'kaufen': { inf: 'kaufen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'buy', regular: true },
+    'kaufe': { inf: 'kaufen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'buy', regular: true, governs: 'Akkusativ' },
+    'kaufst': { inf: 'kaufen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'buy', regular: true, governs: 'Akkusativ' },
+    'kauft': { inf: 'kaufen', person: '3rd Sing. / 2nd Plur.', tense: 'Präsens', en: 'buys / buy', regular: true, governs: 'Akkusativ' },
+    'kaufen': { inf: 'kaufen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'buy', regular: true, governs: 'Akkusativ' },
 
-    'lese': { inf: 'lesen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'read', irregular: true },
-    'liest': { inf: 'lesen', person: '2nd/3rd Sing. (du/er/sie/es)', tense: 'Präsens', en: 'reads / read', irregular: true, note: 'Strong verb with vowel shift: e -> ie (du liest, er liest)' },
-    'lesen': { inf: 'lesen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'read', irregular: false },
+    'lese': { inf: 'lesen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'read', irregular: true, governs: 'Akkusativ' },
+    'liest': { inf: 'lesen', person: '2nd/3rd Sing. (du/er/sie/es)', tense: 'Präsens', en: 'reads / read', irregular: true, governs: 'Akkusativ', note: 'Strong verb with vowel shift: e -> ie (du liest, er liest)' },
+    'lesen': { inf: 'lesen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'read', irregular: false, governs: 'Akkusativ' },
 
-    'sehe': { inf: 'sehen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'see', irregular: true },
-    'siehst': { inf: 'sehen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'see', irregular: true, note: 'Strong verb with vowel shift: e -> ie (du siehst)' },
-    'sieht': { inf: 'sehen', person: '3rd Sing. (er/sie/es)', tense: 'Präsens', en: 'sees', irregular: true, note: 'Strong verb with vowel shift: e -> ie (er sieht)' },
-    'sehen': { inf: 'sehen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'see', irregular: false },
+    'sehe': { inf: 'sehen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'see', irregular: true, governs: 'Akkusativ' },
+    'siehst': { inf: 'sehen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'see', irregular: true, governs: 'Akkusativ', note: 'Strong verb with vowel shift: e -> ie (du siehst)' },
+    'sieht': { inf: 'sehen', person: '3rd Sing. (er/sie/es)', tense: 'Präsens', en: 'sees', irregular: true, governs: 'Akkusativ', note: 'Strong verb with vowel shift: e -> ie (er sieht)' },
+    'sehen': { inf: 'sehen', person: '1st/3rd Plur. (wir/sie/Sie)', tense: 'Präsens', en: 'see', irregular: false, governs: 'Akkusativ' },
 
     'schlafe': { inf: 'schlafen', person: '1st Sing. (ich)', tense: 'Präsens', en: 'sleep', irregular: true },
     'schläfst': { inf: 'schlafen', person: '2nd Sing. (du)', tense: 'Präsens', en: 'sleep', irregular: true, note: 'Strong verb with vowel shift: a -> ä' },
@@ -5361,58 +5361,152 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const COMMON_GERMAN_NOUNS = {
+    // Masculine (der)
     'tag': { gender: 'der', de: 'der Tag, -e', en: 'day' },
     'morgen': { gender: 'der', de: 'der Morgen', en: 'morning' },
     'abend': { gender: 'der', de: 'der Abend, -e', en: 'evening' },
-    'zug': { gender: 'der', de: 'der Zug, -\"e', en: 'train' },
+    'monat': { gender: 'der', de: 'der Monat, -e', en: 'month' },
+    'zug': { gender: 'der', de: 'der Zug, -̈e', en: 'train' },
     'bus': { gender: 'der', de: 'der Bus, -se', en: 'bus' },
-    'bahnhof': { gender: 'der', de: 'der Bahnhof, -\"e', en: 'train station' },
+    'bahnhof': { gender: 'der', de: 'der Bahnhof, -̈e', en: 'train station' },
+    'flughafen': { gender: 'der', de: 'der Flughafen, -̈', en: 'airport' },
+    'park': { gender: 'der', de: 'der Park, -s', en: 'park' },
+    'garten': { gender: 'der', de: 'der Garten, -̈', en: 'garden' },
+    'supermarkt': { gender: 'der', de: 'der Supermarkt, -̈e', en: 'supermarket' },
     'tisch': { gender: 'der', de: 'der Tisch, -e', en: 'table' },
-    'stuhl': { gender: 'der', de: 'der Stuhl, -\"e', en: 'chair' },
-    'apfel': { gender: 'der', de: 'der Apfel, -\"', en: 'apple' },
+    'stuhl': { gender: 'der', de: 'der Stuhl, -̈e', en: 'chair' },
+    'schrank': { gender: 'der', de: 'der Schrank, -̈e', en: 'wardrobe / cupboard' },
+    'apfel': { gender: 'der', de: 'der Apfel, -̈', en: 'apple' },
+    'salat': { gender: 'der', de: 'der Salat, -e', en: 'salad' },
+    'kuchen': { gender: 'der', de: 'der Kuchen, -', en: 'cake' },
+    'käse': { gender: 'der', de: 'der Käse', en: 'cheese' },
+    'fisch': { gender: 'der', de: 'der Fisch, -e', en: 'fish' },
+    'reis': { gender: 'der', de: 'der Reis', en: 'rice' },
+    'zucker': { gender: 'der', de: 'der Zucker', en: 'sugar' },
     'kaffee': { gender: 'der', de: 'der Kaffee', en: 'coffee' },
     'tee': { gender: 'der', de: 'der Tee', en: 'tea' },
+    'saft': { gender: 'der', de: 'der Saft, -̈e', en: 'juice' },
+    'wein': { gender: 'der', de: 'der Wein, -e', en: 'wine' },
+    'kugelschreiber': { gender: 'der', de: 'der Kugelschreiber, -', en: 'pen' },
+    'stift': { gender: 'der', de: 'der Stift, -e', en: 'pencil / pen' },
+    'bleistift': { gender: 'der', de: 'der Bleistift, -e', en: 'pencil' },
+    'computer': { gender: 'der', de: 'der Computer, -', en: 'computer' },
+    'laptop': { gender: 'der', de: 'der Laptop, -s', en: 'laptop' },
+    'fernseher': { gender: 'der', de: 'der Fernseher, -', en: 'TV' },
+    'schlüssel': { gender: 'der', de: 'der Schlüssel, -', en: 'key' },
+    'koffer': { gender: 'der', de: 'der Koffer, -', en: 'suitcase' },
+    'rucksack': { gender: 'der', de: 'der Rucksack, -̈e', en: 'backpack' },
+    'mantel': { gender: 'der', de: 'der Mantel, -̈', en: 'coat' },
+    'pullover': { gender: 'der', de: 'der Pullover, -', en: 'sweater' },
+    'schuh': { gender: 'der', de: 'der Schuh, -e', en: 'shoe' },
+    'brief': { gender: 'der', de: 'der Brief, -e', en: 'letter' },
     'freund': { gender: 'der', de: 'der Freund, -e', en: 'friend (male)' },
     'lehrer': { gender: 'der', de: 'der Lehrer, -', en: 'teacher (male)' },
-    'arzt': { gender: 'der', de: 'der Arzt, -\"e', en: 'doctor (male)' },
+    'arzt': { gender: 'der', de: 'der Arzt, -̈e', en: 'doctor (male)' },
     'beruf': { gender: 'der', de: 'der Beruf, -e', en: 'profession / job' },
     'name': { gender: 'der', de: 'der Name, -n', en: 'name' },
-    'vater': { gender: 'der', de: 'der Vater, -\"', en: 'father' },
-    'mann': { gender: 'der', de: 'der Mann, -\"er', en: 'man / husband' },
+    'vater': { gender: 'der', de: 'der Vater, -̈', en: 'father' },
+    'sohn': { gender: 'der', de: 'der Sohn, -̈e', en: 'son' },
+    'bruder': { gender: 'der', de: 'der Bruder, -̈', en: 'brother' },
+    'mann': { gender: 'der', de: 'der Mann, -̈er', en: 'man / husband' },
+    'junge': { gender: 'der', de: 'der Junge, -n', en: 'boy' },
+    'chef': { gender: 'der', de: 'der Chef, -s', en: 'boss (male)' },
+    'kollege': { gender: 'der', de: 'der Kollege, -n', en: 'colleague (male)' },
+    'student': { gender: 'der', de: 'der Student, -en', en: 'student (male)' },
     'hund': { gender: 'der', de: 'der Hund, -e', en: 'dog' },
+    'vogel': { gender: 'der', de: 'der Vogel, -̈', en: 'bird' },
 
+    // Feminine (die)
     'frau': { gender: 'die', de: 'die Frau, -en', en: 'woman / wife' },
-    'mutter': { gender: 'die', de: 'die Mutter, -\"', en: 'mother' },
-    'tochter': { gender: 'die', de: 'die Tochter, -\"', en: 'daughter' },
+    'mutter': { gender: 'die', de: 'die Mutter, -̈', en: 'mother' },
+    'tochter': { gender: 'die', de: 'die Tochter, -̈', en: 'daughter' },
+    'schwester': { gender: 'die', de: 'die Schwester, -n', en: 'sister' },
+    'freundin': { gender: 'die', de: 'die Freundin, -nen', en: 'friend (female)' },
     'lehrerin': { gender: 'die', de: 'die Lehrerin, -nen', en: 'teacher (female)' },
     'ärztin': { gender: 'die', de: 'die Ärztin, -nen', en: 'doctor (female)' },
-    'freundin': { gender: 'die', de: 'die Freundin, -nen', en: 'friend (female)' },
-    'stadt': { gender: 'die', de: 'die Stadt, -\"e', en: 'city' },
+    'chefin': { gender: 'die', de: 'die Chefin, -nen', en: 'boss (female)' },
+    'kollegin': { gender: 'die', de: 'die Kollegin, -nen', en: 'colleague (female)' },
+    'studentin': { gender: 'die', de: 'die Studentin, -nen', en: 'student (female)' },
+    'katze': { gender: 'die', de: 'die Katze, -n', en: 'cat' },
+    'stadt': { gender: 'die', de: 'die Stadt, -̈e', en: 'city' },
+    'straße': { gender: 'die', de: 'die Straße, -n', en: 'street' },
     'schule': { gender: 'die', de: 'die Schule, -n', en: 'school' },
     'universität': { gender: 'die', de: 'die Universität, -en', en: 'university' },
     'sprache': { gender: 'die', de: 'die Sprache, -n', en: 'language' },
     'wohnung': { gender: 'die', de: 'die Wohnung, -en', en: 'apartment' },
+    'küche': { gender: 'die', de: 'die Küche, -n', en: 'kitchen' },
     'lampe': { gender: 'die', de: 'die Lampe, -n', en: 'lamp' },
+    'tür': { gender: 'die', de: 'die Tür, -en', en: 'door' },
     'tasche': { gender: 'die', de: 'die Tasche, -n', en: 'bag' },
     'uhr': { gender: 'die', de: 'die Uhr, -en', en: 'clock / watch' },
+    'brille': { gender: 'die', de: 'die Brille, -n', en: 'glasses' },
+    'flasche': { gender: 'die', de: 'die Flasche, -n', en: 'bottle' },
+    'tasse': { gender: 'die', de: 'die Tasse, -n', en: 'cup' },
     'zeit': { gender: 'die', de: 'die Zeit, -en', en: 'time' },
+    'stunde': { gender: 'die', de: 'die Stunde, -n', en: 'hour' },
+    'minute': { gender: 'die', de: 'die Minute, -n', en: 'minute' },
+    'woche': { gender: 'die', de: 'die Woche, -n', en: 'week' },
+    'nacht': { gender: 'die', de: 'die Nacht, -̈e', en: 'night' },
     'arbeit': { gender: 'die', de: 'die Arbeit, -en', en: 'work' },
     'musik': { gender: 'die', de: 'die Musik', en: 'music' },
-    'nacht': { gender: 'die', de: 'die Nacht, -\"e', en: 'night' },
-    'woche': { gender: 'die', de: 'die Woche, -n', en: 'week' },
+    'zeitung': { gender: 'die', de: 'die Zeitung, -en', en: 'newspaper' },
+    'frage': { gender: 'die', de: 'die Frage, -n', en: 'question' },
+    'antwort': { gender: 'die', de: 'die Antwort, -en', en: 'answer' },
+    'hilfe': { gender: 'die', de: 'die Hilfe', en: 'help' },
+    'post': { gender: 'die', de: 'die Post', en: 'post / mail' },
+    'bank': { gender: 'die', de: 'die Bank, -en', en: 'bank' },
+    'apotheke': { gender: 'die', de: 'die Apotheke, -n', en: 'pharmacy' },
+    'blume': { gender: 'die', de: 'die Blume, -n', en: 'flower' },
+    'hose': { gender: 'die', de: 'die Hose, -n', en: 'pants / trousers' },
+    'jacke': { gender: 'die', de: 'die Jacke, -n', en: 'jacket' },
+    'pizza': { gender: 'die', de: 'die Pizza, -s', en: 'pizza' },
+    'suppe': { gender: 'die', de: 'die Suppe, -n', en: 'soup' },
+    'milch': { gender: 'die', de: 'die Milch', en: 'milk' },
+    'butter': { gender: 'die', de: 'die Butter', en: 'butter' },
+    'schokolade': { gender: 'die', de: 'die Schokolade', en: 'chocolate' },
+    'banane': { gender: 'die', de: 'die Banane, -n', en: 'banana' },
+    'orange': { gender: 'die', de: 'die Orange, -n', en: 'orange' },
+    'kartoffel': { gender: 'die', de: 'die Kartoffel, -n', en: 'potato' },
 
-    'buch': { gender: 'das', de: 'das Buch, -\"er', en: 'book' },
+    // Neuter (das)
+    'buch': { gender: 'das', de: 'das Buch, -̈er', en: 'book' },
+    'heft': { gender: 'das', de: 'das Heft, -e', en: 'notebook' },
     'auto': { gender: 'das', de: 'das Auto, -s', en: 'car' },
-    'fahrrad': { gender: 'das', de: 'das Fahrrad, -\"er', en: 'bicycle' },
-    'haus': { gender: 'das', de: 'das Haus, -\"er', en: 'house' },
+    'fahrrad': { gender: 'das', de: 'das Fahrrad, -̈er', en: 'bicycle' },
+    'haus': { gender: 'das', de: 'das Haus, -̈er', en: 'house' },
     'zimmer': { gender: 'das', de: 'das Zimmer, -', en: 'room' },
+    'bad': { gender: 'das', de: 'das Bad, -̈er', en: 'bathroom' },
+    'fenster': { gender: 'das', de: 'das Fenster, -', en: 'window' },
+    'bett': { gender: 'das', de: 'das Bett, -en', en: 'bed' },
+    'sofa': { gender: 'das', de: 'das Sofa, -s', en: 'sofa' },
+    'bild': { gender: 'das', de: 'das Bild, -er', en: 'picture' },
+    'foto': { gender: 'das', de: 'das Foto, -s', en: 'photo' },
+    'handy': { gender: 'das', de: 'das Handy, -s', en: 'mobile phone' },
+    'telefon': { gender: 'das', de: 'das Telefon, -e', en: 'telephone' },
+    'radio': { gender: 'das', de: 'das Radio, -s', en: 'radio' },
+    'glas': { gender: 'das', de: 'das Glas, -̈er', en: 'glass' },
     'brot': { gender: 'das', de: 'das Brot, -e', en: 'bread' },
+    'brötchen': { gender: 'das', de: 'das Brötchen, -', en: 'bread roll' },
     'wasser': { gender: 'das', de: 'das Wasser', en: 'water' },
     'bier': { gender: 'das', de: 'das Bier, -e', en: 'beer' },
+    'fleisch': { gender: 'das', de: 'das Fleisch', en: 'meat' },
+    'hähnchen': { gender: 'das', de: 'das Hähnchen, -', en: 'chicken' },
+    'ei': { gender: 'das', de: 'das Ei, -er', en: 'egg' },
+    'obst': { gender: 'das', de: 'das Obst', en: 'fruit' },
+    'gemüse': { gender: 'das', de: 'das Gemüse', en: 'vegetables' },
     'kind': { gender: 'das', de: 'das Kind, -er', en: 'child' },
+    'baby': { gender: 'das', de: 'das Baby, -s', en: 'baby' },
     'mädchen': { gender: 'das', de: 'das Mädchen, -', en: 'girl' },
     'hotel': { gender: 'das', de: 'das Hotel, -s', en: 'hotel' },
+    'restaurant': { gender: 'das', de: 'das Restaurant, -s', en: 'restaurant' },
+    'café': { gender: 'das', de: 'das Café, -s', en: 'café' },
+    'kino': { gender: 'das', de: 'das Kino, -s', en: 'cinema' },
+    'museum': { gender: 'das', de: 'das Museum, Museen', en: 'museum' },
+    'theater': { gender: 'das', de: 'das Theater, -', en: 'theatre' },
     'ticket': { gender: 'das', de: 'das Ticket, -s', en: 'ticket' },
+    'hemd': { gender: 'das', de: 'das Hemd, -en', en: 'shirt' },
+    't-shirt': { gender: 'das', de: 'das T-Shirt, -s', en: 'T-shirt' },
+    'kleid': { gender: 'das', de: 'das Kleid, -er', en: 'dress' },
     'deutsch': { gender: 'das', de: 'das Deutsch', en: 'German (language)' },
     'englisch': { gender: 'das', de: 'das Englisch', en: 'English (language)' },
     'jahr': { gender: 'das', de: 'das Jahr, -e', en: 'year' },
@@ -5804,7 +5898,618 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
-    // 3. Cases & Roles Engine (Pronouns, Prepositions, Nouns & Articles)
+    // Helper to resolve noun gender and dictionary info
+    function resolveNounGender(nounClean, articleToken = null) {
+      if (!nounClean) return { gender: 'der', en: '', de: '' };
+      const lower = nounClean.toLowerCase();
+      if (VOCAB_LOOKUP_MAP && VOCAB_LOOKUP_MAP[lower]) {
+        return { gender: VOCAB_LOOKUP_MAP[lower].gender, en: VOCAB_LOOKUP_MAP[lower].en || '', de: VOCAB_LOOKUP_MAP[lower].de || `${VOCAB_LOOKUP_MAP[lower].gender} ${nounClean}` };
+      }
+      if (COMMON_GERMAN_NOUNS && COMMON_GERMAN_NOUNS[lower]) {
+        return { gender: COMMON_GERMAN_NOUNS[lower].gender, en: COMMON_GERMAN_NOUNS[lower].en || '', de: COMMON_GERMAN_NOUNS[lower].de || `${COMMON_GERMAN_NOUNS[lower].gender} ${nounClean}` };
+      }
+      if (articleToken) {
+        const artLower = articleToken.toLowerCase();
+        if (['den', 'einen', 'keinen', 'meinen', 'deinen', 'seinen', 'ihren', 'unseren', 'euren', 'ihren'].includes(artLower)) {
+          return { gender: 'der', en: nounClean, de: `der ${nounClean}` };
+        }
+        if (['das', 'ein', 'ins', 'ans', 'aufs'].includes(artLower)) {
+          return { gender: 'das', en: nounClean, de: `das ${nounClean}` };
+        }
+        if (['die', 'eine', 'keine', 'meine', 'zur'].includes(artLower)) {
+          return { gender: 'die', en: nounClean, de: `die ${nounClean}` };
+        }
+      }
+      // Suffix heuristics
+      if (lower.endsWith('ung') || lower.endsWith('heit') || lower.endsWith('keit') || lower.endsWith('schaft') || lower.endsWith('tion') || lower.endsWith('tät') || lower.endsWith('ie')) {
+        return { gender: 'die', en: nounClean, de: `die ${nounClean}` };
+      }
+      if (lower.endsWith('chen') || lower.endsWith('lein') || lower.endsWith('ment') || lower.endsWith('um')) {
+        return { gender: 'das', en: nounClean, de: `das ${nounClean}` };
+      }
+      if (lower.endsWith('er') || lower.endsWith('ling') || lower.endsWith('ismus')) {
+        return { gender: 'der', en: nounClean, de: `der ${nounClean}` };
+      }
+      if (lower.endsWith('e')) {
+        return { gender: 'die', en: nounClean, de: `die ${nounClean}` };
+      }
+      return { gender: 'der', en: nounClean, de: `der ${nounClean}` };
+    }
+
+    // =========================================================================
+    // 3. DEDICATED OBJECT & ARTICLE ANALYSIS ENGINE (Akkusativ, Dativ & Declensions)
+    // =========================================================================
+    const detectedObjects = [];
+    const objConsumedIndices = new Set();
+    if (finiteVerbToken) objConsumedIndices.add(finiteVerbToken.index);
+
+    // Identify Subject Token Indices so we don't confuse Subject with Object
+    const subjectIndices = new Set();
+    for (let i = 0; i < tokens.length; i++) {
+      const t = tokens[i];
+      if (['ich', 'du', 'er', 'wir', 'ihr', 'man'].includes(t.lower)) {
+        subjectIndices.add(i);
+        break;
+      }
+      if (i === 0 && ['sie', 'es'].includes(t.lower)) {
+        subjectIndices.add(i);
+        break;
+      }
+      if (i === 2 && finiteVerbToken && finiteVerbToken.index === 1 && ['sie', 'es'].includes(t.lower)) {
+        subjectIndices.add(i);
+        break;
+      }
+      // Subject with article at Pos 1
+      if (i === 0 && ['der', 'die', 'das', 'ein', 'eine', 'mein', 'dein', 'ihr', 'unser'].includes(t.lower)) {
+        subjectIndices.add(i);
+        if (i + 1 < tokens.length) subjectIndices.add(i + 1);
+        if (i + 2 < tokens.length && /^[A-ZÄÖÜ]/.test(tokens[i + 2].clean)) subjectIndices.add(i + 2);
+        break;
+      }
+    }
+
+    // A. Detect Prepositional Phrases first
+    for (let i = 0; i < tokens.length; i++) {
+      if (objConsumedIndices.has(i) || subjectIndices.has(i)) continue;
+      const t = tokens[i];
+      const prep = GERMAN_PREPOSITIONS_DICT[t.lower];
+      if (!prep) continue;
+
+      let phrase = t.clean;
+      let prepArticle = '';
+      let prepNoun = '';
+      let prepPronoun = null;
+      let endIdx = i;
+
+      const next = i + 1 < tokens.length ? tokens[i + 1] : null;
+      const nextNext = i + 2 < tokens.length ? tokens[i + 2] : null;
+
+      if (next && ['der','die','das','dem','den','des','ein','eine','einen','einem','einer','kein','keinem','keiner','meinem','meiner','deinem'].includes(next.lower)) {
+        phrase += ' ' + next.clean;
+        prepArticle = next.clean;
+        endIdx = i + 1;
+        if (nextNext && (/^[A-ZÄÖÜ]/.test(nextNext.clean) || COMMON_GERMAN_NOUNS[nextNext.lower] || (VOCAB_LOOKUP_MAP && VOCAB_LOOKUP_MAP[nextNext.lower]))) {
+          phrase += ' ' + nextNext.clean;
+          prepNoun = nextNext.clean;
+          endIdx = i + 2;
+        }
+      } else if (next && GERMAN_PRONOUNS_DICT[next.lower]) {
+        phrase += ' ' + next.clean;
+        prepPronoun = GERMAN_PRONOUNS_DICT[next.lower];
+        endIdx = i + 1;
+      } else if (next && (/^[A-ZÄÖÜ]/.test(next.clean) || COMMON_GERMAN_NOUNS[next.lower])) {
+        phrase += ' ' + next.clean;
+        prepNoun = next.clean;
+        endIdx = i + 1;
+      }
+
+      for (let k = i; k <= endIdx; k++) objConsumedIndices.add(k);
+
+      let prepNounInfo = null;
+      if (prepNoun) {
+        prepNounInfo = resolveNounGender(prepNoun, prepArticle);
+      }
+
+      detectedObjects.push({
+        type: 'Prepositional Object',
+        case: prep.case === 'Wechsel' ? 'Dativ (Location) / Akkusativ (Direction)' : prep.case,
+        phrase: phrase,
+        prep: t.clean,
+        prepMeaning: prep.meaning,
+        prepCase: prep.case,
+        article: prepArticle,
+        noun: prepNoun,
+        nounInfo: prepNounInfo,
+        pronoun: prepPronoun
+      });
+    }
+
+    // B. Detect Noun Phrase Objects with Articles
+    for (let i = 0; i < tokens.length; i++) {
+      if (objConsumedIndices.has(i) || subjectIndices.has(i)) continue;
+      const t = tokens[i];
+      const lower = t.lower;
+
+      const isMascAkkArt = ['den', 'einen', 'keinen', 'meinen', 'deinen', 'seinen', 'ihren', 'unseren', 'euren', 'Ihren'].includes(lower);
+      const isFemAkkArt = ['die', 'eine', 'keine', 'meine', 'deine', 'seine', 'ihre', 'unsere', 'eure', 'Ihre'].includes(lower);
+      const isNeutAkkArt = ['das', 'ein', 'kein', 'mein', 'dein', 'sein', 'ihr', 'unser', 'euer', 'Ihr'].includes(lower);
+      const isDatMascNeutArt = ['dem', 'einem', 'keinem', 'meinem', 'deinem', 'seinem', 'ihrem', 'unserem', 'eurem', 'Ihrem'].includes(lower);
+      const isDatFemArt = ['der', 'einer', 'keiner', 'meiner', 'deiner', 'seiner', 'ihrer', 'unserer', 'eurer', 'Ihrer'].includes(lower);
+
+      if (isMascAkkArt || isFemAkkArt || isNeutAkkArt || isDatMascNeutArt || isDatFemArt) {
+        let nounToken = null;
+        let adjToken = null;
+        let phrase = t.clean;
+
+        if (i + 1 < tokens.length) {
+          const c1 = tokens[i + 1];
+          if (/^[A-ZÄÖÜ]/.test(c1.clean) || COMMON_GERMAN_NOUNS[c1.lower] || (VOCAB_LOOKUP_MAP && VOCAB_LOOKUP_MAP[c1.lower])) {
+            nounToken = c1;
+            phrase += ' ' + c1.clean;
+            objConsumedIndices.add(i);
+            objConsumedIndices.add(i + 1);
+          } else if (i + 2 < tokens.length) {
+            const c2 = tokens[i + 2];
+            if (/^[A-ZÄÖÜ]/.test(c2.clean) || COMMON_GERMAN_NOUNS[c2.lower] || (VOCAB_LOOKUP_MAP && VOCAB_LOOKUP_MAP[c2.lower])) {
+              adjToken = c1;
+              nounToken = c2;
+              phrase += ' ' + c1.clean + ' ' + c2.clean;
+              objConsumedIndices.add(i);
+              objConsumedIndices.add(i + 1);
+              objConsumedIndices.add(i + 2);
+            }
+          }
+        }
+
+        if (nounToken) {
+          const nInfo = resolveNounGender(nounToken.clean, t.clean);
+          let objCase = 'Akkusativ';
+          let objRole = 'Direct Object (Akkusativ-Objekt)';
+
+          if (isDatMascNeutArt || isDatFemArt || (finiteVerbToken && finiteVerbToken.info.governs === 'Dativ')) {
+            objCase = 'Dativ';
+            objRole = 'Indirect Object (Dativ-Objekt)';
+          }
+
+          detectedObjects.push({
+            type: objRole,
+            case: objCase,
+            phrase: phrase,
+            article: t.clean,
+            articleLower: lower,
+            noun: nounToken.clean,
+            nounLower: nounToken.lower,
+            nounInfo: nInfo,
+            adj: adjToken ? adjToken.clean : null
+          });
+          continue;
+        }
+      }
+    }
+
+    // C. Detect Pronoun Objects
+    for (let i = 0; i < tokens.length; i++) {
+      if (objConsumedIndices.has(i) || subjectIndices.has(i)) continue;
+      const t = tokens[i];
+      if (GERMAN_PRONOUNS_DICT[t.lower]) {
+        const pr = GERMAN_PRONOUNS_DICT[t.lower];
+        if (['dich', 'mich', 'ihn', 'uns', 'euch'].includes(t.lower)) {
+          objConsumedIndices.add(i);
+          detectedObjects.push({
+            type: 'Direct Object (Akkusativ-Objekt)',
+            case: 'Akkusativ',
+            phrase: t.clean,
+            isPronoun: true,
+            pronoun: pr
+          });
+        } else if (['dir', 'mir', 'ihm', 'ihnen', 'Ihnen'].includes(t.lower)) {
+          objConsumedIndices.add(i);
+          detectedObjects.push({
+            type: 'Indirect Object (Dativ-Objekt)',
+            case: 'Dativ',
+            phrase: t.clean,
+            isPronoun: true,
+            pronoun: pr
+          });
+        } else if (['sie', 'es'].includes(t.lower)) {
+          objConsumedIndices.add(i);
+          detectedObjects.push({
+            type: 'Direct Object (Akkusativ-Objekt)',
+            case: 'Akkusativ',
+            phrase: t.clean,
+            isPronoun: true,
+            pronoun: pr
+          });
+        }
+      }
+    }
+
+    // D. Detect Bare Nouns (Nullartikel) following action verbs
+    for (let i = 0; i < tokens.length; i++) {
+      if (objConsumedIndices.has(i) || subjectIndices.has(i)) continue;
+      const t = tokens[i];
+      const isNoun = /^[A-ZÄÖÜ]/.test(t.clean) || COMMON_GERMAN_NOUNS[t.lower] || (VOCAB_LOOKUP_MAP && VOCAB_LOOKUP_MAP[t.lower]);
+      if (isNoun && !KNOWN_VERB_CONJUGATIONS[t.lower] && !GERMAN_PRONOUNS_DICT[t.lower]) {
+        const nInfo = resolveNounGender(t.clean);
+        objConsumedIndices.add(i);
+        detectedObjects.push({
+          type: 'Direct Object (Akkusativ • Zero Article)',
+          case: 'Akkusativ',
+          phrase: t.clean,
+          article: null,
+          noun: t.clean,
+          nounLower: t.lower,
+          nounInfo: nInfo,
+          isBare: true
+        });
+      }
+    }
+
+    // Build Objects HTML & Explanations
+    let objectsHtml = '';
+    const vName = finiteVerbToken ? finiteVerbToken.token.clean : 'the verb';
+    const vInf = finiteVerbToken ? finiteVerbToken.info.inf : 'the verb';
+
+    if (detectedObjects.length > 0) {
+      objectsHtml = detectedObjects.map((obj) => {
+        const escapedPhrase = obj.phrase.replace(/'/g, "\\'");
+        let caseBadgeColor = 'bg-blue-100 text-blue-950 border-blue-300';
+        if (obj.case.includes('Dativ')) caseBadgeColor = 'bg-purple-100 text-purple-950 border-purple-300';
+
+        // 1. Question Answered
+        let questionText = '';
+        if (obj.case === 'Akkusativ') {
+          questionText = `<strong>Wen oder was ${vName} ...?</strong> (Whom or what?) &rarr; <span class="text-blue-700 underline font-black">${obj.phrase}</span>`;
+        } else if (obj.case === 'Dativ') {
+          questionText = `<strong>Wem ${vName} ...?</strong> (To whom / for whom?) &rarr; <span class="text-purple-700 underline font-black">${obj.phrase}</span>`;
+        } else {
+          questionText = `Governed by preposition <strong>"${obj.prep || 'preposition'}"</strong>.`;
+        }
+
+        // 2. Trigger
+        let triggerText = '';
+        if (obj.prep) {
+          triggerText = `The preposition <strong>"${obj.prep}"</strong> (${obj.prepMeaning || ''}) strictly forces the <strong>${obj.prepCase}</strong> case. In German, any noun or pronoun after "${obj.prep}" MUST take ${obj.prepCase}!`;
+        } else if (finiteVerbToken && finiteVerbToken.info.governs === 'Dativ') {
+          triggerText = `The verb <strong>"${vName}"</strong> (base: <em>${vInf}</em>) is a special German Dative verb that strictly requires an <strong>Indirect Object in the Dativ case</strong>.`;
+        } else {
+          triggerText = `The verb <strong>"${vName}"</strong> (base: <em>${vInf}</em>) is an action verb directing its action onto a recipient. The direct object receiving the action takes the <strong>Akkusativ</strong> case.`;
+        }
+
+        // 3. Base Noun Info & Step-by-Step Transformation
+        let baseNounHtml = '';
+        let stepPillsHtml = '';
+        let whyRuleHtml = '';
+
+        if (obj.isPronoun) {
+          const pr = obj.pronoun;
+          baseNounHtml = `
+            <div class="p-2.5 bg-white/90 rounded-xl border border-sky-200 text-xs flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <span class="text-[10px] font-black uppercase text-sky-700 tracking-wider">Pronoun Form:</span>
+                <span class="font-extrabold text-sky-950 ml-1">"${obj.phrase}"</span>
+              </div>
+              <div>
+                <span class="text-[10px] font-black uppercase text-sky-700 tracking-wider">Base Pronoun (Nominativ):</span>
+                <span class="font-extrabold text-emerald-800 ml-1">"${pr.base}" (${pr.en})</span>
+              </div>
+            </div>
+          `;
+          stepPillsHtml = `
+            <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 border border-emerald-300">1. Base: ${pr.base} (${pr.en})</span>
+            <span class="text-sky-400 font-black">&rarr;</span>
+            <span class="px-2 py-0.5 rounded-lg bg-blue-100 text-blue-900 border border-blue-300">2. ${obj.case} Object</span>
+            <span class="text-sky-400 font-black">&rarr;</span>
+            <span class="px-2 py-0.5 rounded-lg bg-indigo-100 text-indigo-900 border border-indigo-300">3. Shifts: ${pr.base} &rarr; ${obj.phrase}</span>
+            <span class="text-sky-400 font-black">&rarr;</span>
+            <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 border border-emerald-300">4. Result: ${obj.phrase} ✅</span>
+          `;
+          whyRuleHtml = `
+            <p>🔄 <strong>Pronoun Declension Rule:</strong> In German, personal pronouns have special object forms. Just like English switches from <em>"he" &rarr; "him"</em> or <em>"I" &rarr; "me"</em>, German switches from <strong>"${pr.base}" &rarr; "${obj.phrase}"</strong> in the ${obj.case} case. (e.g. <em>ich liebe dich</em>, NEVER <s>ich liebe du</s>!).</p>
+          `;
+        } else if (obj.noun) {
+          const nInfo = obj.nounInfo || { gender: 'der', en: obj.noun };
+          const gGender = nInfo.gender || 'der';
+          const gColor = gGender === 'der' ? 'text-blue-600' : (gGender === 'die' ? 'text-rose-600' : 'text-emerald-600');
+          const gLabel = gGender === 'der' ? 'Masculine 🔵' : (gGender === 'die' ? 'Feminine 🔴' : 'Neuter 🟢');
+
+          baseNounHtml = `
+            <div class="p-2.5 bg-white/90 rounded-xl border border-sky-200 text-xs flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <span class="text-[10px] font-black uppercase text-sky-700 tracking-wider">Base Dictionary Word:</span>
+                <span class="font-extrabold text-sky-950 ml-1"><strong>${gGender} ${obj.noun}</strong></span>
+                <span class="text-[11px] font-bold ${gColor} ml-1">(${gLabel})</span>
+              </div>
+              <div>
+                <span class="text-[10px] font-black uppercase text-sky-700 tracking-wider">Meaning:</span>
+                <span class="font-extrabold text-sky-900 ml-1">${nInfo.en ? `"${nInfo.en}"` : ''}</span>
+              </div>
+            </div>
+          `;
+
+          if (obj.isBare) {
+            stepPillsHtml = `
+              <span class="px-2 py-0.5 rounded-lg bg-sky-100 text-sky-900 border border-sky-300">1. Base: ${gGender} ${obj.noun}</span>
+              <span class="text-sky-400 font-black">&rarr;</span>
+              <span class="px-2 py-0.5 rounded-lg bg-blue-100 text-blue-900 border border-blue-300">2. Akkusativ Object</span>
+              <span class="text-sky-400 font-black">&rarr;</span>
+              <span class="px-2 py-0.5 rounded-lg bg-amber-100 text-amber-900 border border-amber-300 font-bold">3. Zero Article (Nullartikel)</span>
+              <span class="text-sky-400 font-black">&rarr;</span>
+              <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 border border-emerald-300">4. Result: ${obj.phrase} ✅</span>
+            `;
+            whyRuleHtml = `
+              <p>💡 <strong>Nullartikel (Zero Article) in Akkusativ:</strong></p>
+              <p>The noun <strong>"${obj.noun}"</strong> is used without an article. In German, zero article is standard for uncountable food & drinks (Kaffee, Tee, Wasser, Brot), languages (Deutsch, Englisch), and abstract concepts (Zeit, Hilfe). It remains the <strong>Akkusativ direct object</strong> of "${vName}".</p>
+            `;
+          } else if (obj.case === 'Akkusativ') {
+            if (gGender === 'der') {
+              stepPillsHtml = `
+                <span class="px-2 py-0.5 rounded-lg bg-blue-100 text-blue-900 border border-blue-300">1. Base: der / ein ${obj.noun} 🔵</span>
+                <span class="text-sky-400 font-black">&rarr;</span>
+                <span class="px-2 py-0.5 rounded-lg bg-amber-100 text-amber-900 border border-amber-300">2. Case: Akkusativ (Direct Obj)</span>
+                <span class="text-sky-400 font-black">&rarr;</span>
+                <span class="px-2 py-0.5 rounded-lg bg-rose-100 text-rose-900 border border-rose-300 font-black">3. Masculine Rule: der/ein &rarr; den/einen (-en)</span>
+                <span class="text-sky-400 font-black">&rarr;</span>
+                <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 border border-emerald-300">4. Result: ${obj.phrase} ✅</span>
+              `;
+              whyRuleHtml = `
+                <p>🚨 <strong>The Golden Masculine Rule (Why it became "${obj.article || 'einen/den'}"):</strong></p>
+                <p>In German, <strong>ONLY masculine nouns change their articles in the Accusative case</strong>! Feminine (die), neuter (das), and plural never change in Akkusativ.</p>
+                <ul class="list-disc list-inside space-y-1 font-semibold text-blue-950 pl-1">
+                  <li>Definite: <em>der</em> &rarr; <strong class="text-rose-600 font-black">den</strong></li>
+                  <li>Indefinite: <em>ein</em> &rarr; <strong class="text-rose-600 font-black">einen</strong> (receives the signature <strong>-en</strong> ending!)</li>
+                  <li>Negative / Possessive: <em>kein / mein</em> &rarr; <strong class="text-rose-600 font-black">keinen / meinen</strong></li>
+                </ul>
+                <p class="pt-1 text-emerald-800 font-bold">✨ <strong>Crucial A1 Rule:</strong> Because <em>${obj.noun}</em> is masculine (<strong>der ${obj.noun}</strong>), you MUST say <u class="text-rose-600 font-black">"${obj.phrase}"</u>. Saying <s>"ich habe ein ${obj.noun}"</s> is a very common beginner mistake!</p>
+              `;
+            } else if (gGender === 'die') {
+              stepPillsHtml = `
+                <span class="px-2 py-0.5 rounded-lg bg-rose-100 text-rose-900 border border-rose-300">1. Base: die / eine ${obj.noun} 🔴</span>
+                <span class="text-sky-400 font-black">&rarr;</span>
+                <span class="px-2 py-0.5 rounded-lg bg-amber-100 text-amber-900 border border-amber-300">2. Case: Akkusativ (Direct Obj)</span>
+                <span class="text-sky-400 font-black">&rarr;</span>
+                <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold">3. Feminine Rule: Stays UNCHANGED!</span>
+                <span class="text-sky-400 font-black">&rarr;</span>
+                <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 border border-emerald-300">4. Result: ${obj.phrase} ✅</span>
+              `;
+              whyRuleHtml = `
+                <p>✅ <strong>The Feminine Akkusativ Rule (Why "${obj.article || 'eine/die'}" did NOT change):</strong></p>
+                <p>In German, <strong>feminine articles NEVER change in the Accusative case</strong>! They remain 100% identical to the base Nominativ form:</p>
+                <p>• <em>die</em> stays <strong>die</strong>, and <em>eine</em> stays <strong>eine</strong>.</p>
+                <p class="pt-1 text-emerald-800 font-bold">✨ <strong>Crucial A1 Rule:</strong> You say <u class="text-emerald-700 font-bold">"${obj.phrase}"</u> (NOT <s>"einen ${obj.noun}"</s>). The <strong>-en</strong> ending belongs strictly to masculine nouns!</p>
+              `;
+            } else {
+              // das (Neuter)
+              stepPillsHtml = `
+                <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 border border-emerald-300">1. Base: das / ein ${obj.noun} 🟢</span>
+                <span class="text-sky-400 font-black">&rarr;</span>
+                <span class="px-2 py-0.5 rounded-lg bg-amber-100 text-amber-900 border border-amber-300">2. Case: Akkusativ (Direct Obj)</span>
+                <span class="text-sky-400 font-black">&rarr;</span>
+                <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold">3. Neuter Rule: Stays UNCHANGED!</span>
+                <span class="text-sky-400 font-black">&rarr;</span>
+                <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 border border-emerald-300">4. Result: ${obj.phrase} ✅</span>
+              `;
+              whyRuleHtml = `
+                <p>✅ <strong>The Neuter Akkusativ Rule (Why "${obj.article || 'ein/das'}" did NOT change):</strong></p>
+                <p>In German, <strong>neuter articles NEVER change in the Accusative case</strong>! They remain 100% identical to the base Nominativ form:</p>
+                <p>• <em>das</em> stays <strong>das</strong>, and <em>ein</em> stays <strong>ein</strong>.</p>
+                <p class="pt-1 text-emerald-800 font-bold">✨ <strong>Crucial A1 Rule:</strong> You say <u class="text-emerald-700 font-bold">"${obj.phrase}"</u> (NOT <s>"einen ${obj.noun}"</s>). Neuter nouns never take -en in Akkusativ!</p>
+              `;
+            }
+          } else {
+            // Dativ
+            if (gGender === 'die') {
+              stepPillsHtml = `
+                <span class="px-2 py-0.5 rounded-lg bg-rose-100 text-rose-900 border border-rose-300">1. Base: die / eine ${obj.noun} 🔴</span>
+                <span class="text-sky-400 font-black">&rarr;</span>
+                <span class="px-2 py-0.5 rounded-lg bg-purple-100 text-purple-900 border border-purple-300">2. Case: Dativ (Indirect / Prep)</span>
+                <span class="text-sky-400 font-black">&rarr;</span>
+                <span class="px-2 py-0.5 rounded-lg bg-purple-200 text-purple-950 border border-purple-400 font-black">3. Feminine Shift: die &rarr; der / eine &rarr; einer (-er)</span>
+                <span class="text-sky-400 font-black">&rarr;</span>
+                <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 border border-emerald-300">4. Result: ${obj.phrase} ✅</span>
+              `;
+              whyRuleHtml = `
+                <p>⚡ <strong>The Feminine Dative Surprise (die &rarr; der, eine &rarr; einer):</strong></p>
+                <p>In Dativ, the feminine article shifts from <strong>die &rarr; der</strong>, and from <strong>eine &rarr; einer</strong> (receiving the <strong>-er</strong> ending)!</p>
+                <p>⚠️ <strong>Crucial Beginner Insight:</strong> Although 'der' is masculine in Nominativ, here it is the <strong>feminine dative article</strong> meaning <em>"to the woman / with the subway"</em> (e.g. <em>Ich helfe der Frau</em>, <em>Ich fahre mit der U-Bahn</em>).</p>
+                <p class="pt-1 text-purple-900 font-bold">✨ That is why you say <u class="text-purple-700 font-bold">"${obj.phrase}"</u>!</p>
+              `;
+            } else {
+              // der or das in Dativ
+              stepPillsHtml = `
+                <span class="px-2 py-0.5 rounded-lg bg-blue-100 text-blue-900 border border-blue-300">1. Base: ${gGender} ${obj.noun}</span>
+                <span class="text-sky-400 font-black">&rarr;</span>
+                <span class="px-2 py-0.5 rounded-lg bg-purple-100 text-purple-900 border border-purple-300">2. Case: Dativ (Indirect / Prep)</span>
+                <span class="text-sky-400 font-black">&rarr;</span>
+                <span class="px-2 py-0.5 rounded-lg bg-purple-200 text-purple-950 border border-purple-400 font-black">3. Dative -em Rule: ${gGender} &rarr; dem / ein &rarr; einem (-em)</span>
+                <span class="text-sky-400 font-black">&rarr;</span>
+                <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 border border-emerald-300">4. Result: ${obj.phrase} ✅</span>
+              `;
+              whyRuleHtml = `
+                <p>🚨 <strong>The Dative -em Rule (der/das &rarr; dem, ein &rarr; einem):</strong></p>
+                <p>In the Dativ case, both masculine (<strong>der</strong>) and neuter (<strong>das</strong>) articles change to <strong class="text-purple-700">dem</strong> (definite) or <strong class="text-purple-700">einem</strong> (indefinite), taking the signature <strong>-em</strong> ending.</p>
+                <p class="pt-1 text-purple-900 font-bold">✨ That is why you say <u class="text-purple-700 font-bold">"${obj.phrase}"</u> (e.g. <em>dem Mann</em>, <em>mit dem Bus</em>)!</p>
+              `;
+            }
+          }
+        }
+
+        return `
+          <div class="p-3.5 bg-gradient-to-r from-blue-50/90 to-indigo-50/90 rounded-2xl border border-blue-200 shadow-2xs space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-blue-200">
+              <div class="flex items-center gap-2">
+                <span class="text-base">🎯</span>
+                <span class="font-black text-sm text-blue-950">
+                  Object: <strong class="text-blue-800">"${obj.phrase}"</strong>
+                </span>
+                <button onclick="playGermanSpeech('${escapedPhrase}', this)" class="px-2 py-0.5 rounded-md bg-white text-blue-600 hover:bg-blue-100 border border-blue-200 text-xs font-bold transition flex items-center gap-1 cursor-pointer" title="Listen to pronunciation">
+                  <span>🔊</span><span>Listen</span>
+                </button>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md border ${caseBadgeColor}">${obj.type}</span>
+                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-md border bg-white text-blue-900 border-blue-200">Case: ${obj.case}</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <div class="p-2.5 bg-white/95 rounded-xl border border-blue-100 text-blue-950 space-y-1">
+                <span class="text-[10px] font-black uppercase text-blue-800 tracking-wider">❓ Question Answered in German:</span>
+                <p class="font-bold text-sky-900 leading-snug">${questionText}</p>
+              </div>
+              <div class="p-2.5 bg-white/95 rounded-xl border border-blue-100 text-blue-950 space-y-1">
+                <span class="text-[10px] font-black uppercase text-blue-800 tracking-wider">⚡ Case Trigger (Why this case?):</span>
+                <p class="text-sky-900 leading-snug">${triggerText}</p>
+              </div>
+            </div>
+
+            ${baseNounHtml}
+
+            <div class="space-y-1">
+              <span class="text-[10px] font-black uppercase text-blue-900 tracking-wider">🔄 Step-by-Step Transformation:</span>
+              <div class="flex flex-wrap items-center gap-1.5 p-2 bg-white rounded-xl border border-blue-200 text-[11px] font-bold">
+                ${stepPillsHtml}
+              </div>
+            </div>
+
+            <div class="p-2.5 bg-white/95 rounded-xl border border-blue-200 text-xs text-blue-950 leading-relaxed space-y-1.5">
+              <div class="font-black text-xs text-blue-900 flex items-center gap-1.5">
+                <span>💡</span>
+                <span>Why did the article change this way? (A1 Rule Breakdown):</span>
+              </div>
+              ${whyRuleHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Add Two-Object explanation if there are both Dative and Accusative objects
+      const hasDativObj = detectedObjects.some(o => o.case.includes('Dativ'));
+      const hasAkkObj = detectedObjects.some(o => o.case.includes('Akkusativ'));
+      if (hasDativObj && hasAkkObj && detectedObjects.length >= 2) {
+        objectsHtml += `
+          <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-950 flex items-start gap-2">
+            <span class="text-base">💡</span>
+            <div>
+              <strong class="font-extrabold text-amber-900">German Two-Object Word Order Rule:</strong>
+              <p>When a sentence has both a <strong>Dativ person (the recipient)</strong> and an <strong>Akkusativ thing (the item)</strong>, German puts the <strong>Dative person FIRST</strong> and the <strong>Accusative thing SECOND</strong>! (e.g. <em>Ich gebe [der Frau - Dativ] [das Buch - Akkusativ]</em>).</p>
+            </div>
+          </div>
+        `;
+      }
+    } else {
+      // No object detected
+      if (finiteVerbToken && finiteVerbToken.info.copula) {
+        objectsHtml = `
+          <div class="p-3 bg-white rounded-xl border border-sky-200 text-xs text-sky-900 space-y-1.5">
+            <div class="flex items-center gap-2 font-bold text-sky-950">
+              <span class="text-base">💡</span>
+              <span>The Equal Sign Rule ($A = B$) • No Object Required</span>
+            </div>
+            <p>The verb <strong>"${vName}"</strong> (base: <em>${vInf}</em>) is a linking verb (copula). It acts like an equal sign in mathematics ($A = B$). Both sides stay in the <strong>Nominativ</strong> case, so there is no accusative or dative object in this sentence!</p>
+          </div>
+        `;
+      } else {
+        objectsHtml = `
+          <div class="p-3 bg-white rounded-xl border border-sky-200 text-xs text-sky-900 space-y-1.5">
+            <div class="flex items-center gap-2 font-bold text-sky-950">
+              <span class="text-base">ℹ️</span>
+              <span>Intransitive Verb • No Direct Object Required</span>
+            </div>
+            <p>The verb <strong>"${vName}"</strong> (base: <em>${vInf}</em>) is used intransitively here (it describes an action of the subject alone without an object receiving it). No object or article declension is needed!</p>
+          </div>
+        `;
+      }
+    }
+
+    const masterArticleTableHtml = `
+      <div class="p-3.5 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-2.5">
+        <div class="flex flex-wrap items-center justify-between gap-1">
+          <div class="flex items-center gap-1.5 font-extrabold text-xs text-sky-950">
+            <span>📊</span>
+            <span>A1 Master Article Declension Table (Nominativ vs Akkusativ vs Dativ):</span>
+          </div>
+          <span class="text-[10px] text-sky-600 italic">Notice the highlighted changes!</span>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-sky-200">
+          <table class="w-full text-center text-[11px] border-collapse">
+            <thead>
+              <tr class="bg-sky-100 text-sky-950 font-black border-b border-sky-200">
+                <th class="p-2 text-left">Case & Role</th>
+                <th class="p-2 bg-blue-50 text-blue-950">Masculine (der) 🔵</th>
+                <th class="p-2 bg-rose-50 text-rose-950">Feminine (die) 🔴</th>
+                <th class="p-2 bg-emerald-50 text-emerald-950">Neuter (das) 🟢</th>
+                <th class="p-2 bg-amber-50 text-amber-950">Plural (die) 🟡</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-sky-100 text-sky-900">
+              <tr>
+                <td class="p-2 text-left font-bold bg-slate-50 text-slate-800">
+                  <strong>Nominativ</strong> (Subject • <em>Wer/Was?</em>)
+                </td>
+                <td class="p-2 font-medium">der / ein</td>
+                <td class="p-2 font-medium">die / eine</td>
+                <td class="p-2 font-medium">das / ein</td>
+                <td class="p-2 font-medium">die / keine</td>
+              </tr>
+              <tr class="bg-blue-50/40">
+                <td class="p-2 text-left font-bold text-blue-950">
+                  <strong>Akkusativ</strong> (Direct Object • <em>Wen/Was?</em>)
+                </td>
+                <td class="p-2 font-black text-rose-600 bg-rose-100/80 rounded border border-rose-300">
+                  den / einen ⭐
+                  <span class="block text-[9px] font-bold text-rose-600 uppercase">Only masc changes! (-en)</span>
+                </td>
+                <td class="p-2 text-emerald-800 font-semibold">
+                  die / eine
+                  <span class="block text-[9px] text-emerald-600 font-bold">(Unchanged)</span>
+                </td>
+                <td class="p-2 text-emerald-800 font-semibold">
+                  das / ein
+                  <span class="block text-[9px] text-emerald-600 font-bold">(Unchanged)</span>
+                </td>
+                <td class="p-2 text-emerald-800 font-semibold">
+                  die / keine
+                  <span class="block text-[9px] text-emerald-600 font-bold">(Unchanged)</span>
+                </td>
+              </tr>
+              <tr class="bg-purple-50/40">
+                <td class="p-2 text-left font-bold text-purple-950">
+                  <strong>Dativ</strong> (Indirect Object • <em>Wem?</em>)
+                </td>
+                <td class="p-2 font-black text-purple-900 bg-purple-100/60 rounded border border-purple-200">
+                  dem / einem (-em)
+                </td>
+                <td class="p-2 font-black text-purple-700 bg-purple-200/80 rounded border border-purple-400">
+                  der / einer ⚡
+                  <span class="block text-[9px] font-bold text-purple-700 uppercase">die &rarr; der shift!</span>
+                </td>
+                <td class="p-2 font-black text-purple-900 bg-purple-100/60 rounded border border-purple-200">
+                  dem / einem (-em)
+                </td>
+                <td class="p-2 font-bold text-purple-900">
+                  den (+n to noun)
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] pt-1 text-sky-900">
+          <div class="p-2 bg-rose-50 rounded-xl border border-rose-200">
+            <strong class="text-rose-900 font-extrabold">🚨 The Akkusativ Secret:</strong>
+            <p>In the Accusative case, <strong>ONLY masculine nouns change</strong> (<em>der &rarr; den</em>, <em>ein &rarr; einen</em>). Feminine and neuter NEVER change in Akkusativ!</p>
+          </div>
+          <div class="p-2 bg-purple-50 rounded-xl border border-purple-200">
+            <strong class="text-purple-900 font-extrabold">⚡ The Dativ Secret:</strong>
+            <p>In Dative, masculine and neuter get <strong>-em</strong> (<em>dem / einem</em>), while feminine flips from <strong>die &rarr; der</strong> (<em>der / einer</em>)!</p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // 4. Cases & Roles Engine (Overview: Who Does What?)
     let caseItems = [];
     for (let i = 0; i < tokens.length; i++) {
       const t = tokens[i];
@@ -5821,7 +6526,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (t.lower === 'dich' || t.lower === 'mich' || t.lower === 'ihn') {
           detectedCase = 'Akkusativ';
           detectedRole = 'Direct Object (The Receiver)';
-          const vName = finiteVerbToken ? finiteVerbToken.token.clean : 'the verb';
           reason = `<strong>Who is receiving the action?</strong> <strong>"${t.clean}"</strong> (${pr.en}). In German, the base pronoun <em>${pr.base}</em> changes to <strong>"${t.clean}"</strong> in the <strong>Akkusativ</strong> case because the verb <strong>"${vName}"</strong> directs its action directly onto it!`;
         } else if (t.lower === 'dir' || t.lower === 'mir' || t.lower === 'ihm' || t.lower === 'ihnen' || t.lower === 'Ihnen') {
           detectedCase = 'Dativ';
@@ -5960,7 +6664,7 @@ document.addEventListener('DOMContentLoaded', () => {
       caseCardsHtml = `<p class="text-sky-600 italic text-xs">No complex noun phrases or pronouns requiring case declension in this short clause.</p>`;
     }
 
-    // 4. Word-by-Word Interactive Token Grid
+    // 5. Word-by-Word Interactive Token Grid
     let tokenCardsHtml = tokens.map((t, idx) => {
       let pos = 'Word';
       let posColor = 'bg-slate-100 text-slate-800 border-slate-300';
@@ -6078,12 +6782,27 @@ document.addEventListener('DOMContentLoaded', () => {
         ${verbDetailsHtml}
       </div>
 
-      <!-- Card 3: Cases & Roles Engine -->
+      <!-- Card 3: Dedicated Object & Article Deep Dive -->
       <div class="space-y-2">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="text-base">🎯</span>
-            <span class="font-extrabold text-xs text-sky-950">Cases & Roles: Who Does What? (Nominativ, Akkusativ, Dativ):</span>
+            <span class="font-extrabold text-xs text-sky-950">Object & Article Analysis (What Case is the Object and Why Did the Article Change?):</span>
+          </div>
+          <span class="text-[10px] text-sky-600 font-bold">${detectedObjects.length} object(s) analyzed</span>
+        </div>
+        <div class="space-y-3">
+          ${objectsHtml}
+          ${masterArticleTableHtml}
+        </div>
+      </div>
+
+      <!-- Card 4: Cases & Roles Engine Overview -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-base">📦</span>
+            <span class="font-extrabold text-xs text-sky-950">Sentence Roles Overview (Who Does What?):</span>
           </div>
           <span class="text-[10px] text-sky-600 font-bold">${caseItems.length} items identified</span>
         </div>
@@ -6092,7 +6811,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
-      <!-- Card 4: Word-by-Word Interactive Token Grid -->
+      <!-- Card 5: Word-by-Word Interactive Token Grid -->
       <div class="space-y-2 pt-1">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
