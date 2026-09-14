@@ -134,20 +134,18 @@ document.addEventListener('DOMContentLoaded', () => {
       activeAudioObj = null;
     }
 
-    // Method 1: Google Native German Audio Stream (Authentic native German human pronunciation)
+    // Method 1: Google Native German Audio Stream (100% reliable across mobile and desktop without local language packs)
     try {
       const encoded = encodeURIComponent(spoken);
       const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=de&q=${encoded}`;
-      const audio = new Audio();
-      audio.referrerPolicy = "no-referrer";
-      audio.src = audioUrl;
+      const audio = new Audio(audioUrl);
       audio.playbackRate = window.ttsCurrentSpeed || 1.0;
       activeAudioObj = audio;
 
       const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise.catch(err => {
-          console.warn("Audio stream blocked, falling back to Web Speech API:", err);
+          console.warn("Audio stream blocked or failed, falling back to Web Speech API:", err);
           playSpeechSynthesisFallback(spoken, triggerBtn);
         });
       }
@@ -176,18 +174,8 @@ document.addEventListener('DOMContentLoaded', () => {
         utterance.rate = (window.ttsCurrentSpeed === 0.8) ? 0.75 : 0.88;
         
         const voices = synth.getVoices() || [];
-        // Prioritize premium/natural German voices over robotic synthesizers
-        const preferredGermanVoices = ['Google Deutsch', 'Microsoft Hedda', 'Microsoft Katja', 'Microsoft Stefan', 'Anna', 'Marlene', 'Vicki', 'Hans'];
-        let gVoice = voices.find(v => preferredGermanVoices.some(pref => v.name && v.name.includes(pref)));
-        if (!gVoice) {
-          gVoice = voices.find(v => v.lang && (v.lang === 'de-DE' || (v.lang && v.lang.toLowerCase().startsWith('de'))));
-        }
-        
-        if (gVoice) {
-          utterance.voice = gVoice;
-        } else {
-          console.warn("No native German voice found in system synthesizer.");
-        }
+        const gVoice = voices.find(v => v.lang === 'de-DE' || (v.lang && v.lang.toLowerCase().startsWith('de')));
+        if (gVoice) utterance.voice = gVoice;
 
         utterance.onend = () => {
           if (triggerBtn && triggerBtn.classList) triggerBtn.classList.remove('audio-playing-pulse');
@@ -2313,13 +2301,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Responsive Fit Calculation: Fit to available width inside container
       const unscaledViewport = page.getViewport({ scale: 1.0 });
-      const vpWidth = (viewportEl && viewportEl.clientWidth > 0) ? viewportEl.clientWidth : window.innerWidth;
-      const screenWidth = window.innerWidth;
-      const isMobile = screenWidth < 640;
-      const padding = isMobile ? 12 : 32;
-      const availableWidth = Math.max(260, Math.min(vpWidth - padding, screenWidth - padding));
+      const availableWidth = Math.max(300, (viewportEl ? viewportEl.clientWidth : window.innerWidth) - 36);
       const baseFitScale = availableWidth / unscaledViewport.width;
-      const targetScale = Math.min(3.0, Math.max(0.35, baseFitScale * pdfZoomLevel));
+      const targetScale = Math.min(3.0, Math.max(0.45, baseFitScale * pdfZoomLevel));
 
       const viewport = page.getViewport({ scale: targetScale });
 
@@ -2411,19 +2395,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const p = parseInt(pageInput.value, 10) || 1;
     window.open(`${encodeURI(basePath)}#page=${p}`, '_blank');
   };
-
-  // Debounced auto-fit on window resize or mobile orientation change
-  let pdfResizeTimer = null;
-  window.addEventListener('resize', () => {
-    const pdfView = document.getElementById('view-pdf');
-    if (pdfView && !pdfView.classList.contains('hidden') && pdfView.classList.contains('active')) {
-      clearTimeout(pdfResizeTimer);
-      pdfResizeTimer = setTimeout(() => {
-        const p = parseInt(pageInput.value, 10) || 1;
-        updatePdfSource(p);
-      }, 200);
-    }
-  });
 
   // ================= 9. PERSISTENT PDF DRAWING & ANNOTATION ENGINE =================
   const canvas = document.getElementById('pdfAnnotationCanvas');
@@ -8172,6 +8143,7 @@ document.addEventListener('DOMContentLoaded', () => {
       switchView(hash);
     } else if (hash === 'roleplay') {
       switchView('dashboard');
+      setTimeout(() => { if (typeof openRoleplayModal === 'function') openRoleplayModal(); }, 150);
     } else if (hash === 'exam') {
       switchView('dashboard');
       setTimeout(() => { if (typeof openGoetheExamModal === 'function') openGoetheExamModal(); }, 150);
@@ -8816,10 +8788,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ]
   };
 
-  // Deprecated / Removed Feature Stubs
-  window.openRoleplayModal = function() {};
-  window.closeRoleplayModal = function() {};
-
   let currentExamModule = 'hoeren';
   let examUserAnswers = {
     hoeren: {},
@@ -8828,51 +8796,21 @@ document.addEventListener('DOMContentLoaded', () => {
     schreibenPart2: '',
     sprechenCompleted: {}
   };
-  let examSelectedDuration = 65;
-  let examTimerSeconds = 65 * 60; // 3900s (65 minutes official Goethe written exam standard)
+  let examTimerSeconds = 1800; // 30 minutes
   let examTimerInterval = null;
-
-  window.setExamDuration = function(mins) {
-    examSelectedDuration = mins;
-    examTimerSeconds = mins * 60;
-    const btn65 = document.getElementById('examModeBtn-65');
-    const btn30 = document.getElementById('examModeBtn-30');
-    if (btn65 && btn30) {
-      if (mins === 65) {
-        btn65.className = "px-2 py-0.5 rounded-lg bg-amber-500 text-white shadow-xs transition cursor-pointer";
-        btn30.className = "px-2 py-0.5 rounded-lg text-amber-900 hover:bg-amber-100 transition cursor-pointer";
-      } else {
-        btn30.className = "px-2 py-0.5 rounded-lg bg-amber-500 text-white shadow-xs transition cursor-pointer";
-        btn65.className = "px-2 py-0.5 rounded-lg text-amber-900 hover:bg-amber-100 transition cursor-pointer";
-      }
-    }
-    const display = document.getElementById('examTimerDisplay');
-    if (display) {
-      const m = Math.floor(examTimerSeconds / 60);
-      const s = examTimerSeconds % 60;
-      display.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
-    }
-  };
 
   window.openGoetheExamModal = function() {
     const modal = document.getElementById('goetheExamModal');
     if (!modal) return;
     modal.classList.remove('hidden');
-    if (!examTimerInterval) {
-      examTimerSeconds = examSelectedDuration * 60;
-      setExamDuration(examSelectedDuration);
-      startExamTimer();
-    }
+    startExamTimer();
     switchExamModule('hoeren');
   };
 
   window.closeGoetheExamModal = function() {
     const modal = document.getElementById('goetheExamModal');
     if (modal) modal.classList.add('hidden');
-    if (examTimerInterval) {
-      clearInterval(examTimerInterval);
-      examTimerInterval = null;
-    }
+    if (examTimerInterval) clearInterval(examTimerInterval);
   };
 
   function startExamTimer() {
