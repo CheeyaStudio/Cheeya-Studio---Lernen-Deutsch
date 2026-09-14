@@ -2080,45 +2080,97 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ================= 7. AUDIO PLAYER CONTROLS (UNIFIED FOR LESSON & PDF) =================
-  function updateAudioTracks(chapter) {
-    audioTrackSelect.innerHTML = '';
-    if (pdfAudioTrackSelect) pdfAudioTrackSelect.innerHTML = '';
-    
-    // Full Chapter Track option if available
-    if (chapter.audioKapitel) {
-      const optFull = document.createElement('option');
-      optFull.value = chapter.audioKapitel;
-      optFull.textContent = `🎧 Full Chapter: ${chapter.title}`;
-      audioTrackSelect.appendChild(optFull);
+  let isAudioDropdownInitialized = false;
 
-      if (pdfAudioTrackSelect) {
-        const pdfOptFull = document.createElement('option');
-        pdfOptFull.value = chapter.audioKapitel;
-        pdfOptFull.textContent = `🎧 Full Chapter Audio: ${chapter.title}`;
-        pdfAudioTrackSelect.appendChild(pdfOptFull);
-      }
+  function populateUnifiedAudioSelector() {
+    if (isAudioDropdownInitialized && audioTrackSelect && audioTrackSelect.options.length > 0) return;
+
+    const allTracks = [];
+    const fullChapterAudios = [];
+
+    if (typeof NETZWERK_DATA !== 'undefined' && Array.isArray(NETZWERK_DATA.chapters)) {
+      NETZWERK_DATA.chapters.forEach(ch => {
+        if (ch.audioKapitel) {
+          fullChapterAudios.push({
+            id: `kapitel-${ch.id}`,
+            name: `Full Chapter: ${ch.title}`,
+            path: ch.audioKapitel
+          });
+        }
+        if (Array.isArray(ch.audioTracks)) {
+          ch.audioTracks.forEach(tr => {
+            allTracks.push({
+              id: tr.id,
+              name: tr.name || `Track ${tr.id}`,
+              path: tr.path
+            });
+          });
+        }
+      });
     }
 
-    // Individual Exercise Tracks
-    chapter.audioTracks.forEach(tr => {
-      const opt = document.createElement('option');
-      opt.value = tr.path;
-      opt.textContent = `🎵 ${tr.name}`;
-      audioTrackSelect.appendChild(opt);
+    // Sort tracks strictly by natural numerical ID (e.g. 1-001, 1-002 ... 1-098, 2-001 ... 2-062)
+    allTracks.sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true, sensitivity: 'base' }));
 
-      if (pdfAudioTrackSelect) {
-        const pdfOpt = document.createElement('option');
-        pdfOpt.value = tr.path;
-        pdfOpt.textContent = `🎵 ${tr.name}`;
-        pdfAudioTrackSelect.appendChild(pdfOpt);
+    // Group strictly by Track Numbers (as requested: "kelompokin per nomornya aja jgn per bab")
+    const groups = [
+      {
+        label: "Tracks 1-001 — 1-050",
+        items: allTracks.filter(t => t.id.startsWith("1-") && parseInt(t.id.slice(2), 10) <= 50)
+      },
+      {
+        label: "Tracks 1-051 — 1-098",
+        items: allTracks.filter(t => t.id.startsWith("1-") && parseInt(t.id.slice(2), 10) > 50)
+      },
+      {
+        label: "Tracks 2-001 — 2-062",
+        items: allTracks.filter(t => t.id.startsWith("2-"))
+      },
+      {
+        label: "Full Chapter Audio (Kapitel 1 — 12)",
+        items: fullChapterAudios
       }
+    ];
+
+    [audioTrackSelect, pdfAudioTrackSelect].forEach(selectEl => {
+      if (!selectEl) return;
+      selectEl.innerHTML = '';
+
+      groups.forEach(grp => {
+        if (!grp.items || grp.items.length === 0) return;
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = grp.label;
+
+        grp.items.forEach(item => {
+          const opt = document.createElement('option');
+          opt.value = item.path;
+          opt.textContent = item.name.includes('Full Chapter') ? `🎧 ${item.name}` : `🎵 ${item.name}`;
+          optgroup.appendChild(opt);
+        });
+
+        selectEl.appendChild(optgroup);
+      });
     });
 
-    // Load initial track to player
-    if (audioTrackSelect.options.length > 0) {
-      audioPlayer.src = encodeURI(audioTrackSelect.value);
-      audioPlayer.load();
-      resetAudioState();
+    isAudioDropdownInitialized = true;
+  }
+
+  function updateAudioTracks(chapter) {
+    populateUnifiedAudioSelector();
+
+    // Determine default track to select for this chapter
+    const defaultTrack = chapter.audioKapitel || (chapter.audioTracks && chapter.audioTracks[0] ? chapter.audioTracks[0].path : '');
+
+    if (defaultTrack) {
+      if (audioTrackSelect) audioTrackSelect.value = defaultTrack;
+      if (pdfAudioTrackSelect) pdfAudioTrackSelect.value = defaultTrack;
+
+      // If audio player is idle or paused, load default track
+      if (!audioPlayer.src || audioPlayer.paused) {
+        audioPlayer.src = encodeURI(defaultTrack);
+        audioPlayer.load();
+        resetAudioState();
+      }
     }
   }
 
@@ -2143,6 +2195,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.playQuickTrack = function(path) {
     if (!path) return;
+    populateUnifiedAudioSelector();
     audioPlayer.src = encodeURI(path);
     audioPlayer.play().then(() => {
       isPlayingAudio = true;
@@ -2162,6 +2215,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   playPauseBtn.addEventListener('click', () => {
+    populateUnifiedAudioSelector();
     if (!audioPlayer.src && audioTrackSelect.value) {
       audioPlayer.src = encodeURI(audioTrackSelect.value);
     }
@@ -2185,6 +2239,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // PDF Media Bar Functions
   window.togglePdfAudioPlay = function() {
+    populateUnifiedAudioSelector();
     if (!audioPlayer.src && pdfAudioTrackSelect && pdfAudioTrackSelect.value) {
       audioPlayer.src = encodeURI(pdfAudioTrackSelect.value);
     }
@@ -2209,6 +2264,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.stepPdfAudioTrack = function(delta) {
+    populateUnifiedAudioSelector();
     if (!pdfAudioTrackSelect || pdfAudioTrackSelect.options.length === 0) return;
     let newIndex = pdfAudioTrackSelect.selectedIndex + delta;
     if (newIndex < 0) newIndex = pdfAudioTrackSelect.options.length - 1;
