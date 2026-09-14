@@ -981,27 +981,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const secondsPerBeat = 60 / song.bpm;
     const loopDurationSec = song.lengthBeats * secondsPerBeat;
 
-    function scheduleCycle(startAudioTime) {
+    function scheduleLoopNotes(loopStartTime) {
       if (!isMusicPlaying || activeMusicId !== songId) return;
-
       song.notes.forEach(n => {
         const [inst, note, beatOffset, dur, vel] = n;
-        const noteTime = startAudioTime + beatOffset * secondsPerBeat;
-        if (noteTime >= audioCtx.currentTime - 0.1) {
+        const noteTime = loopStartTime + beatOffset * secondsPerBeat;
+        if (noteTime >= audioCtx.currentTime - 0.05) {
           playSynthNote(inst, note, noteTime, dur * secondsPerBeat, vel || 0.5);
         }
       });
-
-      const nextLoopTime = startAudioTime + loopDurationSec;
-      const delayMs = Math.max(100, (nextLoopTime - audioCtx.currentTime - 0.25) * 1000);
-
-      const tid = setTimeout(() => {
-        scheduleCycle(nextLoopTime);
-      }, delayMs);
-      songBeatTimeouts.push(tid);
     }
 
-    scheduleCycle(audioCtx.currentTime + 0.05);
+    let nextLoopStartTime = audioCtx.currentTime + 0.05;
+    scheduleLoopNotes(nextLoopStartTime);
+    nextLoopStartTime += loopDurationSec;
+
+    // Bulletproof lookahead scheduler checking every 100ms and queuing 1.5s in advance
+    musicIntervalId = setInterval(() => {
+      if (!isMusicPlaying || activeMusicId !== songId || !audioCtx) {
+        if (musicIntervalId) clearInterval(musicIntervalId);
+        return;
+      }
+      if (audioCtx.currentTime + 1.5 >= nextLoopStartTime) {
+        scheduleLoopNotes(nextLoopStartTime);
+        nextLoopStartTime += loopDurationSec;
+      }
+    }, 100);
   }
 
   function createNoiseBuffer(duration = 5, isPink = true) {
@@ -1026,6 +1031,17 @@ document.addEventListener('DOMContentLoaded', () => {
         data[i] = white * 0.08;
       }
     }
+
+    // Seamless loop equal-power crossfade (eliminates boundary clicks and stuttering)
+    const crossfadeLen = Math.floor(audioCtx.sampleRate * 0.4);
+    for (let i = 0; i < crossfadeLen; i++) {
+      const prog = i / crossfadeLen;
+      const gainIn = Math.sin(prog * 0.5 * Math.PI);
+      const gainOut = Math.cos(prog * 0.5 * Math.PI);
+      const endSample = data[bufferSize - crossfadeLen + i];
+      data[i] = data[i] * gainIn + endSample * gainOut;
+    }
+
     return buffer;
   }
 
@@ -1215,17 +1231,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
           noteGain.gain.setValueAtTime(0.001, now);
           noteGain.gain.linearRampToValueAtTime(0.05, now + 0.4);
-          noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 3.2);
+          noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 4.5);
 
           osc.connect(noteGain);
           noteGain.connect(masterGain);
           osc.start(now);
-          osc.stop(now + 3.4);
+          osc.stop(now + 4.6);
         });
       }
 
       playChord();
-      musicIntervalId = setInterval(playChord, 3500);
+      musicIntervalId = setInterval(playChord, 3200);
 
     } else if (trackId === 'space') {
       // 7. Celestial Space Dream
@@ -9604,22 +9620,31 @@ document.addEventListener('DOMContentLoaded', () => {
       { text: '📅', type: 'emoji' }, { text: '📋', type: 'emoji' }, { text: '🗂️', type: 'emoji' }, { text: '🔖', type: 'emoji' },
       { text: '🔍', type: 'emoji' }, { text: '🖊️', type: 'emoji' }, { text: '🏷️', type: 'emoji' }, { text: '💡', type: 'emoji' }
     ],
-    abstract: [
-      { text: '〰️ Wave Line', type: 'badge', customClass: 'sticker-washi-tape washi-pink' },
-      { text: '➰ Abstract Loop', type: 'badge', customClass: 'sticker-washi-tape washi-grid' },
-      { text: '🟤 Boho Blob', type: 'badge', customClass: 'sticker-washi-tape washi-peach' },
-      { text: '🟡 Sunburst Aura', type: 'badge', customClass: 'sticker-washi-tape washi-yellow' },
-      { text: '🟣 Lilac Aura', type: 'badge', customClass: 'sticker-washi-tape washi-lavender' },
-      { text: '🟢 Sage Patch', type: 'badge', customClass: 'sticker-washi-tape washi-matcha' },
-      { text: '🎀 Washi: Sweet Pink', type: 'badge', customClass: 'sticker-washi-tape washi-pink' },
-      { text: '📐 Washi: Grid Blue', type: 'badge', customClass: 'sticker-washi-tape washi-grid' },
-      { text: '🌿 Washi: Sage Green', type: 'badge', customClass: 'sticker-washi-tape washi-matcha' },
-      { text: '✨ Washi: Gold Star', type: 'badge', customClass: 'sticker-washi-tape washi-yellow' },
-      { text: '💜 Washi: Soft Lilac', type: 'badge', customClass: 'sticker-washi-tape washi-lavender' },
-      { text: '🍑 Washi: Warm Peach', type: 'badge', customClass: 'sticker-washi-tape washi-peach' },
-      { text: '🎨', type: 'emoji' }, { text: '🌀', type: 'emoji' }, { text: '🫧', type: 'emoji' }, { text: '💠', type: 'emoji' },
-      { text: '🔮', type: 'emoji' }, { text: '🔷', type: 'emoji' }, { text: '🔶', type: 'emoji' }, { text: '🟪', type: 'emoji' },
-      { text: '🟩', type: 'emoji' }, { text: '🟡', type: 'emoji' }, { text: '🪞', type: 'emoji' }, { text: '🪄', type: 'emoji' }
+    notebadges: [
+      { text: '📌 Merken!', type: 'badge', customClass: 'sticker-badge-study study-yellow' },
+      { text: '💡 Tipp!', type: 'badge', customClass: 'sticker-badge-study study-amber' },
+      { text: '⭐ Achtung!', type: 'badge', customClass: 'sticker-badge-study study-red' },
+      { text: '📖 Grammatik!', type: 'badge', customClass: 'sticker-badge-study study-blue' },
+      { text: '✍️ Hausaufgabe', type: 'badge', customClass: 'sticker-badge-study study-purple' },
+      { text: '🎯 Lernziel', type: 'badge', customClass: 'sticker-badge-study study-emerald' },
+      { text: '🧠 Wiederholen', type: 'badge', customClass: 'sticker-badge-study study-rose' },
+      { text: '❓ Frage?', type: 'badge', customClass: 'sticker-badge-study study-sky' },
+      { text: '✔️ Richtig!', type: 'badge', customClass: 'sticker-badge-study study-emerald' },
+      { text: '❌ Korrektur', type: 'badge', customClass: 'sticker-badge-study study-red' },
+      { text: '🗣️ Sprechen', type: 'badge', customClass: 'sticker-badge-study study-teal' },
+      { text: '👂 Hören', type: 'badge', customClass: 'sticker-badge-study study-indigo' },
+      { text: '📝 Vokabeln', type: 'badge', customClass: 'sticker-badge-study study-pink' },
+      { text: '🔖 Wichtige Regel', type: 'badge', customClass: 'sticker-badge-study study-amber' },
+      { text: '📌 Schnellnotiz', type: 'badge', customClass: 'sticker-badge-study study-yellow' },
+      { text: '💬 Beispielsatz', type: 'badge', customClass: 'sticker-badge-study study-blue' },
+      { text: '🇩🇪 A1 Prüfung', type: 'badge', customClass: 'sticker-badge-study study-red' },
+      { text: '✨ Zusammenfassung', type: 'badge', customClass: 'sticker-badge-study study-purple' },
+      { text: '🔍 Wortschatz', type: 'badge', customClass: 'sticker-badge-study study-sky' },
+      { text: '📋 Checkliste', type: 'badge', customClass: 'sticker-badge-study study-emerald' },
+      { text: '☕ Lernpause', type: 'badge', customClass: 'sticker-badge-study study-amber' },
+      { text: '🏆 Geschafft!', type: 'badge', customClass: 'sticker-badge-study study-pink' },
+      { text: '🌟 Perfekt!', type: 'badge', customClass: 'sticker-badge-study study-yellow' },
+      { text: '🎖️ 100% Verstanden', type: 'badge', customClass: 'sticker-badge-study study-teal' }
     ],
     doodles: [
       { text: '⭐', type: 'emoji' }, { text: '🌟', type: 'emoji' }, { text: '💫', type: 'emoji' }, { text: '⚡', type: 'emoji' },
@@ -9735,9 +9760,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const rect = container.getBoundingClientRect();
       if (rect.width <= 0 || rect.height <= 0) return;
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const targetW = Math.round(rect.width * dpr);
-      const targetH = Math.round(rect.height * dpr);
+      const targetW = Math.round(rect.width);
+      const targetH = Math.round(rect.height);
 
       if (canvas.width === targetW && canvas.height === targetH) return;
 
@@ -9751,14 +9775,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       canvas.width = targetW;
       canvas.height = targetH;
-      canvas.style.width = `${rect.width}px`;
-      canvas.style.height = `${rect.height}px`;
-
-      const ctx = canvas.getContext('2d');
-      ctx.scale(dpr, dpr);
+      canvas.style.width = `${targetW}px`;
+      canvas.style.height = `${targetH}px`;
 
       if (tempCanvas.width > 0 && tempCanvas.height > 0) {
-        ctx.drawImage(tempCanvas, 0, 0, rect.width, rect.height);
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(tempCanvas, 0, 0, targetW, targetH);
       }
     }
 
@@ -9767,9 +9789,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getCanvasCoords(e) {
       const rect = canvas.getBoundingClientRect();
+      const clientX = e.clientX !== undefined ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientX : 0));
+      const clientY = e.clientY !== undefined ? e.clientY : (e.touches && e.touches[0] ? e.touches[0].clientY : (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientY : 0));
+      const scaleX = rect.width > 0 ? canvas.width / rect.width : 1;
+      const scaleY = rect.height > 0 ? canvas.height / rect.height : 1;
       return {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
       };
     }
 
@@ -9803,77 +9829,152 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Pointer event listeners (supports Mouse, Finger Touch, and Stylus Pens flawlessly)
-    canvas.addEventListener('pointerdown', (e) => {
-      if (activeDoodleTool === 'type') return;
-      e.preventDefault();
-      try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
-      isDoodleDrawing = true;
+    let isDrawing = false;
+    let strokePoints = [];
+    let lastMidX = 0;
+    let lastMidY = 0;
 
-      const pos = getCanvasCoords(e);
+    function startStroke(pos) {
+      isDrawing = true;
       strokePoints = [pos];
+      lastMidX = pos.x;
+      lastMidY = pos.y;
 
-      // Save snapshot for Undo
       saveStrokeForUndo();
 
-      // Draw initial dot
       const ctx = canvas.getContext('2d');
+      applyCtxBrushStyle(ctx);
+
+      // Draw initial round dot at contact point
       ctx.beginPath();
-      applyCtxBrushStyle(ctx);
-      ctx.arc(pos.x, pos.y, Math.max(1, activeDoodleLineWidth / 2), 0, Math.PI * 2);
+      const r = Math.max(1, (activeDoodleTool === 'highlighter' ? activeDoodleLineWidth * 2 : activeDoodleLineWidth) / 2);
+      ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
       ctx.fill();
+    }
 
-      updateCursorDot(pos.x, pos.y);
-    });
-
-    canvas.addEventListener('pointermove', (e) => {
-      const pos = getCanvasCoords(e);
-      updateCursorDot(pos.x, pos.y);
-
-      if (!isDoodleDrawing || activeDoodleTool === 'type') return;
-      e.preventDefault();
-
+    function moveStroke(pos) {
+      if (!isDrawing) return;
       strokePoints.push(pos);
+
       const ctx = canvas.getContext('2d');
       applyCtxBrushStyle(ctx);
 
-      // Smooth handwriting with midpoint quadratic bezier curve interpolation
+      // Smooth continuous quadratic spline curve interpolation
       if (strokePoints.length >= 3) {
-        const p0 = strokePoints[strokePoints.length - 3];
         const p1 = strokePoints[strokePoints.length - 2];
         const p2 = strokePoints[strokePoints.length - 1];
-
-        const mid1X = (p0.x + p1.x) / 2;
-        const mid1Y = (p0.y + p1.y) / 2;
-        const mid2X = (p1.x + p2.x) / 2;
-        const mid2Y = (p1.y + p2.y) / 2;
+        const midX = (p1.x + p2.x) / 2;
+        const midY = (p1.y + p2.y) / 2;
 
         ctx.beginPath();
-        ctx.moveTo(mid1X, mid1Y);
-        ctx.quadraticCurveTo(p1.x, p1.y, mid2X, mid2Y);
+        ctx.moveTo(lastMidX, lastMidY);
+        ctx.quadraticCurveTo(p1.x, p1.y, midX, midY);
         ctx.stroke();
+
+        lastMidX = midX;
+        lastMidY = midY;
       } else if (strokePoints.length === 2) {
-        ctx.beginPath();
-        ctx.moveTo(strokePoints[0].x, strokePoints[0].y);
-        ctx.lineTo(strokePoints[1].x, strokePoints[1].y);
-        ctx.stroke();
-      }
-    });
+        const p0 = strokePoints[0];
+        const p1 = strokePoints[1];
+        const midX = (p0.x + p1.x) / 2;
+        const midY = (p0.y + p1.y) / 2;
 
-    function endDrawing(e) {
-      if (isDoodleDrawing) {
-        isDoodleDrawing = false;
-        try { canvas.releasePointerCapture(e.pointerId); } catch(err) {}
-        strokePoints = [];
-        saveCurrentActivePageState();
+        ctx.beginPath();
+        ctx.moveTo(p0.x, p0.y);
+        ctx.lineTo(midX, midY);
+        ctx.stroke();
+
+        lastMidX = midX;
+        lastMidY = midY;
       }
     }
 
-    canvas.addEventListener('pointerup', endDrawing);
-    canvas.addEventListener('pointercancel', endDrawing);
-    canvas.addEventListener('pointerleave', (e) => {
-      if (!isDoodleDrawing && cursorDot) cursorDot.classList.add('hidden');
+    function endStroke(pos) {
+      if (!isDrawing) return;
+      isDrawing = false;
+
+      if (pos && strokePoints.length > 0) {
+        const ctx = canvas.getContext('2d');
+        applyCtxBrushStyle(ctx);
+        ctx.beginPath();
+        ctx.moveTo(lastMidX, lastMidY);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+      }
+
+      strokePoints = [];
+      saveCurrentActivePageState();
+    }
+
+    // Pointer Event Listeners (Mouse, Stylus, Pen)
+    canvas.addEventListener('pointerdown', (e) => {
+      if (activeDoodleTool === 'type') return;
+      e.preventDefault();
+      try { canvas.setPointerCapture(e.pointerId); } catch(err) {}
+      const pos = getCanvasCoords(e);
+      startStroke(pos);
+      if (e.pointerType !== 'touch') updateCursorDot(pos.x, pos.y);
     });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!isDrawing && e.target !== canvas) return;
+      const pos = getCanvasCoords(e);
+      if (e.pointerType !== 'touch') updateCursorDot(pos.x, pos.y);
+
+      if (!isDrawing || activeDoodleTool === 'type') return;
+      e.preventDefault();
+
+      if (e.getCoalescedEvents) {
+        const coalesced = e.getCoalescedEvents();
+        if (coalesced && coalesced.length > 1) {
+          coalesced.forEach(ce => {
+            moveStroke(getCanvasCoords(ce));
+          });
+          return;
+        }
+      }
+      moveStroke(pos);
+    }, { passive: false });
+
+    window.addEventListener('pointerup', (e) => {
+      if (!isDrawing) return;
+      try { canvas.releasePointerCapture(e.pointerId); } catch(err) {}
+      endStroke(getCanvasCoords(e));
+    });
+
+    window.addEventListener('pointercancel', (e) => {
+      if (!isDrawing) return;
+      try { canvas.releasePointerCapture(e.pointerId); } catch(err) {}
+      endStroke(getCanvasCoords(e));
+    });
+
+    canvas.addEventListener('pointerleave', (e) => {
+      if (!isDrawing && cursorDot) cursorDot.classList.add('hidden');
+    });
+
+    // Touch events for mobile screens to guarantee no gesture scroll interruption
+    canvas.addEventListener('touchstart', (e) => {
+      if (activeDoodleTool === 'type') return;
+      e.preventDefault();
+      if (e.touches && e.touches[0]) {
+        startStroke(getCanvasCoords(e.touches[0]));
+      }
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (e) => {
+      if (!isDrawing || activeDoodleTool === 'type') return;
+      e.preventDefault();
+      if (e.touches && e.touches[0]) {
+        moveStroke(getCanvasCoords(e.touches[0]));
+      }
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+      if (!isDrawing) return;
+      e.preventDefault();
+      const pos = e.changedTouches && e.changedTouches[0] ? getCanvasCoords(e.changedTouches[0]) : null;
+      endStroke(pos);
+    }, { passive: false });
   }
 
   function applyCtxBrushStyle(ctx) {
@@ -10084,7 +10185,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.setStickerCategory = function(cat) {
     activeStickerCategory = cat;
-    ['girly', 'german', 'stationery', 'abstract', 'doodles'].forEach(c => {
+    ['girly', 'german', 'stationery', 'notebadges', 'doodles'].forEach(c => {
       const tab = document.getElementById(`stkTab-${c}`);
       if (tab) {
         if (c === cat) {
@@ -10654,6 +10755,20 @@ document.addEventListener('DOMContentLoaded', () => {
     panel.classList.remove('translate-x-full');
 
     loadActiveDoodleNote();
+
+    setTimeout(() => {
+      const canvas = document.getElementById('doodleCanvas');
+      const container = document.getElementById('doodlePaperContainer');
+      if (canvas && container) {
+        const rect = container.getBoundingClientRect();
+        canvas.width = Math.round(rect.width);
+        canvas.height = Math.round(rect.height);
+        canvas.style.width = `${canvas.width}px`;
+        canvas.style.height = `${canvas.height}px`;
+        const page = getActivePage();
+        renderDoodleCanvasData(page.doodleData);
+      }
+    }, 320);
   };
 
   window.closeDoodleNotes = function() {
@@ -10673,13 +10788,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = document.getElementById('doodlePaperContainer');
         if (canvas && container) {
           const rect = container.getBoundingClientRect();
-          const dpr = Math.min(window.devicePixelRatio || 1, 2);
-          canvas.width = Math.round(rect.width * dpr);
-          canvas.height = Math.round(rect.height * dpr);
-          canvas.style.width = `${rect.width}px`;
-          canvas.style.height = `${rect.height}px`;
-          const ctx = canvas.getContext('2d');
-          ctx.scale(dpr, dpr);
+          canvas.width = Math.round(rect.width);
+          canvas.height = Math.round(rect.height);
+          canvas.style.width = `${canvas.width}px`;
+          canvas.style.height = `${canvas.height}px`;
           const page = getActivePage();
           renderDoodleCanvasData(page.doodleData);
         }

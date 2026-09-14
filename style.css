@@ -859,12 +859,15 @@ body {
 }
 
 /* Canvas Workspace & Drawing Layer */
-#doodlePaperContainer {
+#doodleNotesPanel,
+#doodlePaperContainer,
+#doodlePaperBackground,
+#doodleCanvas,
+#doodleStickersLayer {
   touch-action: none !important;
-}
-
-#doodleCanvas {
-  touch-action: none !important;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 /* Canvas Mode Realistic Pen, Highlighter & Eraser Cursors */
@@ -966,31 +969,32 @@ body {
   white-space: nowrap;
 }
 
-/* Abstract Washi Tape & Aesthetic Stickers */
-.sticker-washi-tape {
+/* German Study & Note-taking Badges */
+.sticker-badge-study {
   font-size: 11px;
   font-weight: 800;
-  padding: 4px 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transform: rotate(-1.5deg);
-  border-left: 3px dashed rgba(255, 255, 255, 0.7);
-  border-right: 3px dashed rgba(255, 255, 255, 0.7);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   white-space: nowrap;
   letter-spacing: 0.02em;
+  border-width: 1.5px;
+  border-style: solid;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
-.washi-pink { background: #fbcfe8; color: #831843; border-top: 1px solid #f472b6; border-bottom: 1px solid #f472b6; }
-.washi-grid { background: #e0f2fe; color: #0369a1; background-image: linear-gradient(to right, #bae6fd 1px, transparent 1px), linear-gradient(to bottom, #bae6fd 1px, transparent 1px); background-size: 6px 6px; border-top: 1px solid #7dd3fc; border-bottom: 1px solid #7dd3fc; }
-.washi-matcha { background: #dcfce7; color: #166534; border-top: 1px solid #86efac; border-bottom: 1px solid #86efac; }
-.washi-yellow { background: #fef08a; color: #854d0e; border-top: 1px solid #facc15; border-bottom: 1px solid #facc15; }
-.washi-lavender { background: #ede9fe; color: #5b21b6; border-top: 1px solid #c4b5fd; border-bottom: 1px solid #c4b5fd; }
-.washi-peach { background: #ffedd5; color: #9a3412; border-top: 1px solid #fdba74; border-bottom: 1px solid #fdba74; }
-.sticker-abstract-blob {
-  padding: 6px 12px;
-  border-radius: 9999px;
-  font-size: 11px;
-  font-weight: 800;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-}
+.study-yellow { background: #fef9c3; color: #854d0e; border-color: #fde047; }
+.study-amber { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+.study-red { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+.study-blue { background: #e0f2fe; color: #075985; border-color: #7dd3fc; }
+.study-sky { background: #f0f9ff; color: #0369a1; border-color: #bae6fd; }
+.study-purple { background: #f3e8ff; color: #6b21a8; border-color: #d8b4fe; }
+.study-emerald { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+.study-teal { background: #ccfbf1; color: #115e59; border-color: #5eead4; }
+.study-rose { background: #ffe4e6; color: #9f1239; border-color: #fda4af; }
+.study-pink { background: #fce7f3; color: #9d174d; border-color: #f472b6; }
+.study-indigo { background: #e0e7ff; color: #3730a3; border-color: #a5b4fc; }
 
 /* ================= 30 AESTHETIC PAPER STYLES ================= */
 
