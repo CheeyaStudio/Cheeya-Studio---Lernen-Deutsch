@@ -859,15 +859,50 @@ body {
 }
 
 /* Canvas Workspace & Drawing Layer */
-#doodleNotesPanel,
-#doodlePaperContainer,
-#doodlePaperBackground,
-#doodleCanvas,
-#doodleStickersLayer {
-  touch-action: none !important;
+#doodlePaperContainer {
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
+  scrollbar-width: thin;
+  scrollbar-color: #f472b6 #fdf2f8;
+  overscroll-behavior: contain;
+}
+
+#doodlePaperContainer::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+#doodlePaperContainer::-webkit-scrollbar-track {
+  background: #fdf2f8;
+  border-radius: 8px;
+}
+
+#doodlePaperContainer::-webkit-scrollbar-thumb {
+  background: #f472b6;
+  border-radius: 8px;
+  border: 2px solid #fdf2f8;
+}
+
+#doodlePaperContainer::-webkit-scrollbar-thumb:hover {
+  background: #ec4899;
+}
+
+#doodlePaperSheet {
+  will-change: transform;
+  transform-origin: 0 0;
+}
+
+#doodlePaperBackground,
+#doodleCanvas,
+#doodleStickersLayer {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+#doodleCanvas {
+  touch-action: none !important;
 }
 
 /* Canvas Mode Realistic Pen, Highlighter & Eraser Cursors */
@@ -887,11 +922,16 @@ body {
   pointer-events: none !important;
 }
 
-/* Custom Pen Tip / Circle Follower Indicator */
+/* Custom Pen Tip / Large Eraser Follower Indicator */
 #doodleCursorDot {
   transform: translate(-50%, -50%);
   pointer-events: none;
-  transition: width 0.1s ease, height 0.1s ease, background-color 0.1s ease;
+  transition: width 0.08s ease, height 0.08s ease, background-color 0.1s ease;
+  box-sizing: border-box;
+}
+
+#doodleZoomControls {
+  box-shadow: 0 4px 15px -2px rgba(244, 63, 94, 0.18), 0 2px 6px -1px rgba(0, 0, 0, 0.08);
 }
 
 /* Color Dot Palette Active State */
