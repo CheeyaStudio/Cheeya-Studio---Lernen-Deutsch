@@ -92,8 +92,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function initSpeech() {
     if (synth) {
       const loadVoices = () => {
-        const voices = synth.getVoices();
-        germanVoice = voices.find(v => v.lang.startsWith('de')) || null;
+        const voices = synth.getVoices() || [];
+        germanVoice = voices.find(v => {
+          const name = (v.name || '').toLowerCase();
+          const lang = (v.lang || '').toLowerCase();
+          return (lang.startsWith('de') || lang.includes('german')) &&
+                 (name.includes('google') || name.includes('natural') || name.includes('hedda') || name.includes('katja') || name.includes('stefan') || name.includes('anna') || name.includes('marlene') || name.includes('vicki') || name.includes('hans') || name.includes('martin'));
+        }) || voices.find(v => (v.lang || '').toLowerCase().startsWith('de')) || null;
       };
       loadVoices();
       if (speechSynthesis.onvoiceschanged !== undefined) {
@@ -101,23 +106,55 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
+
+  // Pre-unlock speech synthesis on user interaction for mobile browsers
+  document.addEventListener('click', function unlockAudioContext() {
+    if (synth && synth.paused) {
+      try { synth.resume(); } catch (e) {}
+    }
+  }, { passive: true });
+
   let activeAudioObj = null;
   window.ttsCurrentSpeed = 1.0;
 
+  function cleanGermanTextForSpeech(text) {
+    if (!text || typeof text !== 'string') return '';
+    let spoken = text.trim();
+
+    // 1. Remove markdown symbols
+    spoken = spoken.replace(/[*_#`~]/g, '');
+
+    // 2. Remove parenthetical English translations/notes e.g. "*(read digit by digit)*", "(m / f)", "(formal)"
+    spoken = spoken.replace(/\(.*?\)/g, ' ');
+    spoken = spoken.replace(/\[.*?\]/g, ' ');
+
+    // 3. For German nouns with plural annotations at the end:
+    // e.g. "das Alphabet, -e", "das Land, -\"er", "der Herr, -en", "die Stadt, -\"e", "der Apfel, -\"", "die Ärztin, -nen"
+    // Match only trailing comma followed by hyphen or plural abbreviation
+    spoken = spoken.replace(/,\s*[-–—"'][^,.]*$/i, '');
+    spoken = spoken.replace(/,\s*pl\b[^,.]*$/i, '');
+
+    // 4. Clean slashes into natural pauses (e.g. "Hallo / Guten Tag" -> "Hallo. Guten Tag")
+    spoken = spoken.replace(/\s*\/\s*/g, '. ');
+
+    // 5. Clean arrows and dashes (e.g. "Wer ist das? -> Das ist Selina." -> "Wer ist das? Das ist Selina.")
+    spoken = spoken.replace(/->|&rarr;|→/g, '. ');
+
+    // 6. Clean ellipses (e.g. "Ich heiße..." -> "Ich heiße", "0650 - 32 ..." -> "0650 - 32")
+    spoken = spoken.replace(/\.{2,}|…/g, ' ');
+
+    // 7. Remove stray quotes and backslashes
+    spoken = spoken.replace(/\\"/g, '').replace(/["']/g, '');
+
+    // 8. Collapse multiple whitespace
+    spoken = spoken.replace(/\s+/g, ' ').trim();
+
+    return spoken;
+  }
+
   window.playGermanSpeech = function(text, triggerBtn = null) {
-    if (!text || typeof text !== 'string') return;
-    
-    // Clean markdown formatting
-    let spoken = text.replace(/[*_#`]/g, '').trim();
-    
-    // For German nouns with plural annotations (e.g. "das Alphabet, -e", "das Land, -\"er", "der Herr, -en", "die Stadt, -\"e")
-    // extract base form up to the comma so the voice speaks clean natural German
-    if (spoken.includes(',')) {
-      const parts = spoken.split(',');
-      spoken = parts[0].trim();
-    }
-    // Clean slashes e.g. "Hallo / Guten Tag" -> natural pause
-    spoken = spoken.replace(/\s*\/\s*/g, ', ');
+    const spoken = cleanGermanTextForSpeech(text);
+    if (!spoken) return;
 
     // Visual feedback on button if provided
     if (triggerBtn && triggerBtn.classList) {
@@ -133,8 +170,33 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (e) {}
       activeAudioObj = null;
     }
+    if (synth) {
+      try { synth.cancel(); } catch (e) {}
+    }
 
-    // Method 1: Google Native German Audio Stream (100% authentic human German speaker, unblocked by no-referrer)
+    let hasStartedPlaying = false;
+    let fallbackTimer = null;
+
+    const executeFallback = () => {
+      if (hasStartedPlaying) return;
+      hasStartedPlaying = true;
+      if (fallbackTimer) clearTimeout(fallbackTimer);
+      if (activeAudioObj) {
+        try { activeAudioObj.pause(); } catch (e) {}
+        activeAudioObj = null;
+      }
+      playSpeechSynthesisFallback(spoken, triggerBtn);
+    };
+
+    // If text is long (>140 chars), Google Translate TTS may reject or delay. Use SpeechSynthesis directly.
+    if (spoken.length > 140) {
+      playSpeechSynthesisFallback(spoken, triggerBtn);
+      return;
+    }
+
+    // Dual-strategy with fast 1200ms fallback safety timer
+    fallbackTimer = setTimeout(executeFallback, 1200);
+
     try {
       const encoded = encodeURIComponent(spoken);
       const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=de&q=${encoded}`;
@@ -144,11 +206,15 @@ document.addEventListener('DOMContentLoaded', () => {
       audio.playbackRate = window.ttsCurrentSpeed || 1.0;
       activeAudioObj = audio;
 
+      audio.onplaying = () => {
+        hasStartedPlaying = true;
+        if (fallbackTimer) clearTimeout(fallbackTimer);
+      };
+
       const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise.catch(err => {
-          console.warn("Audio stream blocked or failed, falling back to Web Speech API:", err);
-          playSpeechSynthesisFallback(spoken, triggerBtn);
+          executeFallback();
         });
       }
 
@@ -157,48 +223,50 @@ document.addEventListener('DOMContentLoaded', () => {
         activeAudioObj = null;
       };
       audio.onerror = () => {
-        playSpeechSynthesisFallback(spoken, triggerBtn);
+        executeFallback();
       };
     } catch (e) {
-      playSpeechSynthesisFallback(spoken, triggerBtn);
+      executeFallback();
     }
   };
 
   function playSpeechSynthesisFallback(spoken, triggerBtn) {
-    if (!synth) return;
+    if (!synth) {
+      if (triggerBtn && triggerBtn.classList) triggerBtn.classList.remove('audio-playing-pulse');
+      return;
+    }
     try {
       if (synth.paused) synth.resume();
       synth.cancel();
 
-      setTimeout(() => {
-        const utterance = new SpeechSynthesisUtterance(spoken);
-        utterance.lang = 'de-DE';
-        utterance.rate = (window.ttsCurrentSpeed === 0.8) ? 0.75 : 0.88;
-        
-        const voices = synth.getVoices() || [];
-        // Prioritize natural high-quality German human voices over robotic synthesizers
-        const naturalGermanVoice = voices.find(v => {
-          const name = (v.name || '').toLowerCase();
-          const lang = (v.lang || '').toLowerCase();
-          return (lang.startsWith('de') || lang.includes('german')) &&
-                 (name.includes('google') || name.includes('natural') || name.includes('hedda') || name.includes('katja') || name.includes('stefan') || name.includes('anna'));
-        }) || voices.find(v => (v.lang || '').toLowerCase().startsWith('de'));
+      const utterance = new SpeechSynthesisUtterance(spoken);
+      utterance.lang = 'de-DE';
+      utterance.rate = (window.ttsCurrentSpeed === 0.8) ? 0.75 : 0.88;
+      
+      const voices = synth.getVoices() || [];
+      // Prioritize natural high-quality German human voices over robotic synthesizers
+      const naturalGermanVoice = voices.find(v => {
+        const name = (v.name || '').toLowerCase();
+        const lang = (v.lang || '').toLowerCase();
+        return (lang.startsWith('de') || lang.includes('german')) &&
+               (name.includes('google') || name.includes('natural') || name.includes('hedda') || name.includes('katja') || name.includes('stefan') || name.includes('anna') || name.includes('marlene') || name.includes('vicki') || name.includes('hans') || name.includes('martin'));
+      }) || voices.find(v => (v.lang || '').toLowerCase().startsWith('de')) || germanVoice;
 
-        if (naturalGermanVoice) {
-          utterance.voice = naturalGermanVoice;
-        }
+      if (naturalGermanVoice) {
+        utterance.voice = naturalGermanVoice;
+      }
 
-        utterance.onend = () => {
-          if (triggerBtn && triggerBtn.classList) triggerBtn.classList.remove('audio-playing-pulse');
-        };
-        utterance.onerror = () => {
-          if (triggerBtn && triggerBtn.classList) triggerBtn.classList.remove('audio-playing-pulse');
-        };
+      utterance.onend = () => {
+        if (triggerBtn && triggerBtn.classList) triggerBtn.classList.remove('audio-playing-pulse');
+      };
+      utterance.onerror = () => {
+        if (triggerBtn && triggerBtn.classList) triggerBtn.classList.remove('audio-playing-pulse');
+      };
 
-        synth.speak(utterance);
-      }, 30);
+      synth.speak(utterance);
     } catch (e) {
       console.warn("Speech synthesis fallback failed:", e);
+      if (triggerBtn && triggerBtn.classList) triggerBtn.classList.remove('audio-playing-pulse');
     }
   }
 
@@ -3816,7 +3884,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <p class="text-[11px] text-sky-600 font-medium truncate">${v.en || v.id}</p>
             </div>
           </div>
-          <button class="px-2.5 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold transition cursor-pointer flex-shrink-0 ml-2 flex items-center gap-1 shadow-2xs" onclick="playGermanSpeech('${v.de.replace(/'/g, "\\'")}', this)" title="Listen to German pronunciation">
+          <button class="px-2.5 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold transition cursor-pointer flex-shrink-0 ml-2 flex items-center gap-1 shadow-2xs" onclick="playGermanSpeech(decodeURIComponent('${encodeURIComponent(v.de)}'), this)" title="Listen to German pronunciation">
             <span>🔊</span>
             <span class="hidden sm:inline text-[11px]">Listen</span>
           </button>
@@ -4373,7 +4441,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="text-[11px] text-sky-600 font-medium ml-1.5">• ${v.en || ''}</span>
             </div>
           </div>
-          <button id="ttsPlayBtn-${idx}" onclick="playGermanSpeech('${v.de.replace(/'/g, "\\'")}', this)" class="px-3 py-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs font-bold transition cursor-pointer flex items-center gap-1 flex-shrink-0 shadow-2xs" title="Listen to pronunciation">
+          <button id="ttsPlayBtn-${idx}" onclick="playGermanSpeech(decodeURIComponent('${encodeURIComponent(v.de)}'), this)" class="px-3 py-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs font-bold transition cursor-pointer flex items-center gap-1 flex-shrink-0 shadow-2xs" title="Listen to pronunciation">
             <span>🔊</span>
             <span class="text-[11px]">Listen</span>
           </button>
@@ -6417,7 +6485,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="font-black text-sm text-blue-950">
                   Object: <strong class="text-blue-800">"${obj.phrase}"</strong>
                 </span>
-                <button onclick="playGermanSpeech('${escapedPhrase}', this)" class="px-2 py-0.5 rounded-md bg-white text-blue-600 hover:bg-blue-100 border border-blue-200 text-xs font-bold transition flex items-center gap-1 cursor-pointer" title="Listen to pronunciation">
+                <button onclick="playGermanSpeech(decodeURIComponent('${encodeURIComponent(obj.phrase)}'), this)" class="px-2 py-0.5 rounded-md bg-white text-blue-600 hover:bg-blue-100 border border-blue-200 text-xs font-bold transition flex items-center gap-1 cursor-pointer" title="Listen to pronunciation">
                   <span>🔊</span><span>Listen</span>
                 </button>
               </div>
@@ -6796,7 +6864,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="bg-white p-2.5 rounded-xl border border-sky-200 shadow-2xs flex flex-col justify-between hover:border-sky-400 transition">
           <div class="flex items-center justify-between gap-1 mb-1">
             <span class="text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded border ${posColor}">${pos}</span>
-            <button onclick="playGermanSpeech('${escapedWord}', this)" class="p-1 rounded-md text-sky-600 hover:bg-sky-100 transition cursor-pointer" title="Listen to pronunciation">
+            <button onclick="playGermanSpeech(decodeURIComponent('${encodeURIComponent(t.clean)}'), this)" class="p-1 rounded-md text-sky-600 hover:bg-sky-100 transition cursor-pointer" title="Listen to pronunciation">
               🔊
             </button>
           </div>
@@ -8089,7 +8157,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="flex items-center justify-between gap-2">
             <span class="text-xs font-black text-sky-950">${escapeHtml(item.german)}</span>
             <div class="flex items-center gap-1.5 flex-shrink-0">
-              <button onclick="playGermanSpeech('${escapeHtml(item.german)}', this)" class="p-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-700 text-xs font-bold transition cursor-pointer" title="Listen to pronunciation">
+              <button onclick="playGermanSpeech(decodeURIComponent('${encodeURIComponent(item.german)}'), this)" class="p-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-700 text-xs font-bold transition cursor-pointer" title="Listen to pronunciation">
                 🔊
               </button>
               <button onclick="startSpeakingPractice('${escapeHtml(item.german)}')" class="px-2 py-0.5 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-900 text-[11px] font-bold transition cursor-pointer" title="Practice Speaking">
@@ -8493,7 +8561,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-2.5">
             <div class="flex items-center justify-between">
               <span class="text-[10px] font-black uppercase text-indigo-700 tracking-wider">${item.part}</span>
-              <button onclick="playGermanSpeech('${escapeHtml(item.audioPrompt)}')" class="px-2.5 py-1 rounded-lg bg-indigo-100 hover:bg-indigo-200 text-indigo-900 text-xs font-bold transition cursor-pointer flex items-center gap-1 shadow-2xs">
+              <button onclick="playGermanSpeech(decodeURIComponent('${encodeURIComponent(item.audioPrompt)}'))" class="px-2.5 py-1 rounded-lg bg-indigo-100 hover:bg-indigo-200 text-indigo-900 text-xs font-bold transition cursor-pointer flex items-center gap-1 shadow-2xs">
                 <span>🔊</span>
                 <span>Play Audio Track</span>
               </button>
@@ -8589,7 +8657,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-3">
             <div class="flex items-center justify-between">
               <span class="text-[10px] font-black uppercase text-indigo-700 tracking-wider">${item.part}</span>
-              <button onclick="playGermanSpeech('${escapeHtml(item.modelSpeech || item.modelQuestion)}')" class="px-2.5 py-1 rounded-lg bg-indigo-100 hover:bg-indigo-200 text-indigo-900 text-xs font-bold transition cursor-pointer flex items-center gap-1 shadow-2xs">
+              <button onclick="playGermanSpeech(decodeURIComponent('${encodeURIComponent(item.modelSpeech || item.modelQuestion)}'))" class="px-2.5 py-1 rounded-lg bg-indigo-100 hover:bg-indigo-200 text-indigo-900 text-xs font-bold transition cursor-pointer flex items-center gap-1 shadow-2xs">
                 <span>🔊</span>
                 <span>Listen to Model Audio</span>
               </button>
