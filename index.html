@@ -21,7 +21,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   
   <!-- Custom Soft Pastel Blue Theme & Scalable Font Styling -->
-  <link rel="stylesheet" href="style.css?v=20260914_doodle_v10">
+  <link rel="stylesheet" href="style.css?v=20260914_doodle_v8">
 </head>
 <body class="h-full flex flex-col antialiased select-none relative overflow-hidden">
 
@@ -1936,33 +1936,22 @@
 
     <!-- The Active Paper Canvas Workspace (Displays 1 of 30 Paper Styles) -->
     <div class="flex-1 relative overflow-hidden flex flex-col p-2.5 bg-pink-50/40">
-      <!-- Floating Zoom & Navigation HUD Controls -->
-      <div id="doodleZoomControls" class="absolute top-4 right-5 z-40 flex items-center gap-1 bg-white/92 backdrop-blur-md px-2 py-1 rounded-xl shadow-md border border-pink-200 select-none">
-        <button onclick="zoomDoodlePaper(-0.15)" class="w-6 h-6 rounded-lg bg-pink-50 hover:bg-pink-100 text-pink-900 font-black text-xs flex items-center justify-center transition cursor-pointer" title="Zoom Out (Pinch or click)">−</button>
-        <span id="doodleZoomLevelLabel" class="text-[11px] font-black text-pink-950 px-1 min-w-[38px] text-center cursor-pointer" onclick="resetDoodleZoom()" title="Click to reset zoom (100%)">100%</span>
-        <button onclick="zoomDoodlePaper(0.15)" class="w-6 h-6 rounded-lg bg-pink-50 hover:bg-pink-100 text-pink-900 font-black text-xs flex items-center justify-center transition cursor-pointer" title="Zoom In (Pinch or click)">+</button>
-        <button onclick="resetDoodleZoom()" class="w-6 h-6 rounded-lg bg-pink-50 hover:bg-pink-100 text-pink-900 text-xs flex items-center justify-center transition cursor-pointer ml-0.5" title="Reset Zoom to 100%">⟲</button>
-      </div>
+      <div id="doodlePaperContainer" class="flex-1 relative rounded-2xl shadow-md border-2 border-pink-200 overflow-hidden paper-style-ruled-blue">
+        
+        <!-- Background Layer: CSS Paper Texture / Grid / Lines / Watermarks -->
+        <div id="doodlePaperBackground" class="absolute inset-0 pointer-events-none transition-all duration-300"></div>
 
-      <div id="doodlePaperContainer" class="flex-1 relative rounded-2xl shadow-md border-2 border-pink-200 overflow-auto bg-slate-100/60">
-        <div id="doodleSheetWrapper" class="relative origin-top-left">
-          <div id="doodlePaperSheet" class="relative w-full min-w-full min-h-[2800px] h-[2800px] paper-style-ruled-blue origin-top-left shadow-xs transition-transform duration-75">
-            <!-- Background Layer: CSS Paper Texture / Grid / Lines / Watermarks -->
-            <div id="doodlePaperBackground" class="absolute inset-0 pointer-events-none transition-all duration-300"></div>
+        <!-- Text Typing Layer: For typing notes, vocab, or exercises -->
+        <textarea id="doodleTextInput" oninput="handleDoodleTextInput(this.value)" placeholder="Click here or switch to '⌨️ Type' mode to write notes, German vocab, or grammar rules..." class="absolute inset-0 w-full h-full p-4 bg-transparent border-0 resize-none font-sans text-xs text-slate-800 leading-6 focus:outline-none z-10 select-text" spellcheck="false"></textarea>
 
-            <!-- Text Typing Layer: For typing notes, vocab, or exercises -->
-            <textarea id="doodleTextInput" oninput="handleDoodleTextInput(this.value)" placeholder="Click here or switch to '⌨️ Type' mode to write notes, German vocab, or grammar rules..." class="absolute inset-0 w-full h-full p-6 bg-transparent border-0 resize-none font-sans text-xs text-slate-800 leading-6 focus:outline-none z-10 select-text" spellcheck="false"></textarea>
+        <!-- Canvas Drawing Layer: For pen, highlighter, and eraser -->
+        <canvas id="doodleCanvas" class="absolute inset-0 w-full h-full z-20"></canvas>
 
-            <!-- Canvas Drawing Layer: For pen, highlighter, and eraser -->
-            <canvas id="doodleCanvas" class="absolute inset-0 w-full h-full z-20"></canvas>
+        <!-- Custom Pen Tip / Circle Follower Indicator -->
+        <div id="doodleCursorDot" class="pointer-events-none absolute z-40 rounded-full border border-pink-400/80 bg-pink-500/25 shadow-xs hidden"></div>
 
-            <!-- Custom Pen Tip / Circle Follower Indicator -->
-            <div id="doodleCursorDot" class="pointer-events-none absolute z-40 rounded-full border border-pink-400/80 bg-pink-500/25 shadow-xs hidden"></div>
-
-            <!-- Draggable Stickers Layer -->
-            <div id="doodleStickersLayer" class="absolute inset-0 z-30 pointer-events-none"></div>
-          </div>
-        </div>
+        <!-- Draggable Stickers Layer -->
+        <div id="doodleStickersLayer" class="absolute inset-0 z-30 pointer-events-none"></div>
       </div>
     </div>
 
@@ -2146,6 +2135,6 @@
 
   <!-- SCRIPT LOGIC -->
   <script src="media-data.js?v=20260913_360q"></script>
-  <script src="app.js?v=20260914_doodle_v10"></script>
+  <script src="app.js?v=20260914_doodle_v9"></script>
 </body>
 </html>
