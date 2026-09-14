@@ -813,4 +813,410 @@ body {
   }
 }
 
+/* ==========================================================================
+   ✏️ CHEEYA "DOODLE NOTES" DIGITAL STUDY JOURNAL STYLING (30 PAPERS & STICKERS)
+   ========================================================================== */
+
+/* Floating Quick Tab on Right Screen Edge */
+#floatingDoodleTab {
+  box-shadow: -4px 6px 20px rgba(244, 63, 94, 0.28), 0 2px 8px rgba(0, 0, 0, 0.08);
+  animation: floatDoodleTabPulse 4s ease-in-out infinite;
+}
+
+@keyframes floatDoodleTabPulse {
+  0%, 100% { transform: translateY(-50%) translateX(0); }
+  50% { transform: translateY(-50%) translateX(-4px); }
+}
+
+#floatingDoodleTab:hover {
+  animation: none;
+  transform: translateY(-50%) translateX(-6px);
+}
+
+/* Dockable Side Panel */
+#doodleNotesPanel {
+  box-shadow: -10px 0 35px rgba(15, 23, 42, 0.14);
+}
+
+#doodleNotesPanel.panel-open {
+  transform: translateX(0) !important;
+}
+
+#doodleNotesPanel.panel-wide {
+  width: 100% !important;
+}
+
+@media (min-width: 768px) {
+  #doodleNotesPanel.panel-wide {
+    width: 750px !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  #doodleNotesPanel.panel-wide {
+    width: 840px !important;
+  }
+}
+
+/* Canvas Mode Cursors */
+#doodleCanvas.tool-pen {
+  cursor: crosshair;
+}
+
+#doodleCanvas.tool-highlighter {
+  cursor: crosshair;
+}
+
+#doodleCanvas.tool-eraser {
+  cursor: cell;
+}
+
+#doodleCanvas.tool-type {
+  pointer-events: none !important;
+}
+
+/* Color Dot Palette Active State */
+.doodle-color-dot {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.doodle-color-dot:hover {
+  transform: scale(1.15);
+}
+
+.doodle-color-dot.active {
+  transform: scale(1.22);
+  outline: 2px solid #ec4899;
+  outline-offset: 2px;
+  box-shadow: 0 0 8px rgba(236, 72, 153, 0.5);
+}
+
+/* Draggable Stickers */
+.doodle-sticker-item {
+  position: absolute;
+  cursor: grab;
+  user-select: none;
+  z-index: 30;
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+  transition: transform 0.08s ease, filter 0.1s ease;
+}
+
+.doodle-sticker-item:active {
+  cursor: grabbing;
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.doodle-sticker-item:hover .sticker-del-badge {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sticker-del-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 18px;
+  height: 18px;
+  background: #f43f5e;
+  color: #ffffff;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+/* German Study Sticker Badges */
+.sticker-badge-german {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: #fff1f2;
+  color: #9f1239;
+  border: 1.5px solid #fecdd3;
+  box-shadow: 0 2px 6px rgba(244, 63, 94, 0.15);
+  white-space: nowrap;
+}
+
+/* ================= 30 AESTHETIC PAPER STYLES ================= */
+
+/* 1. Classic Blue-Ruled Notebook */
+.paper-style-ruled-blue {
+  background-color: #ffffff;
+  background-image: 
+    linear-gradient(90deg, transparent 40px, #fca5a5 40px, #fca5a5 42px, transparent 42px),
+    linear-gradient(#e2e8f0 1px, transparent 1px);
+  background-size: 100% 100%, 100% 28px;
+  background-repeat: no-repeat, repeat;
+}
+
+/* 2. Pastel Pink Ruled */
+.paper-style-ruled-pink {
+  background-color: #fffbfa;
+  background-image: 
+    linear-gradient(90deg, transparent 40px, #f472b6 40px, #f472b6 42px, transparent 42px),
+    linear-gradient(#fce7f3 1px, transparent 1px);
+  background-size: 100% 100%, 100% 28px;
+  background-repeat: no-repeat, repeat;
+}
+
+/* 3. Clean Blank White */
+.paper-style-blank-white {
+  background-color: #ffffff;
+}
+
+/* 4. Grid / Graph Paper */
+.paper-style-grid-math {
+  background-color: #f8fafc;
+  background-image: 
+    linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+    linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* 5. Dotted Bullet Journal */
+.paper-style-dot-grid {
+  background-color: #fafaf9;
+  background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+
+/* 6. Sakura Blossom Petals */
+.paper-style-sakura-blossom {
+  background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 50%, #fff0f5 100%);
+  background-image: radial-gradient(#fbcfe8 2px, transparent 2px);
+  background-size: 32px 32px;
+}
+
+/* 7. Dreamy Sky Pastel Blue */
+.paper-style-dreamy-sky {
+  background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+  background-image: linear-gradient(#bae6fd 1px, transparent 1px);
+  background-size: 100% 28px;
+}
+
+/* 8. Lavender Lilac Dream */
+.paper-style-lavender-dream {
+  background: linear-gradient(180deg, #faf5ff 0%, #f3e8ff 100%);
+  background-image: linear-gradient(#e9d5ff 1px, transparent 1px);
+  background-size: 100% 28px;
+}
+
+/* 9. Matcha Latte Mint */
+.paper-style-matcha-latte {
+  background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%);
+  background-image: linear-gradient(#bbf7d0 1px, transparent 1px);
+  background-size: 100% 28px;
+}
+
+/* 10. Cozy Coffee Kraft */
+.paper-style-coffee-kraft {
+  background-color: #fef7ee;
+  background-image: linear-gradient(#e5d5c5 1px, transparent 1px);
+  background-size: 100% 28px;
+}
+
+/* 11. Honey Lemon Pastel */
+.paper-style-honey-lemon {
+  background: linear-gradient(180deg, #fefce8 0%, #fef9c3 100%);
+  background-image: linear-gradient(#fde047 1px, transparent 1px);
+  background-size: 100% 28px;
+}
+
+/* 12. Cloud & Stars Stardust */
+.paper-style-stardust-clouds {
+  background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 50%, #e0e7ff 100%);
+  background-image: radial-gradient(#d8b4fe 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+
+/* 13. Ribbon & Sweet Hearts */
+.paper-style-ribbon-hearts {
+  background-color: #fff5f7;
+  background-image: 
+    linear-gradient(90deg, transparent 38px, #fb7185 38px, #fb7185 40px, transparent 40px),
+    linear-gradient(#fed7aa 1px, transparent 1px);
+  background-size: 100% 100%, 100% 28px;
+}
+
+/* 14. Strawberry Milk */
+.paper-style-strawberry-milk {
+  background-color: #fff0f3;
+  background-image: repeating-linear-gradient(0deg, #fff0f3, #fff0f3 26px, #fecdd3 27px, #fecdd3 28px);
+}
+
+/* 15. Teddy Bear Picnic */
+.paper-style-teddy-bear {
+  background: #fffbf5;
+  background-image: linear-gradient(#fed7aa 1px, transparent 1px);
+  background-size: 100% 28px;
+}
+
+/* 16. Soft Peach Sunset */
+.paper-style-soft-peach {
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 50%, #ffe4e6 100%);
+  background-image: linear-gradient(#fed7aa 1px, transparent 1px);
+  background-size: 100% 28px;
+}
+
+/* 17. Midnight Dark Study */
+.paper-style-midnight-dark {
+  background-color: #0f172a;
+  background-image: linear-gradient(#1e293b 1px, transparent 1px);
+  background-size: 100% 28px;
+}
+.paper-style-midnight-dark textarea {
+  color: #f8fafc !important;
+  caret-color: #38bdf8 !important;
+}
+.paper-style-midnight-dark textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* 18. Botanical Herbarium */
+.paper-style-botanical-herbarium {
+  background-color: #f4fbf7;
+  background-image: 
+    linear-gradient(90deg, transparent 40px, #86efac 40px, #86efac 42px, transparent 42px),
+    linear-gradient(#d1fae5 1px, transparent 1px);
+  background-size: 100% 100%, 100% 28px;
+}
+
+/* 19. Cute Cat Paws */
+.paper-style-cute-cat-paws {
+  background-color: #fdf8f6;
+  background-image: radial-gradient(#fed7aa 2px, transparent 2px);
+  background-size: 28px 28px;
+}
+
+/* 20. Pastel Cotton Candy */
+.paper-style-cotton-candy {
+  background: linear-gradient(120deg, #fce7f3 0%, #e0f2fe 50%, #ede9fe 100%);
+  background-image: linear-gradient(#cbd5e1 1px, transparent 1px);
+  background-size: 100% 28px;
+}
+
+/* 21. Cornell Study Notes */
+.paper-style-cornell-notes {
+  background-color: #ffffff;
+  background-image: 
+    linear-gradient(90deg, transparent 110px, #94a3b8 110px, #94a3b8 112px, transparent 112px),
+    linear-gradient(#e2e8f0 1px, transparent 1px);
+  background-size: 100% 100%, 100% 28px;
+}
+
+/* 22. Vintage Parchment Scroll */
+.paper-style-vintage-parchment {
+  background-color: #fbf5e8;
+  background-image: linear-gradient(#e7d7bd 1px, transparent 1px);
+  background-size: 100% 28px;
+}
+
+/* 23. Sweet Tulip Garden */
+.paper-style-tulip-garden {
+  background: linear-gradient(180deg, #fff8f8 0%, #fff0f3 100%);
+  background-image: 
+    linear-gradient(90deg, transparent 38px, #fb7185 38px, #fb7185 40px, transparent 40px),
+    linear-gradient(#fecdd3 1px, transparent 1px);
+  background-size: 100% 100%, 100% 28px;
+}
+
+/* 24. Boba Milk Tea Sanctuary */
+.paper-style-boba-tea {
+  background-color: #faf6f0;
+  background-image: linear-gradient(#d6c7b2 1px, transparent 1px);
+  background-size: 100% 28px;
+}
+
+/* 25. Retro Pastel Polka Dots */
+.paper-style-polka-dots {
+  background-color: #fffefb;
+  background-image: 
+    radial-gradient(#fbcfe8 2px, transparent 2px), 
+    radial-gradient(#bae6fd 2px, transparent 2px);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+}
+
+/* 26. Ocean Wave Breeze */
+.paper-style-ocean-breeze {
+  background: linear-gradient(180deg, #ecfeff 0%, #cffafe 100%);
+  background-image: linear-gradient(#a5f3fc 1px, transparent 1px);
+  background-size: 100% 28px;
+}
+
+/* 27. Autumn Maple Leaves */
+.paper-style-autumn-leaves {
+  background: linear-gradient(135deg, #fef3c7 0%, #fee2e2 100%);
+  background-image: linear-gradient(#fcd34d 1px, transparent 1px);
+  background-size: 100% 28px;
+}
+
+/* 28. Vintage Chalkboard Green */
+.paper-style-chalkboard-green {
+  background-color: #1b382b;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.paper-style-chalkboard-green textarea {
+  color: #f1f5f9 !important;
+  caret-color: #a7f3d0 !important;
+}
+.paper-style-chalkboard-green textarea::placeholder {
+  color: #6ee7b7 !important;
+}
+
+/* 29. Purple Galaxy Starlight */
+.paper-style-purple-galaxy {
+  background: linear-gradient(135deg, #1e1b4b 0%, #2e1065 50%, #0f172a 100%);
+  background-image: radial-gradient(rgba(216, 180, 254, 0.6) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+.paper-style-purple-galaxy textarea {
+  color: #f8fafc !important;
+  caret-color: #c084fc !important;
+}
+.paper-style-purple-galaxy textarea::placeholder {
+  color: #a855f7 !important;
+}
+
+/* 30. Music Sheet Score */
+.paper-style-music-sheet {
+  background-color: #fdfefe;
+  background-image: repeating-linear-gradient(
+    180deg,
+    transparent 0,
+    transparent 16px,
+    #94a3b8 17px,
+    transparent 18px,
+    transparent 24px,
+    #94a3b8 25px,
+    transparent 26px,
+    transparent 32px,
+    #94a3b8 33px,
+    transparent 34px,
+    transparent 40px,
+    #94a3b8 41px,
+    transparent 42px,
+    transparent 48px,
+    #94a3b8 49px,
+    transparent 50px,
+    transparent 68px
+  );
+}
+
+
 

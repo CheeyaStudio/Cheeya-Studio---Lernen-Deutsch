@@ -9412,7 +9412,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=20260914_v2')
+      navigator.serviceWorker.register('./sw.js?v=20260914_v7')
         .then((reg) => {
           reg.update();
           console.log('Cheeya Deutsch PWA ServiceWorker registered & updated:', reg.scope);
@@ -9461,8 +9461,1011 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // ================= 34. CHEEYA "DOODLE NOTES" DIGITAL STUDY JOURNAL ENGINE =================
+  const DOODLE_STORAGE_KEY = 'cheeya_doodle_notes_v1';
+  let doodleStore = {
+    activeNoteId: 'note_default',
+    notes: [
+      {
+        id: 'note_default',
+        title: 'My German Study Notes 🌸',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        activePageIndex: 0,
+        pages: [
+          {
+            paperStyle: 'ruled-blue',
+            text: '',
+            doodleData: null,
+            stickers: []
+          }
+        ]
+      }
+    ]
+  };
 
-  // Open initial view based on URL hash or default to 'dashboard'
+  // Load from LocalStorage
+  try {
+    const savedDoodle = localStorage.getItem(DOODLE_STORAGE_KEY);
+    if (savedDoodle) {
+      const parsed = JSON.parse(savedDoodle);
+      if (parsed && Array.isArray(parsed.notes) && parsed.notes.length > 0) {
+        doodleStore = parsed;
+      }
+    }
+  } catch (e) {
+    console.warn('Doodle Notes parse error:', e);
+  }
+
+  function saveDoodleStore() {
+    try {
+      localStorage.setItem(DOODLE_STORAGE_KEY, JSON.stringify(doodleStore));
+    } catch (e) {
+      console.warn('Doodle Notes save error:', e);
+    }
+  }
+
+  function getActiveNote() {
+    let note = doodleStore.notes.find(n => n.id === doodleStore.activeNoteId);
+    if (!note) {
+      note = doodleStore.notes[0];
+      doodleStore.activeNoteId = note.id;
+    }
+    return note;
+  }
+
+  function getActivePage() {
+    const note = getActiveNote();
+    if (!note.pages || note.pages.length === 0) {
+      note.pages = [{ paperStyle: 'ruled-blue', text: '', doodleData: null, stickers: [] }];
+      note.activePageIndex = 0;
+    }
+    if (note.activePageIndex >= note.pages.length) {
+      note.activePageIndex = note.pages.length - 1;
+    }
+    if (note.activePageIndex < 0) {
+      note.activePageIndex = 0;
+    }
+    return note.pages[note.activePageIndex];
+  }
+
+  // 30 AESTHETIC PAPER STYLES
+  const DOODLE_PAPERS = [
+    { id: 'ruled-blue', name: 'Classic Blue Ruled', category: 'Notebook', desc: 'School notebook blue lines with red margin', preview: 'linear-gradient(90deg, transparent 20px, #fca5a5 20px, #fca5a5 21px, transparent 21px), linear-gradient(#e2e8f0 1px, transparent 1px)', bg: '#ffffff' },
+    { id: 'ruled-pink', name: 'Pastel Pink Ruled', category: 'Pastel', desc: 'Soft pink ruled lines with pink margin', preview: 'linear-gradient(90deg, transparent 20px, #f472b6 20px, #f472b6 21px, transparent 21px), linear-gradient(#fce7f3 1px, transparent 1px)', bg: '#fffbfa' },
+    { id: 'blank-white', name: 'Clean Blank White', category: 'Minimalist', desc: 'Pure white sketch & note sheet', preview: '#ffffff', bg: '#ffffff' },
+    { id: 'grid-math', name: 'Grid / Graph Paper', category: 'Notebook', desc: 'Soft blue grid for grammar & tables', preview: 'linear-gradient(to right, #e2e8f0 1px, transparent 1px), linear-gradient(to bottom, #e2e8f0 1px, transparent 1px)', bg: '#f8fafc' },
+    { id: 'dot-grid', name: 'Dotted Bullet Journal', category: 'Bullet Journal', desc: 'Dot-grid pattern for modern bujo', preview: 'radial-gradient(#cbd5e1 1.5px, transparent 1.5px)', bg: '#fafaf9' },
+    { id: 'sakura-blossom', name: 'Sakura Blossom 🌸', category: 'Floral & Sweet', desc: 'Dreamy cherry blossom pink tone', preview: 'radial-gradient(#fbcfe8 2px, transparent 2px)', bg: '#ffe4e6' },
+    { id: 'dreamy-sky', name: 'Dreamy Sky Blue ☁️', category: 'Aesthetic', desc: 'Pastel sky blue with calming lines', preview: 'linear-gradient(#bae6fd 1px, transparent 1px)', bg: '#e0f2fe' },
+    { id: 'lavender-dream', name: 'Lavender Lilac 💜', category: 'Pastel', desc: 'Calming soft lilac dream sheet', preview: 'linear-gradient(#e9d5ff 1px, transparent 1px)', bg: '#f3e8ff' },
+    { id: 'matcha-latte', name: 'Matcha Sage Green 🍵', category: 'Nature', desc: 'Soothing herbal matcha green', preview: 'linear-gradient(#bbf7d0 1px, transparent 1px)', bg: '#dcfce7' },
+    { id: 'coffee-kraft', name: 'Cozy Coffee Kraft ☕', category: 'Vintage', desc: 'Warm vintage brown kraft paper', preview: 'linear-gradient(#e5d5c5 1px, transparent 1px)', bg: '#fef7ee' },
+    { id: 'honey-lemon', name: 'Honey Lemon 🍋', category: 'Warm', desc: 'Bright sunny pastel yellow paper', preview: 'linear-gradient(#fde047 1px, transparent 1px)', bg: '#fef9c3' },
+    { id: 'stardust-clouds', name: 'Stardust Clouds ✨', category: 'Dreamy', desc: 'Purple starry stardust night pattern', preview: 'radial-gradient(#d8b4fe 1.5px, transparent 1.5px)', bg: '#fae8ff' },
+    { id: 'ribbon-hearts', name: 'Ribbon & Hearts 🎀', category: 'Sweet', desc: 'Romantic pink with red margin line', preview: 'linear-gradient(#fed7aa 1px, transparent 1px)', bg: '#fff5f7' },
+    { id: 'strawberry-milk', name: 'Strawberry Milk 🍓', category: 'Sweet', desc: 'Pastel strawberry striped sheet', preview: 'repeating-linear-gradient(0deg, #fff0f3, #fff0f3 12px, #fecdd3 13px, #fecdd3 14px)', bg: '#fff0f3' },
+    { id: 'teddy-bear', name: 'Teddy Bear Picnic 🧸', category: 'Cute', desc: 'Warm vanilla paper with soft lines', preview: 'linear-gradient(#fed7aa 1px, transparent 1px)', bg: '#fffbf5' },
+    { id: 'soft-peach', name: 'Soft Peach Sunset 🍑', category: 'Warm', desc: 'Peach gradient with warm lines', preview: 'linear-gradient(#fed7aa 1px, transparent 1px)', bg: '#ffedd5' },
+    { id: 'midnight-dark', name: 'Midnight Dark Study 🌙', category: 'Dark Mode', desc: 'Deep slate paper for comfortable night study', preview: 'linear-gradient(#1e293b 1px, transparent 1px)', bg: '#0f172a' },
+    { id: 'botanical-herbarium', name: 'Botanical Herbarium 🌿', category: 'Nature', desc: 'Fresh botanical garden green paper', preview: 'linear-gradient(#d1fae5 1px, transparent 1px)', bg: '#f4fbf7' },
+    { id: 'cute-cat-paws', name: 'Cute Cat Paws 🐾', category: 'Cute', desc: 'Soft paws pattern for cat lovers', preview: 'radial-gradient(#fed7aa 2px, transparent 2px)', bg: '#fdf8f6' },
+    { id: 'cotton-candy', name: 'Pastel Cotton Candy 🍭', category: 'Dreamy', desc: 'Pastel pink and cyan dreamy gradient', preview: 'linear-gradient(#cbd5e1 1px, transparent 1px)', bg: '#fce7f3' },
+    { id: 'cornell-notes', name: 'Cornell Study Notes 📑', category: 'Study Systems', desc: 'Cue column left + Summary layout', preview: 'linear-gradient(90deg, transparent 35px, #94a3b8 35px, #94a3b8 36px, transparent 36px), linear-gradient(#e2e8f0 1px, transparent 1px)', bg: '#ffffff' },
+    { id: 'vintage-parchment', name: 'Vintage Parchment 📜', category: 'Vintage', desc: 'Antique European parchment scroll', preview: 'linear-gradient(#e7d7bd 1px, transparent 1px)', bg: '#fbf5e8' },
+    { id: 'tulip-garden', name: 'Sweet Tulip Garden 🌷', category: 'Floral', desc: 'Pastel floral tulip garden paper', preview: 'linear-gradient(#fecdd3 1px, transparent 1px)', bg: '#fff0f3' },
+    { id: 'boba-tea', name: 'Boba Milk Tea 🧋', category: 'Cute', desc: 'Creamy caramel milk tea tint', preview: 'linear-gradient(#d6c7b2 1px, transparent 1px)', bg: '#faf6f0' },
+    { id: 'polka-dots', name: 'Retro Polka Dots ⚪', category: 'Pattern', desc: 'Playful pastel dots pattern', preview: 'radial-gradient(#fbcfe8 2px, transparent 2px)', bg: '#fffefb' },
+    { id: 'ocean-breeze', name: 'Ocean Wave Breeze 🌊', category: 'Nature', desc: 'Refreshing cyan breeze & wave lines', preview: 'linear-gradient(#a5f3fc 1px, transparent 1px)', bg: '#cffafe' },
+    { id: 'autumn-leaves', name: 'Autumn Maple Leaves 🍁', category: 'Nature', desc: 'Golden warm autumn glow', preview: 'linear-gradient(#fcd34d 1px, transparent 1px)', bg: '#fee2e2' },
+    { id: 'chalkboard-green', name: 'Vintage Chalkboard 🍏', category: 'Dark Mode', desc: 'Classic German school chalkboard', preview: 'linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px)', bg: '#1b382b' },
+    { id: 'purple-galaxy', name: 'Purple Galaxy 🌌', category: 'Dark Mode', desc: 'Nebula cosmic stardust & stars', preview: 'radial-gradient(rgba(216,180,254,0.6) 1.5px, transparent 1.5px)', bg: '#1e1b4b' },
+    { id: 'music-sheet', name: 'Music Sheet Score 🎼', category: 'Art', desc: '5-line musical staves for speech rhythm', preview: 'repeating-linear-gradient(180deg, transparent 0, transparent 4px, #94a3b8 5px, transparent 6px, transparent 10px, #94a3b8 11px, transparent 12px, transparent 16px, #94a3b8 17px, transparent 18px, transparent 22px, #94a3b8 23px, transparent 24px, transparent 28px, #94a3b8 29px, transparent 30px, transparent 40px)', bg: '#fdfefe' }
+  ];
+
+  // 100+ CUTE STICKERS IN 5 CATEGORIES
+  const DOODLE_STICKERS = {
+    girly: [
+      { text: '🌸', type: 'emoji' }, { text: '🎀', type: 'emoji' }, { text: '💖', type: 'emoji' }, { text: '🌷', type: 'emoji' },
+      { text: '✨', type: 'emoji' }, { text: '🍓', type: 'emoji' }, { text: '👑', type: 'emoji' }, { text: '🧁', type: 'emoji' },
+      { text: '🍭', type: 'emoji' }, { text: '🦋', type: 'emoji' }, { text: '💎', type: 'emoji' }, { text: '🦄', type: 'emoji' },
+      { text: '🌺', type: 'emoji' }, { text: '💄', type: 'emoji' }, { text: '🩰', type: 'emoji' }, { text: '🍬', type: 'emoji' },
+      { text: '🍰', type: 'emoji' }, { text: '💌', type: 'emoji' }, { text: '💫', type: 'emoji' }, { text: '🧸', type: 'emoji' },
+      { text: '🍒', type: 'emoji' }, { text: '🪞', type: 'emoji' }, { text: '🌼', type: 'emoji' }, { text: '🪻', type: 'emoji' }
+    ],
+    german: [
+      { text: '⚠️ Wichtig!', type: 'badge' }, { text: '💡 Merken!', type: 'badge' }, { text: '🇩🇪 A1 Regel', type: 'badge' }, { text: '📝 Hausaufgabe', type: 'badge' },
+      { text: '⭐ Super!', type: 'badge' }, { text: '🎯 Akkusativ (den)', type: 'badge' }, { text: '💜 Dativ (dem/der)', type: 'badge' }, { text: '🔵 Der (Maskulin)', type: 'badge' },
+      { text: '🔴 Die (Feminin)', type: 'badge' }, { text: '🟢 Das (Neutral)', type: 'badge' }, { text: '❓ Frage?', type: 'badge' }, { text: '📚 Vokabeln', type: 'badge' },
+      { text: '📑 Grammatik', type: 'badge' }, { text: '🗣️ Sprechen', type: 'badge' }, { text: '👂 Hören', type: 'badge' }, { text: '📖 Lesen', type: 'badge' },
+      { text: '✍️ Schreiben', type: 'badge' }, { text: '⏰ Prüfungszeit', type: 'badge' }, { text: '💯 100 Punkte!', type: 'badge' }, { text: '🏆 Ausgezeichnet!', type: 'badge' },
+      { text: '🥨 Brezel Break', type: 'badge' }, { text: '🚀 Fortschritt', type: 'badge' }, { text: '🔥 100% Deutsch', type: 'badge' }, { text: '💪 Du schaffst das!', type: 'badge' }
+    ],
+    stationery: [
+      { text: '✏️', type: 'emoji' }, { text: '✒️', type: 'emoji' }, { text: '🖍️', type: 'emoji' }, { text: '📌', type: 'emoji' },
+      { text: '📎', type: 'emoji' }, { text: '📏', type: 'emoji' }, { text: '📐', type: 'emoji' }, { text: '✂️', type: 'emoji' },
+      { text: '☕', type: 'emoji' }, { text: '🍵', type: 'emoji' }, { text: '👓', type: 'emoji' }, { text: '⏰', type: 'emoji' },
+      { text: '📅', type: 'emoji' }, { text: '📋', type: 'emoji' }, { text: '🗂️', type: 'emoji' }, { text: '🔖', type: 'emoji' },
+      { text: '🔍', type: 'emoji' }, { text: '🖊️', type: 'emoji' }, { text: '🏷️', type: 'emoji' }, { text: '💡', type: 'emoji' }
+    ],
+    animals: [
+      { text: '🐰', type: 'emoji' }, { text: '🐱', type: 'emoji' }, { text: '🐶', type: 'emoji' }, { text: '🐼', type: 'emoji' },
+      { text: '🐻', type: 'emoji' }, { text: '🐥', type: 'emoji' }, { text: '🐹', type: 'emoji' }, { text: '🐧', type: 'emoji' },
+      { text: '🦊', type: 'emoji' }, { text: '🐨', type: 'emoji' }, { text: '🐸', type: 'emoji' }, { text: '🐙', type: 'emoji' },
+      { text: '🐝', type: 'emoji' }, { text: '🐞', type: 'emoji' }, { text: '🦉', type: 'emoji' }, { text: '🦄', type: 'emoji' },
+      { text: '🦦', type: 'emoji' }, { text: '🦭', type: 'emoji' }
+    ],
+    doodles: [
+      { text: '⭐', type: 'emoji' }, { text: '🌟', type: 'emoji' }, { text: '💫', type: 'emoji' }, { text: '⚡', type: 'emoji' },
+      { text: '☁️', type: 'emoji' }, { text: '🌈', type: 'emoji' }, { text: '☀️', type: 'emoji' }, { text: '🌙', type: 'emoji' },
+      { text: '💭', type: 'emoji' }, { text: '💬', type: 'emoji' }, { text: '✔️', type: 'emoji' }, { text: '❌', type: 'emoji' },
+      { text: '➔', type: 'emoji' }, { text: '➜', type: 'emoji' }, { text: '🔺', type: 'emoji' }, { text: '❤️', type: 'emoji' },
+      { text: '🤍', type: 'emoji' }, { text: '🫧', type: 'emoji' }
+    ]
+  };
+
+  // State Variables for Canvas & Tool
+  let activeDoodleTool = 'pen'; // 'pen', 'highlighter', 'eraser', 'type'
+  let activeDoodleColor = '#1e293b';
+  let activeDoodleLineWidth = 3;
+  let activeStickerCategory = 'girly';
+  let isDoodleDrawing = false;
+  let lastDoodleX = 0;
+  let lastDoodleY = 0;
+  let doodleStrokeHistory = []; // For Undo functionality (max 20)
+
+  // ================= 34.1 INITIALIZATION & RENDER =================
+  function initDoodleNotes() {
+    renderPaperStylesGrid();
+    renderStickersGrid(activeStickerCategory);
+    initDoodleCanvasEvents();
+    loadActiveDoodleNote();
+  }
+
+  function loadActiveDoodleNote() {
+    const note = getActiveNote();
+    const titleInput = document.getElementById('doodleNoteTitleInput');
+    if (titleInput) titleInput.value = note.title;
+
+    const notesCount = document.getElementById('doodleTotalNotesCount');
+    if (notesCount) notesCount.textContent = doodleStore.notes.length;
+
+    loadActiveDoodlePage();
+  }
+
+  function loadActiveDoodlePage() {
+    const note = getActiveNote();
+    const page = getActivePage();
+
+    // 1. Update Paper Background
+    applyPaperStyleToContainer(page.paperStyle || 'ruled-blue');
+
+    // 2. Update Text Input
+    const textInput = document.getElementById('doodleTextInput');
+    if (textInput) {
+      textInput.value = page.text || '';
+    }
+
+    // 3. Update Page Counters
+    const curNum = document.getElementById('doodleCurrentPageNum');
+    const totNum = document.getElementById('doodleTotalPagesNum');
+    if (curNum) curNum.textContent = note.activePageIndex + 1;
+    if (totNum) totNum.textContent = note.pages.length;
+
+    // 4. Render Canvas Drawing
+    renderDoodleCanvasData(page.doodleData);
+
+    // 5. Render Stickers
+    renderDoodleStickersLayer(page.stickers || []);
+
+    // 6. Reset Undo History for fresh page
+    doodleStrokeHistory = [];
+  }
+
+  function saveCurrentActivePageState() {
+    const page = getActivePage();
+    const textInput = document.getElementById('doodleTextInput');
+    if (textInput) page.text = textInput.value;
+
+    const canvas = document.getElementById('doodleCanvas');
+    if (canvas && canvas.width > 0 && canvas.height > 0) {
+      try {
+        page.doodleData = canvas.toDataURL();
+      } catch (e) {
+        console.warn('Canvas export warning:', e);
+      }
+    }
+
+    const note = getActiveNote();
+    note.updatedAt = new Date().toISOString();
+    saveDoodleStore();
+  }
+
+  function applyPaperStyleToContainer(styleId) {
+    const container = document.getElementById('doodlePaperContainer');
+    if (!container) return;
+
+    // Remove old paper classes
+    DOODLE_PAPERS.forEach(p => {
+      container.classList.remove(`paper-style-${p.id}`);
+    });
+    container.classList.add(`paper-style-${styleId}`);
+
+    // Update Paper badge in header
+    const badge = document.getElementById('doodlePaperBadge');
+    const paperObj = DOODLE_PAPERS.find(p => p.id === styleId);
+    if (badge && paperObj) {
+      badge.textContent = paperObj.name.split(' ')[0] || 'Paper';
+    }
+  }
+
+  // ================= 34.2 CANVAS DRAWING ENGINE =================
+  function initDoodleCanvasEvents() {
+    const canvas = document.getElementById('doodleCanvas');
+    const container = document.getElementById('doodlePaperContainer');
+    if (!canvas || !container) return;
+
+    function resizeCanvas() {
+      const rect = container.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+
+      const prevWidth = canvas.width;
+      const prevHeight = canvas.height;
+      if (prevWidth === Math.floor(rect.width) && prevHeight === Math.floor(rect.height)) return;
+
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = prevWidth;
+      tempCanvas.height = prevHeight;
+      const tempCtx = tempCanvas.getContext('2d');
+      if (prevWidth > 0 && prevHeight > 0) {
+        tempCtx.drawImage(canvas, 0, 0);
+      }
+
+      canvas.width = Math.floor(rect.width);
+      canvas.height = Math.floor(rect.height);
+
+      const ctx = canvas.getContext('2d');
+      if (prevWidth > 0 && prevHeight > 0) {
+        ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    // Initial size after slight delay to ensure CSS render
+    setTimeout(resizeCanvas, 50);
+
+    function getCanvasCoords(e) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: (e.clientX - rect.left) * (canvas.width / rect.width),
+        y: (e.clientY - rect.top) * (canvas.height / rect.height)
+      };
+    }
+
+    canvas.addEventListener('pointerdown', (e) => {
+      if (activeDoodleTool === 'type') return;
+      canvas.setPointerCapture(e.pointerId);
+      isDoodleDrawing = true;
+      const pos = getCanvasCoords(e);
+      lastDoodleX = pos.x;
+      lastDoodleY = pos.y;
+
+      // Save snapshot for Undo
+      saveStrokeForUndo();
+
+      // Draw dot
+      const ctx = canvas.getContext('2d');
+      ctx.beginPath();
+      applyCtxBrushStyle(ctx);
+      ctx.arc(pos.x, pos.y, Math.max(1, activeDoodleLineWidth / 2), 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    canvas.addEventListener('pointermove', (e) => {
+      if (!isDoodleDrawing || activeDoodleTool === 'type') return;
+      const pos = getCanvasCoords(e);
+      const ctx = canvas.getContext('2d');
+
+      ctx.beginPath();
+      applyCtxBrushStyle(ctx);
+      ctx.moveTo(lastDoodleX, lastDoodleY);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+
+      lastDoodleX = pos.x;
+      lastDoodleY = pos.y;
+    });
+
+    function endDrawing(e) {
+      if (isDoodleDrawing) {
+        isDoodleDrawing = false;
+        try { canvas.releasePointerCapture(e.pointerId); } catch(err) {}
+        saveCurrentActivePageState();
+      }
+    }
+
+    canvas.addEventListener('pointerup', endDrawing);
+    canvas.addEventListener('pointercancel', endDrawing);
+    canvas.addEventListener('pointerleave', endDrawing);
+  }
+
+  function applyCtxBrushStyle(ctx) {
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    if (activeDoodleTool === 'pen') {
+      ctx.strokeStyle = activeDoodleColor;
+      ctx.fillStyle = activeDoodleColor;
+      ctx.lineWidth = activeDoodleLineWidth;
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha = 1.0;
+    } else if (activeDoodleTool === 'highlighter') {
+      ctx.strokeStyle = activeDoodleColor;
+      ctx.fillStyle = activeDoodleColor;
+      ctx.lineWidth = activeDoodleLineWidth * 3.5;
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.globalAlpha = 0.38;
+    } else if (activeDoodleTool === 'eraser') {
+      ctx.strokeStyle = '#000000';
+      ctx.fillStyle = '#000000';
+      ctx.lineWidth = activeDoodleLineWidth * 4.5;
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.globalAlpha = 1.0;
+    }
+  }
+
+  function saveStrokeForUndo() {
+    const canvas = document.getElementById('doodleCanvas');
+    if (!canvas || canvas.width <= 0 || canvas.height <= 0) return;
+    try {
+      const data = canvas.toDataURL();
+      doodleStrokeHistory.push(data);
+      if (doodleStrokeHistory.length > 25) doodleStrokeHistory.shift();
+    } catch (e) {}
+  }
+
+  function renderDoodleCanvasData(dataUrl) {
+    const canvas = document.getElementById('doodleCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (!dataUrl) return;
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    };
+    img.src = dataUrl;
+  }
+
+  window.undoDoodleStroke = function() {
+    const canvas = document.getElementById('doodleCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    if (doodleStrokeHistory.length === 0) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      saveCurrentActivePageState();
+      showFloatingToast('Canvas is empty');
+      return;
+    }
+
+    const prevState = doodleStrokeHistory.pop();
+    const img = new Image();
+    img.onload = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      saveCurrentActivePageState();
+    };
+    img.src = prevState;
+  };
+
+  window.clearDoodlePageCanvas = function() {
+    if (!confirm('Clear all drawings on this page? (Typed text & stickers will remain)')) return;
+    saveStrokeForUndo();
+    const canvas = document.getElementById('doodleCanvas');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    saveCurrentActivePageState();
+    showFloatingToast('🧹 Page drawings cleared');
+  };
+
+  // ================= 34.3 TOOL & PALETTE SWITCHING =================
+  window.setDoodleTool = function(tool) {
+    activeDoodleTool = tool;
+    ['pen', 'highlighter', 'eraser', 'type'].forEach(t => {
+      const btn = document.getElementById(`doodleToolBtn-${t}`);
+      if (btn) {
+        if (t === tool) {
+          btn.className = 'px-2 py-1 rounded-lg font-extrabold text-[11px] transition cursor-pointer bg-pink-500 text-white shadow-xs';
+        } else {
+          btn.className = 'px-2 py-1 rounded-lg font-bold text-[11px] transition cursor-pointer text-pink-900 hover:bg-pink-100';
+        }
+      }
+    });
+
+    const canvas = document.getElementById('doodleCanvas');
+    const controlsRow = document.getElementById('doodleDrawControlsRow');
+    if (canvas) {
+      canvas.className = `absolute inset-0 w-full h-full z-20 tool-${tool}`;
+    }
+
+    if (tool === 'type') {
+      const textInput = document.getElementById('doodleTextInput');
+      if (textInput) textInput.focus();
+    }
+  };
+
+  window.setDoodleColor = function(color) {
+    activeDoodleColor = color;
+    document.querySelectorAll('.doodle-color-dot').forEach(dot => {
+      if (dot.getAttribute('style')?.includes(color)) {
+        dot.classList.add('active');
+      } else {
+        dot.classList.remove('active');
+      }
+    });
+  };
+
+  window.setDoodleLineWidth = function(width) {
+    activeDoodleLineWidth = parseInt(width) || 3;
+  };
+
+  window.handleDoodleTextInput = function(val) {
+    const page = getActivePage();
+    page.text = val;
+    saveDoodleStore();
+  };
+
+  // ================= 34.4 30 PAPER STYLES MODAL & SELECTION =================
+  function renderPaperStylesGrid() {
+    const grid = document.getElementById('doodlePaperStylesGrid');
+    if (!grid) return;
+
+    let html = '';
+    DOODLE_PAPERS.forEach((paper, idx) => {
+      html += `
+        <div onclick="selectDoodlePaperStyle('${paper.id}')" class="p-3 rounded-2xl border-2 border-pink-200 hover:border-pink-500 transition-all duration-200 cursor-pointer flex flex-col gap-2 hover:shadow-md bg-white group" title="${paper.desc}">
+          <div class="h-20 w-full rounded-xl border border-pink-200 shadow-2xs relative overflow-hidden flex items-center justify-center p-2 paper-style-${paper.id}">
+            <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-white/90 text-pink-900 shadow-2xs border border-pink-200 group-hover:scale-105 transition-transform">
+              ${idx + 1}. ${paper.name.split(' ')[0]}
+            </span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black text-pink-950 truncate">${paper.name}</span>
+            <span class="text-[9px] font-bold text-pink-700 bg-pink-50 border border-pink-200 px-1.5 py-0.5 rounded-md flex-shrink-0">${paper.category}</span>
+          </div>
+        </div>
+      `;
+    });
+    grid.innerHTML = html;
+  }
+
+  window.togglePaperBgModal = function() {
+    const modal = document.getElementById('doodlePaperBgModal');
+    if (modal) modal.classList.toggle('hidden');
+  };
+
+  window.selectDoodlePaperStyle = function(styleId) {
+    const page = getActivePage();
+    page.paperStyle = styleId;
+    applyPaperStyleToContainer(styleId);
+    saveCurrentActivePageState();
+    togglePaperBgModal();
+    showFloatingToast(`📜 Paper style applied!`);
+  };
+
+  // ================= 34.5 100+ STICKERS MODAL & DRAG ENGINE =================
+  function renderStickersGrid(category) {
+    const grid = document.getElementById('stickersDisplayGrid');
+    if (!grid) return;
+
+    const list = DOODLE_STICKERS[category] || [];
+    let html = '';
+    list.forEach(stk => {
+      if (stk.type === 'badge') {
+        html += `
+          <button onclick="stampStickerOnNote('${encodeURIComponent(stk.text)}', true)" class="col-span-2 sm:col-span-3 p-2 rounded-xl bg-pink-50/80 hover:bg-pink-100 border border-pink-200 text-left transition hover:scale-102 flex items-center gap-1.5 cursor-pointer shadow-2xs">
+            <span class="sticker-badge-german text-xs">${stk.text}</span>
+          </button>
+        `;
+      } else {
+        html += `
+          <button onclick="stampStickerOnNote('${encodeURIComponent(stk.text)}', false)" class="p-2.5 rounded-2xl bg-pink-50/60 hover:bg-pink-100 border border-pink-200 text-2xl flex items-center justify-center transition hover:scale-120 cursor-pointer shadow-2xs">
+            ${stk.text}
+          </button>
+        `;
+      }
+    });
+    grid.innerHTML = html;
+  }
+
+  window.toggleStickersModal = function() {
+    const modal = document.getElementById('doodleStickersModal');
+    if (modal) modal.classList.toggle('hidden');
+  };
+
+  window.setStickerCategory = function(cat) {
+    activeStickerCategory = cat;
+    ['girly', 'german', 'stationery', 'animals', 'doodles'].forEach(c => {
+      const tab = document.getElementById(`stkTab-${c}`);
+      if (tab) {
+        if (c === cat) {
+          tab.className = 'px-3 py-1 rounded-xl bg-pink-500 text-white shadow-xs transition whitespace-nowrap';
+        } else {
+          tab.className = 'px-3 py-1 rounded-xl bg-pink-100 text-pink-900 hover:bg-pink-200 transition whitespace-nowrap';
+        }
+      }
+    });
+    renderStickersGrid(cat);
+  };
+
+  window.stampStickerOnNote = function(encodedText, isBadge) {
+    const text = decodeURIComponent(encodedText);
+    const page = getActivePage();
+    if (!page.stickers) page.stickers = [];
+
+    // Place near center with slight random offset
+    const randomOffset = (Math.random() - 0.5) * 20;
+    const newSticker = {
+      id: 'stk_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+      text: text,
+      isBadge: !!isBadge,
+      x: 50 + randomOffset,
+      y: 50 + randomOffset
+    };
+
+    page.stickers.push(newSticker);
+    renderDoodleStickersLayer(page.stickers);
+    saveCurrentActivePageState();
+    toggleStickersModal();
+    showFloatingToast(`🌸 Sticker stamped on page!`);
+    if (typeof awardXP === 'function') awardXP(5, 'Sticker Stamped');
+  };
+
+  function renderDoodleStickersLayer(stickersList) {
+    const layer = document.getElementById('doodleStickersLayer');
+    if (!layer) return;
+    layer.innerHTML = '';
+
+    stickersList.forEach(stk => {
+      const el = document.createElement('div');
+      el.className = 'doodle-sticker-item';
+      el.id = stk.id;
+      el.style.left = `${stk.x}%`;
+      el.style.top = `${stk.y}%`;
+
+      if (stk.isBadge) {
+        el.innerHTML = `
+          <div class="sticker-badge-german select-none pointer-events-none">${stk.text}</div>
+          <button class="sticker-del-badge" onclick="deleteDoodleSticker('${stk.id}', event)" title="Remove sticker">✕</button>
+        `;
+      } else {
+        el.innerHTML = `
+          <div class="text-3xl select-none pointer-events-none filter drop-shadow-sm">${stk.text}</div>
+          <button class="sticker-del-badge" onclick="deleteDoodleSticker('${stk.id}', event)" title="Remove sticker">✕</button>
+        `;
+      }
+
+      // Drag handling
+      makeStickerDraggable(el, stk);
+      layer.appendChild(el);
+    });
+  }
+
+  function makeStickerDraggable(element, stickerData) {
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+
+    element.addEventListener('pointerdown', (e) => {
+      if (e.target.classList.contains('sticker-del-badge')) return;
+      isDragging = true;
+      element.setPointerCapture(e.pointerId);
+      startX = e.clientX;
+      startY = e.clientY;
+      e.stopPropagation();
+    });
+
+    element.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const container = document.getElementById('doodlePaperContainer');
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+
+      stickerData.x = Math.max(5, Math.min(95, stickerData.x + (dx / rect.width) * 100));
+      stickerData.y = Math.max(5, Math.min(95, stickerData.y + (dy / rect.height) * 100));
+
+      element.style.left = `${stickerData.x}%`;
+      element.style.top = `${stickerData.y}%`;
+
+      startX = e.clientX;
+      startY = e.clientY;
+    });
+
+    function stopDrag(e) {
+      if (isDragging) {
+        isDragging = false;
+        try { element.releasePointerCapture(e.pointerId); } catch(err) {}
+        saveCurrentActivePageState();
+      }
+    }
+
+    element.addEventListener('pointerup', stopDrag);
+    element.addEventListener('pointercancel', stopDrag);
+  }
+
+  window.deleteDoodleSticker = function(stickerId, event) {
+    if (event) event.stopPropagation();
+    const page = getActivePage();
+    if (!page.stickers) return;
+    page.stickers = page.stickers.filter(s => s.id !== stickerId);
+    renderDoodleStickersLayer(page.stickers);
+    saveCurrentActivePageState();
+  };
+
+  // ================= 34.6 MULTI-PAGE CONTROLS =================
+  window.nextDoodlePage = function() {
+    saveCurrentActivePageState();
+    const note = getActiveNote();
+    if (note.activePageIndex < note.pages.length - 1) {
+      note.activePageIndex++;
+      loadActiveDoodlePage();
+    } else {
+      showFloatingToast('Last page reached. Click ➕ to add a new page!');
+    }
+  };
+
+  window.prevDoodlePage = function() {
+    saveCurrentActivePageState();
+    const note = getActiveNote();
+    if (note.activePageIndex > 0) {
+      note.activePageIndex--;
+      loadActiveDoodlePage();
+    }
+  };
+
+  window.addNewDoodlePage = function() {
+    saveCurrentActivePageState();
+    const note = getActiveNote();
+    const curPage = getActivePage();
+    const newPage = {
+      paperStyle: curPage.paperStyle || 'ruled-blue',
+      text: '',
+      doodleData: null,
+      stickers: []
+    };
+    note.pages.push(newPage);
+    note.activePageIndex = note.pages.length - 1;
+    saveDoodleStore();
+    loadActiveDoodlePage();
+    showFloatingToast(`📄 New Page ${note.pages.length} created!`);
+    if (typeof awardXP === 'function') awardXP(5, 'New Note Page Created');
+  };
+
+  window.deleteCurrentDoodlePage = function() {
+    const note = getActiveNote();
+    if (note.pages.length <= 1) {
+      if (confirm('Clear the contents of this page?')) {
+        const page = getActivePage();
+        page.text = '';
+        page.doodleData = null;
+        page.stickers = [];
+        saveDoodleStore();
+        loadActiveDoodlePage();
+        showFloatingToast('Page cleared');
+      }
+      return;
+    }
+
+    if (confirm(`Delete Page ${note.activePageIndex + 1}? This cannot be undone.`)) {
+      note.pages.splice(note.activePageIndex, 1);
+      if (note.activePageIndex >= note.pages.length) {
+        note.activePageIndex = note.pages.length - 1;
+      }
+      saveDoodleStore();
+      loadActiveDoodlePage();
+      showFloatingToast('🗑️ Page deleted');
+    }
+  };
+
+  // ================= 34.7 MULTI-NOTE FILE MANAGER =================
+  window.renameActiveDoodleNote = function(newTitle) {
+    const note = getActiveNote();
+    if (newTitle && newTitle.trim()) {
+      note.title = newTitle.trim();
+      note.updatedAt = new Date().toISOString();
+      saveDoodleStore();
+    }
+  };
+
+  window.createNewDoodleNote = function() {
+    saveCurrentActivePageState();
+    const count = doodleStore.notes.length + 1;
+    const newNote = {
+      id: 'note_' + Date.now(),
+      title: `Study Note ${count} 🌸`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      activePageIndex: 0,
+      pages: [
+        {
+          paperStyle: 'ruled-blue',
+          text: '',
+          doodleData: null,
+          stickers: []
+        }
+      ]
+    };
+    doodleStore.notes.push(newNote);
+    doodleStore.activeNoteId = newNote.id;
+    saveDoodleStore();
+    loadActiveDoodleNote();
+    renderDoodleNotesFilesList();
+    showFloatingToast(`📁 Created note: "${newNote.title}"`);
+    if (typeof awardXP === 'function') awardXP(10, 'New Note File Created');
+  };
+
+  window.toggleDoodleNotesListModal = function() {
+    const modal = document.getElementById('doodleNotesListModal');
+    if (modal) {
+      modal.classList.toggle('hidden');
+      if (!modal.classList.contains('hidden')) {
+        renderDoodleNotesFilesList();
+      }
+    }
+  };
+
+  function renderDoodleNotesFilesList() {
+    const container = document.getElementById('doodleNotesFilesList');
+    if (!container) return;
+
+    let html = '';
+    doodleStore.notes.forEach(note => {
+      const isActive = note.id === doodleStore.activeNoteId;
+      const pageCount = note.pages ? note.pages.length : 1;
+      html += `
+        <div class="p-3 rounded-2xl border ${isActive ? 'border-pink-500 bg-pink-50/80 shadow-xs' : 'border-pink-200 bg-white hover:bg-pink-50/40'} flex items-center justify-between gap-2 transition">
+          <div onclick="switchDoodleNote('${note.id}')" class="flex items-center gap-2.5 truncate flex-1 cursor-pointer">
+            <span class="text-xl">🌸</span>
+            <div class="truncate">
+              <p class="text-xs font-black text-pink-950 truncate">${escapeHtml(note.title)}</p>
+              <p class="text-[10px] text-pink-700 font-semibold">${pageCount} pages • Updated ${new Date(note.updatedAt || Date.now()).toLocaleDateString()}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1">
+            ${isActive ? '<span class="text-[10px] font-black text-pink-600 bg-pink-100 px-2 py-0.5 rounded-full border border-pink-200">Active</span>' : `
+              <button onclick="switchDoodleNote('${note.id}')" class="px-2.5 py-1 rounded-xl bg-pink-100 hover:bg-pink-200 text-pink-900 text-[11px] font-bold transition cursor-pointer">
+                Open
+              </button>
+            `}
+            ${doodleStore.notes.length > 1 ? `
+              <button onclick="deleteDoodleNote('${note.id}')" class="p-1 px-1.5 rounded-xl hover:bg-rose-100 text-rose-600 text-xs transition cursor-pointer" title="Delete note file">
+                🗑️
+              </button>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
+  window.switchDoodleNote = function(noteId) {
+    saveCurrentActivePageState();
+    doodleStore.activeNoteId = noteId;
+    saveDoodleStore();
+    loadActiveDoodleNote();
+    const modal = document.getElementById('doodleNotesListModal');
+    if (modal) modal.classList.add('hidden');
+    showFloatingToast('Switched note file');
+  };
+
+  window.deleteDoodleNote = function(noteId) {
+    if (doodleStore.notes.length <= 1) {
+      alert('You must have at least 1 note file.');
+      return;
+    }
+    const note = doodleStore.notes.find(n => n.id === noteId);
+    if (confirm(`Delete note file "${note?.title || ''}"? This cannot be undone.`)) {
+      doodleStore.notes = doodleStore.notes.filter(n => n.id !== noteId);
+      if (doodleStore.activeNoteId === noteId) {
+        doodleStore.activeNoteId = doodleStore.notes[0].id;
+      }
+      saveDoodleStore();
+      loadActiveDoodleNote();
+      renderDoodleNotesFilesList();
+      showFloatingToast('🗑️ Note file deleted');
+    }
+  };
+
+  // ================= 34.8 BACKUP, UPLOAD & IMAGE EXPORT =================
+  window.backupDoodleNotesJson = function() {
+    saveCurrentActivePageState();
+    const backupData = {
+      app: 'Cheeya Studio - Netzwerk Neu A1',
+      type: 'cheeya_doodle_notes_backup',
+      exportedAt: new Date().toISOString(),
+      store: doodleStore
+    };
+
+    const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const dateStr = new Date().toISOString().split('T')[0];
+    a.href = url;
+    a.download = `cheeya-doodle-notes-backup-${dateStr}.json`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 100);
+
+    showFloatingToast('📥 Backup downloaded to your device!');
+    if (typeof awardXP === 'function') awardXP(15, 'Notes Backed Up');
+  };
+
+  window.triggerDoodleUpload = function() {
+    const input = document.getElementById('doodleUploadInput');
+    if (input) input.click();
+  };
+
+  window.handleDoodleNotesUpload = function(event) {
+    const file = event?.target?.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const parsed = JSON.parse(e.target.result);
+        let importedStore = null;
+
+        if (parsed && parsed.store && Array.isArray(parsed.store.notes)) {
+          importedStore = parsed.store;
+        } else if (parsed && Array.isArray(parsed.notes)) {
+          importedStore = parsed;
+        }
+
+        if (importedStore && importedStore.notes.length > 0) {
+          doodleStore = importedStore;
+          saveDoodleStore();
+          loadActiveDoodleNote();
+          showFloatingToast('🎉 Notes restored successfully!');
+          if (typeof awardXP === 'function') awardXP(20, 'Notes Restored');
+        } else {
+          alert('Invalid backup file format. Please upload a valid Cheeya Doodle Notes .json file.');
+        }
+      } catch (err) {
+        alert('Could not parse JSON backup file: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+    // Reset file input
+    event.target.value = '';
+  };
+
+  window.exportDoodlePageImage = function() {
+    saveCurrentActivePageState();
+    const container = document.getElementById('doodlePaperContainer');
+    const canvas = document.getElementById('doodleCanvas');
+    const page = getActivePage();
+    if (!container || !canvas) return;
+
+    const exportCanvas = document.createElement('canvas');
+    exportCanvas.width = canvas.width || 800;
+    exportCanvas.height = canvas.height || 1100;
+    const ctx = exportCanvas.getContext('2d');
+
+    // 1. Draw Paper Background Color
+    const paperObj = DOODLE_PAPERS.find(p => p.id === page.paperStyle) || DOODLE_PAPERS[0];
+    ctx.fillStyle = paperObj.bg || '#ffffff';
+    ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+
+    // 2. Draw Typed Text
+    if (page.text) {
+      ctx.fillStyle = paperObj.id === 'midnight-dark' || paperObj.id === 'chalkboard-green' || paperObj.id === 'purple-galaxy' ? '#f8fafc' : '#1e293b';
+      ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      const lines = page.text.split('\n');
+      let y = 30;
+      lines.forEach(line => {
+        ctx.fillText(line, 20, y);
+        y += 24;
+      });
+    }
+
+    // 3. Draw Doodle Canvas Layer
+    ctx.drawImage(canvas, 0, 0);
+
+    // 4. Draw Draggable Stickers
+    if (page.stickers && page.stickers.length > 0) {
+      page.stickers.forEach(stk => {
+        const sx = (stk.x / 100) * exportCanvas.width;
+        const sy = (stk.y / 100) * exportCanvas.height;
+        if (stk.isBadge) {
+          ctx.font = 'bold 12px sans-serif';
+          ctx.fillStyle = '#fff1f2';
+          ctx.fillRect(sx - 35, sy - 12, 70, 24);
+          ctx.fillStyle = '#9f1239';
+          ctx.fillText(stk.text, sx - 30, sy + 4);
+        } else {
+          ctx.font = '28px sans-serif';
+          ctx.fillText(stk.text, sx - 14, sy + 10);
+        }
+      });
+    }
+
+    // Download PNG
+    try {
+      const url = exportCanvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `cheeya-note-page-${getActiveNote().activePageIndex + 1}.png`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => document.body.removeChild(a), 100);
+      showFloatingToast('🖼️ Page exported as PNG image!');
+    } catch (e) {
+      console.warn('Export PNG error:', e);
+    }
+  };
+
+  // ================= 34.9 PANEL OPEN / CLOSE / RESIZE =================
+  window.toggleDoodleNotes = function() {
+    const panel = document.getElementById('doodleNotesPanel');
+    if (!panel) return;
+    if (panel.classList.contains('panel-open')) {
+      closeDoodleNotes();
+    } else {
+      openDoodleNotes();
+    }
+  };
+
+  window.openDoodleNotes = function() {
+    const panel = document.getElementById('doodleNotesPanel');
+    if (!panel) return;
+    panel.classList.add('panel-open');
+    panel.classList.remove('translate-x-full');
+
+    // Update active note & page
+    loadActiveDoodleNote();
+  };
+
+  window.closeDoodleNotes = function() {
+    const panel = document.getElementById('doodleNotesPanel');
+    if (!panel) return;
+    saveCurrentActivePageState();
+    panel.classList.remove('panel-open');
+    panel.classList.add('translate-x-full');
+  };
+
+  window.toggleDoodlePanelWidth = function() {
+    const panel = document.getElementById('doodleNotesPanel');
+    if (panel) {
+      panel.classList.toggle('panel-wide');
+      setTimeout(() => {
+        const canvas = document.getElementById('doodleCanvas');
+        const container = document.getElementById('doodlePaperContainer');
+        if (canvas && container) {
+          const rect = container.getBoundingClientRect();
+          canvas.width = Math.floor(rect.width);
+          canvas.height = Math.floor(rect.height);
+          const page = getActivePage();
+          renderDoodleCanvasData(page.doodleData);
+        }
+      }, 310);
+    }
+  };
+
+  // Initialize Doodle Notes System
+  initDoodleNotes();
+
+
   if (typeof updateSrsDueBadge === 'function') updateSrsDueBadge();
 
   const initialHash = window.location.hash.replace('#', '');
