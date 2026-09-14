@@ -1,5 +1,5 @@
 // sw.js - Service Worker for Cheeya Studio Netzwerk NEU A1 PWA
-const CACHE_NAME = 'cheeya-deutsch-v20260914-pwa-v4';
+const CACHE_NAME = 'cheeya-deutsch-v20260914-pwa-v5';
 const SHELL_ASSETS = [
   './',
   './index.html',

@@ -21,7 +21,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   
   <!-- Custom Soft Pastel Blue Theme & Scalable Font Styling -->
-  <link rel="stylesheet" href="style.css?v=20260914_v4">
+  <link rel="stylesheet" href="style.css?v=20260914_2row_v5">
 </head>
 <body class="h-full flex flex-col antialiased select-none relative overflow-hidden">
 
@@ -32,7 +32,7 @@
   <div id="cursorClickLayer"></div>
 
   <!-- ================= TOP NAVIGATION BAR ================= -->
-  <header class="h-16 bg-white/92 border-b border-sky-200 px-3 md:px-5 flex items-center justify-between flex-shrink-0 z-30 backdrop-blur-md shadow-xs">
+  <header class="py-2.5 px-3 md:px-5 bg-white/92 border-b border-sky-200 flex items-center justify-between gap-3 flex-shrink-0 z-30 backdrop-blur-md shadow-xs">
     
     <!-- Left: Girly Aesthetic Brand & Cheeya Studio Logo -->
     <div class="flex items-center gap-3 flex-shrink-0">
@@ -48,118 +48,124 @@
       </div>
     </div>
 
-    <!-- Right Controls: Streak, Progress, Notebook, Music, Font Scaler, Quick Grammar, Theme -->
-    <div class="flex items-center gap-2 md:gap-3 flex-shrink-0">
+    <!-- Right Controls: 2 Organized Rows (Learning Tools & Study Utilities) -->
+    <div class="flex flex-col items-end gap-1.5 flex-shrink-0 max-w-full overflow-x-auto scrollbar-none py-0.5">
 
-      <!-- 0. Daily Study Streak & Achievements Trigger -->
-      <button id="streakBadgeBtn" onclick="openStreakModal()" class="px-3 py-1.5 rounded-xl bg-amber-100/90 hover:bg-amber-200 border border-amber-300 text-amber-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Daily Study Streak & Achievements Gallery">
-        <span class="text-sm">🔥</span>
-        <span id="streakBadgeCount">1 Day</span>
-      </button>
-
-      <!-- 1. Progress Tracker Trigger Button -->
-      <button id="navTab-progress" onclick="switchView('progress')" class="px-3.5 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="View Learning Progress & Exercise History">
-        <span>📊</span>
-        <span>Progress</span>
-      </button>
-
-      <!-- 1.2 Goethe A1 Mock Exam Hub Trigger -->
-      <button id="navGoetheExamBtn" onclick="openGoetheExamModal()" class="px-3 py-1.5 rounded-xl bg-indigo-100/90 hover:bg-indigo-200 border border-indigo-300 text-indigo-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Official Goethe-Zertifikat A1 Mock Exam Hub (Hören, Lesen, Schreiben, Sprechen)">
-        <span>🎓</span>
-        <span class="hidden lg:inline">A1 Exam</span>
-      </button>
-
-      <!-- 1.3 Smart SRS Flashcards Trigger -->
-      <button id="navSrsBtn" onclick="openSrsModal()" class="px-3 py-1.5 rounded-xl bg-pink-100/90 hover:bg-pink-200 border border-pink-300 text-pink-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Smart Spaced Repetition (SRS) 3D Flashcard Trainer">
-        <span>🧠</span>
-        <span class="hidden lg:inline">Flashcards</span>
-      </button>
-
-      <!-- 1.5. Starred Sentences Notebook -->
-      <button id="navNotebookBtn" onclick="openNotebookModal()" class="px-3 py-1.5 rounded-xl bg-purple-100/90 hover:bg-purple-200 border border-purple-300 text-purple-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="My Starred German Sentences Notebook">
-        <span>⭐</span>
-        <span class="hidden xl:inline">Notebook</span>
-      </button>
-
-      <!-- 2. Relaxing Study Music Controller (2 Categories: 10 Ambient + 10 Instrumental Songs) -->
-      <div class="relative group" id="musicMenuContainer">
-        <div class="flex items-center">
-          <button id="musicToggleBtn" onclick="toggleStudyMusic()" class="px-3 py-1.5 rounded-l-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 border-r-0 text-sky-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Study Music & Calming Sounds: Play / Pause">
-            <span id="musicPlayIcon" class="text-sm">🎵</span>
-            <span id="musicTitleBadge" class="hidden xl:inline text-[11px] font-bold">1. Ocean Waves</span>
-          </button>
-          <button id="musicDropdownToggle" onclick="toggleMusicMenu(event)" class="px-2 py-1.5 rounded-r-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-700 text-xs font-bold transition shadow-xs cursor-pointer" title="Choose from 20 Relaxing Music Options">
-            <span class="text-[10px]">▼</span>
-          </button>
-        </div>
-
-        <!-- Dropdown Popover for Study Music: 2 Categories (20 Ambiance + 20 Instrumental Songs) -->
-        <div id="musicDropdownMenu" class="absolute right-0 top-full mt-2 w-84 p-3.5 bg-white rounded-2xl shadow-2xl border-2 border-sky-300 hidden group-hover:block z-50 text-xs text-sky-950">
-          <div class="flex items-center justify-between border-b border-sky-200 pb-2 mb-2">
-            <span class="font-extrabold text-sky-900 flex items-center gap-1.5">
-              <span>🎧</span>
-              <span>Study Music Sanctuary</span>
-            </span>
-            <span id="musicStatusText" class="text-[10px] bg-sky-100 text-sky-700 font-bold px-2 py-0.5 rounded-full">OFF</span>
-          </div>
-
-          <!-- 2 Music Modes Selector -->
-          <div class="grid grid-cols-2 gap-1 p-1 bg-sky-100/80 rounded-xl mb-2.5 border border-sky-200 text-center">
-            <button id="musicTabBtn-ambient" onclick="setMusicCategory('ambient')" class="py-1 px-1.5 rounded-lg font-extrabold text-[11px] transition cursor-pointer bg-white text-sky-900 shadow-xs">
-              🌿 Nature & Ambient (20)
-            </button>
-            <button id="musicTabBtn-songs" onclick="setMusicCategory('songs')" class="py-1 px-1.5 rounded-lg font-extrabold text-[11px] transition cursor-pointer text-sky-700 hover:text-sky-900">
-              🎼 Instrumental Songs (20)
-            </button>
-          </div>
-
-          <!-- Volume Slider -->
-          <div class="flex items-center gap-2 mb-2.5 bg-sky-50 p-2 rounded-xl border border-sky-200">
-            <span class="text-sm">🔊</span>
-            <input type="range" id="musicVolumeSlider" min="0" max="1" step="0.05" value="0.35" oninput="setStudyMusicVolume(this.value)" class="w-full h-1.5 bg-sky-200 rounded-lg appearance-none cursor-pointer accent-sky-500">
-            <span id="musicVolPercent" class="text-[10px] font-bold text-sky-700 w-8 text-right">35%</span>
-          </div>
-
-          <!-- Track List (Switches dynamically between 10 Ambient & 10 Songs) -->
-          <div class="space-y-1 max-h-60 overflow-y-auto pr-1" id="musicTrackList">
-            <!-- Populated from JS: 10 Ambiance or 10 Instrumental Songs -->
-          </div>
-        </div>
-      </div>
-
-      <!-- 3. Accessible Font Size Scaling Controls (A- / [Scale %] / A+) -->
-      <div class="flex items-center bg-sky-100/90 p-1 rounded-xl border border-sky-300 text-xs font-bold gap-1 shadow-xs">
-        <button onclick="changeFontSize(-1)" class="w-7 h-7 flex items-center justify-center hover:bg-sky-200 text-sky-800 rounded-lg transition font-extrabold cursor-pointer" title="Decrease font size">
-          A-
+      <!-- Row 1: Core Learning Hubs & Quick Tools -->
+      <div class="flex items-center gap-1.5 sm:gap-2 flex-nowrap">
+        <!-- 1. Progress Tracker Trigger Button -->
+        <button id="navTab-progress" onclick="switchView('progress')" class="px-2.5 sm:px-3 py-1 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="View Learning Progress & Exercise History">
+          <span>📊</span>
+          <span>Progress</span>
         </button>
-        <span id="fontScaleLabel" class="text-[10px] font-extrabold text-sky-700 px-1 select-none">110%</span>
-        <button onclick="changeFontSize(1)" class="w-7 h-7 flex items-center justify-center hover:bg-sky-200 text-sky-800 rounded-lg transition font-extrabold cursor-pointer" title="Increase font size">
-          A+
+
+        <!-- 1.2 Goethe A1 Mock Exam Hub Trigger -->
+        <button id="navGoetheExamBtn" onclick="openGoetheExamModal()" class="px-2.5 sm:px-3 py-1 rounded-xl bg-indigo-100/90 hover:bg-indigo-200 border border-indigo-300 text-indigo-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Official Goethe-Zertifikat A1 Mock Exam Hub (Hören, Lesen, Schreiben, Sprechen)">
+          <span>🎓</span>
+          <span>A1 Exam</span>
+        </button>
+
+        <!-- 1.3 Smart SRS Flashcards Trigger -->
+        <button id="navSrsBtn" onclick="openSrsModal()" class="px-2.5 sm:px-3 py-1 rounded-xl bg-pink-100/90 hover:bg-pink-200 border border-pink-300 text-pink-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Smart Spaced Repetition (SRS) 3D Flashcard Trainer">
+          <span>🧠</span>
+          <span>Flashcards</span>
+        </button>
+
+        <!-- 1.5. Starred Sentences Notebook -->
+        <button id="navNotebookBtn" onclick="openNotebookModal()" class="px-2.5 sm:px-3 py-1 rounded-xl bg-purple-100/90 hover:bg-purple-200 border border-purple-300 text-purple-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="My Starred German Sentences Notebook">
+          <span>⭐</span>
+          <span>Notebook</span>
+        </button>
+
+        <!-- Master Grammar Reference Hub & Printable PDF -->
+        <button onclick="openGrammarHubModal()" class="px-2.5 sm:px-3 py-1 rounded-xl bg-blue-100 hover:bg-blue-200 border border-blue-300 text-blue-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Master German Grammar Reference & Printable PDF Cheat Sheets">
+          <span>📖</span>
+          <span>Grammar Hub</span>
+        </button>
+
+        <!-- 4. Quick Grammar Reference Modal Trigger -->
+        <button onclick="openGrammarModal()" class="px-2.5 sm:px-3 py-1 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Comprehensive German Grammar Reference">
+          <span>📑</span>
+          <span>Quick Grammar</span>
         </button>
       </div>
 
-      <!-- Master Grammar Reference Hub & Printable PDF -->
-      <button onclick="openGrammarHubModal()" class="px-3 py-1.5 rounded-xl bg-blue-100 hover:bg-blue-200 border border-blue-300 text-blue-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Master German Grammar Reference & Printable PDF Cheat Sheets">
-        <span>&#x1F4D1;</span>
-        <span class="hidden sm:inline">Grammar Hub</span>
-      </button>
+      <!-- Row 2: Study Ambience, Utilities & Controls -->
+      <div class="flex items-center gap-1.5 sm:gap-2 flex-nowrap">
+        <!-- 0. Daily Study Streak & Achievements Trigger -->
+        <button id="streakBadgeBtn" onclick="openStreakModal()" class="px-2.5 sm:px-3 py-1 rounded-xl bg-amber-100/90 hover:bg-amber-200 border border-amber-300 text-amber-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Daily Study Streak & Achievements Gallery">
+          <span class="text-sm">🔥</span>
+          <span id="streakBadgeCount">1 Day</span>
+        </button>
 
-      <!-- PWA Install Button (Always visible on all devices) -->
-      <button id="pwaInstallBtn" onclick="openPwaInstallModal()" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black flex items-center gap-1.5 transition shadow-sm cursor-pointer hover:scale-105" title="Install Cheeya Studio App on your PC, Android, or iPhone">
-        <span>📲</span>
-        <span>Install App</span>
-      </button>
+        <!-- 2. Relaxing Study Music Controller (2 Categories: 10 Ambient + 10 Instrumental Songs) -->
+        <div class="relative group" id="musicMenuContainer">
+          <div class="flex items-center">
+            <button id="musicToggleBtn" onclick="toggleStudyMusic()" class="px-2.5 sm:px-3 py-1 rounded-l-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 border-r-0 text-sky-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Study Music & Calming Sounds: Play / Pause">
+              <span id="musicPlayIcon" class="text-sm">🎵</span>
+              <span id="musicTitleBadge" class="text-[11px] font-bold max-w-[100px] truncate">1. Ocean Waves</span>
+            </button>
+            <button id="musicDropdownToggle" onclick="toggleMusicMenu(event)" class="px-2 py-1 rounded-r-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-700 text-xs font-bold transition shadow-xs cursor-pointer" title="Choose from 20 Relaxing Music Options">
+              <span class="text-[10px]">▼</span>
+            </button>
+          </div>
 
-      <!-- 4. Quick Grammar Reference Modal Trigger -->
-      <button onclick="openGrammarModal()" class="px-3 py-1.5 rounded-xl bg-blue-100 hover:bg-blue-200 border border-blue-300 text-blue-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Comprehensive German Grammar Reference">
-        <span>📑</span>
-        <span>Quick Grammar</span>
-      </button>
+          <!-- Dropdown Popover for Study Music: 2 Categories (20 Ambiance + 20 Instrumental Songs) -->
+          <div id="musicDropdownMenu" class="absolute right-0 top-full mt-2 w-84 p-3.5 bg-white rounded-2xl shadow-2xl border-2 border-sky-300 hidden group-hover:block z-50 text-xs text-sky-950">
+            <div class="flex items-center justify-between border-b border-sky-200 pb-2 mb-2">
+              <span class="font-extrabold text-sky-900 flex items-center gap-1.5">
+                <span>🎧</span>
+                <span>Study Music Sanctuary</span>
+              </span>
+              <span id="musicStatusText" class="text-[10px] bg-sky-100 text-sky-700 font-bold px-2 py-0.5 rounded-full">OFF</span>
+            </div>
 
-      <!-- 5. Theme Mode Switcher: Light / Dark / Sepia -->
-      <button id="themeModeBtn" onclick="toggleThemeMode()" class="px-2.5 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-black flex items-center gap-1 transition shadow-xs cursor-pointer" title="Switch Theme (Light, Dark, Sepia)">
-        <span id="themeModeIcon">🌙</span>
-      </button>
+            <!-- 2 Music Modes Selector -->
+            <div class="grid grid-cols-2 gap-1 p-1 bg-sky-100/80 rounded-xl mb-2.5 border border-sky-200 text-center">
+              <button id="musicTabBtn-ambient" onclick="setMusicCategory('ambient')" class="py-1 px-1.5 rounded-lg font-extrabold text-[11px] transition cursor-pointer bg-white text-sky-900 shadow-xs">
+                🌿 Nature & Ambient (20)
+              </button>
+              <button id="musicTabBtn-songs" onclick="setMusicCategory('songs')" class="py-1 px-1.5 rounded-lg font-extrabold text-[11px] transition cursor-pointer text-sky-700 hover:text-sky-900">
+                🎼 Instrumental Songs (20)
+              </button>
+            </div>
+
+            <!-- Volume Slider -->
+            <div class="flex items-center gap-2 mb-2.5 bg-sky-50 p-2 rounded-xl border border-sky-200">
+              <span class="text-sm">🔊</span>
+              <input type="range" id="musicVolumeSlider" min="0" max="1" step="0.05" value="0.35" oninput="setStudyMusicVolume(this.value)" class="w-full h-1.5 bg-sky-200 rounded-lg appearance-none cursor-pointer accent-sky-500">
+              <span id="musicVolPercent" class="text-[10px] font-bold text-sky-700 w-8 text-right">35%</span>
+            </div>
+
+            <!-- Track List (Switches dynamically between 10 Ambient & 10 Songs) -->
+            <div class="space-y-1 max-h-60 overflow-y-auto pr-1" id="musicTrackList">
+              <!-- Populated from JS: 10 Ambiance or 10 Instrumental Songs -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Accessible Font Size Scaling Controls (A- / [Scale %] / A+) -->
+        <div class="flex items-center bg-sky-100/90 px-1.5 py-0.5 rounded-xl border border-sky-300 text-xs font-bold gap-1 shadow-xs">
+          <button onclick="changeFontSize(-1)" class="w-6 h-6 flex items-center justify-center hover:bg-sky-200 text-sky-800 rounded-lg transition font-extrabold cursor-pointer" title="Decrease font size">
+            A-
+          </button>
+          <span id="fontScaleLabel" class="text-[10px] font-extrabold text-sky-700 px-1 select-none">110%</span>
+          <button onclick="changeFontSize(1)" class="w-6 h-6 flex items-center justify-center hover:bg-sky-200 text-sky-800 rounded-lg transition font-extrabold cursor-pointer" title="Increase font size">
+            A+
+          </button>
+        </div>
+
+        <!-- PWA Install Button (Always visible on all devices) -->
+        <button id="pwaInstallBtn" onclick="openPwaInstallModal()" class="px-2.5 sm:px-3 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black flex items-center gap-1.5 transition shadow-sm cursor-pointer hover:scale-105" title="Install Cheeya Studio App on your PC, Android, or iPhone">
+          <span>📲</span>
+          <span>Install App</span>
+        </button>
+
+        <!-- 5. Theme Mode Switcher: Light / Dark / Sepia -->
+        <button id="themeModeBtn" onclick="toggleThemeMode()" class="px-2.5 py-1 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-black flex items-center gap-1 transition shadow-xs cursor-pointer" title="Switch Theme (Light, Dark, Sepia)">
+          <span id="themeModeIcon">🌙</span>
+        </button>
+      </div>
 
     </div>
   </header>
@@ -1835,6 +1841,6 @@
 
   <!-- SCRIPT LOGIC -->
   <script src="media-data.js?v=20260913_360q"></script>
-  <script src="app.js?v=20260914_v4"></script>
+  <script src="app.js?v=20260914_2row_v5"></script>
 </body>
 </html>
