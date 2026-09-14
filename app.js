@@ -1732,16 +1732,32 @@ document.addEventListener('DOMContentLoaded', () => {
   window.toggleMusicMenu = function(e) {
     if (e) e.stopPropagation();
     const menu = document.getElementById('musicDropdownMenu');
+    const btn = document.getElementById('musicMenuContainer');
     if (menu) {
-      menu.classList.toggle('hidden');
+      const isHidden = menu.classList.contains('hidden');
+      if (isHidden) {
+        if (btn) {
+          const rect = btn.getBoundingClientRect();
+          menu.style.position = 'fixed';
+          menu.style.top = `${rect.bottom + 6}px`;
+          const rightOffset = window.innerWidth - rect.right;
+          menu.style.right = `${Math.max(12, rightOffset)}px`;
+          menu.style.zIndex = '90';
+        }
+        menu.classList.remove('hidden');
+      } else {
+        menu.classList.add('hidden');
+      }
     }
   };
 
   document.addEventListener('click', (e) => {
     const container = document.getElementById('musicMenuContainer');
     const menu = document.getElementById('musicDropdownMenu');
-    if (container && menu && !container.contains(e.target)) {
-      menu.classList.add('hidden');
+    if (menu && !menu.classList.contains('hidden')) {
+      if (container && !container.contains(e.target) && !menu.contains(e.target)) {
+        menu.classList.add('hidden');
+      }
     }
   });
 
@@ -9588,12 +9604,22 @@ document.addEventListener('DOMContentLoaded', () => {
       { text: '📅', type: 'emoji' }, { text: '📋', type: 'emoji' }, { text: '🗂️', type: 'emoji' }, { text: '🔖', type: 'emoji' },
       { text: '🔍', type: 'emoji' }, { text: '🖊️', type: 'emoji' }, { text: '🏷️', type: 'emoji' }, { text: '💡', type: 'emoji' }
     ],
-    animals: [
-      { text: '🐰', type: 'emoji' }, { text: '🐱', type: 'emoji' }, { text: '🐶', type: 'emoji' }, { text: '🐼', type: 'emoji' },
-      { text: '🐻', type: 'emoji' }, { text: '🐥', type: 'emoji' }, { text: '🐹', type: 'emoji' }, { text: '🐧', type: 'emoji' },
-      { text: '🦊', type: 'emoji' }, { text: '🐨', type: 'emoji' }, { text: '🐸', type: 'emoji' }, { text: '🐙', type: 'emoji' },
-      { text: '🐝', type: 'emoji' }, { text: '🐞', type: 'emoji' }, { text: '🦉', type: 'emoji' }, { text: '🦄', type: 'emoji' },
-      { text: '🦦', type: 'emoji' }, { text: '🦭', type: 'emoji' }
+    abstract: [
+      { text: '〰️ Wave Line', type: 'badge', customClass: 'sticker-washi-tape washi-pink' },
+      { text: '➰ Abstract Loop', type: 'badge', customClass: 'sticker-washi-tape washi-grid' },
+      { text: '🟤 Boho Blob', type: 'badge', customClass: 'sticker-washi-tape washi-peach' },
+      { text: '🟡 Sunburst Aura', type: 'badge', customClass: 'sticker-washi-tape washi-yellow' },
+      { text: '🟣 Lilac Aura', type: 'badge', customClass: 'sticker-washi-tape washi-lavender' },
+      { text: '🟢 Sage Patch', type: 'badge', customClass: 'sticker-washi-tape washi-matcha' },
+      { text: '🎀 Washi: Sweet Pink', type: 'badge', customClass: 'sticker-washi-tape washi-pink' },
+      { text: '📐 Washi: Grid Blue', type: 'badge', customClass: 'sticker-washi-tape washi-grid' },
+      { text: '🌿 Washi: Sage Green', type: 'badge', customClass: 'sticker-washi-tape washi-matcha' },
+      { text: '✨ Washi: Gold Star', type: 'badge', customClass: 'sticker-washi-tape washi-yellow' },
+      { text: '💜 Washi: Soft Lilac', type: 'badge', customClass: 'sticker-washi-tape washi-lavender' },
+      { text: '🍑 Washi: Warm Peach', type: 'badge', customClass: 'sticker-washi-tape washi-peach' },
+      { text: '🎨', type: 'emoji' }, { text: '🌀', type: 'emoji' }, { text: '🫧', type: 'emoji' }, { text: '💠', type: 'emoji' },
+      { text: '🔮', type: 'emoji' }, { text: '🔷', type: 'emoji' }, { text: '🔶', type: 'emoji' }, { text: '🟪', type: 'emoji' },
+      { text: '🟩', type: 'emoji' }, { text: '🟡', type: 'emoji' }, { text: '🪞', type: 'emoji' }, { text: '🪄', type: 'emoji' }
     ],
     doodles: [
       { text: '⭐', type: 'emoji' }, { text: '🌟', type: 'emoji' }, { text: '💫', type: 'emoji' }, { text: '⚡', type: 'emoji' },
@@ -9610,9 +9636,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeDoodleLineWidth = 3;
   let activeStickerCategory = 'girly';
   let isDoodleDrawing = false;
-  let lastDoodleX = 0;
-  let lastDoodleY = 0;
-  let doodleStrokeHistory = []; // For Undo functionality (max 20)
+  let strokePoints = [];
+  let doodleStrokeHistory = []; // For Undo functionality (max 25)
 
   // ================= 34.1 INITIALIZATION & RENDER =================
   function initDoodleNotes() {
@@ -9699,94 +9724,156 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ================= 34.2 CANVAS DRAWING ENGINE =================
+  // ================= 34.2 HIGH-DPI SMOOTH HANDWRITING CANVAS ENGINE =================
   function initDoodleCanvasEvents() {
     const canvas = document.getElementById('doodleCanvas');
     const container = document.getElementById('doodlePaperContainer');
+    const cursorDot = document.getElementById('doodleCursorDot');
     if (!canvas || !container) return;
 
     function resizeCanvas() {
       const rect = container.getBoundingClientRect();
       if (rect.width <= 0 || rect.height <= 0) return;
 
-      const prevWidth = canvas.width;
-      const prevHeight = canvas.height;
-      if (prevWidth === Math.floor(rect.width) && prevHeight === Math.floor(rect.height)) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const targetW = Math.round(rect.width * dpr);
+      const targetH = Math.round(rect.height * dpr);
+
+      if (canvas.width === targetW && canvas.height === targetH) return;
 
       const tempCanvas = document.createElement('canvas');
-      tempCanvas.width = prevWidth;
-      tempCanvas.height = prevHeight;
+      tempCanvas.width = canvas.width;
+      tempCanvas.height = canvas.height;
       const tempCtx = tempCanvas.getContext('2d');
-      if (prevWidth > 0 && prevHeight > 0) {
+      if (canvas.width > 0 && canvas.height > 0) {
         tempCtx.drawImage(canvas, 0, 0);
       }
 
-      canvas.width = Math.floor(rect.width);
-      canvas.height = Math.floor(rect.height);
+      canvas.width = targetW;
+      canvas.height = targetH;
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
 
       const ctx = canvas.getContext('2d');
-      if (prevWidth > 0 && prevHeight > 0) {
-        ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
+      ctx.scale(dpr, dpr);
+
+      if (tempCanvas.width > 0 && tempCanvas.height > 0) {
+        ctx.drawImage(tempCanvas, 0, 0, rect.width, rect.height);
       }
     }
 
     window.addEventListener('resize', resizeCanvas);
-    // Initial size after slight delay to ensure CSS render
-    setTimeout(resizeCanvas, 50);
+    setTimeout(resizeCanvas, 60);
 
     function getCanvasCoords(e) {
       const rect = canvas.getBoundingClientRect();
       return {
-        x: (e.clientX - rect.left) * (canvas.width / rect.width),
-        y: (e.clientY - rect.top) * (canvas.height / rect.height)
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
       };
     }
 
+    function updateCursorDot(x, y) {
+      if (!cursorDot) return;
+      if (activeDoodleTool === 'type') {
+        cursorDot.classList.add('hidden');
+        return;
+      }
+      cursorDot.classList.remove('hidden');
+      cursorDot.style.left = `${x}px`;
+      cursorDot.style.top = `${y}px`;
+
+      let size = activeDoodleLineWidth;
+      if (activeDoodleTool === 'highlighter') size = activeDoodleLineWidth * 3.5;
+      if (activeDoodleTool === 'eraser') size = activeDoodleLineWidth * 4.5;
+      size = Math.max(6, Math.min(50, size));
+
+      cursorDot.style.width = `${size}px`;
+      cursorDot.style.height = `${size}px`;
+
+      if (activeDoodleTool === 'eraser') {
+        cursorDot.style.backgroundColor = 'rgba(244, 63, 94, 0.3)';
+        cursorDot.style.borderColor = '#f43f5e';
+      } else if (activeDoodleTool === 'highlighter') {
+        cursorDot.style.backgroundColor = activeDoodleColor + '44';
+        cursorDot.style.borderColor = activeDoodleColor;
+      } else {
+        cursorDot.style.backgroundColor = activeDoodleColor + '55';
+        cursorDot.style.borderColor = activeDoodleColor;
+      }
+    }
+
+    // Pointer event listeners (supports Mouse, Finger Touch, and Stylus Pens flawlessly)
     canvas.addEventListener('pointerdown', (e) => {
       if (activeDoodleTool === 'type') return;
-      canvas.setPointerCapture(e.pointerId);
+      e.preventDefault();
+      try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
       isDoodleDrawing = true;
+
       const pos = getCanvasCoords(e);
-      lastDoodleX = pos.x;
-      lastDoodleY = pos.y;
+      strokePoints = [pos];
 
       // Save snapshot for Undo
       saveStrokeForUndo();
 
-      // Draw dot
+      // Draw initial dot
       const ctx = canvas.getContext('2d');
       ctx.beginPath();
       applyCtxBrushStyle(ctx);
       ctx.arc(pos.x, pos.y, Math.max(1, activeDoodleLineWidth / 2), 0, Math.PI * 2);
       ctx.fill();
+
+      updateCursorDot(pos.x, pos.y);
     });
 
     canvas.addEventListener('pointermove', (e) => {
-      if (!isDoodleDrawing || activeDoodleTool === 'type') return;
       const pos = getCanvasCoords(e);
+      updateCursorDot(pos.x, pos.y);
+
+      if (!isDoodleDrawing || activeDoodleTool === 'type') return;
+      e.preventDefault();
+
+      strokePoints.push(pos);
       const ctx = canvas.getContext('2d');
-
-      ctx.beginPath();
       applyCtxBrushStyle(ctx);
-      ctx.moveTo(lastDoodleX, lastDoodleY);
-      ctx.lineTo(pos.x, pos.y);
-      ctx.stroke();
 
-      lastDoodleX = pos.x;
-      lastDoodleY = pos.y;
+      // Smooth handwriting with midpoint quadratic bezier curve interpolation
+      if (strokePoints.length >= 3) {
+        const p0 = strokePoints[strokePoints.length - 3];
+        const p1 = strokePoints[strokePoints.length - 2];
+        const p2 = strokePoints[strokePoints.length - 1];
+
+        const mid1X = (p0.x + p1.x) / 2;
+        const mid1Y = (p0.y + p1.y) / 2;
+        const mid2X = (p1.x + p2.x) / 2;
+        const mid2Y = (p1.y + p2.y) / 2;
+
+        ctx.beginPath();
+        ctx.moveTo(mid1X, mid1Y);
+        ctx.quadraticCurveTo(p1.x, p1.y, mid2X, mid2Y);
+        ctx.stroke();
+      } else if (strokePoints.length === 2) {
+        ctx.beginPath();
+        ctx.moveTo(strokePoints[0].x, strokePoints[0].y);
+        ctx.lineTo(strokePoints[1].x, strokePoints[1].y);
+        ctx.stroke();
+      }
     });
 
     function endDrawing(e) {
       if (isDoodleDrawing) {
         isDoodleDrawing = false;
         try { canvas.releasePointerCapture(e.pointerId); } catch(err) {}
+        strokePoints = [];
         saveCurrentActivePageState();
       }
     }
 
     canvas.addEventListener('pointerup', endDrawing);
     canvas.addEventListener('pointercancel', endDrawing);
-    canvas.addEventListener('pointerleave', endDrawing);
+    canvas.addEventListener('pointerleave', (e) => {
+      if (!isDoodleDrawing && cursorDot) cursorDot.classList.add('hidden');
+    });
   }
 
   function applyCtxBrushStyle(ctx) {
@@ -9828,12 +9915,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('doodleCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const container = document.getElementById('doodlePaperContainer');
+    const rect = container ? container.getBoundingClientRect() : { width: canvas.width, height: canvas.height };
+    ctx.clearRect(0, 0, rect.width, rect.height);
 
     if (!dataUrl) return;
     const img = new Image();
     img.onload = () => {
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, rect.width, rect.height);
     };
     img.src = dataUrl;
   }
@@ -9842,9 +9931,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('doodleCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    const container = document.getElementById('doodlePaperContainer');
+    const rect = container ? container.getBoundingClientRect() : { width: canvas.width, height: canvas.height };
 
     if (doodleStrokeHistory.length === 0) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, rect.width, rect.height);
       saveCurrentActivePageState();
       showFloatingToast('Canvas is empty');
       return;
@@ -9853,8 +9944,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevState = doodleStrokeHistory.pop();
     const img = new Image();
     img.onload = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, rect.width, rect.height);
+      ctx.drawImage(img, 0, 0, rect.width, rect.height);
       saveCurrentActivePageState();
     };
     img.src = prevState;
@@ -9866,7 +9957,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('doodleCanvas');
     if (canvas) {
       const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const container = document.getElementById('doodlePaperContainer');
+      const rect = container ? container.getBoundingClientRect() : { width: canvas.width, height: canvas.height };
+      ctx.clearRect(0, 0, rect.width, rect.height);
     }
     saveCurrentActivePageState();
     showFloatingToast('🧹 Page drawings cleared');
@@ -9887,12 +9980,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const canvas = document.getElementById('doodleCanvas');
-    const controlsRow = document.getElementById('doodleDrawControlsRow');
     if (canvas) {
       canvas.className = `absolute inset-0 w-full h-full z-20 tool-${tool}`;
     }
 
+    const cursorDot = document.getElementById('doodleCursorDot');
     if (tool === 'type') {
+      if (cursorDot) cursorDot.classList.add('hidden');
       const textInput = document.getElementById('doodleTextInput');
       if (textInput) textInput.focus();
     }
@@ -9966,9 +10060,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let html = '';
     list.forEach(stk => {
       if (stk.type === 'badge') {
+        const customCls = stk.customClass || 'sticker-badge-german';
         html += `
-          <button onclick="stampStickerOnNote('${encodeURIComponent(stk.text)}', true)" class="col-span-2 sm:col-span-3 p-2 rounded-xl bg-pink-50/80 hover:bg-pink-100 border border-pink-200 text-left transition hover:scale-102 flex items-center gap-1.5 cursor-pointer shadow-2xs">
-            <span class="sticker-badge-german text-xs">${stk.text}</span>
+          <button onclick="stampStickerOnNote('${encodeURIComponent(stk.text)}', true, '${stk.customClass || ''}')" class="col-span-2 sm:col-span-3 p-1.5 rounded-xl bg-pink-50/60 hover:bg-pink-100 border border-pink-200 text-left transition hover:scale-102 flex items-center gap-1.5 cursor-pointer shadow-2xs">
+            <span class="${customCls} text-xs">${stk.text}</span>
           </button>
         `;
       } else {
@@ -9989,7 +10084,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.setStickerCategory = function(cat) {
     activeStickerCategory = cat;
-    ['girly', 'german', 'stationery', 'animals', 'doodles'].forEach(c => {
+    ['girly', 'german', 'stationery', 'abstract', 'doodles'].forEach(c => {
       const tab = document.getElementById(`stkTab-${c}`);
       if (tab) {
         if (c === cat) {
@@ -10002,7 +10097,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderStickersGrid(cat);
   };
 
-  window.stampStickerOnNote = function(encodedText, isBadge) {
+  window.stampStickerOnNote = function(encodedText, isBadge, customClass) {
     const text = decodeURIComponent(encodedText);
     const page = getActivePage();
     if (!page.stickers) page.stickers = [];
@@ -10013,6 +10108,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'stk_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
       text: text,
       isBadge: !!isBadge,
+      customClass: customClass || (isBadge ? 'sticker-badge-german' : ''),
       x: 50 + randomOffset,
       y: 50 + randomOffset
     };
@@ -10038,8 +10134,9 @@ document.addEventListener('DOMContentLoaded', () => {
       el.style.top = `${stk.y}%`;
 
       if (stk.isBadge) {
+        const cls = stk.customClass || 'sticker-badge-german';
         el.innerHTML = `
-          <div class="sticker-badge-german select-none pointer-events-none">${stk.text}</div>
+          <div class="${cls} select-none pointer-events-none">${stk.text}</div>
           <button class="sticker-del-badge" onclick="deleteDoodleSticker('${stk.id}', event)" title="Remove sticker">✕</button>
         `;
       } else {
@@ -10049,7 +10146,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       }
 
-      // Drag handling
       makeStickerDraggable(el, stk);
       layer.appendChild(el);
     });
@@ -10063,14 +10159,16 @@ document.addEventListener('DOMContentLoaded', () => {
     element.addEventListener('pointerdown', (e) => {
       if (e.target.classList.contains('sticker-del-badge')) return;
       isDragging = true;
-      element.setPointerCapture(e.pointerId);
+      try { element.setPointerCapture(e.pointerId); } catch (err) {}
       startX = e.clientX;
       startY = e.clientY;
       e.stopPropagation();
+      e.preventDefault();
     });
 
     element.addEventListener('pointermove', (e) => {
       if (!isDragging) return;
+      e.preventDefault();
       const container = document.getElementById('doodlePaperContainer');
       if (!container) return;
       const rect = container.getBoundingClientRect();
@@ -10284,7 +10382,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // ================= 34.8 BACKUP, UPLOAD & IMAGE EXPORT =================
+  // ================= 34.8 SAVE & EXPORT (PDF, PNG, JPG, JSON) =================
+  window.openDoodleExportModal = function() {
+    saveCurrentActivePageState();
+    const modal = document.getElementById('doodleExportModal');
+    if (modal) modal.classList.remove('hidden');
+  };
+
+  window.closeDoodleExportModal = function() {
+    const modal = document.getElementById('doodleExportModal');
+    if (modal) modal.classList.add('hidden');
+  };
+
+  window.exportDoodleAs = function(format) {
+    closeDoodleExportModal();
+    if (format === 'json') {
+      backupDoodleNotesJson();
+    } else if (format === 'png') {
+      exportDoodlePageAsImage('png');
+    } else if (format === 'jpg') {
+      exportDoodlePageAsImage('jpg');
+    } else if (format === 'pdf') {
+      exportDoodleNotesAsPdf();
+    }
+  };
+
   window.backupDoodleNotesJson = function() {
     saveCurrentActivePageState();
     const backupData = {
@@ -10307,7 +10429,7 @@ document.addEventListener('DOMContentLoaded', () => {
       URL.revokeObjectURL(url);
     }, 100);
 
-    showFloatingToast('📥 Backup downloaded to your device!');
+    showFloatingToast('📥 Backup downloaded (.json)!');
     if (typeof awardXP === 'function') awardXP(15, 'Notes Backed Up');
   };
 
@@ -10346,73 +10468,172 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
     reader.readAsText(file);
-    // Reset file input
     event.target.value = '';
   };
 
-  window.exportDoodlePageImage = function() {
+  window.exportDoodlePageAsImage = function(format = 'png') {
     saveCurrentActivePageState();
-    const container = document.getElementById('doodlePaperContainer');
     const canvas = document.getElementById('doodleCanvas');
     const page = getActivePage();
-    if (!container || !canvas) return;
+    if (!canvas) return;
 
     const exportCanvas = document.createElement('canvas');
-    exportCanvas.width = canvas.width || 800;
-    exportCanvas.height = canvas.height || 1100;
+    exportCanvas.width = 1200;
+    exportCanvas.height = 1600;
     const ctx = exportCanvas.getContext('2d');
 
-    // 1. Draw Paper Background Color
+    // 1. Paper Background
     const paperObj = DOODLE_PAPERS.find(p => p.id === page.paperStyle) || DOODLE_PAPERS[0];
     ctx.fillStyle = paperObj.bg || '#ffffff';
     ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
 
-    // 2. Draw Typed Text
+    // 2. Ruled Lines if applicable
+    if (paperObj.id.includes('ruled') || paperObj.id.includes('sky') || paperObj.id.includes('lavender')) {
+      ctx.strokeStyle = paperObj.id.includes('pink') ? '#fce7f3' : '#e2e8f0';
+      ctx.lineWidth = 1.5;
+      for (let y = 60; y < exportCanvas.height; y += 44) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(exportCanvas.width, y);
+        ctx.stroke();
+      }
+      // Red margin line
+      ctx.strokeStyle = '#fca5a5';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(80, 0);
+      ctx.lineTo(80, exportCanvas.height);
+      ctx.stroke();
+    }
+
+    // 3. Typed Text
     if (page.text) {
-      ctx.fillStyle = paperObj.id === 'midnight-dark' || paperObj.id === 'chalkboard-green' || paperObj.id === 'purple-galaxy' ? '#f8fafc' : '#1e293b';
-      ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      const isDark = paperObj.id === 'midnight-dark' || paperObj.id === 'chalkboard-green' || paperObj.id === 'purple-galaxy';
+      ctx.fillStyle = isDark ? '#f8fafc' : '#1e293b';
+      ctx.font = '22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       const lines = page.text.split('\n');
-      let y = 30;
+      let y = 60;
       lines.forEach(line => {
-        ctx.fillText(line, 20, y);
-        y += 24;
+        ctx.fillText(line, 95, y);
+        y += 44;
       });
     }
 
-    // 3. Draw Doodle Canvas Layer
-    ctx.drawImage(canvas, 0, 0);
+    // 4. Doodle Drawing Layer
+    ctx.drawImage(canvas, 0, 0, exportCanvas.width, exportCanvas.height);
 
-    // 4. Draw Draggable Stickers
+    // 5. Draggable Stickers
     if (page.stickers && page.stickers.length > 0) {
       page.stickers.forEach(stk => {
         const sx = (stk.x / 100) * exportCanvas.width;
         const sy = (stk.y / 100) * exportCanvas.height;
         if (stk.isBadge) {
-          ctx.font = 'bold 12px sans-serif';
+          ctx.font = 'bold 18px sans-serif';
           ctx.fillStyle = '#fff1f2';
-          ctx.fillRect(sx - 35, sy - 12, 70, 24);
+          ctx.fillRect(sx - 50, sy - 18, 120, 36);
+          ctx.strokeStyle = '#fecdd3';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(sx - 50, sy - 18, 120, 36);
           ctx.fillStyle = '#9f1239';
-          ctx.fillText(stk.text, sx - 30, sy + 4);
+          ctx.fillText(stk.text, sx - 42, sy + 6);
         } else {
-          ctx.font = '28px sans-serif';
-          ctx.fillText(stk.text, sx - 14, sy + 10);
+          ctx.font = '42px sans-serif';
+          ctx.fillText(stk.text, sx - 21, sy + 15);
         }
       });
     }
 
-    // Download PNG
+    // Download Image
     try {
-      const url = exportCanvas.toDataURL('image/png');
+      const mime = format === 'jpg' ? 'image/jpeg' : 'image/png';
+      const ext = format === 'jpg' ? 'jpg' : 'png';
+      const url = exportCanvas.toDataURL(mime, 0.92);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `cheeya-note-page-${getActiveNote().activePageIndex + 1}.png`;
+      a.download = `cheeya-study-note-page-${getActiveNote().activePageIndex + 1}.${ext}`;
       document.body.appendChild(a);
       a.click();
       setTimeout(() => document.body.removeChild(a), 100);
-      showFloatingToast('🖼️ Page exported as PNG image!');
+      showFloatingToast(`🖼️ Saved as ${ext.toUpperCase()} image!`);
     } catch (e) {
-      console.warn('Export PNG error:', e);
+      console.warn('Export image error:', e);
     }
+  };
+
+  window.exportDoodleNotesAsPdf = function() {
+    saveCurrentActivePageState();
+    const note = getActiveNote();
+
+    const printWin = window.open('', '_blank');
+    if (!printWin) {
+      alert('Please allow popups in your browser to generate PDF.');
+      return;
+    }
+
+    let pagesHtml = '';
+    note.pages.forEach((page, pIdx) => {
+      const paperObj = DOODLE_PAPERS.find(p => p.id === page.paperStyle) || DOODLE_PAPERS[0];
+      const isDark = paperObj.id === 'midnight-dark' || paperObj.id === 'chalkboard-green' || paperObj.id === 'purple-galaxy';
+      
+      let stickersHtml = '';
+      if (page.stickers) {
+        page.stickers.forEach(stk => {
+          if (stk.isBadge) {
+            stickersHtml += `<div style="position:absolute; left:${stk.x}%; top:${stk.y}%; transform:translate(-50%,-50%); padding:4px 10px; background:#fff1f2; color:#9f1239; border:1px solid #fecdd3; border-radius:8px; font-weight:800; font-size:11px;">${escapeHtml(stk.text)}</div>`;
+          } else {
+            stickersHtml += `<div style="position:absolute; left:${stk.x}%; top:${stk.y}%; transform:translate(-50%,-50%); font-size:28px;">${stk.text}</div>`;
+          }
+        });
+      }
+
+      pagesHtml += `
+        <div class="note-print-page paper-style-${paperObj.id}" style="background-color:${paperObj.bg || '#ffffff'}; color:${isDark ? '#f8fafc' : '#1e293b'};">
+          <div class="note-page-header">
+            <strong>${escapeHtml(note.title)}</strong> • Page ${pIdx + 1} of ${note.pages.length}
+          </div>
+          <div class="note-text-layer">${escapeHtml(page.text || '').replace(/\n/g, '<br/>')}</div>
+          ${page.doodleData ? `<img src="${page.doodleData}" class="note-canvas-layer" />` : ''}
+          <div class="note-stickers-layer">${stickersHtml}</div>
+        </div>
+      `;
+    });
+
+    const docHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>${escapeHtml(note.title)} - Cheeya Doodle Notes PDF</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="style.css">
+        <style>
+          @page { size: A4 portrait; margin: 10mm; }
+          body { margin: 0; padding: 0; background: #ffffff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+          .note-print-page { position: relative; width: 100%; height: 1050px; page-break-after: always; break-after: page; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-sizing: border-box; }
+          .note-page-header { padding: 12px 18px; font-size: 11px; opacity: 0.7; border-bottom: 1px solid rgba(0,0,0,0.08); }
+          .note-text-layer { position: absolute; inset: 40px 20px 20px 20px; font-size: 13px; line-height: 28px; white-space: pre-wrap; z-index: 10; }
+          .note-canvas-layer { position: absolute; inset: 40px 0 0 0; width: 100%; height: calc(100% - 40px); z-index: 20; object-fit: contain; }
+          .note-stickers-layer { position: absolute; inset: 40px 0 0 0; z-index: 30; pointer-events: none; }
+          @media print {
+            .note-print-page { border: none !important; margin: 0 !important; height: 100vh !important; }
+          }
+        </style>
+      </head>
+      <body>
+        ${pagesHtml}
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 500);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    printWin.document.write(docHtml);
+    printWin.document.close();
+    showFloatingToast('📄 Opening PDF document preview...');
   };
 
   // ================= 34.9 PANEL OPEN / CLOSE / RESIZE =================
@@ -10432,7 +10653,6 @@ document.addEventListener('DOMContentLoaded', () => {
     panel.classList.add('panel-open');
     panel.classList.remove('translate-x-full');
 
-    // Update active note & page
     loadActiveDoodleNote();
   };
 
@@ -10453,8 +10673,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = document.getElementById('doodlePaperContainer');
         if (canvas && container) {
           const rect = container.getBoundingClientRect();
-          canvas.width = Math.floor(rect.width);
-          canvas.height = Math.floor(rect.height);
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          canvas.width = Math.round(rect.width * dpr);
+          canvas.height = Math.round(rect.height * dpr);
+          canvas.style.width = `${rect.width}px`;
+          canvas.style.height = `${rect.height}px`;
+          const ctx = canvas.getContext('2d');
+          ctx.scale(dpr, dpr);
           const page = getActivePage();
           renderDoodleCanvasData(page.doodleData);
         }
@@ -10464,6 +10689,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize Doodle Notes System
   initDoodleNotes();
+
 
 
   if (typeof updateSrsDueBadge === 'function') updateSrsDueBadge();

@@ -858,21 +858,37 @@ body {
   }
 }
 
-/* Canvas Mode Cursors */
+/* Canvas Workspace & Drawing Layer */
+#doodlePaperContainer {
+  touch-action: none !important;
+}
+
+#doodleCanvas {
+  touch-action: none !important;
+}
+
+/* Canvas Mode Realistic Pen, Highlighter & Eraser Cursors */
 #doodleCanvas.tool-pen {
-  cursor: crosshair;
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none'><path d='M3 21l3.5-1L18.5 8a2.121 2.121 0 0 0-3-3L3.5 17L3 21z' fill='%23ec4899' stroke='%23ffffff' stroke-width='1.5'/><circle cx='3' cy='21' r='2' fill='%231e293b' stroke='%23ffffff' stroke-width='0.5'/></svg>") 3 21, crosshair;
 }
 
 #doodleCanvas.tool-highlighter {
-  cursor: crosshair;
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none'><path d='M15.5 3.5l5 5-9 9-4.5.5.5-4.5 9-9z' fill='%23fbbf24' stroke='%23ffffff' stroke-width='1.5'/><path d='M7 18l-4 4' stroke='%23ec4899' stroke-width='2'/></svg>") 3 22, crosshair;
 }
 
 #doodleCanvas.tool-eraser {
-  cursor: cell;
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none'><rect x='4' y='6' width='16' height='12' rx='3' transform='rotate(-35 12 12)' fill='%23f43f5e' stroke='%23ffffff' stroke-width='1.5'/><path stroke='%23ffffff' stroke-width='1.5' d='M7 18l4-7'/></svg>") 4 20, cell;
 }
 
 #doodleCanvas.tool-type {
   pointer-events: none !important;
+}
+
+/* Custom Pen Tip / Circle Follower Indicator */
+#doodleCursorDot {
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: width 0.1s ease, height 0.1s ease, background-color 0.1s ease;
 }
 
 /* Color Dot Palette Active State */
@@ -898,6 +914,7 @@ body {
   user-select: none;
   z-index: 30;
   pointer-events: auto;
+  touch-action: none !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -947,6 +964,32 @@ body {
   border: 1.5px solid #fecdd3;
   box-shadow: 0 2px 6px rgba(244, 63, 94, 0.15);
   white-space: nowrap;
+}
+
+/* Abstract Washi Tape & Aesthetic Stickers */
+.sticker-washi-tape {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transform: rotate(-1.5deg);
+  border-left: 3px dashed rgba(255, 255, 255, 0.7);
+  border-right: 3px dashed rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+.washi-pink { background: #fbcfe8; color: #831843; border-top: 1px solid #f472b6; border-bottom: 1px solid #f472b6; }
+.washi-grid { background: #e0f2fe; color: #0369a1; background-image: linear-gradient(to right, #bae6fd 1px, transparent 1px), linear-gradient(to bottom, #bae6fd 1px, transparent 1px); background-size: 6px 6px; border-top: 1px solid #7dd3fc; border-bottom: 1px solid #7dd3fc; }
+.washi-matcha { background: #dcfce7; color: #166534; border-top: 1px solid #86efac; border-bottom: 1px solid #86efac; }
+.washi-yellow { background: #fef08a; color: #854d0e; border-top: 1px solid #facc15; border-bottom: 1px solid #facc15; }
+.washi-lavender { background: #ede9fe; color: #5b21b6; border-top: 1px solid #c4b5fd; border-bottom: 1px solid #c4b5fd; }
+.washi-peach { background: #ffedd5; color: #9a3412; border-top: 1px solid #fdba74; border-bottom: 1px solid #fdba74; }
+.sticker-abstract-blob {
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
 
 /* ================= 30 AESTHETIC PAPER STYLES ================= */
