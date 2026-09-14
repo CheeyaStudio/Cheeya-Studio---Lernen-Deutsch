@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
   <!-- PWA Manifest & App Icons -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0284c7">
@@ -20,7 +21,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   
   <!-- Custom Soft Pastel Blue Theme & Scalable Font Styling -->
-  <link rel="stylesheet" href="style.css?v=20260914_print_pwa_v2">
+  <link rel="stylesheet" href="style.css?v=20260914_v4">
 </head>
 <body class="h-full flex flex-col antialiased select-none relative overflow-hidden">
 
@@ -60,12 +61,6 @@
       <button id="navTab-progress" onclick="switchView('progress')" class="px-3.5 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="View Learning Progress & Exercise History">
         <span>📊</span>
         <span>Progress</span>
-      </button>
-
-      <!-- 1.1 AI German Conversational Roleplay Trigger -->
-      <button id="navRoleplayBtn" onclick="openRoleplayModal()" class="px-3 py-1.5 rounded-xl bg-emerald-100/90 hover:bg-emerald-200 border border-emerald-300 text-emerald-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="AI German Conversational Roleplay: Practice 5 Real-Life A1 Scenarios">
-        <span>🤖</span>
-        <span class="hidden lg:inline">Roleplay</span>
       </button>
 
       <!-- 1.2 Goethe A1 Mock Exam Hub Trigger -->
@@ -297,46 +292,8 @@
         </button>
       </div>
 
-      <!-- ================= PWA APP INSTALL PROMO BANNER ================= -->
-      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-700 text-white p-3.5 md:p-4 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0 mb-3 border border-emerald-400/40">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-xs flex items-center justify-center text-2xl flex-shrink-0 shadow-inner">
-            📲
-          </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <h3 class="text-sm md:text-base font-black tracking-wide">Install Cheeya Deutsch App on Your Device</h3>
-              <span class="text-[9px] bg-emerald-400 text-emerald-950 font-black px-2 py-0.5 rounded-full uppercase tracking-wider">Fast &amp; Offline</span>
-            </div>
-            <p class="text-xs text-white/90 font-medium mt-0.5">Use as a full standalone app on Windows, Mac, Android &amp; iPhone without app store downloads!</p>
-          </div>
-        </div>
-        <button onclick="openPwaInstallModal()" class="px-4 py-2 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 text-xs font-black transition shadow-md hover:scale-105 flex items-center gap-1.5 cursor-pointer z-10 flex-shrink-0">
-          <span>📲 How to Install / Open</span>
-          <span>➔</span>
-        </button>
-      </div>
-
-      <!-- ================= DASHBOARD: 4 ELITE POWER TOOLS GRID ================= -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 flex-shrink-0 mb-2">
-        
-        <!-- 1. AI Conversational Roleplay Card -->
-        <div onclick="openRoleplayModal()" class="blue-glass-card p-4 border border-emerald-300 hover:border-emerald-500 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer shadow-sm group bg-gradient-to-br from-white via-emerald-50/40 to-teal-50/40">
-          <div class="flex items-center gap-3 mb-2">
-            <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-xl shadow-xs group-hover:scale-110 transition-transform">
-              🤖
-            </div>
-            <div>
-              <div class="text-[10px] font-black uppercase tracking-wider text-emerald-700">Interactive Partner</div>
-              <h4 class="text-xs font-black text-sky-950 group-hover:text-emerald-700 transition">AI Dialog Roleplay</h4>
-            </div>
-          </div>
-          <p class="text-[11px] text-sky-700 font-medium leading-relaxed">Practice 5 real-life A1 dialogues (Café, Doctor, Train Station, Supermarket) with quick suggestion chips & voice input!</p>
-          <div class="mt-2.5 flex items-center justify-between text-[10px] font-black text-emerald-800">
-            <span>5 Scenarios • Voice Audio</span>
-            <span class="group-hover:translate-x-1 transition-transform">Start Chat ➔</span>
-          </div>
-        </div>
+      <!-- ================= DASHBOARD: 3 ELITE POWER TOOLS GRID ================= -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 flex-shrink-0 mb-2">
 
         <!-- 2. Goethe-Zertifikat A1 Mock Exam Hub Card -->
         <div onclick="openGoetheExamModal()" class="blue-glass-card p-4 border border-indigo-300 hover:border-indigo-500 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer shadow-sm group bg-gradient-to-br from-white via-indigo-50/40 to-purple-50/40">
@@ -1501,79 +1458,6 @@
     </div>
   </div>
 
-  <!-- ================= 1. MODAL: AI GERMAN CONVERSATIONAL ROLEPLAY ================= -->
-  <div id="roleplayModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-3 md:p-6 hidden">
-    <div class="blue-glass-card max-w-2xl w-full max-h-[92vh] p-4 md:p-6 shadow-2xl flex flex-col border-2 border-emerald-300">
-      
-      <!-- Modal Header -->
-      <div class="flex items-center justify-between pb-3 border-b border-sky-200 mb-3 flex-shrink-0">
-        <div class="flex items-center gap-2.5">
-          <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-xl shadow-xs">
-            &#x1F916;
-          </div>
-          <div>
-            <h3 class="font-extrabold text-base text-sky-950 flex items-center gap-1.5">
-              <span>AI German Conversational Roleplay</span>
-              <span class="text-[10px] bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded-full border border-emerald-300">A1 Dialog Partner</span>
-            </h3>
-            <p class="text-xs text-sky-600 font-medium">Practice real-life everyday German conversations with helpful suggestion chips!</p>
-          </div>
-        </div>
-        <button onclick="closeRoleplayModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-      </div>
-
-      <!-- Scenario Selector Tabs -->
-      <div class="flex items-center gap-1.5 overflow-x-auto pb-2 mb-3 flex-shrink-0" id="roleplayScenarioTabs">
-        <button onclick="switchRoleplayScenario('cafe')" id="roleplayTab-cafe" class="px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-emerald-600 text-white shadow-xs">
-          &#x2615; Im Caf&eacute; (Ordering)
-        </button>
-        <button onclick="switchRoleplayScenario('intro')" id="roleplayTab-intro" class="px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-sky-800 hover:bg-sky-100 border border-sky-200">
-          &#x1F44B; Sich vorstellen (Intro)
-        </button>
-        <button onclick="switchRoleplayScenario('station')" id="roleplayTab-station" class="px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-sky-800 hover:bg-sky-100 border border-sky-200">
-          &#x1F686; Am Bahnhof (Tickets)
-        </button>
-        <button onclick="switchRoleplayScenario('market')" id="roleplayTab-market" class="px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-sky-800 hover:bg-sky-100 border border-sky-200">
-          &#x1F6D2; Im Supermarkt (Shopping)
-        </button>
-        <button onclick="switchRoleplayScenario('doctor')" id="roleplayTab-doctor" class="px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-sky-800 hover:bg-sky-100 border border-sky-200">
-          &#x1FA7A; Beim Arzt (Health)
-        </button>
-      </div>
-
-      <!-- Chat Messages Scrollable Window -->
-      <div id="roleplayChatArea" class="flex-1 overflow-y-auto p-3.5 bg-sky-50/70 rounded-2xl border border-sky-200 space-y-3 mb-3 roleplay-chat-scroll min-h-[220px]">
-        <!-- Populated dynamically by app.js -->
-      </div>
-
-      <!-- Quick Reply Suggestion Chips -->
-      <div class="space-y-1.5 flex-shrink-0 mb-3">
-        <div class="flex items-center justify-between text-[11px] text-sky-600 font-bold px-1">
-          <span>&#x1F4A1; Recommended A1 Replies:</span>
-          <span class="text-[10px] text-sky-400">Click any chip to respond</span>
-        </div>
-        <div id="roleplaySuggestionChips" class="flex flex-wrap gap-1.5">
-          <!-- Populated from JS -->
-        </div>
-      </div>
-
-      <!-- Text & Voice Input Bar -->
-      <div class="flex items-center gap-2 pt-2 border-t border-sky-200 flex-shrink-0">
-        <button id="roleplayVoiceBtn" onclick="toggleRoleplayVoiceInput()" class="p-2.5 rounded-xl bg-pink-100 hover:bg-pink-200 border border-pink-300 text-pink-700 text-sm font-bold transition cursor-pointer flex-shrink-0 shadow-2xs" title="Speak in German (Speech-to-Text)">
-          <span id="roleplayVoiceIcon">&#x1F399;&#xFE0F;</span>
-        </button>
-        <input type="text" id="roleplayInputText" placeholder="Type your German response here or click a suggestion above..." onkeydown="if(event.key==='Enter') sendRoleplayMessage()" class="flex-1 px-3.5 py-2.5 bg-white border border-sky-300 rounded-xl text-xs text-sky-950 font-medium focus:outline-none focus:border-emerald-500 shadow-2xs">
-        <button onclick="sendRoleplayMessage()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black transition shadow-sm cursor-pointer flex items-center gap-1">
-          <span>Send</span>
-          <span>&#x2794;</span>
-        </button>
-      </div>
-
-    </div>
-  </div>
-
   <!-- ================= 2. MODAL: GOETHE-ZERTIFIKAT A1 MOCK EXAM HUB ================= -->
   <div id="goetheExamModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-3 md:p-6 hidden">
     <div class="blue-glass-card max-w-3xl w-full max-h-[92vh] p-5 md:p-7 shadow-2xl flex flex-col border-2 border-indigo-300 overflow-hidden">
@@ -1589,15 +1473,23 @@
               <span>Goethe-Zertifikat A1 Mock Exam Hub</span>
               <span class="text-[10px] bg-indigo-100 text-indigo-900 font-extrabold px-2 py-0.5 rounded-full border border-indigo-300">Start Deutsch 1</span>
             </h3>
-            <p class="text-xs text-sky-600 font-medium">Official 4-module exam simulation &bull; Passing score: 60% (36/60 Pts)</p>
+            <p class="text-xs text-sky-600 font-medium">Official 4-module Goethe simulation &bull; Written Exam: 65 Min &bull; Pass: 60% (36/60 Pts)</p>
           </div>
         </div>
 
         <div class="flex items-center gap-2">
-          <!-- Timer Display -->
-          <div class="px-3 py-1 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-xs font-black flex items-center gap-1">
-            <span>&#x23F1;&#xFE0F;</span>
-            <span id="examTimerDisplay">30:00</span>
+          <!-- Timer Display & Duration Selector -->
+          <div class="flex items-center gap-1 bg-amber-50 border border-amber-300 p-1 rounded-xl text-xs font-black">
+            <button id="examModeBtn-65" onclick="setExamDuration(65)" class="px-2 py-0.5 rounded-lg bg-amber-500 text-white shadow-xs transition cursor-pointer" title="Official Goethe Written Exam Standard">
+              🏛️ 65 Min
+            </button>
+            <button id="examModeBtn-30" onclick="setExamDuration(30)" class="px-2 py-0.5 rounded-lg text-amber-900 hover:bg-amber-100 transition cursor-pointer" title="Express Practice Drill">
+              ⚡ 30 Min
+            </button>
+            <div class="flex items-center gap-1 px-1.5 text-amber-900">
+              <span>⏱️</span>
+              <span id="examTimerDisplay">65:00</span>
+            </div>
           </div>
           <button onclick="closeGoetheExamModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -1943,6 +1835,6 @@
 
   <!-- SCRIPT LOGIC -->
   <script src="media-data.js?v=20260913_360q"></script>
-  <script src="app.js?v=20260914_print_pwa_v2"></script>
+  <script src="app.js?v=20260914_v4"></script>
 </body>
 </html>

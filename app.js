@@ -134,11 +134,13 @@ document.addEventListener('DOMContentLoaded', () => {
       activeAudioObj = null;
     }
 
-    // Method 1: Google Native German Audio Stream (100% reliable across mobile and desktop without local language packs)
+    // Method 1: Google Native German Audio Stream (100% authentic human German speaker, unblocked by no-referrer)
     try {
       const encoded = encodeURIComponent(spoken);
       const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=de&q=${encoded}`;
-      const audio = new Audio(audioUrl);
+      const audio = new Audio();
+      audio.referrerPolicy = "no-referrer";
+      audio.src = audioUrl;
       audio.playbackRate = window.ttsCurrentSpeed || 1.0;
       activeAudioObj = audio;
 
@@ -174,8 +176,17 @@ document.addEventListener('DOMContentLoaded', () => {
         utterance.rate = (window.ttsCurrentSpeed === 0.8) ? 0.75 : 0.88;
         
         const voices = synth.getVoices() || [];
-        const gVoice = voices.find(v => v.lang === 'de-DE' || (v.lang && v.lang.toLowerCase().startsWith('de')));
-        if (gVoice) utterance.voice = gVoice;
+        // Prioritize natural high-quality German human voices over robotic synthesizers
+        const naturalGermanVoice = voices.find(v => {
+          const name = (v.name || '').toLowerCase();
+          const lang = (v.lang || '').toLowerCase();
+          return (lang.startsWith('de') || lang.includes('german')) &&
+                 (name.includes('google') || name.includes('natural') || name.includes('hedda') || name.includes('katja') || name.includes('stefan') || name.includes('anna'));
+        }) || voices.find(v => (v.lang || '').toLowerCase().startsWith('de'));
+
+        if (naturalGermanVoice) {
+          utterance.voice = naturalGermanVoice;
+        }
 
         utterance.onend = () => {
           if (triggerBtn && triggerBtn.classList) triggerBtn.classList.remove('audio-playing-pulse');
@@ -8143,7 +8154,6 @@ document.addEventListener('DOMContentLoaded', () => {
       switchView(hash);
     } else if (hash === 'roleplay') {
       switchView('dashboard');
-      setTimeout(() => { if (typeof openRoleplayModal === 'function') openRoleplayModal(); }, 150);
     } else if (hash === 'exam') {
       switchView('dashboard');
       setTimeout(() => { if (typeof openGoetheExamModal === 'function') openGoetheExamModal(); }, 150);
@@ -8259,436 +8269,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // ================= 29. AI GERMAN CONVERSATIONAL ROLEPLAY (DIALOG PARTNER) =================
-  const ROLEPLAY_SCENARIOS = {
-    cafe: {
-      title: "☕ Im Café (Ordering in a Café)",
-      partner: "Herr Weber (Waiter)",
-      initialGreeting: "Guten Tag! Herzlich willkommen im Café Alpenrose. Was darf ich Ihnen bringen?",
-      initialGreetingEn: "Good day! Welcome to Café Alpenrose. What may I bring you?",
-      suggestions: [
-        { de: "Ich möchte bitte einen Kaffee und ein Stück Kuchen.", en: "I would like a coffee and a piece of cake, please." },
-        { de: "Haben Sie auch Tee mit Zitrone?", en: "Do you also have tea with lemon?" },
-        { de: "Eine heiße Schokolade, bitte.", en: "A hot chocolate, please." }
-      ],
-      responses: [
-        {
-          triggers: ["kaffee", "kuchen", "tee", "schokolade", "wasser", "cola"],
-          botDe: "Sehr gerne! Möchten Sie Zucker und Milch dazu? Und darf es sonst noch etwas sein?",
-          botEn: "With pleasure! Would you like sugar and milk with that? And anything else?",
-          suggestions: [
-            { de: "Mit Milch und ohne Zucker, bitte.", en: "With milk and without sugar, please." },
-            { de: "Nein danke, das ist alles.", en: "No thank you, that is all." },
-            { de: "Wir möchten auch zahlen, bitte.", en: "We would also like to pay, please." }
-          ]
-        },
-        {
-          triggers: ["zahlen", "rechnung", "bezahlen", "kostet"],
-          botDe: "Zusammen oder getrennt? Das macht dann insgesamt 6 Euro 50, bitte.",
-          botEn: "Together or separately? That makes 6 Euros 50 in total, please.",
-          suggestions: [
-            { de: "Zusammen, bitte. Hier sind 10 Euro.", en: "Together, please. Here is 10 Euros." },
-            { de: "Stimmt so, vielen Dank!", en: "Keep the change, thank you very much!" },
-            { de: "Kann ich mit Karte zahlen?", en: "Can I pay with card?" }
-          ]
-        },
-        {
-          triggers: ["stimmt", "hier", "karte", "danke", "euro"],
-          botDe: "Vielen herzlichen Dank! Einen wunderschönen Tag noch und auf Wiedersehen!",
-          botEn: "Thank you very much! Have a wonderful day and goodbye!",
-          suggestions: [
-            { de: "Danke gleichfalls! Auf Wiedersehen!", en: "Thanks, likewise! Goodbye!" },
-            { de: "Tschüs, bis zum nächsten Mal!", en: "Bye, until next time!" }
-          ]
-        }
-      ]
-    },
-    intro: {
-      title: "👋 Sich vorstellen (Personal Introductions)",
-      partner: "Lukas (Language Partner)",
-      initialGreeting: "Hallo! Ich bin Lukas aus Berlin. Ich lerne Spanisch. Wie heißt du und woher kommst du?",
-      initialGreetingEn: "Hello! I am Lukas from Berlin. I am learning Spanish. What is your name and where are you from?",
-      suggestions: [
-        { de: "Hallo Lukas! Ich heiße Maya und komme aus Indonesien.", en: "Hello Lukas! My name is Maya and I come from Indonesia." },
-        { de: "Ich bin Alex. Ich wohne jetzt in Frankfurt.", en: "I am Alex. I live in Frankfurt now." },
-        { de: "Freut mich! Ich lerne seit drei Monaten Deutsch.", en: "Pleased to meet you! I have been learning German for three months." }
-      ],
-      responses: [
-        {
-          triggers: ["heiße", "bin", "komme", "wohne", "indonesien", "spanien", "deutschland"],
-          botDe: "Schön dich kennenzulernen! Welche Sprachen sprichst du denn, und was machst du beruflich?",
-          botEn: "Nice to meet you! Which languages do you speak, and what do you do for work?",
-          suggestions: [
-            { de: "Ich spreche Englisch, Indonesisch und ein bisschen Deutsch.", en: "I speak English, Indonesian, and a little German." },
-            { de: "Ich bin Studentin an der Universität.", en: "I am a university student." },
-            { de: "Ich arbeite als Softwareentwickler in Vollzeit.", en: "I work full-time as a software developer." }
-          ]
-        },
-        {
-          triggers: ["englisch", "deutsch", "student", "arbeite", "beruf", "sprache"],
-          botDe: "Toll! Dein Deutsch ist schon richtig gut! Was machst du gerne in deiner Freizeit? Hast du Hobbys?",
-          botEn: "Great! Your German is already really good! What do you like doing in your free time? Do you have hobbies?",
-          suggestions: [
-            { de: "In meiner Freizeit höre ich Musik und koche gern.", en: "In my free time I listen to music and like cooking." },
-            { de: "Ich spiele Fußball und treffe gern Freunde.", en: "I play football and like meeting friends." },
-            { de: "Ich lese gern Bücher und reise viel.", en: "I like reading books and traveling a lot." }
-          ]
-        },
-        {
-          triggers: ["musik", "koche", "fußball", "freunde", "bücher", "reise", "hobby"],
-          botDe: "Klingt super spannend! Wir können gerne öfter zusammen Deutsch und Englisch üben!",
-          botEn: "Sounds super exciting! We can gladly practice German and English together more often!",
-          suggestions: [
-            { de: "Sehr gern! Danke für das nette Gespräch.", en: "With pleasure! Thanks for the nice conversation." },
-            { de: "Ja super, bis bald!", en: "Yes great, see you soon!" }
-          ]
-        }
-      ]
-    },
-    station: {
-      title: "🚆 Am Bahnhof (At the Train Station)",
-      partner: "Frau Schmidt (Deutsche Bahn Agent)",
-      initialGreeting: "Guten Tag, Deutsche Bahn Reisezentrum. Wohin möchten Sie fahren?",
-      initialGreetingEn: "Good day, Deutsche Bahn Travel Center. Where would you like to travel to?",
-      suggestions: [
-        { de: "Guten Tag! Ich brauche eine Fahrkarte nach München, bitte.", en: "Good day! I need a ticket to Munich, please." },
-        { de: "Fährt heute noch ein ICE nach Berlin?", en: "Is there an ICE to Berlin departing today?" },
-        { de: "Wann fährt der nächste Zug nach Hamburg ab?", en: "When does the next train to Hamburg depart?" }
-      ],
-      responses: [
-        {
-          triggers: ["münchen", "berlin", "hamburg", "köln", "frankfurt", "fahrkarte", "zug"],
-          botDe: "Der nächste ICE fährt um 14:28 Uhr von Gleis 7 ab. Möchten Sie einfach oder hin und zurück?",
-          botEn: "The next ICE departs at 14:28 from Platform 7. Would you like one-way or round trip?",
-          suggestions: [
-            { de: "Hin und zurück, bitte. Zweite Klasse.", en: "Round trip, please. Second class." },
-            { de: "Nur einfach, bitte.", en: "One-way only, please." },
-            { de: "Muss ich umsteigen oder ist es eine Direktverbindung?", en: "Do I have to change trains or is it a direct connection?" }
-          ]
-        },
-        {
-          triggers: ["einfach", "hin", "zurück", "klasse", "direkt", "umsteigen"],
-          botDe: "Das ist ein direkter ICE ohne Umsteigen. Haben Sie eine BahnCard 25 oder 50?",
-          botEn: "That is a direct ICE with no transfers. Do you have a BahnCard 25 or 50?",
-          suggestions: [
-            { de: "Nein, ich habe keine BahnCard.", en: "No, I do not have a BahnCard." },
-            { de: "Ja, ich habe eine BahnCard 25.", en: "Yes, I have a BahnCard 25." }
-          ]
-        },
-        {
-          triggers: ["nein", "keine", "ja", "bahncard"],
-          botDe: "Alles klar. Das Ticket kostet 49 Euro. Hier ist Ihre Fahrkarte. Gute Reise!",
-          botEn: "All set. The ticket costs 49 Euros. Here is your ticket. Safe travels!",
-          suggestions: [
-            { de: "Vielen Dank für Ihre Hilfe! Auf Wiedersehen!", en: "Thank you very much for your help! Goodbye!" }
-          ]
-        }
-      ]
-    },
-    market: {
-      title: "🛒 Im Supermarkt (At the Supermarket / Market)",
-      partner: "Herr Meier (Grocer)",
-      initialGreeting: "Guten Tag! Der Käse und das Obst sind heute ganz frisch. Was darf es sein?",
-      initialGreetingEn: "Good day! The cheese and fruit are completely fresh today. What can I get for you?",
-      suggestions: [
-        { de: "Ich nehme bitte ein Kilo Äpfel und etwas Käse.", en: "I will take one kilo of apples and some cheese, please." },
-        { de: "Wie viel kosten die Tomaten heute?", en: "How much do the tomatoes cost today?" },
-        { de: "Haben Sie frische Brötchen?", en: "Do you have fresh bread rolls?" }
-      ],
-      responses: [
-        {
-          triggers: ["äpfel", "käse", "tomaten", "brötchen", "brot", "kilo", "gramm"],
-          botDe: "Sehr gerne. Wie viel Gramm Käse möchten Sie? Wir haben milden Gouda und würzigen Bergkäse.",
-          botEn: "Gladly. How many grams of cheese would you like? We have mild Gouda and spicy alpine cheese.",
-          suggestions: [
-            { de: "200 Gramm Gouda, bitte.", en: "200 grams of Gouda, please." },
-            { de: "150 Gramm Bergkäse in Scheiben, bitte.", en: "150 grams of alpine cheese sliced, please." }
-          ]
-        },
-        {
-          triggers: ["gramm", "gouda", "bergkäse", "scheiben", "stück"],
-          botDe: "Bitteschön, das macht 200 Gramm. Darf es sonst noch etwas sein?",
-          botEn: "Here you go, that is 200 grams. Anything else?",
-          suggestions: [
-            { de: "Nein danke, das ist alles. Was macht das zusammen?", en: "No thank you, that is all. How much is that altogether?" },
-            { de: "Ich brauche noch eine Tüte, bitte.", en: "I also need a bag, please." }
-          ]
-        },
-        {
-          triggers: ["alles", "macht", "tüte", "kostet", "zahlen"],
-          botDe: "Das macht zusammen 7 Euro 80. Vielen Dank für Ihren Einkauf!",
-          botEn: "That makes 7 Euros 80 altogether. Thank you for your purchase!",
-          suggestions: [
-            { de: "Hier sind 10 Euro. Schönen Tag noch!", en: "Here are 10 Euros. Have a nice day!" }
-          ]
-        }
-      ]
-    },
-    doctor: {
-      title: "🩺 Beim Arzt (At the Doctor's Clinic)",
-      partner: "Frau Dr. Weber (Doctor)",
-      initialGreeting: "Guten Tag! Nehmen Sie bitte Platz. Was fehlt Ihnen denn? Wo haben Sie Schmerzen?",
-      initialGreetingEn: "Good day! Please take a seat. What is troubling you? Where do you have pain?",
-      suggestions: [
-        { de: "Guten Tag, Frau Doktor. Ich habe seit gestern starke Kopfschmerzen.", en: "Good day, Doctor. I have had a severe headache since yesterday." },
-        { de: "Mein Hals tut weh und ich habe leichtes Fieber.", en: "My throat hurts and I have a mild fever." },
-        { de: "Ich fühle mich schwach und muss oft husten.", en: "I feel weak and have to cough often." }
-      ],
-      responses: [
-        {
-          triggers: ["kopf", "hals", "fieber", "husten", "schmerzen", "weh", "schwach"],
-          botDe: "Ich verstehe. Haben Sie auch Bauchschmerzen oder Übelkeit? Wie hoch ist das Fieber?",
-          botEn: "I understand. Do you also have stomach ache or nausea? How high is the fever?",
-          suggestions: [
-            { de: "Das Fieber ist bei 38,5 Grad, aber kein Bauchweh.", en: "The fever is at 38.5 degrees, but no stomach ache." },
-            { de: "Nein, nur Husten und Halsschmerzen.", en: "No, only coughing and sore throat." }
-          ]
-        },
-        {
-          triggers: ["grad", "fieber", "husten", "halsschmerzen", "bauchweh", "nein"],
-          botDe: "Das ist eine typische Erkältung. Ich schreibe Ihnen ein Rezept für Hustensaft auf. Trinken Sie viel warmen Tee und ruhen Sie sich drei Tage aus!",
-          botEn: "That is a typical cold. I will write you a prescription for cough syrup. Drink plenty of warm tea and rest for three days!",
-          suggestions: [
-            { de: "Vielen Dank, Frau Doktor. Brauche ich eine Krankschreibung für die Arbeit?", en: "Thank you, Doctor. Do I need a sick note for work?" },
-            { de: "Muss ich nächste Woche noch einmal wiederkommen?", en: "Do I need to come back again next week?" }
-          ]
-        },
-        {
-          triggers: ["arbeit", "krankschreibung", "wiederkommen", "woche", "danke"],
-          botDe: "Hier ist Ihre Krankschreibung bis Freitag. Wenn es nicht besser wird, kommen Sie bitte am Montag wieder. Gute Besserung!",
-          botEn: "Here is your sick note until Friday. If it does not get better, please return on Monday. Get well soon!",
-          suggestions: [
-            { de: "Vielen Dank für Ihre Hilfe! Auf Wiedersehen.", en: "Thank you very much for your help! Goodbye." }
-          ]
-        }
-      ]
-    }
-  };
-
-  let activeRoleplayKey = 'cafe';
-  let roleplayChatHistory = [];
-  let roleplayStepIndex = 0;
-
-  window.openRoleplayModal = function(initialKey) {
-    const modal = document.getElementById('roleplayModal');
-    if (!modal) return;
-    modal.classList.remove('hidden');
-    switchRoleplayScenario(initialKey || 'cafe');
-  };
-
-  window.closeRoleplayModal = function() {
-    const modal = document.getElementById('roleplayModal');
-    if (modal) modal.classList.add('hidden');
-  };
-
-  window.switchRoleplayScenario = function(key) {
-    if (!ROLEPLAY_SCENARIOS[key]) key = 'cafe';
-    activeRoleplayKey = key;
-    roleplayStepIndex = 0;
-    const scen = ROLEPLAY_SCENARIOS[key];
-
-    // Update tab styling
-    const tabs = ['cafe', 'intro', 'station', 'market', 'doctor'];
-    tabs.forEach(t => {
-      const el = document.getElementById(`roleplayTab-${t}`);
-      if (el) {
-        if (t === key) {
-          el.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-emerald-600 text-white shadow-xs";
-        } else {
-          el.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-sky-800 hover:bg-sky-100 border border-sky-200";
-        }
-      }
-    });
-
-    roleplayChatHistory = [
-      {
-        sender: 'bot',
-        name: scen.partner,
-        de: scen.initialGreeting,
-        en: scen.initialGreetingEn
-      }
-    ];
-
-    renderRoleplayChat();
-    renderRoleplaySuggestions(scen.suggestions);
-  };
-
-  function renderRoleplayChat() {
-    const container = document.getElementById('roleplayChatArea');
-    if (!container) return;
-
-    let html = '';
-    roleplayChatHistory.forEach((msg, idx) => {
-      if (msg.sender === 'bot') {
-        html += `
-          <div class="flex items-start gap-2.5 max-w-[88%]">
-            <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-sm font-bold flex-shrink-0 shadow-xs">
-              🤖
-            </div>
-            <div class="bg-white p-3 rounded-2xl rounded-tl-xs border border-sky-200 shadow-2xs space-y-1">
-              <div class="flex items-center justify-between gap-3 text-[10px] text-emerald-800 font-extrabold">
-                <span>${escapeHtml(msg.name)}</span>
-                <button onclick="playGermanSpeech('${escapeHtml(msg.de)}')" class="hover:text-emerald-950 transition cursor-pointer" title="Listen to pronunciation">🔊</button>
-              </div>
-              <p class="text-xs font-black text-sky-950 leading-relaxed">${escapeHtml(msg.de)}</p>
-              <div id="roleplayTrans-${idx}" class="hidden text-[11px] text-sky-700 italic border-t border-sky-100 pt-1 mt-1">
-                ${escapeHtml(msg.en)}
-              </div>
-              <div class="pt-0.5 text-right">
-                <button onclick="toggleRoleplayTranslation(${idx})" class="text-[10px] text-emerald-700 hover:text-emerald-900 font-bold underline cursor-pointer">
-                  👁️ Translation
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-      } else {
-        html += `
-          <div class="flex items-start justify-end gap-2.5 max-w-[88%] ml-auto">
-            <div class="bg-emerald-600 text-white p-3 rounded-2xl rounded-tr-xs shadow-2xs space-y-1 text-right">
-              <div class="text-[10px] text-emerald-200 font-extrabold">You</div>
-              <p class="text-xs font-bold leading-relaxed text-white">${escapeHtml(msg.de)}</p>
-            </div>
-            <div class="w-8 h-8 rounded-full bg-sky-500 text-white flex items-center justify-center text-sm font-bold flex-shrink-0 shadow-xs">
-              👤
-            </div>
-          </div>
-        `;
-      }
-    });
-
-    container.innerHTML = html;
-    container.scrollTop = container.scrollHeight;
-  }
-
-  window.toggleRoleplayTranslation = function(idx) {
-    const el = document.getElementById(`roleplayTrans-${idx}`);
-    if (el) el.classList.toggle('hidden');
-  };
-
-  function renderRoleplaySuggestions(suggestions) {
-    const container = document.getElementById('roleplaySuggestionChips');
-    if (!container) return;
-
-    if (!suggestions || suggestions.length === 0) {
-      container.innerHTML = `
-        <div class="text-xs text-emerald-800 font-medium py-1">
-          🎉 Scenario complete! You can switch tabs above to practice another dialogue!
-        </div>
-      `;
-      return;
-    }
-
-    let html = '';
-    suggestions.forEach(item => {
-      html += `
-        <button onclick="submitRoleplayText('${escapeHtml(item.de)}')" class="text-left px-2.5 py-1.5 rounded-xl bg-white hover:bg-emerald-50 border border-emerald-200 text-sky-950 transition cursor-pointer shadow-2xs group flex items-center gap-1.5">
-          <span class="text-[11px] font-black group-hover:text-emerald-700 text-sky-900">${escapeHtml(item.de)}</span>
-          <span class="text-[10px] text-sky-400 italic">(${escapeHtml(item.en)})</span>
-        </button>
-      `;
-    });
-    container.innerHTML = html;
-  }
-
-  window.submitRoleplayText = function(text) {
-    const input = document.getElementById('roleplayInputText');
-    if (input) input.value = text;
-    sendRoleplayMessage();
-  };
-
-  window.sendRoleplayMessage = function() {
-    const input = document.getElementById('roleplayInputText');
-    const text = input ? input.value.trim() : '';
-    if (!text) return;
-
-    if (input) input.value = '';
-
-    // Add user message
-    roleplayChatHistory.push({ sender: 'user', de: text });
-    renderRoleplayChat();
-
-    const scen = ROLEPLAY_SCENARIOS[activeRoleplayKey];
-    const lower = text.toLowerCase();
-
-    // Find next bot response
-    let nextResponse = null;
-    if (scen.responses && roleplayStepIndex < scen.responses.length) {
-      nextResponse = scen.responses[roleplayStepIndex];
-      roleplayStepIndex++;
-    }
-
-    setTimeout(() => {
-      if (nextResponse) {
-        roleplayChatHistory.push({
-          sender: 'bot',
-          name: scen.partner,
-          de: nextResponse.botDe,
-          en: nextResponse.botEn
-        });
-        renderRoleplayChat();
-        renderRoleplaySuggestions(nextResponse.suggestions);
-        if (typeof playGermanSpeech === 'function') {
-          playGermanSpeech(nextResponse.botDe);
-        }
-        awardXP(10, 'Roleplay Dialogue');
-      } else {
-        roleplayChatHistory.push({
-          sender: 'bot',
-          name: scen.partner,
-          de: "Das war eine wunderbare Unterhaltung! Vielen Dank und einen schönen Tag noch!",
-          en: "That was a wonderful conversation! Thank you very much and have a nice day!"
-        });
-        renderRoleplayChat();
-        renderRoleplaySuggestions([]);
-        awardXP(25, 'Scenario Completed');
-        unlockBadge('chat_champion');
-      }
-    }, 600);
-  };
-
-  window.toggleRoleplayVoiceInput = function() {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      showFloatingToast("⚠️ Speech recognition requires Chrome or Edge.");
-      return;
-    }
-
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'de-DE';
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    const btn = document.getElementById('roleplayVoiceBtn');
-    const icon = document.getElementById('roleplayVoiceIcon');
-    if (btn) btn.classList.add('mic-recording-active');
-    if (icon) icon.textContent = '🔴';
-    showFloatingToast("🎙️ Listening in German... Speak now!");
-
-    recognition.onresult = function(event) {
-      const transcript = event.results[0][0].transcript;
-      const input = document.getElementById('roleplayInputText');
-      if (input) input.value = transcript;
-      showFloatingToast(`Heard: "${transcript}"`);
-      sendRoleplayMessage();
-    };
-
-    recognition.onerror = function(err) {
-      console.warn("Roleplay speech error:", err);
-      showFloatingToast("⚠️ Microphone error or permission denied.");
-    };
-
-    recognition.onend = function() {
-      if (btn) btn.classList.remove('mic-recording-active');
-      if (icon) icon.textContent = '🎙️';
-    };
-
-    try {
-      recognition.start();
-    } catch(e) {
-      console.error(e);
-    }
-  };
+  // Deprecated / Removed Feature Stubs
+  window.openRoleplayModal = function() {};
+  window.closeRoleplayModal = function() {};
 
   // ================= 30. GOETHE-ZERTIFIKAT A1 / TELC MOCK EXAM HUB =================
   const GOETHE_EXAM_DATA = {
@@ -8796,21 +8379,51 @@ document.addEventListener('DOMContentLoaded', () => {
     schreibenPart2: '',
     sprechenCompleted: {}
   };
-  let examTimerSeconds = 1800; // 30 minutes
+  let examSelectedDuration = 65;
+  let examTimerSeconds = 65 * 60; // 3900s (65 minutes official Goethe written standard)
   let examTimerInterval = null;
+
+  window.setExamDuration = function(mins) {
+    examSelectedDuration = mins;
+    examTimerSeconds = mins * 60;
+    const btn65 = document.getElementById('examModeBtn-65');
+    const btn30 = document.getElementById('examModeBtn-30');
+    if (btn65 && btn30) {
+      if (mins === 65) {
+        btn65.className = "px-2 py-0.5 rounded-lg bg-amber-500 text-white shadow-xs transition cursor-pointer";
+        btn30.className = "px-2 py-0.5 rounded-lg text-amber-900 hover:bg-amber-100 transition cursor-pointer";
+      } else {
+        btn30.className = "px-2 py-0.5 rounded-lg bg-amber-500 text-white shadow-xs transition cursor-pointer";
+        btn65.className = "px-2 py-0.5 rounded-lg text-amber-900 hover:bg-amber-100 transition cursor-pointer";
+      }
+    }
+    const display = document.getElementById('examTimerDisplay');
+    if (display) {
+      const m = Math.floor(examTimerSeconds / 60);
+      const s = examTimerSeconds % 60;
+      display.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+  };
 
   window.openGoetheExamModal = function() {
     const modal = document.getElementById('goetheExamModal');
     if (!modal) return;
     modal.classList.remove('hidden');
-    startExamTimer();
+    if (!examTimerInterval) {
+      examTimerSeconds = examSelectedDuration * 60;
+      setExamDuration(examSelectedDuration);
+      startExamTimer();
+    }
     switchExamModule('hoeren');
   };
 
   window.closeGoetheExamModal = function() {
     const modal = document.getElementById('goetheExamModal');
     if (modal) modal.classList.add('hidden');
-    if (examTimerInterval) clearInterval(examTimerInterval);
+    if (examTimerInterval) {
+      clearInterval(examTimerInterval);
+      examTimerInterval = null;
+    }
   };
 
   function startExamTimer() {
