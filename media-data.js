@@ -33,7 +33,8 @@ const NETZWERK_DATA = {
         { id: "1-011", name: "Track 1-011", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-011.mp3" },
         { id: "1-012", name: "Track 1-012", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-012.mp3" },
         { id: "1-013", name: "Track 1-013", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-013.mp3" },
-        { id: "1-014", name: "Track 1-014", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-014.mp3" }
+        { id: "1-014", name: "Track 1-014", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-014.mp3" },
+        { id: "1-015", name: "Track 1-015", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-015.mp3" }
       ],
       videos: [
         { title: "Film 001: Guten Tag!", path: BASE_PATH + "Kursbuch A1 - Video/Kapitel_1-2/NWn_A1_Film_001.mp4" },
@@ -639,7 +640,9 @@ const NETZWERK_DATA = {
         { id: "1-023", name: "Track 1-023", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-023.mp3" },
         { id: "1-024", name: "Track 1-024", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-024.mp3" },
         { id: "1-025", name: "Track 1-025", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-025.mp3" },
+        { id: "1-026", name: "Track 1-026", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-026.mp3" },
         { id: "1-027", name: "Track 1-027", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-027.mp3" },
+        { id: "1-028", name: "Track 1-028", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-028.mp3" },
         { id: "1-029", name: "Track 1-029", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-029.mp3" }
       ],
       videos: [
@@ -1154,6 +1157,8 @@ const NETZWERK_DATA = {
         { id: "1-036", name: "Track 1-036", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-036.mp3" },
         { id: "1-037", name: "Track 1-037", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-037.mp3" },
         { id: "1-038", name: "Track 1-038", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-038.mp3" },
+        { id: "1-039", name: "Track 1-039", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-039.mp3" },
+        { id: "1-040", name: "Track 1-040", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-040.mp3" },
         { id: "1-041", name: "Track 1-041", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-041.mp3" }
       ],
       videos: [
@@ -2635,6 +2640,7 @@ The following key verbs always require an object in the **Akkusativ**:
         { id: "1-094", name: "Track 1-094", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-094.mp3" },
         { id: "1-095", name: "Track 1-095", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-095.mp3" },
         { id: "1-096", name: "Track 1-096", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-096.mp3" },
+        { id: "1-097", name: "Track 1-097", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-097.mp3" },
         { id: "1-098", name: "Track 1-098", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-098.mp3" }
       ],
       videos: [

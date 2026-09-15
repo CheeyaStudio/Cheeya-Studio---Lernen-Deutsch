@@ -2125,10 +2125,6 @@ document.addEventListener('DOMContentLoaded', () => {
       {
         label: "Tracks 2-001 — 2-062",
         items: allTracks.filter(t => t.id.startsWith("2-"))
-      },
-      {
-        label: "Full Chapter Audio (Kapitel 1 — 12)",
-        items: fullChapterAudios
       }
     ];
 
@@ -2144,7 +2140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         grp.items.forEach(item => {
           const opt = document.createElement('option');
           opt.value = item.path;
-          opt.textContent = item.name.includes('Full Chapter') ? `🎧 ${item.name}` : `🎵 ${item.name}`;
+          opt.textContent = `🎵 ${item.name}`;
           optgroup.appendChild(opt);
         });
 
@@ -2158,8 +2154,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateAudioTracks(chapter) {
     populateUnifiedAudioSelector();
 
-    // Determine default track to select for this chapter
-    const defaultTrack = chapter.audioKapitel || (chapter.audioTracks && chapter.audioTracks[0] ? chapter.audioTracks[0].path : '');
+    // Determine default track to select for this chapter (prioritize existing tracks)
+    const defaultTrack = (chapter.audioTracks && chapter.audioTracks[0] ? chapter.audioTracks[0].path : '') || chapter.audioKapitel || '';
 
     if (defaultTrack) {
       if (audioTrackSelect) audioTrackSelect.value = defaultTrack;
