@@ -5034,57 +5034,129 @@ document.addEventListener('DOMContentLoaded', () => {
     const mergedCanvas = getMergedAnnotatedCanvas();
     if (!mergedCanvas) return;
 
+    const pageInput = document.getElementById('pageInput');
+    const currentPage = (pageInput ? parseInt(pageInput.value, 10) : 1) || 1;
+    const chapNum = (typeof currentChapterIndex !== 'undefined' ? currentChapterIndex + 1 : 1);
+    const fileName = `Cheeya_Netzwerk_A1_Kapitel_${chapNum}_Hal_${currentPage}_annotated.png`;
+
     try {
-      const dataUrl = mergedCanvas.toDataURL('image/png');
+      if (mergedCanvas.toBlob) {
+        mergedCanvas.toBlob(function(blob) {
+          if (!blob) {
+            fallbackDataUrlExport(mergedCanvas, fileName);
+            return;
+          }
+          const blobUrl = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.download = fileName;
+          a.href = blobUrl;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+          showFloatingToast('✨ Annotated page image successfully downloaded (PNG)!');
+        }, 'image/png');
+      } else {
+        fallbackDataUrlExport(mergedCanvas, fileName);
+      }
+    } catch (e) {
+      console.error("Export PNG failed, attempting fallback:", e);
+      fallbackDataUrlExport(mergedCanvas, fileName);
+    }
+  };
+
+  function fallbackDataUrlExport(canvas, fileName) {
+    try {
+      const dataUrl = canvas.toDataURL('image/png');
       const a = document.createElement('a');
-      const chapNum = currentChapterIndex + 1;
-      a.download = `Cheeya_Netzwerk_A1_Kapitel_${chapNum}_Hal_${currentPdfPage}_annotated.png`;
+      a.download = fileName;
       a.href = dataUrl;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-
       showFloatingToast('✨ Annotated page image successfully downloaded (PNG)!');
-    } catch (e) {
-      console.error("Export PNG failed:", e);
+    } catch (err) {
+      console.error("Fallback export failed:", err);
       showFloatingToast('❌ Failed to download page image.', '❌');
     }
-  };
+  }
 
   window.triggerPrintAnnotatedPdf = function() {
     closeExportModal();
     const mergedCanvas = getMergedAnnotatedCanvas();
     if (!mergedCanvas) return;
 
+    const pageInput = document.getElementById('pageInput');
+    const currentPage = (pageInput ? parseInt(pageInput.value, 10) : 1) || 1;
+    const chapNum = (typeof currentChapterIndex !== 'undefined' ? currentChapterIndex + 1 : 1);
+
     try {
       const dataUrl = mergedCanvas.toDataURL('image/png');
-      const printWindow = window.open('', '_blank');
-      if (!printWindow) {
-        showFloatingToast('⚠️ Pop-up blocked by browser. Please allow pop-ups to print!', '⚠️');
-        return;
+      let printIframe = document.getElementById('pdfPrintHiddenIframe');
+      if (!printIframe) {
+        printIframe = document.createElement('iframe');
+        printIframe.id = 'pdfPrintHiddenIframe';
+        printIframe.style.position = 'fixed';
+        printIframe.style.top = '-9999px';
+        printIframe.style.left = '-9999px';
+        printIframe.style.width = '10px';
+        printIframe.style.height = '10px';
+        printIframe.style.border = 'none';
+        printIframe.style.opacity = '0';
+        document.body.appendChild(printIframe);
       }
 
-      printWindow.document.write(`
+      const doc = printIframe.contentWindow.document;
+      doc.open();
+      doc.write(`
         <!DOCTYPE html>
         <html>
         <head>
-          <title>Cheeya Studio - Print Netzwerk A1 Page ${currentPdfPage}</title>
+          <title>Cheeya Studio - Netzwerk A1 Kapitel ${chapNum} Page ${currentPage}</title>
           <style>
             @page { size: auto; margin: 0; }
             body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; background: #fff; }
-            img { width: 100%; height: auto; max-width: 100vw; display: block; }
+            img { width: 100%; height: auto; display: block; }
           </style>
         </head>
         <body>
-          <img src="${dataUrl}" onload="window.print(); setTimeout(function(){ window.close(); }, 1000);" />
+          <img src="${dataUrl}" onload="setTimeout(function(){ printIframe.contentWindow.focus(); printIframe.contentWindow.print(); }, 250);" />
         </body>
         </html>
       `);
-      printWindow.document.close();
+      doc.close();
       showFloatingToast('🖨️ Opening print dialog / Save as PDF...');
     } catch (e) {
-      console.error("Print failed:", e);
-      showFloatingToast('❌ Failed to open print preview.', '❌');
+      console.warn("Iframe print failed, attempting window.open fallback:", e);
+      try {
+        const dataUrl = mergedCanvas.toDataURL('image/png');
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+          showFloatingToast('⚠️ Pop-up blocked by browser. Please allow pop-ups to print!', '⚠️');
+          return;
+        }
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Cheeya Studio - Print Netzwerk A1 Page ${currentPage}</title>
+            <style>
+              @page { size: auto; margin: 0; }
+              body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; background: #fff; }
+              img { width: 100%; height: auto; max-width: 100vw; display: block; }
+            </style>
+          </head>
+          <body>
+            <img src="${dataUrl}" onload="window.print(); setTimeout(function(){ window.close(); }, 1000);" />
+          </body>
+          </html>
+        `);
+        printWindow.document.close();
+        showFloatingToast('🖨️ Opening print dialog / Save as PDF...');
+      } catch (err2) {
+        console.error("Print fallback failed:", err2);
+        showFloatingToast('❌ Failed to open print preview.', '❌');
+      }
     }
   };
 
