@@ -2708,155 +2708,13 @@ document.addEventListener('DOMContentLoaded', () => {
       canvasCtx.restore();
     });
 
-    function checkScribbleToErase(stroke, strokes) {
-      const pts = stroke.points;
-      if (!pts || pts.length < 8) return false;
-
-      const w = canvas.width;
-      const h = canvas.height;
-
-      // 1. Simplify points (filter out tiny jitter < 4px)
-      const simplified = [];
-      const minDist = 4.0;
-      for (let i = 0; i < pts.length; i++) {
-        const px = pts[i].x * w;
-        const py = pts[i].y * h;
-        if (simplified.length === 0) {
-          simplified.push({ x: px, y: py, normX: pts[i].x, normY: pts[i].y });
-        } else {
-          const last = simplified[simplified.length - 1];
-          const dist = Math.hypot(px - last.x, py - last.y);
-          if (dist >= minDist) {
-            simplified.push({ x: px, y: py, normX: pts[i].x, normY: pts[i].y });
-          }
-        }
-      }
-
-      if (simplified.length < 5) return false;
-
-      // 2. Measure normalized directional vectors and sharp angle reversals
-      const vectors = [];
-      for (let i = 1; i < simplified.length; i++) {
-        const dx = simplified[i].x - simplified[i - 1].x;
-        const dy = simplified[i].y - simplified[i - 1].y;
-        const len = Math.hypot(dx, dy);
-        if (len > 0) {
-          vectors.push({ dx: dx / len, dy: dy / len, len });
-        }
-      }
-
-      // Count sharp reversals (dot product < -0.3, meaning angle > 107 degrees)
-      let reversals = 0;
-      for (let i = 1; i < vectors.length; i++) {
-        const dot = (vectors[i].dx * vectors[i - 1].dx) + (vectors[i].dy * vectors[i - 1].dy);
-        if (dot < -0.3) {
-          reversals++;
-        }
-      }
-
-      // 3. Compute bounding box and path length
-      let minX = 1.0, maxX = 0.0, minY = 1.0, maxY = 0.0;
-      let totalPath = 0;
-      for (let i = 0; i < simplified.length; i++) {
-        const p = simplified[i];
-        if (p.normX < minX) minX = p.normX;
-        if (p.normX > maxX) maxX = p.normX;
-        if (p.normY < minY) minY = p.normY;
-        if (p.normY > maxY) maxY = p.normY;
-        if (i > 0) {
-          const prev = simplified[i - 1];
-          totalPath += Math.hypot(p.x - prev.x, p.y - prev.y);
-        }
-      }
-
-      const boxW = (maxX - minX) * w;
-      const boxH = (maxY - minY) * h;
-      const boxDiag = Math.hypot(boxW, boxH);
-      if (boxDiag < 12) return false;
-
-      const startPt = simplified[0];
-      const endPt = simplified[simplified.length - 1];
-      const netDisp = Math.hypot(endPt.x - startPt.x, endPt.y - startPt.y);
-      const dispRatio = netDisp / Math.max(1.0, totalPath);
-
-      // In cursive handwriting, strokes progress horizontally across the line (dispRatio >= 0.35 or reversals < 5)
-      // A genuine scratch-out scribble stays tightly in place over the mistake (dispRatio < 0.35, reversals >= 5, ratio >= 2.8)
-      const isScribble = (reversals >= 5 && ratio >= 2.8 && dispRatio < 0.35) || (reversals >= 7 && ratio >= 2.4);
-      if (!isScribble) return false;
-
-      // Surgical letter-level precision bounding box (tight 6px padding)
-      const padX = 6 / w;
-      const padY = 6 / h;
-      const sMinX = minX - padX;
-      const sMaxX = maxX + padX;
-      const sMinY = minY - padY;
-      const sMaxY = maxY + padY;
-
-      const newStrokes = [];
-      let erasedPointsCount = 0;
-
-      for (let sIdx = 0; sIdx < strokes.length; sIdx++) {
-        const targetStroke = strokes[sIdx];
-        const tpts = targetStroke.points;
-        if (!tpts || tpts.length === 0) continue;
-
-        let currentSegment = [];
-        let strokeModified = false;
-
-        for (let pIdx = 0; pIdx < tpts.length; pIdx++) {
-          const tp = tpts[pIdx];
-          const isInside = (tp.x >= sMinX && tp.x <= sMaxX && tp.y >= sMinY && tp.y <= sMaxY);
-
-          if (isInside) {
-            strokeModified = true;
-            erasedPointsCount++;
-            if (currentSegment.length >= 2) {
-              newStrokes.push({
-                tool: targetStroke.tool,
-                color: targetStroke.color,
-                width: targetStroke.width,
-                points: currentSegment
-              });
-            }
-            currentSegment = [];
-          } else {
-            currentSegment.push(tp);
-          }
-        }
-
-        if (currentSegment.length >= 2) {
-          if (strokeModified) {
-            newStrokes.push({
-              tool: targetStroke.tool,
-              color: targetStroke.color,
-              width: targetStroke.width,
-              points: currentSegment
-            });
-          } else {
-            newStrokes.push(targetStroke);
-          }
-        }
-      }
-
-      if (erasedPointsCount > 0) {
-        savePageStrokes(newStrokes);
-      }
-      return true; // Always discard the scribble itself!
-    }
-
     const finishStroke = (e) => {
       if (!isDrawing || !activeStroke) return;
       isDrawing = false;
-      if (activeStroke.points.length > 1) {
+      if (activeStroke.points && activeStroke.points.length > 1) {
         const strokes = loadPageStrokes();
-        let wasScribbled = false;
-        if (activeStroke.tool === 'pen' || activeStroke.tool === 'highlighter') {
-          wasScribbled = checkScribbleToErase(activeStroke, strokes);
-        }
-        if (!wasScribbled) {
-          strokes.push(activeStroke);
-          savePageStrokes(strokes);
-        }
+        strokes.push(activeStroke);
+        savePageStrokes(strokes);
       }
       activeStroke = null;
       redrawPdfStrokes();
@@ -5081,7 +4939,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  window.triggerPrintAnnotatedPdf = function() {
+  window.triggerDirectExportPdf = function() {
     closeExportModal();
     const mergedCanvas = getMergedAnnotatedCanvas();
     if (!mergedCanvas) return;
@@ -5089,76 +4947,123 @@ document.addEventListener('DOMContentLoaded', () => {
     const pageInput = document.getElementById('pageInput');
     const currentPage = (pageInput ? parseInt(pageInput.value, 10) : 1) || 1;
     const chapNum = (typeof currentChapterIndex !== 'undefined' ? currentChapterIndex + 1 : 1);
+    const fileName = `Cheeya_Netzwerk_A1_Kapitel_${chapNum}_Hal_${currentPage}_annotated.pdf`;
 
+    showFloatingToast('⏳ Generating annotated PDF file...', '📄');
+
+    // 1. If jsPDF library is available
     try {
-      const dataUrl = mergedCanvas.toDataURL('image/png');
-      let printIframe = document.getElementById('pdfPrintHiddenIframe');
-      if (!printIframe) {
-        printIframe = document.createElement('iframe');
-        printIframe.id = 'pdfPrintHiddenIframe';
-        printIframe.style.position = 'fixed';
-        printIframe.style.top = '-9999px';
-        printIframe.style.left = '-9999px';
-        printIframe.style.width = '10px';
-        printIframe.style.height = '10px';
-        printIframe.style.border = 'none';
-        printIframe.style.opacity = '0';
-        document.body.appendChild(printIframe);
+      const { jsPDF } = window.jspdf || {};
+      if (typeof jsPDF === 'function') {
+        const imgData = mergedCanvas.toDataURL('image/jpeg', 0.95);
+        const w = mergedCanvas.width;
+        const h = mergedCanvas.height;
+        const orientation = w > h ? 'landscape' : 'portrait';
+        const doc = new jsPDF({
+          orientation: orientation,
+          unit: 'px',
+          format: [w, h]
+        });
+        doc.addImage(imgData, 'JPEG', 0, 0, w, h);
+        doc.save(fileName);
+        showFloatingToast('✨ Annotated PDF document downloaded successfully!', '📑');
+        return;
       }
+    } catch (err) {
+      console.warn("jsPDF export error, utilizing native PDF generator fallback:", err);
+    }
 
-      const doc = printIframe.contentWindow.document;
-      doc.open();
-      doc.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>Cheeya Studio - Netzwerk A1 Kapitel ${chapNum} Page ${currentPage}</title>
-          <style>
-            @page { size: auto; margin: 0; }
-            body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; background: #fff; }
-            img { width: 100%; height: auto; display: block; }
-          </style>
-        </head>
-        <body>
-          <img src="${dataUrl}" onload="setTimeout(function(){ printIframe.contentWindow.focus(); printIframe.contentWindow.print(); }, 250);" />
-        </body>
-        </html>
-      `);
-      doc.close();
-      showFloatingToast('🖨️ Opening print dialog / Save as PDF...');
-    } catch (e) {
-      console.warn("Iframe print failed, attempting window.open fallback:", e);
-      try {
-        const dataUrl = mergedCanvas.toDataURL('image/png');
-        const printWindow = window.open('', '_blank');
-        if (!printWindow) {
-          showFloatingToast('⚠️ Pop-up blocked by browser. Please allow pop-ups to print!', '⚠️');
-          return;
-        }
-        printWindow.document.write(`
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <title>Cheeya Studio - Print Netzwerk A1 Page ${currentPage}</title>
-            <style>
-              @page { size: auto; margin: 0; }
-              body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; background: #fff; }
-              img { width: 100%; height: auto; max-width: 100vw; display: block; }
-            </style>
-          </head>
-          <body>
-            <img src="${dataUrl}" onload="window.print(); setTimeout(function(){ window.close(); }, 1000);" />
-          </body>
-          </html>
-        `);
-        printWindow.document.close();
-        showFloatingToast('🖨️ Opening print dialog / Save as PDF...');
-      } catch (err2) {
-        console.error("Print fallback failed:", err2);
-        showFloatingToast('❌ Failed to open print preview.', '❌');
-      }
+    // 2. Pure JavaScript Fallback PDF Generator (100% offline, zero external dependencies)
+    try {
+      downloadCanvasAsPdfDirect(mergedCanvas, fileName);
+    } catch (fallbackErr) {
+      console.error("Direct PDF export failed:", fallbackErr);
+      showFloatingToast('❌ Failed to download PDF document.', '❌');
     }
   };
+
+  // Pure JavaScript Standalone PDF Builder
+  function downloadCanvasAsPdfDirect(canvas, fileName) {
+    const jpegDataUrl = canvas.toDataURL('image/jpeg', 0.92);
+    const base64Data = jpegDataUrl.split(',')[1];
+    const binaryString = atob(base64Data);
+    const jpegLength = binaryString.length;
+    const jpegBytes = new Uint8Array(jpegLength);
+    for (let i = 0; i < jpegLength; i++) {
+      jpegBytes[i] = binaryString.charCodeAt(i);
+    }
+
+    const widthPx = canvas.width;
+    const heightPx = canvas.height;
+    const ptWidth = (widthPx * 72 / 96).toFixed(2);
+    const ptHeight = (heightPx * 72 / 96).toFixed(2);
+
+    const enc = new TextEncoder();
+
+    const contentStream = `q\n${ptWidth} 0 0 ${ptHeight} 0 0 cm\n/Im0 Do\nQ\n`;
+    const contentBytes = enc.encode(contentStream);
+
+    const header = enc.encode('%PDF-1.3\n%\xFF\xFF\xFF\xFF\n');
+    const obj1 = enc.encode('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+    const obj2 = enc.encode('2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n');
+    const obj3 = enc.encode(`3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${ptWidth} ${ptHeight}] /Resources << /XObject << /Im0 4 0 R >> /ProcSet [/PDF /ImageC] >> /Contents 5 0 R >>\nendobj\n`);
+
+    const obj4Header = enc.encode(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${widthPx} /Height ${heightPx} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpegLength} >>\nstream\n`);
+    const obj4Footer = enc.encode('\nendstream\nendobj\n');
+
+    const obj5Header = enc.encode(`5 0 obj\n<< /Length ${contentBytes.length} >>\nstream\n`);
+    const obj5Footer = enc.encode('endstream\nendobj\n');
+
+    let offset = header.length;
+    const offsets = [0];
+
+    offsets.push(offset);
+    offset += obj1.length;
+
+    offsets.push(offset);
+    offset += obj2.length;
+
+    offsets.push(offset);
+    offset += obj3.length;
+
+    offsets.push(offset);
+    offset += obj4Header.length + jpegLength + obj4Footer.length;
+
+    offsets.push(offset);
+    offset += obj5Header.length + contentBytes.length + obj5Footer.length;
+
+    let xrefStr = `xref\n0 6\n0000000000 65535 f \n`;
+    for (let i = 1; i <= 5; i++) {
+      xrefStr += String(offsets[i]).padStart(10, '0') + ' 00000 n \n';
+    }
+    const xref = enc.encode(xrefStr);
+
+    const trailer = enc.encode(`trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${offset}\n%%EOF\n`);
+
+    const pdfBlob = new Blob([
+      header,
+      obj1,
+      obj2,
+      obj3,
+      obj4Header, jpegBytes, obj4Footer,
+      obj5Header, contentBytes, obj5Footer,
+      xref,
+      trailer
+    ], { type: 'application/pdf' });
+
+    const blobUrl = URL.createObjectURL(pdfBlob);
+    const a = document.createElement('a');
+    a.download = fileName;
+    a.href = blobUrl;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+    showFloatingToast('✨ Annotated PDF document downloaded successfully!', '📑');
+  }
+
+  // Backward compatibility alias
+  window.triggerPrintAnnotatedPdf = window.triggerDirectExportPdf;
 
   // ================= 20. FLOATING TOAST NOTIFICATION UTILITY =================
   window.showFloatingToast = function(message, icon = '✨') {
@@ -9572,7 +9477,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=20260914_v7')
+      navigator.serviceWorker.register('./sw.js?v=20260915_v8')
         .then((reg) => {
           reg.update();
           console.log('Cheeya Deutsch PWA ServiceWorker registered & updated:', reg.scope);

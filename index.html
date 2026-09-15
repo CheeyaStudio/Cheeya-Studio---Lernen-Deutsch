@@ -20,6 +20,9 @@
   <!-- Mozilla PDF.js for Native Canvas Rendering (Works on Android, iOS & Desktop without iframe downloads) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   
+  <!-- jsPDF for Direct Client-side PDF Document Download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  
   <!-- Custom Soft Pastel Blue Theme & Scalable Font Styling -->
   <link rel="stylesheet" href="style.css?v=20260914_clean">
 </head>
@@ -1261,13 +1264,13 @@
           </div>
         </button>
 
-        <button onclick="triggerPrintAnnotatedPdf()" class="w-full p-3.5 rounded-2xl bg-white hover:bg-sky-50 border-2 border-sky-300 flex items-center gap-3 transition text-left cursor-pointer shadow-xs hover:shadow-md">
+        <button onclick="triggerDirectExportPdf()" class="w-full p-3.5 rounded-2xl bg-white hover:bg-sky-50 border-2 border-sky-300 flex items-center gap-3 transition text-left cursor-pointer shadow-xs hover:shadow-md">
           <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center text-xl flex-shrink-0">
-            🖨️
+            📄
           </div>
           <div>
-            <h4 class="font-extrabold text-xs text-sky-950">Print / Save as PDF</h4>
-            <p class="text-[11px] text-sky-600">Open browser print dialog to save directly as a PDF document</p>
+            <h4 class="font-extrabold text-xs text-sky-950">Download PDF Document</h4>
+            <p class="text-[11px] text-sky-600">Save full page with notes directly as a PDF file to your device</p>
           </div>
         </button>
       </div>
@@ -1843,6 +1846,6 @@
 
   <!-- SCRIPT LOGIC -->
   <script src="media-data.js?v=20260913_360q"></script>
-  <script src="app.js?v=20260915_audio"></script>
+  <script src="app.js?v=20260915_pdf_direct"></script>
 </body>
 </html>
