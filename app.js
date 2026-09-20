@@ -1,5 +1,102 @@
 // app.js - Controller UI & Interactivity for Cheeya Studio Netzwerk Learning Hub (English Edition)
 
+// ================= ANTI-THEFT & CONTENT PROTECTION SHIELD =================
+(function initSecurityShield() {
+  function notify(msg) {
+    if (typeof showFloatingToast === 'function') {
+      showFloatingToast(msg, '🛡️');
+    }
+  }
+
+  // 1. Disable Right-Click Context Menu (prevents "View Source", "Inspect", "Save As")
+  window.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    notify('🔒 Konten dilindungi oleh Cheeya Studio.');
+    return false;
+  }, true);
+
+  // 2. Disable Keyboard Shortcuts (F12, Ctrl+U, Ctrl+S, Ctrl+P, DevTools, Copy)
+  window.addEventListener('keydown', (e) => {
+    // F12 Developer Tools
+    if (e.key === 'F12' || e.keyCode === 123) {
+      e.preventDefault();
+      e.stopPropagation();
+      notify('🔒 Developer tools dinonaktifkan.');
+      return false;
+    }
+
+    const isCtrl = e.ctrlKey || e.metaKey;
+    if (isCtrl) {
+      const key = (e.key || '').toLowerCase();
+
+      // Ctrl + U: View Source
+      if (key === 'u') {
+        e.preventDefault();
+        e.stopPropagation();
+        notify('🔒 View Source dinonaktifkan.');
+        return false;
+      }
+
+      // Ctrl + S: Save Page As
+      if (key === 's') {
+        e.preventDefault();
+        e.stopPropagation();
+        notify('🔒 Save Page dinonaktifkan.');
+        return false;
+      }
+
+      // Ctrl + P: Print
+      if (key === 'p') {
+        e.preventDefault();
+        e.stopPropagation();
+        notify('🔒 Silakan gunakan tombol Export PDF bawaan aplikasi.');
+        return false;
+      }
+
+      // Ctrl + Shift + I / J / C: Inspect Element & Console
+      if (e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) {
+        e.preventDefault();
+        e.stopPropagation();
+        notify('🔒 Inspect Element dinonaktifkan.');
+        return false;
+      }
+
+      // Ctrl + C: Copy text (allowed only in input fields)
+      if (key === 'c') {
+        const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+        if (tag !== 'input' && tag !== 'textarea') {
+          e.preventDefault();
+          notify('🔒 Salin teks dinonaktifkan.');
+          return false;
+        }
+      }
+    }
+  }, true);
+
+  // 3. Disable Dragging of Images & Assets
+  window.addEventListener('dragstart', (e) => {
+    e.preventDefault();
+    return false;
+  }, true);
+
+  // 4. Disable Copy & Cut Events
+  window.addEventListener('copy', (e) => {
+    const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+    if (tag !== 'input' && tag !== 'textarea') {
+      e.preventDefault();
+      return false;
+    }
+  }, true);
+
+  window.addEventListener('cut', (e) => {
+    const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+    if (tag !== 'input' && tag !== 'textarea') {
+      e.preventDefault();
+      return false;
+    }
+  }, true);
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
   // Application State
   let currentChapterIndex = 0;

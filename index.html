@@ -23,10 +23,13 @@
   <!-- jsPDF for Direct Client-side PDF Document Download -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   
+  <!-- Anti-Scraping & Privacy Meta Protection -->
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+
   <!-- Custom Soft Pastel Blue Theme & Scalable Font Styling -->
-  <link rel="stylesheet" href="style.css?v=20260914_clean">
+  <link rel="stylesheet" href="style.css?v=20260920_protected">
 </head>
-<body class="h-full flex flex-col antialiased select-none relative overflow-hidden">
+<body class="h-full flex flex-col antialiased select-none relative overflow-hidden" oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
 
   <!-- ================= CANVAS PARTICLES (DREAMY GLASS BUBBLES & STARDUST) ================= -->
   <canvas id="sparkleCanvas"></canvas>
