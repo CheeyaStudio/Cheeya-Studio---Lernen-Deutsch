@@ -5881,6 +5881,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ================= 6. THE COMPLETE 12-MODULE ANALYZER =================
   function analyzeGermanGrammar(germanText, enSentence = '', idSentence = '', srcLang = 'en', tgtLang = 'de') {
     if (!germanText) return '';
+    const isIndo = (srcLang === 'id' || tgtLang === 'id');
 
     const rawTokens = germanText.trim().split(/\s+/);
     if (!rawTokens.length) return '';
@@ -6321,8 +6322,8 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="text-[11px] font-bold text-sky-700">Base / Lemma: <span class="text-sky-950 font-black">${w.lemma}</span></div>
             </div>
             <div class="mt-1 text-[11px] text-sky-900 space-y-0.5">
-              <div>🇬🇧 <strong>EN:</strong> ${w.en || '-'}</div>
-              <div>🇮🇩 <strong>ID:</strong> ${w.id || '-'}</div>
+              <div>🇬🇧 <strong>Meaning:</strong> ${w.en || '-'}</div>
+              ${isIndo ? `<div>🇮🇩 <strong>ID:</strong> ${w.id || '-'}</div>` : ''}
             </div>
           </div>
 
@@ -6439,9 +6440,9 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <span class="text-[10px] font-black px-2 py-0.5 rounded-md bg-blue-200 text-blue-950">Case: ${prep.case}</span>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-white/90 p-2 rounded-xl border border-blue-100 text-blue-950">
+        <div class="grid grid-cols-1 ${isIndo ? 'sm:grid-cols-2' : ''} gap-2 text-xs bg-white/90 p-2 rounded-xl border border-blue-100 text-blue-950">
           <div>🇬🇧 <strong>Meaning (EN):</strong> ${prep.meaning}</div>
-          <div>🇮🇩 <strong>Meaning (ID):</strong> ${prep.meaningId}</div>
+          ${isIndo ? `<div>🇮🇩 <strong>Meaning (ID):</strong> ${prep.meaningId}</div>` : ''}
         </div>
         <div class="text-xs text-blue-950 space-y-1">
           <div>🏷️ <strong>Preposition Type:</strong> ${prep.type}</div>
@@ -6481,8 +6482,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="flex items-start justify-between gap-3 bg-white/95 p-3 rounded-xl border border-sky-200">
           <div>
             <div class="text-sm md:text-base font-black text-sky-950 leading-relaxed">${germanText}</div>
-            <div class="text-xs text-sky-700 mt-1">🇬🇧 <strong>EN:</strong> ${enSentence || 'Translation available above'}</div>
-            <div class="text-xs text-sky-800 mt-0.5">🇮🇩 <strong>ID:</strong> ${idSentence || 'Terjemahan tersedia di atas'}</div>
+            <div class="text-xs text-sky-700 mt-1">🇬🇧 <strong>English Translation:</strong> ${enSentence || 'Translation available above'}</div>
+            ${isIndo ? `<div class="text-xs text-sky-800 mt-0.5">🇮🇩 <strong>Indonesian Translation:</strong> ${idSentence || 'Terjemahan tersedia di atas'}</div>` : ''}
           </div>
           <button onclick="playGermanSpeech(decodeURIComponent('${encodeURIComponent(germanText)}'), this)" class="px-2.5 py-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs font-bold transition flex items-center gap-1 cursor-pointer shrink-0" title="Listen to German sentence">
             <span>🔊</span><span>Listen</span>
