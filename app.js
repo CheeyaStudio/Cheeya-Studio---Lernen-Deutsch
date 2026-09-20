@@ -1,17 +1,17 @@
-// app.js - Controller UI & Interactivity for Cheeya Studio Netzwerk Learning Hub (English Edition)
+﻿// app.js - Controller UI & Interactivity for Cheeya Studio Netzwerk Learning Hub (English Edition)
 
 // ================= ANTI-THEFT & CONTENT PROTECTION SHIELD =================
 (function initSecurityShield() {
   function notify(msg) {
     if (typeof showFloatingToast === 'function') {
-      showFloatingToast(msg, '🛡️');
+      showFloatingToast(msg, 'ðŸ›¡ï¸');
     }
   }
 
   // 1. Disable Right-Click Context Menu (prevents "View Source", "Inspect", "Save As")
   window.addEventListener('contextmenu', (e) => {
     e.preventDefault();
-    notify('🔒 Content protected by Cheeya Studio.');
+    notify('ðŸ”’ Content protected by Cheeya Studio.');
     return false;
   }, true);
 
@@ -21,7 +21,7 @@
     if (e.key === 'F12' || e.keyCode === 123) {
       e.preventDefault();
       e.stopPropagation();
-      notify('🔒 Developer tools are disabled.');
+      notify('ðŸ”’ Developer tools are disabled.');
       return false;
     }
 
@@ -33,7 +33,7 @@
       if (key === 'u') {
         e.preventDefault();
         e.stopPropagation();
-        notify('🔒 View source is disabled.');
+        notify('ðŸ”’ View source is disabled.');
         return false;
       }
 
@@ -41,7 +41,7 @@
       if (key === 's') {
         e.preventDefault();
         e.stopPropagation();
-        notify('🔒 Save page is disabled.');
+        notify('ðŸ”’ Save page is disabled.');
         return false;
       }
 
@@ -49,7 +49,7 @@
       if (key === 'p') {
         e.preventDefault();
         e.stopPropagation();
-        notify('🔒 Please use the built-in PDF export button.');
+        notify('ðŸ”’ Please use the built-in PDF export button.');
         return false;
       }
 
@@ -57,7 +57,7 @@
       if (e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) {
         e.preventDefault();
         e.stopPropagation();
-        notify('🔒 Inspect element is disabled.');
+        notify('ðŸ”’ Inspect element is disabled.');
         return false;
       }
 
@@ -66,7 +66,7 @@
         const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
         if (tag !== 'input' && tag !== 'textarea') {
           e.preventDefault();
-          notify('🔒 Copying text is disabled.');
+          notify('ðŸ”’ Copying text is disabled.');
           return false;
         }
       }
@@ -226,19 +226,19 @@ document.addEventListener('DOMContentLoaded', () => {
     spoken = spoken.replace(/\[.*?\]/g, ' ');
 
     // 3. For German nouns with plural annotations at the end:
-    // e.g. "das Alphabet, -e", "das Land, -\"er", "der Herr, -en", "die Stadt, -\"e", "der Apfel, -\"", "die Ärztin, -nen"
+    // e.g. "das Alphabet, -e", "das Land, -\"er", "der Herr, -en", "die Stadt, -\"e", "der Apfel, -\"", "die Ã„rztin, -nen"
     // Match only trailing comma followed by hyphen or plural abbreviation
-    spoken = spoken.replace(/,\s*[-–—"'][^,.]*$/i, '');
+    spoken = spoken.replace(/,\s*[-â€“â€”"'][^,.]*$/i, '');
     spoken = spoken.replace(/,\s*pl\b[^,.]*$/i, '');
 
     // 4. Clean slashes into natural pauses (e.g. "Hallo / Guten Tag" -> "Hallo. Guten Tag")
     spoken = spoken.replace(/\s*\/\s*/g, '. ');
 
     // 5. Clean arrows and dashes (e.g. "Wer ist das? -> Das ist Selina." -> "Wer ist das? Das ist Selina.")
-    spoken = spoken.replace(/->|&rarr;|→/g, '. ');
+    spoken = spoken.replace(/->|&rarr;|â†’/g, '. ');
 
-    // 6. Clean ellipses (e.g. "Ich heiße..." -> "Ich heiße", "0650 - 32 ..." -> "0650 - 32")
-    spoken = spoken.replace(/\.{2,}|…/g, ' ');
+    // 6. Clean ellipses (e.g. "Ich heiÃŸe..." -> "Ich heiÃŸe", "0650 - 32 ..." -> "0650 - 32")
+    spoken = spoken.replace(/\.{2,}|â€¦/g, ' ');
 
     // 7. Remove stray quotes and backslashes
     spoken = spoken.replace(/\\"/g, '').replace(/["']/g, '');
@@ -403,50 +403,50 @@ document.addEventListener('DOMContentLoaded', () => {
   // ================= 3. 40 RELAXING STUDY MUSIC TRACKS (2 CATEGORIES: 20 + 20) =================
   // CATEGORY 1: 20 Ambient Soundscapes & Nature
   const AMBIENT_TRACKS = [
-    { id: 'waves', name: '1. Ocean Waves', icon: '🌊', desc: 'Rhythmic gentle sea surf swells', category: 'ambient' },
-    { id: 'rain', name: '2. Peaceful Rain', icon: '🌧️', desc: 'Soft rain falling on a window pane', category: 'ambient' },
-    { id: 'cafe', name: '3. Cozy Study Cafe', icon: '☕', desc: 'Warm ambient murmur with soothing rain', category: 'ambient' },
-    { id: 'forest', name: '4. Forest Wind & Birds', icon: '🍃', desc: 'Whispering mountain breeze in pine trees', category: 'ambient' },
-    { id: 'theta', name: '5. Deep Focus Theta (432Hz)', icon: '🌙', desc: 'Harmonic 432Hz drone for deep study flow', category: 'ambient' },
-    { id: 'piano', name: '6. Lofi Ambient Chords', icon: '🎹', desc: 'Gentle neo-soul warm keyboard chords', category: 'ambient' },
-    { id: 'space', name: '7. Celestial Space Dream', icon: '🌌', desc: 'Ethereal cosmic shimmer pads', category: 'ambient' },
-    { id: 'stream', name: '8. Mountain Stream', icon: '💧', desc: 'Crystal clear brook with trickling water', category: 'ambient' },
-    { id: 'fireplace', name: '9. Fireplace & Hearth', icon: '🪵', desc: 'Warm crackling fireplace embers', category: 'ambient' },
-    { id: 'chimes', name: '10. Zen Wind Chimes', icon: '🎐', desc: 'Peaceful harmonic wind chimes', category: 'ambient' },
-    { id: 'crickets', name: '11. Summer Meadow & Crickets', icon: '🦗', desc: 'Gentle evening crickets & warm breeze', category: 'ambient' },
-    { id: 'thunder', name: '12. Distant Thunder & Rain', icon: '⛈️', desc: 'Soft rolling thunder and rain showers', category: 'ambient' },
-    { id: 'lakeshore', name: '13. Gentle Lake Shore', icon: '🛶', desc: 'Serene freshwater ripples against pebbles', category: 'ambient' },
-    { id: 'morningbirds', name: '14. Morning Birds & Dew', icon: '🕊️', desc: 'Fresh dawn breeze with chirping songbirds', category: 'ambient' },
-    { id: 'blizzard', name: '15. Arctic Winter Wind', icon: '❄️', desc: 'Calming soft blizzard & ambient winter air', category: 'ambient' },
-    { id: 'alpha', name: '16. Alpha Waves 10Hz Focus', icon: '🧠', desc: '10Hz binaural beats for deep memory retention', category: 'ambient' },
-    { id: 'leaves', name: '17. Autumn Leaves & Breeze', icon: '🍂', desc: 'Rustling crisp leaves and gentle gusts', category: 'ambient' },
-    { id: 'tinroof', name: '18. Rain on Tin Roof', icon: '☔', desc: 'Cozy resonant pitter-patter on roof tiles', category: 'ambient' },
-    { id: 'deepocean', name: '19. Deep Oceanic Abyss', icon: '🐋', desc: 'Deep sub-surface oceanic resonance', category: 'ambient' },
-    { id: 'singingbowl', name: '20. Tibetan Singing Bowl', icon: '🔔', desc: 'Harmonic singing bowl resonance 528Hz', category: 'ambient' }
+    { id: 'waves', name: '1. Ocean Waves', icon: 'ðŸŒŠ', desc: 'Rhythmic gentle sea surf swells', category: 'ambient' },
+    { id: 'rain', name: '2. Peaceful Rain', icon: 'ðŸŒ§ï¸', desc: 'Soft rain falling on a window pane', category: 'ambient' },
+    { id: 'cafe', name: '3. Cozy Study Cafe', icon: 'â˜•', desc: 'Warm ambient murmur with soothing rain', category: 'ambient' },
+    { id: 'forest', name: '4. Forest Wind & Birds', icon: 'ðŸƒ', desc: 'Whispering mountain breeze in pine trees', category: 'ambient' },
+    { id: 'theta', name: '5. Deep Focus Theta (432Hz)', icon: 'ðŸŒ™', desc: 'Harmonic 432Hz drone for deep study flow', category: 'ambient' },
+    { id: 'piano', name: '6. Lofi Ambient Chords', icon: 'ðŸŽ¹', desc: 'Gentle neo-soul warm keyboard chords', category: 'ambient' },
+    { id: 'space', name: '7. Celestial Space Dream', icon: 'ðŸŒŒ', desc: 'Ethereal cosmic shimmer pads', category: 'ambient' },
+    { id: 'stream', name: '8. Mountain Stream', icon: 'ðŸ’§', desc: 'Crystal clear brook with trickling water', category: 'ambient' },
+    { id: 'fireplace', name: '9. Fireplace & Hearth', icon: 'ðŸªµ', desc: 'Warm crackling fireplace embers', category: 'ambient' },
+    { id: 'chimes', name: '10. Zen Wind Chimes', icon: 'ðŸŽ', desc: 'Peaceful harmonic wind chimes', category: 'ambient' },
+    { id: 'crickets', name: '11. Summer Meadow & Crickets', icon: 'ðŸ¦—', desc: 'Gentle evening crickets & warm breeze', category: 'ambient' },
+    { id: 'thunder', name: '12. Distant Thunder & Rain', icon: 'â›ˆï¸', desc: 'Soft rolling thunder and rain showers', category: 'ambient' },
+    { id: 'lakeshore', name: '13. Gentle Lake Shore', icon: 'ðŸ›¶', desc: 'Serene freshwater ripples against pebbles', category: 'ambient' },
+    { id: 'morningbirds', name: '14. Morning Birds & Dew', icon: 'ðŸ•Šï¸', desc: 'Fresh dawn breeze with chirping songbirds', category: 'ambient' },
+    { id: 'blizzard', name: '15. Arctic Winter Wind', icon: 'â„ï¸', desc: 'Calming soft blizzard & ambient winter air', category: 'ambient' },
+    { id: 'alpha', name: '16. Alpha Waves 10Hz Focus', icon: 'ðŸ§ ', desc: '10Hz binaural beats for deep memory retention', category: 'ambient' },
+    { id: 'leaves', name: '17. Autumn Leaves & Breeze', icon: 'ðŸ‚', desc: 'Rustling crisp leaves and gentle gusts', category: 'ambient' },
+    { id: 'tinroof', name: '18. Rain on Tin Roof', icon: 'â˜”', desc: 'Cozy resonant pitter-patter on roof tiles', category: 'ambient' },
+    { id: 'deepocean', name: '19. Deep Oceanic Abyss', icon: 'ðŸ‹', desc: 'Deep sub-surface oceanic resonance', category: 'ambient' },
+    { id: 'singingbowl', name: '20. Tibetan Singing Bowl', icon: 'ðŸ””', desc: 'Harmonic singing bowl resonance 528Hz', category: 'ambient' }
   ];
 
   // CATEGORY 2: 20 Relaxing Instrumental Songs (Pure Music - No Vocals)
   const INSTRUMENTAL_SONGS = [
-    { id: 'gymnopedie', name: '1. Gymnopédie No. 1', composer: 'Erik Satie', icon: '🎹', desc: 'Soothing French impressionist solo piano song', category: 'songs' },
-    { id: 'clairdelune', name: '2. Clair de Lune', composer: 'Claude Debussy', icon: '🌙', desc: 'Gentle, romantic moonlight classical piano', category: 'songs' },
-    { id: 'canon', name: '3. Canon in D', composer: 'Johann Pachelbel', icon: '🎶', desc: 'Uplifting baroque harmonies and flowing melody', category: 'songs' },
-    { id: 'moonlight', name: '4. Moonlight Sonata', composer: 'L. v. Beethoven', icon: '🎹', desc: 'Calm rolling triplets & evocative melody', category: 'songs' },
-    { id: 'lofisong', name: '5. Midnight Study Lofi', composer: 'Cheeya Studio', icon: '☕', desc: 'Warm Rhodes jazz chords & chill study beat', category: 'songs' },
-    { id: 'nocturne', name: '6. Nocturne Op. 9 No. 2', composer: 'Frédéric Chopin', icon: '🌸', desc: 'Romantic, peaceful evening piano waltz', category: 'songs' },
-    { id: 'guitar', name: '7. Sunset Acoustic Guitar', composer: 'Acoustic Solo', icon: '🎸', desc: 'Fingerpicked nylon acoustic guitar ballad', category: 'songs' },
-    { id: 'riverflows', name: '8. River Flows in You', composer: 'Yiruma (Tribute)', icon: '💧', desc: 'Emotional, gentle neo-classical piano theme', category: 'songs' },
-    { id: 'musicbox', name: '9. Starlight Music Box', composer: 'Celeste Bells', icon: '✨', desc: 'Dreamy, nostalgic chime & bells lullaby', category: 'songs' },
-    { id: 'nuvole', name: '10. Nuvole Bianche', composer: 'Ludovico Einaudi', icon: '🍃', desc: 'Minimalist, inspiring modern piano theme', category: 'songs' },
-    { id: 'bachminuet', name: '11. Minuet in G Major', composer: 'J.S. Bach', icon: '🎹', desc: 'Graceful baroque classical piano minuet', category: 'songs' },
-    { id: 'mozartserenade', name: '12. Eine kleine Nachtmusik: Romanze', composer: 'W.A. Mozart', icon: '🎻', desc: 'Lyrical, tender classical evening romance', category: 'songs' },
-    { id: 'schubertserenade', name: '13. Ständchen (Serenade)', composer: 'Franz Schubert', icon: '🎹', desc: 'Poetic, gentle melancholic classical melody', category: 'songs' },
-    { id: 'rainybookstore', name: '14. Rainy Bookstore Lofi', composer: 'Cheeya Studio', icon: '☕', desc: 'Mellow Rhodes chords & gentle chillhop piano', category: 'songs' },
-    { id: 'chopinprelude', name: '15. Prelude in E Minor Op. 28 No. 4', composer: 'Frédéric Chopin', icon: '🌸', desc: 'Deep emotional descending classical piano chords', category: 'songs' },
-    { id: 'spanisheguitar', name: '16. Spanish Romance (Romanza)', composer: 'Acoustic Guitar', icon: '🎸', desc: 'Legendary classical Spanish acoustic guitar', category: 'songs' },
-    { id: 'bachprelude', name: '17. Prelude in C Major BWV 846', composer: 'J.S. Bach', icon: '🎹', desc: 'Flowing, hypnotic classical piano arpeggios', category: 'songs' },
-    { id: 'ghiblisummer', name: '18. Summer Memories', composer: 'Joe Hisaishi (Tribute)', icon: '🍃', desc: 'Warm, uplifting nostalgic studio piano melody', category: 'songs' },
-    { id: 'schumann', name: '19. Träumerei (Dreaming)', composer: 'Robert Schumann', icon: '🎹', desc: 'Sweet, tender romantic classical lullaby', category: 'songs' },
-    { id: 'brahmslullaby', name: '20. Brahms Lullaby', composer: 'Johannes Brahms', icon: '✨', desc: 'Pure German classical lullaby music box chime', category: 'songs' }
+    { id: 'gymnopedie', name: '1. GymnopÃ©die No. 1', composer: 'Erik Satie', icon: 'ðŸŽ¹', desc: 'Soothing French impressionist solo piano song', category: 'songs' },
+    { id: 'clairdelune', name: '2. Clair de Lune', composer: 'Claude Debussy', icon: 'ðŸŒ™', desc: 'Gentle, romantic moonlight classical piano', category: 'songs' },
+    { id: 'canon', name: '3. Canon in D', composer: 'Johann Pachelbel', icon: 'ðŸŽ¶', desc: 'Uplifting baroque harmonies and flowing melody', category: 'songs' },
+    { id: 'moonlight', name: '4. Moonlight Sonata', composer: 'L. v. Beethoven', icon: 'ðŸŽ¹', desc: 'Calm rolling triplets & evocative melody', category: 'songs' },
+    { id: 'lofisong', name: '5. Midnight Study Lofi', composer: 'Cheeya Studio', icon: 'â˜•', desc: 'Warm Rhodes jazz chords & chill study beat', category: 'songs' },
+    { id: 'nocturne', name: '6. Nocturne Op. 9 No. 2', composer: 'FrÃ©dÃ©ric Chopin', icon: 'ðŸŒ¸', desc: 'Romantic, peaceful evening piano waltz', category: 'songs' },
+    { id: 'guitar', name: '7. Sunset Acoustic Guitar', composer: 'Acoustic Solo', icon: 'ðŸŽ¸', desc: 'Fingerpicked nylon acoustic guitar ballad', category: 'songs' },
+    { id: 'riverflows', name: '8. River Flows in You', composer: 'Yiruma (Tribute)', icon: 'ðŸ’§', desc: 'Emotional, gentle neo-classical piano theme', category: 'songs' },
+    { id: 'musicbox', name: '9. Starlight Music Box', composer: 'Celeste Bells', icon: 'âœ¨', desc: 'Dreamy, nostalgic chime & bells lullaby', category: 'songs' },
+    { id: 'nuvole', name: '10. Nuvole Bianche', composer: 'Ludovico Einaudi', icon: 'ðŸƒ', desc: 'Minimalist, inspiring modern piano theme', category: 'songs' },
+    { id: 'bachminuet', name: '11. Minuet in G Major', composer: 'J.S. Bach', icon: 'ðŸŽ¹', desc: 'Graceful baroque classical piano minuet', category: 'songs' },
+    { id: 'mozartserenade', name: '12. Eine kleine Nachtmusik: Romanze', composer: 'W.A. Mozart', icon: 'ðŸŽ»', desc: 'Lyrical, tender classical evening romance', category: 'songs' },
+    { id: 'schubertserenade', name: '13. StÃ¤ndchen (Serenade)', composer: 'Franz Schubert', icon: 'ðŸŽ¹', desc: 'Poetic, gentle melancholic classical melody', category: 'songs' },
+    { id: 'rainybookstore', name: '14. Rainy Bookstore Lofi', composer: 'Cheeya Studio', icon: 'â˜•', desc: 'Mellow Rhodes chords & gentle chillhop piano', category: 'songs' },
+    { id: 'chopinprelude', name: '15. Prelude in E Minor Op. 28 No. 4', composer: 'FrÃ©dÃ©ric Chopin', icon: 'ðŸŒ¸', desc: 'Deep emotional descending classical piano chords', category: 'songs' },
+    { id: 'spanisheguitar', name: '16. Spanish Romance (Romanza)', composer: 'Acoustic Guitar', icon: 'ðŸŽ¸', desc: 'Legendary classical Spanish acoustic guitar', category: 'songs' },
+    { id: 'bachprelude', name: '17. Prelude in C Major BWV 846', composer: 'J.S. Bach', icon: 'ðŸŽ¹', desc: 'Flowing, hypnotic classical piano arpeggios', category: 'songs' },
+    { id: 'ghiblisummer', name: '18. Summer Memories', composer: 'Joe Hisaishi (Tribute)', icon: 'ðŸƒ', desc: 'Warm, uplifting nostalgic studio piano melody', category: 'songs' },
+    { id: 'schumann', name: '19. TrÃ¤umerei (Dreaming)', composer: 'Robert Schumann', icon: 'ðŸŽ¹', desc: 'Sweet, tender romantic classical lullaby', category: 'songs' },
+    { id: 'brahmslullaby', name: '20. Brahms Lullaby', composer: 'Johannes Brahms', icon: 'âœ¨', desc: 'Pure German classical lullaby music box chime', category: 'songs' }
   ];
 
   const ALL_TRACKS = [...AMBIENT_TRACKS, ...INSTRUMENTAL_SONGS];
@@ -471,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 10 Instrumental Songs Score Data (Continuous seamless musical loops)
   const SONG_DEFINITIONS = {
-    // 1. Erik Satie: Gymnopédie No. 1 (3/4 time)
+    // 1. Erik Satie: GymnopÃ©die No. 1 (3/4 time)
     gymnopedie: {
       bpm: 62,
       lengthBeats: 36,
@@ -498,7 +498,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ['piano', 'G2', 30, 2.0, 0.45], ['piano', 'B3', 31, 1.8, 0.28], ['piano', 'D4', 31, 1.8, 0.28], ['piano', 'F#4', 31, 1.8, 0.28],
         ['piano', 'D3', 33, 2.0, 0.45], ['piano', 'F#3', 34, 1.8, 0.28], ['piano', 'A3', 34, 1.8, 0.28], ['piano', 'C#4', 34, 1.8, 0.28],
 
-        // Unmistakable Gymnopédie Melody
+        // Unmistakable GymnopÃ©die Melody
         ['piano', 'F#4', 3, 2.8, 0.65],
         ['piano', 'E4', 6, 0.9, 0.55], ['piano', 'D4', 7, 0.9, 0.55], ['piano', 'B3', 8, 0.9, 0.55],
         ['piano', 'C4', 9, 1.8, 0.60], ['piano', 'D4', 11, 0.9, 0.55],
@@ -612,7 +612,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ]
     },
 
-    // 6. Frédéric Chopin: Nocturne Op. 9 No. 2
+    // 6. FrÃ©dÃ©ric Chopin: Nocturne Op. 9 No. 2
     nocturne: {
       bpm: 58,
       lengthBeats: 32,
@@ -781,7 +781,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ]
     },
 
-    // 13. Franz Schubert: Ständchen (Serenade)
+    // 13. Franz Schubert: StÃ¤ndchen (Serenade)
     schubertserenade: {
       bpm: 62,
       lengthBeats: 36,
@@ -815,7 +815,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ]
     },
 
-    // 15. Frédéric Chopin: Prelude in E Minor Op. 28 No. 4
+    // 15. FrÃ©dÃ©ric Chopin: Prelude in E Minor Op. 28 No. 4
     chopinprelude: {
       bpm: 50,
       lengthBeats: 32,
@@ -885,7 +885,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ]
     },
 
-    // 19. Robert Schumann: Träumerei (Dreaming)
+    // 19. Robert Schumann: TrÃ¤umerei (Dreaming)
     schumann: {
       bpm: 54,
       lengthBeats: 32,
@@ -1750,10 +1750,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="text-sm">${t.icon}</span>
             <div class="truncate">
               <p class="truncate leading-tight">${t.name}</p>
-              <p class="text-[10px] ${isActive ? 'text-sky-100' : 'text-sky-600'} font-normal truncate">${t.composer ? `${t.composer} • ` : ''}${t.desc}</p>
+              <p class="text-[10px] ${isActive ? 'text-sky-100' : 'text-sky-600'} font-normal truncate">${t.composer ? `${t.composer} â€¢ ` : ''}${t.desc}</p>
             </div>
           </div>
-          ${isActive && isMusicPlaying ? '<span class="text-xs">▶️</span>' : ''}
+          ${isActive && isMusicPlaying ? '<span class="text-xs">â–¶ï¸</span>' : ''}
         </button>
       `;
     });
@@ -1799,7 +1799,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => stopCurrentSoundscapes(), 450);
       isMusicPlaying = false;
       if (btn) btn.classList.remove('ambient-playing');
-      if (icon) icon.textContent = '🎵';
+      if (icon) icon.textContent = 'ðŸŽµ';
       if (statusText) {
         statusText.textContent = 'OFF';
         statusText.className = 'text-[10px] bg-sky-100 text-sky-700 font-bold px-2 py-0.5 rounded-full';
@@ -1811,7 +1811,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       isMusicPlaying = true;
       if (btn) btn.classList.add('ambient-playing');
-      if (icon) icon.textContent = '🎶';
+      if (icon) icon.textContent = 'ðŸŽ¶';
       if (statusText) {
         statusText.textContent = 'PLAYING';
         statusText.className = 'text-[10px] bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-full';
@@ -1966,10 +1966,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <div>
             <div class="flex items-center justify-between mb-2">
               <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full ${isDone ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-sky-100 text-sky-800 border border-sky-300'}">
-                ${isDone ? '✅ Completed' : `Chapter ${chap.id}`}
+                ${isDone ? 'âœ… Completed' : `Chapter ${chap.id}`}
               </span>
               <button onclick="event.stopPropagation(); toggleChapterDone(${chap.id})" class="text-sm cursor-pointer p-1 rounded-lg hover:bg-sky-100 transition" title="Toggle completion status">
-                ${isDone ? '✅' : '⚪'}
+                ${isDone ? 'âœ…' : 'âšª'}
               </button>
             </div>
 
@@ -1982,45 +1982,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <!-- Media Metrics Strip -->
             <div class="flex items-center gap-2 text-[11px] text-sky-800 font-semibold bg-sky-50/80 p-2 rounded-xl border border-sky-200 mb-4">
-              <span title="Audio tracks">🎧 <strong>${audioCount}</strong> Audio</span>
-              <span>•</span>
-              <span title="Video clips">🎬 <strong>${videoCount}</strong> Videos</span>
-              <span>•</span>
-              <span title="PDF Pages">📄 <strong>${totalPages}</strong> Pgs</span>
+              <span title="Audio tracks">ðŸŽ§ <strong>${audioCount}</strong> Audio</span>
+              <span>â€¢</span>
+              <span title="Video clips">ðŸŽ¬ <strong>${videoCount}</strong> Videos</span>
+              <span>â€¢</span>
+              <span title="PDF Pages">ðŸ“„ <strong>${totalPages}</strong> Pgs</span>
             </div>
           </div>
 
           <!-- Direct Jump Buttons -->
           <div class="space-y-1.5 pt-2 border-t border-sky-100">
             <button onclick="selectChapter(${idx}); switchView('lesson');" class="w-full btn-pastel-blue py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer">
-              <span>📘</span>
+              <span>ðŸ“˜</span>
               <span>Study Lesson & Exercises</span>
             </button>
             <div class="grid grid-cols-3 gap-1.5">
               <button onclick="selectChapter(${idx}); switchView('pdf');" class="py-1.5 rounded-xl bg-white hover:bg-sky-100 border border-sky-300 text-sky-800 text-xs font-bold flex items-center justify-center gap-1 transition shadow-xs cursor-pointer" title="Open Chapter PDF Book">
-                <span>📖</span>
+                <span>ðŸ“–</span>
                 <span>PDF</span>
               </button>
               <button onclick="selectChapter(${idx}); openVideoModal();" class="py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-800 text-xs font-bold flex items-center justify-center gap-1 transition shadow-xs cursor-pointer" title="Watch Chapter Videos">
-                <span>🎬</span>
+                <span>ðŸŽ¬</span>
                 <span>Videos (${videoCount})</span>
               </button>
               <button onclick="selectChapter(${idx}); switchView('vocab');" class="py-1.5 rounded-xl bg-sky-50 hover:bg-sky-200 border border-sky-200 text-sky-800 text-xs font-bold flex items-center justify-center gap-1 transition shadow-xs cursor-pointer" title="View Vocabulary">
-                <span>📚</span>
+                <span>ðŸ“š</span>
                 <span>Vocab</span>
               </button>
             </div>
             <div class="grid grid-cols-3 gap-1.5 pt-0.5">
               <button onclick="selectChapter(${idx}); openAudioPronunciationModal(${idx});" class="py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-300 text-blue-900 text-[11px] font-bold flex items-center justify-center gap-1 transition shadow-2xs cursor-pointer" title="Practice Vocabulary Audio (TTS)">
-                <span>🔊</span>
+                <span>ðŸ”Š</span>
                 <span>Audio TTS</span>
               </button>
               <button onclick="selectChapter(${idx}); openFlashcardModal(${idx});" class="py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 text-[11px] font-bold flex items-center justify-center gap-1 transition shadow-2xs cursor-pointer" title="Practice Chapter Flashcards">
-                <span>🎴</span>
+                <span>ðŸŽ´</span>
                 <span>Flashcards</span>
               </button>
               <button onclick="selectChapter(${idx}); openArticleGameModal(${idx});" class="py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 text-[11px] font-bold flex items-center justify-center gap-1 transition shadow-2xs cursor-pointer" title="Play Der, Die, Das Mini-Game">
-                <span>🎯</span>
+                <span>ðŸŽ¯</span>
                 <span>Der Die Das</span>
               </button>
             </div>
@@ -2059,7 +2059,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const isDone = studyData.completedChapters.includes(chap.id);
       const opt = document.createElement('option');
       opt.value = idx;
-      opt.textContent = `${isDone ? '✅ Completed: ' : '📘 '}${chap.title}`;
+      opt.textContent = `${isDone ? 'âœ… Completed: ' : 'ðŸ“˜ '}${chap.title}`;
       chapterSelect.appendChild(opt);
     });
     chapterSelect.value = currentChapterIndex;
@@ -2167,10 +2167,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!btn) return;
     const isDone = studyData.completedChapters.includes(chapId);
     if (isDone) {
-      btn.innerHTML = `<span>✅</span><span class="hidden md:inline">Completed!</span>`;
+      btn.innerHTML = `<span>âœ…</span><span class="hidden md:inline">Completed!</span>`;
       btn.className = "px-2.5 py-1.5 rounded-xl bg-sky-500 border border-sky-600 text-white text-xs font-bold flex items-center gap-1 transition flex-shrink-0 shadow-md cursor-pointer";
     } else {
-      btn.innerHTML = `<span>⚪</span><span class="hidden md:inline">Mark Completed</span>`;
+      btn.innerHTML = `<span>âšª</span><span class="hidden md:inline">Mark Completed</span>`;
       btn.className = "px-2.5 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-700 text-xs font-bold flex items-center gap-1 transition flex-shrink-0 shadow-xs cursor-pointer";
     }
   }
@@ -2217,15 +2217,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Group strictly by Track Numbers (as requested: "kelompokin per nomornya aja jgn per bab")
     const groups = [
       {
-        label: "Tracks 1-001 — 1-050",
+        label: "Tracks 1-001 â€” 1-050",
         items: allTracks.filter(t => t.id.startsWith("1-") && parseInt(t.id.slice(2), 10) <= 50)
       },
       {
-        label: "Tracks 1-051 — 1-098",
+        label: "Tracks 1-051 â€” 1-098",
         items: allTracks.filter(t => t.id.startsWith("1-") && parseInt(t.id.slice(2), 10) > 50)
       },
       {
-        label: "Tracks 2-001 — 2-062",
+        label: "Tracks 2-001 â€” 2-062",
         items: allTracks.filter(t => t.id.startsWith("2-"))
       }
     ];
@@ -2242,7 +2242,7 @@ document.addEventListener('DOMContentLoaded', () => {
         grp.items.forEach(item => {
           const opt = document.createElement('option');
           opt.value = item.path;
-          opt.textContent = `🎵 ${item.name}`;
+          opt.textContent = `ðŸŽµ ${item.name}`;
           optgroup.appendChild(opt);
         });
 
@@ -2983,7 +2983,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </head>
       <body>
         <div class="header-box">
-          <div class="studio-tag">CHEEYA STUDIO • NETZWERK NEU A1 CURRICULUM GUIDE</div>
+          <div class="studio-tag">CHEEYA STUDIO â€¢ NETZWERK NEU A1 CURRICULUM GUIDE</div>
           <h1>${chapter.title}</h1>
           <div class="subtitle">${chapter.subtitle}</div>
         </div>
@@ -2993,7 +2993,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <div class="footer-note">
-          Generated from Cheeya Studio Netzwerk Neu A1 Interactive Hub • All Rights Reserved.
+          Generated from Cheeya Studio Netzwerk Neu A1 Interactive Hub â€¢ All Rights Reserved.
         </div>
       </body>
       </html>
@@ -3012,7 +3012,7 @@ document.addEventListener('DOMContentLoaded', () => {
     chapter.videos.forEach(v => {
       const opt = document.createElement('option');
       opt.value = v.path;
-      opt.textContent = `🎬 ${v.title}`;
+      opt.textContent = `ðŸŽ¬ ${v.title}`;
       videoSelect.appendChild(opt);
     });
   }
@@ -3054,23 +3054,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // ================= 12. DYNAMIC CHAPTER-SPECIFIC GRAMMAR REFERENCE =================
   const CHAPTER_GRAMMAR_DATA = {
     1: {
-      title: "Kapitel 1: Guten Tag! — Grammar Reference",
+      title: "Kapitel 1: Guten Tag! â€” Grammar Reference",
       topics: [
         {
-          heading: "1. Verb Conjugation in Present Tense (Präsens)",
+          heading: "1. Verb Conjugation in Present Tense (PrÃ¤sens)",
           desc: "German verbs change endings according to the subject pronoun. Drop <strong>-en</strong> from the infinitive to find the stem, then add standard endings:",
           table: {
-            headers: ["Pronoun", "Ending", "heißen (to be called)", "kommen (to come)", "sprechen (to speak)"],
+            headers: ["Pronoun", "Ending", "heiÃŸen (to be called)", "kommen (to come)", "sprechen (to speak)"],
             rows: [
-              ["<strong>ich</strong> (I)", "-e", "heiße", "komme", "spreche"],
-              ["<strong>du</strong> (you, informal)", "-st", "heißt", "kommst", "sprichst <em>(e->i)</em>"],
-              ["<strong>er / sie / es</strong> (he/she/it)", "-t", "heißt", "kommt", "spricht <em>(e->i)</em>"],
-              ["<strong>wir</strong> (we)", "-en", "heißen", "kommen", "sprechen"],
-              ["<strong>ihr</strong> (you all)", "-t", "heißt", "kommt", "sprecht"],
-              ["<strong>sie / Sie</strong> (they / you formal)", "-en", "heißen", "kommen", "sprechen"]
+              ["<strong>ich</strong> (I)", "-e", "heiÃŸe", "komme", "spreche"],
+              ["<strong>du</strong> (you, informal)", "-st", "heiÃŸt", "kommst", "sprichst <em>(e->i)</em>"],
+              ["<strong>er / sie / es</strong> (he/she/it)", "-t", "heiÃŸt", "kommt", "spricht <em>(e->i)</em>"],
+              ["<strong>wir</strong> (we)", "-en", "heiÃŸen", "kommen", "sprechen"],
+              ["<strong>ihr</strong> (you all)", "-t", "heiÃŸt", "kommt", "sprecht"],
+              ["<strong>sie / Sie</strong> (they / you formal)", "-en", "heiÃŸen", "kommen", "sprechen"]
             ]
           },
-          note: "💡 <em>Irregular Verb:</em> <strong>sein</strong> (to be) -> ich bin, du bist, er/sie/es ist, wir sind, ihr seid, sie/Sie sind."
+          note: "ðŸ’¡ <em>Irregular Verb:</em> <strong>sein</strong> (to be) -> ich bin, du bist, er/sie/es ist, wir sind, ihr seid, sie/Sie sind."
         },
         {
           heading: "2. Sentence Structure: W-Questions vs Yes/No Questions",
@@ -3078,17 +3078,17 @@ document.addEventListener('DOMContentLoaded', () => {
           table: {
             headers: ["Type", "Position 1", "Position 2 (VERB)", "Position 3+", "Example Meaning"],
             rows: [
-              ["W-Frage", "Wie", "<strong>heißen</strong>", "Sie?", "What is your name?"],
+              ["W-Frage", "Wie", "<strong>heiÃŸen</strong>", "Sie?", "What is your name?"],
               ["W-Frage", "Woher", "<strong>kommen</strong>", "Sie?", "Where are you from?"],
               ["Statement", "Ich", "<strong>komme</strong>", "aus Spanien.", "I come from Spain."],
-              ["Ja/Nein Frage", "—", "<strong>Sprechen</strong>", "Sie Deutsch?", "Do you speak German? (Verb in Pos 1)"]
+              ["Ja/Nein Frage", "â€”", "<strong>Sprechen</strong>", "Sie Deutsch?", "Do you speak German? (Verb in Pos 1)"]
             ]
           }
         }
       ]
     },
     2: {
-      title: "Kapitel 2: Freunde, Kollegen und ich — Grammar Reference",
+      title: "Kapitel 2: Freunde, Kollegen und ich â€” Grammar Reference",
       topics: [
         {
           heading: "1. Articles in Nominativ: Definite, Indefinite & Negation",
@@ -3099,10 +3099,10 @@ document.addEventListener('DOMContentLoaded', () => {
               ["<span class='badge-der px-2 py-0.5 rounded font-bold'>Masculine (m)</span>", "<strong>der</strong>", "<strong>ein</strong>", "<strong>kein</strong>", "der Beruf, ein Freund"],
               ["<span class='badge-die px-2 py-0.5 rounded font-bold'>Feminine (f)</span>", "<strong>die</strong>", "<strong>eine</strong>", "<strong>keine</strong>", "die Kollegin, eine Sprache"],
               ["<span class='badge-das px-2 py-0.5 rounded font-bold'>Neuter (n)</span>", "<strong>das</strong>", "<strong>ein</strong>", "<strong>kein</strong>", "das Hobby, ein Foto"],
-              ["<span class='bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold'>Plural (Pl.)</span>", "<strong>die</strong>", "— (none)", "<strong>keine</strong>", "die Hobbys, Freunde"]
+              ["<span class='bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold'>Plural (Pl.)</span>", "<strong>die</strong>", "â€” (none)", "<strong>keine</strong>", "die Hobbys, Freunde"]
             ]
           },
-          note: "💡 Use <strong>kein / keine</strong> for nouns without article or with <em>ein</em>. Use <strong>nicht</strong> to negate verbs, adjectives, or entire clauses (*Ich arbeite nicht*)."
+          note: "ðŸ’¡ Use <strong>kein / keine</strong> for nouns without article or with <em>ein</em>. Use <strong>nicht</strong> to negate verbs, adjectives, or entire clauses (*Ich arbeite nicht*)."
         },
         {
           heading: "2. Irregular Verb: haben (to have)",
@@ -3111,7 +3111,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ]
     },
     3: {
-      title: "Kapitel 3: In Hamburg — Grammar Reference",
+      title: "Kapitel 3: In Hamburg â€” Grammar Reference",
       topics: [
         {
           heading: "1. Der Akkusativ (Direct Object Case)",
@@ -3122,10 +3122,10 @@ document.addEventListener('DOMContentLoaded', () => {
               ["<span class='badge-der px-2 py-0.5 rounded font-bold'>Masculine</span>", "der Bahnhof", "<strong>den</strong> Bahnhof", "<strong>einen</strong> Bahnhof", "<strong>keinen</strong> Bahnhof"],
               ["<span class='badge-die px-2 py-0.5 rounded font-bold'>Feminine</span>", "die Kirche", "<strong>die</strong> Kirche", "<strong>eine</strong> Kirche", "<strong>keine</strong> Kirche"],
               ["<span class='badge-das px-2 py-0.5 rounded font-bold'>Neuter</span>", "das Hotel", "<strong>das</strong> Hotel", "<strong>ein</strong> Hotel", "<strong>kein</strong> Hotel"],
-              ["<span class='bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold'>Plural</span>", "die Museen", "<strong>die</strong> Museen", "— Museen", "<strong>keine</strong> Museen"]
+              ["<span class='bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold'>Plural</span>", "die Museen", "<strong>die</strong> Museen", "â€” Museen", "<strong>keine</strong> Museen"]
             ]
           },
-          note: "💡 <strong>Rule of thumb:</strong> Only masculine nouns change in Akkusativ (*der -> den*, *ein -> einen*, *kein -> keinen*, *mein -> meinen*)."
+          note: "ðŸ’¡ <strong>Rule of thumb:</strong> Only masculine nouns change in Akkusativ (*der -> den*, *ein -> einen*, *kein -> keinen*, *mein -> meinen*)."
         },
         {
           heading: "2. Possessive Pronouns (Nominativ)",
@@ -3134,15 +3134,15 @@ document.addEventListener('DOMContentLoaded', () => {
       ]
     },
     4: {
-      title: "Kapitel 4: Guten Appetit! — Grammar Reference",
+      title: "Kapitel 4: Guten Appetit! â€” Grammar Reference",
       topics: [
         {
-          heading: "1. Food & Akkusativ with Verbs: essen, trinken, möchten",
+          heading: "1. Food & Akkusativ with Verbs: essen, trinken, mÃ¶chten",
           desc: "When ordering food or shopping at the market:",
           table: {
             headers: ["Verb", "Conjugation", "Example Akkusativ Phrase"],
             rows: [
-              ["möchten (would like)", "ich möchte, du möchtest, er möchte, wir möchten", "Ich möchte <strong>einen Apfel</strong> (m) und <strong>ein Brot</strong> (n)."],
+              ["mÃ¶chten (would like)", "ich mÃ¶chte, du mÃ¶chtest, er mÃ¶chte, wir mÃ¶chten", "Ich mÃ¶chte <strong>einen Apfel</strong> (m) und <strong>ein Brot</strong> (n)."],
               ["essen (to eat - vowel shift)", "ich esse, du <strong>isst</strong>, er <strong>isst</strong>, wir essen", "Er isst <strong>einen Salat</strong>."],
               ["nehmen (to take)", "ich nehme, du <strong>nimmst</strong>, er <strong>nimmt</strong>, wir nehmen", "Ich nehme <strong>den Fisch</strong>."]
             ]
@@ -3150,12 +3150,12 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
           heading: "2. Quantities & Plurals for Food",
-          desc: "ein Kilo Äpfel, ein Pfund Butter, ein Liter Milch, zwei Flaschen Wasser, drei Gläser Marmelade."
+          desc: "ein Kilo Ã„pfel, ein Pfund Butter, ein Liter Milch, zwei Flaschen Wasser, drei GlÃ¤ser Marmelade."
         }
       ]
     },
     5: {
-      title: "Kapitel 5: Alltag und Familie — Grammar Reference",
+      title: "Kapitel 5: Alltag und Familie â€” Grammar Reference",
       topics: [
         {
           heading: "1. Trennbare Verben (Separable Verbs) & Satzklammer",
@@ -3171,13 +3171,13 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         },
         {
-          heading: "2. Modal Verbs: können (can) & müssen (must)",
+          heading: "2. Modal Verbs: kÃ¶nnen (can) & mÃ¼ssen (must)",
           desc: "Modal verb takes Position 2; the main action verb goes to the end in <strong>infinitive</strong> (*Satzklammer*):<br/><em>Ich <strong>muss</strong> heute lange <strong>arbeiten</strong>.</em> (I have to work late today)."
         }
       ]
     },
     6: {
-      title: "Kapitel 6: Zeit mit Freunden — Grammar Reference",
+      title: "Kapitel 6: Zeit mit Freunden â€” Grammar Reference",
       topics: [
         {
           heading: "1. Der Imperativ (Giving Commands & Requests)",
@@ -3186,19 +3186,19 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: ["Form", "Rule", "kommen", "lesen", "sein"],
             rows: [
               ["<strong>du</strong> (informal singular)", "Drop pronoun & -st", "<strong>Komm!</strong>", "<strong>Lies!</strong>", "<strong>Sei ruhig!</strong>"],
-              ["<strong>ihr</strong> (informal plural)", "Same as ihr-verb form", "<strong>Kommt!</strong>", "<strong>Lest!</strong>", "<strong>Seid pünktlich!</strong>"],
+              ["<strong>ihr</strong> (informal plural)", "Same as ihr-verb form", "<strong>Kommt!</strong>", "<strong>Lest!</strong>", "<strong>Seid pÃ¼nktlich!</strong>"],
               ["<strong>Sie</strong> (formal)", "Verb + Sie inverted", "<strong>Kommen Sie!</strong>", "<strong>Lesen Sie!</strong>", "<strong>Seien Sie willkommen!</strong>"]
             ]
           }
         },
         {
-          heading: "2. Preposition: für (+ Akkusativ)",
-          desc: "<em>Das Geschenk ist <strong>für den</strong> Freund (m), <strong>für die</strong> Schwester (f), <strong>für das</strong> Kind (n).</em>"
+          heading: "2. Preposition: fÃ¼r (+ Akkusativ)",
+          desc: "<em>Das Geschenk ist <strong>fÃ¼r den</strong> Freund (m), <strong>fÃ¼r die</strong> Schwester (f), <strong>fÃ¼r das</strong> Kind (n).</em>"
         }
       ]
     },
     7: {
-      title: "Kapitel 7: Arbeitsalltag — Grammar Reference",
+      title: "Kapitel 7: Arbeitsalltag â€” Grammar Reference",
       topics: [
         {
           heading: "1. Der Dativ (Indirect Object & Location Case)",
@@ -3208,7 +3208,7 @@ document.addEventListener('DOMContentLoaded', () => {
             rows: [
               ["<span class='badge-der px-2 py-0.5 rounded font-bold'>Masculine</span>", "der Chef", "den Chef", "<strong>dem</strong> Chef", "<strong>einem</strong> Chef"],
               ["<span class='badge-die px-2 py-0.5 rounded font-bold'>Feminine</span>", "die Kollegin", "die Kollegin", "<strong>der</strong> Kollegin", "<strong>einer</strong> Kollegin"],
-              ["<span class='badge-das px-2 py-0.5 rounded font-bold'>Neuter</span>", "das Büro", "das Büro", "<strong>dem</strong> Büro", "<strong>einem</strong> Büro"],
+              ["<span class='badge-das px-2 py-0.5 rounded font-bold'>Neuter</span>", "das BÃ¼ro", "das BÃ¼ro", "<strong>dem</strong> BÃ¼ro", "<strong>einem</strong> BÃ¼ro"],
               ["<span class='bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold'>Plural</span>", "die Kunden", "die Kunden", "<strong>den</strong> Kunden <strong>(+n)</strong>", "<strong>keinen</strong> Kunden"]
             ]
           }
@@ -3220,49 +3220,49 @@ document.addEventListener('DOMContentLoaded', () => {
       ]
     },
     8: {
-      title: "Kapitel 8: Fit und gesund — Grammar Reference",
+      title: "Kapitel 8: Fit und gesund â€” Grammar Reference",
       topics: [
         {
-          heading: "1. Modal Verbs: dürfen (allowed to) & sollen (should)",
-          desc: "<strong>dürfen</strong>: express permission or prohibition (*Sie dürfen hier nicht rauchen*).<br/><strong>sollen</strong>: express advice or doctor recommendations (*Du sollst viel Wasser trinken*).",
+          heading: "1. Modal Verbs: dÃ¼rfen (allowed to) & sollen (should)",
+          desc: "<strong>dÃ¼rfen</strong>: express permission or prohibition (*Sie dÃ¼rfen hier nicht rauchen*).<br/><strong>sollen</strong>: express advice or doctor recommendations (*Du sollst viel Wasser trinken*).",
           table: {
-            headers: ["Pronoun", "dürfen (may/allowed)", "sollen (should/ought to)"],
+            headers: ["Pronoun", "dÃ¼rfen (may/allowed)", "sollen (should/ought to)"],
             rows: [
               ["ich", "<strong>darf</strong>", "<strong>soll</strong>"],
               ["du", "<strong>darfst</strong>", "<strong>sollst</strong>"],
               ["er/sie/es", "<strong>darf</strong>", "<strong>soll</strong>"],
-              ["wir", "<strong>dürfen</strong>", "<strong>sollen</strong>"],
-              ["ihr", "<strong>dürft</strong>", "<strong>sollt</strong>"],
-              ["sie/Sie", "<strong>dürfen</strong>", "<strong>sollen</strong>"]
+              ["wir", "<strong>dÃ¼rfen</strong>", "<strong>sollen</strong>"],
+              ["ihr", "<strong>dÃ¼rft</strong>", "<strong>sollt</strong>"],
+              ["sie/Sie", "<strong>dÃ¼rfen</strong>", "<strong>sollen</strong>"]
             ]
           }
         },
         {
           heading: "2. Health Expressions with Dativ",
-          desc: "<em>Was fehlt <strong>Ihnen</strong>? — <strong>Mir</strong> tut der Kopf weh. Mein Rücken tut weh.</em>"
+          desc: "<em>Was fehlt <strong>Ihnen</strong>? â€” <strong>Mir</strong> tut der Kopf weh. Mein RÃ¼cken tut weh.</em>"
         }
       ]
     },
     9: {
-      title: "Kapitel 9: Meine Wohnung — Grammar Reference",
+      title: "Kapitel 9: Meine Wohnung â€” Grammar Reference",
       topics: [
         {
-          heading: "1. Two-Way Prepositions (Wechselpräpositionen)",
-          desc: "Prepositions: <strong>an, auf, hinter, in, neben, über, unter, vor, zwischen</strong>.<br/>• <strong>Wohin?</strong> (Movement/Direction) -> <strong>AKKUSATIV</strong><br/>• <strong>Wo?</strong> (Position/Location) -> <strong>DATIV</strong>",
+          heading: "1. Two-Way Prepositions (WechselprÃ¤positionen)",
+          desc: "Prepositions: <strong>an, auf, hinter, in, neben, Ã¼ber, unter, vor, zwischen</strong>.<br/>â€¢ <strong>Wohin?</strong> (Movement/Direction) -> <strong>AKKUSATIV</strong><br/>â€¢ <strong>Wo?</strong> (Position/Location) -> <strong>DATIV</strong>",
           table: {
             headers: ["Question", "Case", "Action Verb", "Location Verb", "Example"],
             rows: [
-              ["<strong>Wohin?</strong>", "Akkusativ", "stellen (to place upright)", "—", "Ich stelle die Lampe <strong>auf den Tisch</strong> (m)."],
-              ["<strong>Wo?</strong>", "Dativ", "—", "stehen (to stand)", "Die Lampe steht <strong>auf dem Tisch</strong> (m)."],
-              ["<strong>Wohin?</strong>", "Akkusativ", "legen (to lay flat)", "—", "Er legt das Buch <strong>in das Regal</strong> (n)."],
-              ["<strong>Wo?</strong>", "Dativ", "—", "liegen (to lie)", "Das Buch liegt <strong>im Regal</strong> (n)."]
+              ["<strong>Wohin?</strong>", "Akkusativ", "stellen (to place upright)", "â€”", "Ich stelle die Lampe <strong>auf den Tisch</strong> (m)."],
+              ["<strong>Wo?</strong>", "Dativ", "â€”", "stehen (to stand)", "Die Lampe steht <strong>auf dem Tisch</strong> (m)."],
+              ["<strong>Wohin?</strong>", "Akkusativ", "legen (to lay flat)", "â€”", "Er legt das Buch <strong>in das Regal</strong> (n)."],
+              ["<strong>Wo?</strong>", "Dativ", "â€”", "liegen (to lie)", "Das Buch liegt <strong>im Regal</strong> (n)."]
             ]
           }
         }
       ]
     },
     10: {
-      title: "Kapitel 10: Gute Reise! — Grammar Reference",
+      title: "Kapitel 10: Gute Reise! â€” Grammar Reference",
       topics: [
         {
           heading: "1. Das Perfekt (Spoken Past Tense)",
@@ -3270,18 +3270,18 @@ document.addEventListener('DOMContentLoaded', () => {
           table: {
             headers: ["Verb Category", "Auxiliary", "Formula", "Examples"],
             rows: [
-              ["Regular Verbs", "haben", "<strong>ge- + Stamm + -t</strong>", "ge-hör-t, ge-kauf-t, ge-mach-t"],
+              ["Regular Verbs", "haben", "<strong>ge- + Stamm + -t</strong>", "ge-hÃ¶r-t, ge-kauf-t, ge-mach-t"],
               ["Verbs on -ieren", "haben", "<strong>Stamm + -t (no ge-)</strong>", "reserviert, fotografiert, studiert"],
-              ["Separable Verbs", "haben/sein", "<strong>Prefix + -ge- + Stamm + -t/-en</strong>", "auf-ge-räumt, ein-ge-kauft, an-ge-kommen"],
+              ["Separable Verbs", "haben/sein", "<strong>Prefix + -ge- + Stamm + -t/-en</strong>", "auf-ge-rÃ¤umt, ein-ge-kauft, an-ge-kommen"],
               ["Irregular Verbs", "haben/sein", "<strong>ge- + Stamm + -en</strong>", "ge-les-en, ge-schrieb-en, ge-fund-en"]
             ]
           },
-          note: "💡 <strong>When to use 'sein'?</strong> With verbs of motion/location change (*gehen, fahren, fliegen, kommen, ankommen*) or change of state (*aufwachen, sterben*) and the verb *sein* itself (*Ich bin in Berlin gewesen*)."
+          note: "ðŸ’¡ <strong>When to use 'sein'?</strong> With verbs of motion/location change (*gehen, fahren, fliegen, kommen, ankommen*) or change of state (*aufwachen, sterben*) and the verb *sein* itself (*Ich bin in Berlin gewesen*)."
         }
       ]
     },
     11: {
-      title: "Kapitel 11: Kleidung und Mode — Grammar Reference",
+      title: "Kapitel 11: Kleidung und Mode â€” Grammar Reference",
       topics: [
         {
           heading: "1. Adjective Endings (Adjektivdeklination) with Definite Articles",
@@ -3289,9 +3289,9 @@ document.addEventListener('DOMContentLoaded', () => {
           table: {
             headers: ["Case", "Masculine (der)", "Feminine (die)", "Neuter (das)", "Plural (die)"],
             rows: [
-              ["Nominativ", "der neu-<strong>e</strong> Mantel", "die schön-<strong>e</strong> Bluse", "das weiß-<strong>e</strong> Hemd", "die rot-<strong>en</strong> Schuhe"],
-              ["Akkusativ", "den neu-<strong>en</strong> Mantel", "die schön-<strong>e</strong> Bluse", "das weiß-<strong>e</strong> Hemd", "die rot-<strong>en</strong> Schuhe"],
-              ["Dativ", "dem neu-<strong>en</strong> Mantel", "der schön-<strong>en</strong> Bluse", "dem weiß-<strong>en</strong> Hemd", "den rot-<strong>en</strong> Schuhen"]
+              ["Nominativ", "der neu-<strong>e</strong> Mantel", "die schÃ¶n-<strong>e</strong> Bluse", "das weiÃŸ-<strong>e</strong> Hemd", "die rot-<strong>en</strong> Schuhe"],
+              ["Akkusativ", "den neu-<strong>en</strong> Mantel", "die schÃ¶n-<strong>e</strong> Bluse", "das weiÃŸ-<strong>e</strong> Hemd", "die rot-<strong>en</strong> Schuhe"],
+              ["Dativ", "dem neu-<strong>en</strong> Mantel", "der schÃ¶n-<strong>en</strong> Bluse", "dem weiÃŸ-<strong>en</strong> Hemd", "den rot-<strong>en</strong> Schuhen"]
             ]
           }
         },
@@ -3302,7 +3302,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ]
     },
     12: {
-      title: "Kapitel 12: In der Stadt und unterwegs — Grammar Reference",
+      title: "Kapitel 12: In der Stadt und unterwegs â€” Grammar Reference",
       topics: [
         {
           heading: "1. Subordinate Clauses with 'weil' (Because)",
@@ -3310,14 +3310,14 @@ document.addEventListener('DOMContentLoaded', () => {
           table: {
             headers: ["Main Clause", "Conjunction", "Subordinate Clause (Verb at end!)"],
             rows: [
-              ["Ich lerne Deutsch,", "<strong>weil</strong>", "ich in Deutschland arbeiten <strong>möchte</strong>."],
+              ["Ich lerne Deutsch,", "<strong>weil</strong>", "ich in Deutschland arbeiten <strong>mÃ¶chte</strong>."],
               ["Er bleibt heute zu Hause,", "<strong>weil</strong>", "er krank <strong>ist</strong>."]
             ]
           }
         },
         {
-          heading: "2. Travel Prepositions (Lokale Präpositionen)",
-          desc: "• <strong>nach</strong>: countries without article and cities (*nach Deutschland, nach München*)<br/>• <strong>in</strong>: countries with article (*in die Schweiz, in die Türkei, in die USA*)<br/>• <strong>ans / am</strong>: bodies of water (*ans Meer, am See*)."
+          heading: "2. Travel Prepositions (Lokale PrÃ¤positionen)",
+          desc: "â€¢ <strong>nach</strong>: countries without article and cities (*nach Deutschland, nach MÃ¼nchen*)<br/>â€¢ <strong>in</strong>: countries with article (*in die Schweiz, in die TÃ¼rkei, in die USA*)<br/>â€¢ <strong>ans / am</strong>: bodies of water (*ans Meer, am See*)."
         }
       ]
     }
@@ -3330,7 +3330,7 @@ document.addEventListener('DOMContentLoaded', () => {
     select.innerHTML = '';
     const optGlobal = document.createElement('option');
     optGlobal.value = 0;
-    optGlobal.textContent = "🌟 Global Cheat Sheet: All Articles, Cases & Verbs";
+    optGlobal.textContent = "ðŸŒŸ Global Cheat Sheet: All Articles, Cases & Verbs";
     select.appendChild(optGlobal);
 
     NETZWERK_DATA.chapters.forEach(chap => {
@@ -3369,14 +3369,14 @@ document.addEventListener('DOMContentLoaded', () => {
                   <td class="p-2 text-blue-700">der / ein / kein</td>
                   <td class="p-2 text-indigo-700">die / eine / keine</td>
                   <td class="p-2 text-emerald-700">das / ein / kein</td>
-                  <td class="p-2 text-amber-700">die / — / keine</td>
+                  <td class="p-2 text-amber-700">die / â€” / keine</td>
                 </tr>
                 <tr>
                   <td class="p-2 font-sans font-bold">Akkusativ (Direct Object)</td>
                   <td class="p-2 text-blue-800 font-extrabold bg-sky-50">den / einen / keinen</td>
                   <td class="p-2 text-indigo-700">die / eine / keine</td>
                   <td class="p-2 text-emerald-700">das / ein / kein</td>
-                  <td class="p-2 text-amber-700">die / — / keine</td>
+                  <td class="p-2 text-amber-700">die / â€” / keine</td>
                 </tr>
                 <tr>
                   <td class="p-2 font-sans font-bold">Dativ (Location / Indirect)</td>
@@ -3391,7 +3391,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <div class="bg-white/95 rounded-2xl p-4 border border-sky-200 shadow-xs">
-          <h4 class="font-extrabold text-sky-800 mb-2 text-sm">Regular Verb Endings (Präsens)</h4>
+          <h4 class="font-extrabold text-sky-800 mb-2 text-sm">Regular Verb Endings (PrÃ¤sens)</h4>
           <div class="grid grid-cols-3 gap-2 font-mono text-center text-xs">
             <div class="bg-sky-50 p-2 rounded-xl border border-sky-200"><strong>ich</strong> -e</div>
             <div class="bg-sky-50 p-2 rounded-xl border border-sky-200"><strong>du</strong> -st</div>
@@ -3424,7 +3424,7 @@ document.addEventListener('DOMContentLoaded', () => {
       html += `
         <div class="bg-white/95 rounded-2xl p-4 border border-sky-200 shadow-xs space-y-2.5 mb-3">
           <h5 class="font-extrabold text-sky-900 text-xs uppercase tracking-wide flex items-center gap-1.5">
-            <span>❄️</span>
+            <span>â„ï¸</span>
             <span>${t.heading}</span>
           </h5>
           <p class="text-xs text-sky-800 leading-relaxed font-medium">${t.desc}</p>
@@ -3489,7 +3489,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!container) return;
 
     const auto = chapter.autoTeaching || {
-      cheeyaGreeting: `Welcome to ${chapter.title} (${chapter.subtitle})! Here is your complete curriculum breakdown, pronunciation guide, exercises, and grammar summary. ✨`,
+      cheeyaGreeting: `Welcome to ${chapter.title} (${chapter.subtitle})! Here is your complete curriculum breakdown, pronunciation guide, exercises, and grammar summary. âœ¨`,
       lessonSummary: chapter.grammarSummary || '',
       quickAudioTrack: chapter.audioKapitel,
       quickAudioName: `Full Audio ${chapter.title}`
@@ -3499,7 +3499,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <!-- CHAPTER NAVIGATION BANNER -->
       <div class="flex items-center justify-between bg-white/95 p-3 rounded-2xl border-2 border-sky-300 shadow-sm mb-4">
         <button onclick="stepChapter(-1)" class="btn-pastel-blue px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 cursor-pointer ${currentChapterIndex === 0 ? 'opacity-40 pointer-events-none' : ''}" title="Go to previous chapter">
-          <span>◀</span>
+          <span>â—€</span>
           <span>Prev Chapter</span>
         </button>
         
@@ -3510,24 +3510,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <button onclick="stepChapter(1)" class="btn-pastel-blue px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 cursor-pointer ${currentChapterIndex === NETZWERK_DATA.chapters.length - 1 ? 'opacity-40 pointer-events-none' : ''}" title="Go to next chapter">
           <span>Next Chapter</span>
-          <span>▶</span>
+          <span>â–¶</span>
         </button>
       </div>
 
       <!-- CHAPTER OVERVIEW & CURRICULUM GUIDE CARD -->
       <div class="blue-glass-card p-5 mb-5 border-2 border-sky-300 shadow-lg relative overflow-hidden">
-        <div class="absolute -right-4 -bottom-4 text-7xl opacity-10 pointer-events-none">❄️</div>
+        <div class="absolute -right-4 -bottom-4 text-7xl opacity-10 pointer-events-none">â„ï¸</div>
         
         <!-- Header -->
         <div class="flex items-center justify-between mb-3 border-b border-sky-200/80 pb-3">
           <div class="flex items-center gap-3">
             <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-sky-400 to-blue-500 p-0.5 shadow-md flex-shrink-0 flex items-center justify-center text-white text-xl">
-              📖
+              ðŸ“–
             </div>
             <div>
               <div class="flex items-center gap-2">
                 <h3 class="font-extrabold text-sm text-sky-950">${chapter.title}</h3>
-                <span class="text-[10px] bg-sky-100 text-sky-700 font-bold px-2 py-0.5 rounded-full border border-sky-300">❄️ Chapter Guide</span>
+                <span class="text-[10px] bg-sky-100 text-sky-700 font-bold px-2 py-0.5 rounded-full border border-sky-300">â„ï¸ Chapter Guide</span>
               </div>
               <p class="text-xs text-sky-600 font-medium">${chapter.subtitle}</p>
             </div>
@@ -3535,11 +3535,11 @@ document.addEventListener('DOMContentLoaded', () => {
           
           <div class="flex items-center gap-2">
             <button onclick="downloadLessonPDF()" class="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm cursor-pointer" title="Download Lesson as PDF">
-              <span>📥</span>
+              <span>ðŸ“¥</span>
               <span class="hidden sm:inline">Download PDF</span>
             </button>
             <button onclick="playGermanSpeech(document.getElementById('lessonSpeechText').innerText)" class="btn-pastel-blue px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 cursor-pointer" title="Listen to Chapter Introduction">
-              <span>🔊</span>
+              <span>ðŸ”Š</span>
               <span class="hidden sm:inline">Listen</span>
             </button>
           </div>
@@ -3547,7 +3547,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <!-- Welcoming & Key Learning Objectives -->
         <div class="bg-sky-50/90 rounded-2xl p-3.5 mb-3 border border-sky-200 text-xs text-sky-900 leading-relaxed font-medium">
-          <span class="font-bold text-sky-700">📘 Chapter Overview:</span>
+          <span class="font-bold text-sky-700">ðŸ“˜ Chapter Overview:</span>
           <p id="lessonSpeechText" class="mt-1">${auto.cheeyaGreeting}</p>
         </div>
 
@@ -3555,11 +3555,11 @@ document.addEventListener('DOMContentLoaded', () => {
         ${auto.quickAudioTrack ? `
           <div class="flex items-center justify-between bg-white/90 p-2.5 rounded-xl border border-sky-200 mb-3 text-xs shadow-xs">
             <div class="flex items-center gap-2 truncate">
-              <span class="text-base">🎧</span>
+              <span class="text-base">ðŸŽ§</span>
               <span class="font-bold text-sky-900 truncate">${auto.quickAudioName || 'Lesson Dialogue Audio'}</span>
             </div>
             <button onclick="playQuickTrack('${auto.quickAudioTrack}')" class="btn-pastel-blue px-3.5 py-1 rounded-lg text-white font-bold text-[11px] shadow-sm flex items-center gap-1 flex-shrink-0 cursor-pointer">
-              <span>▶️ Play</span>
+              <span>â–¶ï¸ Play</span>
             </button>
           </div>
         ` : ''}
@@ -3575,7 +3575,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="flex items-center justify-between mb-4 border-b border-purple-100 pb-3">
           <div class="flex items-center gap-3">
             <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-500 to-indigo-600 p-0.5 shadow-md flex-shrink-0 flex items-center justify-center text-white text-xl">
-              🎬
+              ðŸŽ¬
             </div>
             <div>
               <div class="flex items-center gap-2">
@@ -3588,7 +3588,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
           <button onclick="openVideoModal()" class="px-3 py-1.5 rounded-xl bg-purple-100 hover:bg-purple-200 text-purple-800 text-xs font-bold flex items-center gap-1.5 transition border border-purple-300 cursor-pointer shadow-xs" title="Open Fullscreen Pop-up Video Player">
-            <span>⛶</span>
+            <span>â›¶</span>
             <span class="hidden sm:inline">Pop-up Player</span>
           </button>
         </div>
@@ -3617,7 +3617,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return `
                   <button onclick="playInlineVideo('${encodeURI(vid.path)}', this)" class="inline-video-btn w-full text-left p-2.5 rounded-xl border transition flex items-center justify-between gap-2 cursor-pointer ${vIdx === 0 ? 'bg-purple-100/90 border-purple-400 text-purple-950 font-bold shadow-xs' : 'bg-white/90 hover:bg-purple-50 border-purple-200 text-slate-800 font-medium'}">
                     <div class="flex items-center gap-2 truncate">
-                      <span class="text-sm">▶️</span>
+                      <span class="text-sm">â–¶ï¸</span>
                       <span class="text-xs truncate">${escapeHtml(vid.title)}</span>
                     </div>
                     <div class="flex items-center gap-1 flex-shrink-0">
@@ -3630,7 +3630,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
           <p class="text-[11px] text-purple-700/80 mt-3 font-medium">
-            💡 <em>Tip: Click any video clip in the list above to immediately play it right here. Clips with the <strong>UT</strong> tag include authentic German subtitles!</em>
+            ðŸ’¡ <em>Tip: Click any video clip in the list above to immediately play it right here. Clips with the <strong>UT</strong> tag include authentic German subtitles!</em>
           </p>
         ` : `
           <div class="p-6 text-center text-xs text-purple-700 bg-purple-50 rounded-2xl border border-purple-200">
@@ -3643,13 +3643,13 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="mb-4">
         <div class="flex items-center justify-between mb-2 px-1">
           <h4 class="font-extrabold text-sm text-sky-950 flex items-center gap-2">
-            <span>✍️</span>
+            <span>âœï¸</span>
             <span>Interactive Textbook Exercises (Fill in your answers)</span>
           </h4>
-          <span class="text-[10px] font-bold text-sky-600 bg-sky-100 border border-sky-300 px-2.5 py-0.5 rounded-full shadow-xs">✨ Interactive Practice</span>
+          <span class="text-[10px] font-bold text-sky-600 bg-sky-100 border border-sky-300 px-2.5 py-0.5 rounded-full shadow-xs">âœ¨ Interactive Practice</span>
         </div>
         <p class="text-xs text-sky-800/80 mb-4 px-1">
-          Open the textbook pages in the <strong>📖 PDF & Notes</strong> tab to read the full context, then submit your answers below for instant automated feedback and explanations! ✨
+          Open the textbook pages in the <strong>ðŸ“– PDF & Notes</strong> tab to read the full context, then submit your answers below for instant automated feedback and explanations! âœ¨
         </p>
     `;
 
@@ -3660,7 +3660,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="blue-glass-card p-4 mb-4 border border-sky-300">
             <div class="flex items-center justify-between border-b border-sky-200 pb-2 mb-3">
               <h5 class="font-bold text-xs text-sky-900 flex items-center gap-1.5">
-                <span>❄️</span>
+                <span>â„ï¸</span>
                 <span>${ex.title}</span>
               </h5>
               <span class="text-[10px] text-sky-600 font-bold">${ex.questions.length} Questions</span>
@@ -3680,13 +3680,13 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="flex items-center gap-2">
                 <input type="text" id="input-${q.id}" value="${savedAns ? escapeHtml(savedAns.studentAnswer) : ''}" placeholder="Type your answer here..." onkeydown="if(event.key==='Enter') checkSpecificExercise('${q.id}')" class="flex-1 bg-sky-50/70 border-2 border-sky-200 rounded-xl px-3 py-2 text-xs text-sky-950 placeholder-sky-300 focus:outline-none focus:border-sky-400 focus:bg-white font-semibold transition">
                 <button onclick="checkSpecificExercise('${q.id}')" class="btn-pastel-blue px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap cursor-pointer">
-                  <span>❄️ Check</span>
+                  <span>â„ï¸ Check</span>
                 </button>
               </div>
 
               <!-- Feedback Box -->
               <div id="feedback-${q.id}" class="${savedAns ? '' : 'hidden'} mt-2.5 p-2.5 rounded-xl text-xs ${savedAns && savedAns.isCorrect ? 'bg-emerald-50 border border-emerald-300 text-emerald-800' : 'bg-rose-50 border border-rose-300 text-rose-800'}">
-                ${savedAns ? (savedAns.isCorrect ? `🎉 <strong>Ausgezeichnet!</strong> Your answer is completely correct!` : `💡 <strong>Grammar & Explanation:</strong> The correct answer is: <em>${q.expected[0]}</em>. ${q.explanation}`) : ''}
+                ${savedAns ? (savedAns.isCorrect ? `ðŸŽ‰ <strong>Ausgezeichnet!</strong> Your answer is completely correct!` : `ðŸ’¡ <strong>Grammar & Explanation:</strong> The correct answer is: <em>${q.expected[0]}</em>. ${q.explanation}`) : ''}
               </div>
             </div>
           `;
@@ -3704,7 +3704,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="blue-glass-card p-4 border border-sky-300 mt-4">
           <div class="flex items-center justify-between border-b border-sky-200 pb-2 mb-3">
             <h5 class="font-bold text-xs text-sky-900 flex items-center gap-1.5">
-              <span>⚡</span>
+              <span>âš¡</span>
               <span>Quick Multiple Choice Quiz (Click to answer)</span>
             </h5>
             <span class="text-[10px] text-sky-600 font-bold">${chapter.quizzes.length} Questions</span>
@@ -3743,7 +3743,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const userAns = input.value.trim();
 
     if (!userAns) {
-      alert("Please enter your answer first! ❄️");
+      alert("Please enter your answer first! â„ï¸");
       return;
     }
 
@@ -3752,10 +3752,10 @@ document.addEventListener('DOMContentLoaded', () => {
     feedbackBox.classList.remove('hidden');
     if (isCorrect) {
       feedbackBox.className = "mt-2.5 p-2.5 rounded-xl text-xs bg-emerald-50 border border-emerald-300 text-emerald-800";
-      feedbackBox.innerHTML = `🎉 <strong>Ausgezeichnet!</strong> Your answer is completely correct! ${foundQ.explanation}`;
+      feedbackBox.innerHTML = `ðŸŽ‰ <strong>Ausgezeichnet!</strong> Your answer is completely correct! ${foundQ.explanation}`;
     } else {
       feedbackBox.className = "mt-2.5 p-2.5 rounded-xl text-xs bg-rose-50 border border-rose-300 text-rose-800";
-      feedbackBox.innerHTML = `💡 <strong>Almost there!</strong> The expected answer is: <em>${foundQ.expected[0]}</em>.<br/>${foundQ.explanation}`;
+      feedbackBox.innerHTML = `ðŸ’¡ <strong>Almost there!</strong> The expected answer is: <em>${foundQ.expected[0]}</em>.<br/>${foundQ.explanation}`;
     }
 
     // Save to study data
@@ -3802,10 +3802,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 isDisabled = 'disabled';
                 if (optIdx === quiz.correct) {
                   btnClass = "bg-emerald-100 border-emerald-400 text-emerald-900 font-bold";
-                  badgeHtml = '<span class="feedback-badge text-emerald-700 font-extrabold">✅ Correct!</span>';
+                  badgeHtml = '<span class="feedback-badge text-emerald-700 font-extrabold">âœ… Correct!</span>';
                 } else if (optIdx === savedAns.selected) {
                   btnClass = "bg-rose-100 border-rose-400 text-rose-900 font-bold";
-                  badgeHtml = '<span class="feedback-badge text-rose-700 font-extrabold">❌ Your Choice</span>';
+                  badgeHtml = '<span class="feedback-badge text-rose-700 font-extrabold">âŒ Your Choice</span>';
                 }
               }
 
@@ -3819,7 +3819,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
 
           <div class="explanation-box ${savedAns ? '' : 'hidden'} mt-2.5 p-2.5 rounded-xl bg-sky-50 border border-sky-200 text-xs text-sky-900">
-            💡 <strong>Grammar & Explanation:</strong> ${quiz.explanation}
+            ðŸ’¡ <strong>Grammar & Explanation:</strong> ${quiz.explanation}
           </div>
         </div>
       `;
@@ -3855,10 +3855,10 @@ document.addEventListener('DOMContentLoaded', () => {
       badge.classList.remove('hidden');
       if (idx === quiz.correct) {
         btn.classList.add('bg-emerald-100', 'border-emerald-400', 'text-emerald-900', 'font-bold');
-        badge.innerHTML = "✅ Correct!";
+        badge.innerHTML = "âœ… Correct!";
       } else if (idx === selectedOptIdx) {
         btn.classList.add('bg-rose-100', 'border-rose-400', 'text-rose-900', 'font-bold');
-        badge.innerHTML = "❌ Your Choice";
+        badge.innerHTML = "âŒ Your Choice";
       }
     });
 
@@ -3905,7 +3905,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
 
       <div class="mb-3 flex items-center justify-between text-xs text-sky-800 font-semibold px-1">
-        <span>Click 🔊 to hear native German audio pronunciation:</span>
+        <span>Click ðŸ”Š to hear native German audio pronunciation:</span>
         <span class="text-[11px] text-sky-600 font-bold">${displayWords.length} words shown</span>
       </div>
 
@@ -3929,7 +3929,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
           <button class="px-2.5 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold transition cursor-pointer flex-shrink-0 ml-2 flex items-center gap-1 shadow-2xs" onclick="playGermanSpeech(decodeURIComponent('${encodeURIComponent(v.de)}'), this)" title="Listen to German pronunciation">
-            <span>🔊</span>
+            <span>ðŸ”Š</span>
             <span class="hidden sm:inline text-[11px]">Listen</span>
           </button>
         </div>
@@ -3958,14 +3958,14 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="flex items-center justify-between mb-2">
           <div>
             <h4 class="font-extrabold text-base text-sky-950 flex items-center gap-2">
-              <span>📊</span>
+              <span>ðŸ“Š</span>
               <span>Learning Progress & Mastery Tracker</span>
             </h4>
-            <p class="text-xs text-sky-600 font-medium">Saved automatically in your browser ❄️</p>
+            <p class="text-xs text-sky-600 font-medium">Saved automatically in your browser â„ï¸</p>
           </div>
           <div class="flex items-center gap-2.5">
             <button onclick="resetAllStudyProgress()" class="text-[11px] px-2.5 py-1 rounded-xl bg-white hover:bg-rose-50 border border-sky-300 text-rose-600 hover:text-rose-700 font-bold transition shadow-xs cursor-pointer" title="Reset all chapter progress back to 0/12">
-              🔄 Reset Progress
+              ðŸ”„ Reset Progress
             </button>
             <span class="text-2xl font-extrabold text-sky-600">${percent}%</span>
           </div>
@@ -3991,14 +3991,14 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div class="bg-white/90 p-2.5 rounded-2xl border border-amber-200 cursor-pointer hover:bg-amber-50 transition" onclick="openStreakModal()" title="View Streak Details">
             <div class="font-extrabold text-amber-600 text-lg flex items-center justify-center gap-1">
-              <span>🔥</span>
+              <span>ðŸ”¥</span>
               <span>${typeof streakData !== 'undefined' ? streakData.currentStreak : 1}d</span>
             </div>
             <div class="text-[10px] text-amber-700 font-bold">Study Streak</div>
           </div>
           <div class="bg-white/90 p-2.5 rounded-2xl border border-purple-200 cursor-pointer hover:bg-purple-50 transition" onclick="openStreakModal()" title="View XP & Badges">
             <div class="font-extrabold text-purple-600 text-lg flex items-center justify-center gap-1">
-              <span>⚡</span>
+              <span>âš¡</span>
               <span>${typeof streakData !== 'undefined' ? streakData.xp : 0}</span>
             </div>
             <div class="text-[10px] text-purple-700 font-bold">Total XP</div>
@@ -4010,11 +4010,11 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="blue-glass-card p-5 mb-5 border border-amber-300">
         <div class="flex items-center justify-between mb-3">
           <h5 class="font-bold text-xs text-amber-950 uppercase tracking-wider flex items-center gap-1.5">
-            <span>🏆</span>
+            <span>ðŸ†</span>
             <span>Achievement Badges Showcase</span>
           </h5>
           <button onclick="openStreakModal()" class="text-[11px] font-bold text-amber-800 hover:underline cursor-pointer">
-            View All Badges ➔
+            View All Badges âž”
           </button>
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -4037,7 +4037,7 @@ document.addEventListener('DOMContentLoaded', () => {
       html += `
         <div class="flex items-center justify-between p-2.5 rounded-xl ${isCurrent ? 'bg-sky-100/90 border border-sky-400' : 'bg-white/80 border border-sky-200'} text-xs transition">
           <button onclick="selectChapter(${idx}); switchView('lesson');" class="flex items-center gap-2 text-left truncate flex-1 cursor-pointer">
-            <span>${isDone ? '✅' : '⚪'}</span>
+            <span>${isDone ? 'âœ…' : 'âšª'}</span>
             <span class="font-bold ${isDone ? 'text-sky-600 line-through opacity-80' : 'text-sky-950'} truncate">${chap.title}</span>
           </button>
           <div class="flex items-center gap-1.5 flex-shrink-0">
@@ -4071,7 +4071,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (studyData.exerciseHistory.length === 0) {
       html += `
         <p class="text-xs text-sky-500 italic text-center py-4 bg-white/60 rounded-xl border border-sky-100">
-          No exercises checked yet. Fill in any exercise in the <strong>📘 Lesson & Exercises</strong> tab to record your progress! ❄️
+          No exercises checked yet. Fill in any exercise in the <strong>ðŸ“˜ Lesson & Exercises</strong> tab to record your progress! â„ï¸
         </p>
       `;
     } else {
@@ -4080,10 +4080,10 @@ document.addEventListener('DOMContentLoaded', () => {
         html += `
           <div class="bg-white/90 p-3 rounded-xl border ${item.isCorrect ? 'border-emerald-200 bg-emerald-50/30' : 'border-rose-200 bg-rose-50/30'} text-xs">
             <div class="flex items-center justify-between text-[10px] text-sky-700 font-semibold mb-1">
-              <span>${item.chapterTitle} • ${item.exerciseNum}</span>
+              <span>${item.chapterTitle} â€¢ ${item.exerciseNum}</span>
               <span>${item.date}</span>
             </div>
-            <p class="text-sky-950 font-bold mb-1">Your answer: "${escapeHtml(item.studentAnswer)}" ${item.isCorrect ? '✅' : '❌'}</p>
+            <p class="text-sky-950 font-bold mb-1">Your answer: "${escapeHtml(item.studentAnswer)}" ${item.isCorrect ? 'âœ…' : 'âŒ'}</p>
             <p class="text-[11px] text-sky-800">${item.feedback}</p>
           </div>
         `;
@@ -4104,7 +4104,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.resetAllStudyProgress = function() {
-    if (confirm("Are you sure you want to reset all completed chapters and progress back to 0? ❄️")) {
+    if (confirm("Are you sure you want to reset all completed chapters and progress back to 0? â„ï¸")) {
       studyData.completedChapters = [];
       studyData.quizHistory = {};
       studyData.exerciseHistory = [];
@@ -4455,7 +4455,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('customTtsInput');
     if (!input || !input.value.trim()) return;
     playGermanSpeech(input.value.trim());
-    showFloatingToast(`🔊 Pronouncing: "${input.value.trim()}"`);
+    showFloatingToast(`ðŸ”Š Pronouncing: "${input.value.trim()}"`);
   };
 
   function renderTtsWordList() {
@@ -4482,11 +4482,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="${bClass} px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider flex-shrink-0">${v.type}</span>
             <div class="truncate">
               <span class="text-xs font-black text-sky-950">${v.de}</span>
-              <span class="text-[11px] text-sky-600 font-medium ml-1.5">• ${v.en || ''}</span>
+              <span class="text-[11px] text-sky-600 font-medium ml-1.5">â€¢ ${v.en || ''}</span>
             </div>
           </div>
           <button id="ttsPlayBtn-${idx}" onclick="playGermanSpeech(decodeURIComponent('${encodeURIComponent(v.de)}'), this)" class="px-3 py-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs font-bold transition cursor-pointer flex items-center gap-1 flex-shrink-0 shadow-2xs" title="Listen to pronunciation">
-            <span>🔊</span>
+            <span>ðŸ”Š</span>
             <span class="text-[11px]">Listen</span>
           </button>
         </div>
@@ -4498,10 +4498,10 @@ document.addEventListener('DOMContentLoaded', () => {
   window.toggleAutoPlayAllVocab = function() {
     if (ttsAutoPlayActive) {
       stopAutoPlayVocab();
-      showFloatingToast('⏹️ Auto-play stopped');
+      showFloatingToast('â¹ï¸ Auto-play stopped');
     } else {
       startAutoPlayVocab();
-      showFloatingToast('▶️ Starting vocabulary auto-play...');
+      showFloatingToast('â–¶ï¸ Starting vocabulary auto-play...');
     }
   };
 
@@ -4511,7 +4511,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const icon = document.getElementById('ttsAutoPlayIcon');
     const text = document.getElementById('ttsAutoPlayText');
     const btn = document.getElementById('ttsAutoPlayBtn');
-    if (icon) icon.textContent = '⏹️';
+    if (icon) icon.textContent = 'â¹ï¸';
     if (text) text.textContent = 'Stop';
     if (btn) btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white flex items-center gap-1.5 shadow-xs cursor-pointer';
 
@@ -4525,7 +4525,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const text = document.getElementById('ttsAutoPlayText');
     const btn = document.getElementById('ttsAutoPlayBtn');
     const statusText = document.getElementById('ttsNowPlayingText');
-    if (icon) icon.textContent = '▶️';
+    if (icon) icon.textContent = 'â–¶ï¸';
     if (text) text.textContent = 'Auto Play Chapter Vocab';
     if (btn) btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-xs cursor-pointer';
     if (statusText) statusText.textContent = '';
@@ -4536,7 +4536,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chapter = NETZWERK_DATA.chapters[ttsActiveChapterIdx];
     if (!chapter || !chapter.vocabList || ttsAutoPlayIndex >= chapter.vocabList.length) {
       stopAutoPlayVocab();
-      showFloatingToast('✅ Completed playing chapter vocabulary!');
+      showFloatingToast('âœ… Completed playing chapter vocabulary!');
       return;
     }
 
@@ -4662,7 +4662,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Calculate mastered count in current list
     const masteredInList = fcCardList.filter(w => fcMasteredKeys.has(w.de)).length;
-    if (masteryEl) masteryEl.textContent = `🌟 Mastered: ${masteredInList} / ${total}`;
+    if (masteryEl) masteryEl.textContent = `ðŸŒŸ Mastered: ${masteredInList} / ${total}`;
 
     // Front Face
     const frontBadge = document.getElementById('fcFrontBadge');
@@ -4680,7 +4680,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (frontWord) frontWord.textContent = currentWord.de;
     if (frontHint) {
       if (currentWord.type === 'der' || currentWord.type === 'die' || currentWord.type === 'das') {
-        frontHint.textContent = `Noun • ${currentWord.type.toUpperCase()}`;
+        frontHint.textContent = `Noun â€¢ ${currentWord.type.toUpperCase()}`;
       } else if (currentWord.type === 'verb') {
         frontHint.textContent = `Verb`;
       } else {
@@ -4728,7 +4728,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     fcCurrentCardIndex = 0;
     renderCurrentFlashcard();
-    showFloatingToast('🔀 Flashcards shuffled!');
+    showFloatingToast('ðŸ”€ Flashcards shuffled!');
   };
 
   window.markFlashcardMastery = function(isMastered) {
@@ -4736,10 +4736,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentWord = fcCardList[fcCurrentCardIndex];
     if (isMastered) {
       fcMasteredKeys.add(currentWord.de);
-      showFloatingToast(`🌟 Marked as Mastered: "${currentWord.de}"`);
+      showFloatingToast(`ðŸŒŸ Marked as Mastered: "${currentWord.de}"`);
     } else {
       fcMasteredKeys.delete(currentWord.de);
-      showFloatingToast(`📖 Marked for Review: "${currentWord.de}"`);
+      showFloatingToast(`ðŸ“– Marked for Review: "${currentWord.de}"`);
     }
     saveFcMastery();
     nextFlashcard();
@@ -4784,7 +4784,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Filter nouns
     const nouns = chapter.vocabList.filter(v => v.type === 'der' || v.type === 'die' || v.type === 'das');
     if (nouns.length === 0) {
-      showFloatingToast("⚠️ No nouns found in this chapter.", '⚠️');
+      showFloatingToast("âš ï¸ No nouns found in this chapter.", 'âš ï¸');
       return;
     }
 
@@ -4886,7 +4886,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (feedback) {
-        feedback.innerHTML = `<span class="text-emerald-700 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-xl text-xs font-black animate-pulse">🎉 Correct! ${currentNoun.de}</span>`;
+        feedback.innerHTML = `<span class="text-emerald-700 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-xl text-xs font-black animate-pulse">ðŸŽ‰ Correct! ${currentNoun.de}</span>`;
       }
 
       // Speak native German word with article!
@@ -4915,7 +4915,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (feedback) {
-        feedback.innerHTML = `<span class="text-rose-700 bg-rose-100 border border-rose-300 px-3 py-1 rounded-xl text-xs font-black">❌ Not quite! Correct answer: <span class="underline">${currentNoun.de}</span></span>`;
+        feedback.innerHTML = `<span class="text-rose-700 bg-rose-100 border border-rose-300 px-3 py-1 rounded-xl text-xs font-black">âŒ Not quite! Correct answer: <span class="underline">${currentNoun.de}</span></span>`;
       }
 
       // Speak correct pronunciation
@@ -4943,7 +4943,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (accuracyEl) accuracyEl.textContent = `${accuracy}%`;
     if (bestStreakEl) bestStreakEl.textContent = agBestStreak;
 
-    showFloatingToast('🏆 Der, Die, Das Session Completed!');
+    showFloatingToast('ðŸ† Der, Die, Das Session Completed!');
   }
 
   // ================= 19. EXPORT & DOWNLOAD ANNOTATED PDF PAGE ENGINE =================
@@ -4961,7 +4961,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderCanvas = document.getElementById('pdfRenderCanvas');
     const annotCanvas = document.getElementById('pdfAnnotationCanvas');
     if (!renderCanvas || renderCanvas.width === 0 || renderCanvas.height === 0) {
-      showFloatingToast('⚠️ PDF page not fully loaded!', '⚠️');
+      showFloatingToast('âš ï¸ PDF page not fully loaded!', 'âš ï¸');
       return null;
     }
 
@@ -5010,7 +5010,7 @@ document.addEventListener('DOMContentLoaded', () => {
           a.click();
           document.body.removeChild(a);
           setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
-          showFloatingToast('✨ Annotated page image successfully downloaded (PNG)!');
+          showFloatingToast('âœ¨ Annotated page image successfully downloaded (PNG)!');
         }, 'image/png');
       } else {
         fallbackDataUrlExport(mergedCanvas, fileName);
@@ -5030,10 +5030,10 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      showFloatingToast('✨ Annotated page image successfully downloaded (PNG)!');
+      showFloatingToast('âœ¨ Annotated page image successfully downloaded (PNG)!');
     } catch (err) {
       console.error("Fallback export failed:", err);
-      showFloatingToast('❌ Failed to download page image.', '❌');
+      showFloatingToast('âŒ Failed to download page image.', 'âŒ');
     }
   }
 
@@ -5047,7 +5047,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chapNum = (typeof currentChapterIndex !== 'undefined' ? currentChapterIndex + 1 : 1);
     const fileName = `Cheeya_Netzwerk_A1_Kapitel_${chapNum}_Hal_${currentPage}_annotated.pdf`;
 
-    showFloatingToast('⏳ Generating annotated PDF file...', '📄');
+    showFloatingToast('â³ Generating annotated PDF file...', 'ðŸ“„');
 
     // 1. If jsPDF library is available
     try {
@@ -5064,7 +5064,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         doc.addImage(imgData, 'JPEG', 0, 0, w, h);
         doc.save(fileName);
-        showFloatingToast('✨ Annotated PDF document downloaded successfully!', '📑');
+        showFloatingToast('âœ¨ Annotated PDF document downloaded successfully!', 'ðŸ“‘');
         return;
       }
     } catch (err) {
@@ -5076,7 +5076,7 @@ document.addEventListener('DOMContentLoaded', () => {
       downloadCanvasAsPdfDirect(mergedCanvas, fileName);
     } catch (fallbackErr) {
       console.error("Direct PDF export failed:", fallbackErr);
-      showFloatingToast('❌ Failed to download PDF document.', '❌');
+      showFloatingToast('âŒ Failed to download PDF document.', 'âŒ');
     }
   };
 
@@ -5157,14 +5157,14 @@ document.addEventListener('DOMContentLoaded', () => {
     a.click();
     document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
-    showFloatingToast('✨ Annotated PDF document downloaded successfully!', '📑');
+    showFloatingToast('âœ¨ Annotated PDF document downloaded successfully!', 'ðŸ“‘');
   }
 
   // Backward compatibility alias
   window.triggerPrintAnnotatedPdf = window.triggerDirectExportPdf;
 
   // ================= 20. FLOATING TOAST NOTIFICATION UTILITY =================
-  window.showFloatingToast = function(message, icon = '✨') {
+  window.showFloatingToast = function(message, icon = 'âœ¨') {
     const existing = document.querySelector('.floating-toast');
     if (existing) existing.remove();
 
@@ -5233,7 +5233,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ch.vocabList.forEach(item => {
         if (!item.de) return;
         const cleanDe = item.de.trim();
-        const artMatch = cleanDe.match(/^(der|die|das)\s+([A-Za-zÄÖÜäöüß\-]+)/i);
+        const artMatch = cleanDe.match(/^(der|die|das)\s+([A-Za-zÃ„Ã–ÃœÃ¤Ã¶Ã¼ÃŸ\-]+)/i);
         if (artMatch) {
           const article = artMatch[1].toLowerCase();
           const noun = artMatch[2].replace(/[,\/]/g, '').trim();
@@ -5245,7 +5245,7 @@ document.addEventListener('DOMContentLoaded', () => {
             type: 'noun'
           };
         } else if (item.type === 'verb') {
-          const verbMatch = cleanDe.match(/^([A-Za-zÄÖÜäöüß]+)/);
+          const verbMatch = cleanDe.match(/^([A-Za-zÃ„Ã–ÃœÃ¤Ã¶Ã¼ÃŸ]+)/);
           if (verbMatch) {
             const v = verbMatch[1].toLowerCase();
             VOCAB_LOOKUP_MAP[v] = {
@@ -5279,26 +5279,26 @@ document.addEventListener('DOMContentLoaded', () => {
     'seit': { case: 'Dativ', meaning: 'since / for (time duration)', meaningId: 'sejak / selama', type: 'Dative Preposition (Fest Dativ)', rule: 'Strictly requires Dativ (action started in past and still ongoing)' },
     'von': { case: 'Dativ', meaning: 'from / of', meaningId: 'dari / milik', type: 'Dative Preposition (Fest Dativ)', rule: 'Strictly requires Dativ (origin, starting point, or possession)' },
     'zu': { case: 'Dativ', meaning: 'to / towards', meaningId: 'ke (tempat/orang)', type: 'Dative Preposition (Fest Dativ)', rule: 'Strictly requires Dativ (direction towards people, buildings, or events)' },
-    'gegenüber': { case: 'Dativ', meaning: 'opposite / across from', meaningId: 'berseberangan dengan', type: 'Dative Preposition (Fest Dativ)', rule: 'Strictly requires Dativ (often placed postpositionally)' },
+    'gegenÃ¼ber': { case: 'Dativ', meaning: 'opposite / across from', meaningId: 'berseberangan dengan', type: 'Dative Preposition (Fest Dativ)', rule: 'Strictly requires Dativ (often placed postpositionally)' },
 
-    'für': { case: 'Akkusativ', meaning: 'for / on behalf of', meaningId: 'untuk', type: 'Accusative Preposition (Fest Akkusativ)', rule: 'Strictly requires Akkusativ (beneficiary, purpose, or duration)' },
+    'fÃ¼r': { case: 'Akkusativ', meaning: 'for / on behalf of', meaningId: 'untuk', type: 'Accusative Preposition (Fest Akkusativ)', rule: 'Strictly requires Akkusativ (beneficiary, purpose, or duration)' },
     'ohne': { case: 'Akkusativ', meaning: 'without', meaningId: 'tanpa', type: 'Accusative Preposition (Fest Akkusativ)', rule: 'Strictly requires Akkusativ (lack or absence)' },
     'durch': { case: 'Akkusativ', meaning: 'through', meaningId: 'melalui / melewati', type: 'Accusative Preposition (Fest Akkusativ)', rule: 'Strictly requires Akkusativ (motion passing through an enclosed space)' },
     'gegen': { case: 'Akkusativ', meaning: 'against / around (time)', meaningId: 'melawan / sekitar (waktu)', type: 'Accusative Preposition (Fest Akkusativ)', rule: 'Strictly requires Akkusativ (opposition or approximate time)' },
     'um': { case: 'Akkusativ', meaning: 'around / at (exact time)', meaningId: 'mengelilingi / pada (jam)', type: 'Accusative Preposition (Fest Akkusativ)', rule: 'Strictly requires Akkusativ (exact clock time or spatial circle)' },
     'bis': { case: 'Akkusativ', meaning: 'until / up to', meaningId: 'hingga / sampai', type: 'Accusative Preposition (Fest Akkusativ)', rule: 'Strictly requires Akkusativ (temporal endpoint or boundary)' },
 
-    'in': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'in / into', meaningId: 'di dalam / ke dalam', type: 'Two-Way Preposition (Wechselpräposition)', rule: 'Two-way preposition: Dativ for location (Wo?), Akkusativ for direction/movement (Wohin?)' },
-    'an': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'at / on (vertical contact)', meaningId: 'pada / di (kontak vertikal)', type: 'Two-Way Preposition (Wechselpräposition)', rule: 'Two-way preposition: Dativ for location (am Fenster), Akkusativ for movement towards (an die Wand)' },
-    'auf': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'on / onto (horizontal)', meaningId: 'di atas / ke atas (horizontal)', type: 'Two-Way Preposition (Wechselpräposition)', rule: 'Two-way preposition: Dativ for location (auf dem Tisch), Akkusativ for movement onto (auf den Tisch)' },
-    'neben': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'next to', meaningId: 'di samping', type: 'Two-Way Preposition (Wechselpräposition)', rule: 'Two-way preposition: next to' },
-    'hinter': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'behind', meaningId: 'di belakang', type: 'Two-Way Preposition (Wechselpräposition)', rule: 'Two-way preposition: behind' },
-    'über': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'over / above / across', meaningId: 'di atas / menyeberangi', type: 'Two-Way Preposition (Wechselpräposition)', rule: 'Two-way preposition: above or crossing over' },
-    'unter': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'under / below / among', meaningId: 'di bawah / di antara', type: 'Two-Way Preposition (Wechselpräposition)', rule: 'Two-way preposition: under or beneath' },
-    'vor': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'in front of / before / ago', meaningId: 'di depan / sebelum / yang lalu', type: 'Two-Way Preposition (Wechselpräposition)', rule: 'Two-way preposition: in front of (spatial) or before/ago (temporal Dativ)' },
-    'zwischen': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'between', meaningId: 'di antara (dua hal)', type: 'Two-Way Preposition (Wechselpräposition)', rule: 'Two-way preposition: between two entities' },
+    'in': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'in / into', meaningId: 'di dalam / ke dalam', type: 'Two-Way Preposition (WechselprÃ¤position)', rule: 'Two-way preposition: Dativ for location (Wo?), Akkusativ for direction/movement (Wohin?)' },
+    'an': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'at / on (vertical contact)', meaningId: 'pada / di (kontak vertikal)', type: 'Two-Way Preposition (WechselprÃ¤position)', rule: 'Two-way preposition: Dativ for location (am Fenster), Akkusativ for movement towards (an die Wand)' },
+    'auf': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'on / onto (horizontal)', meaningId: 'di atas / ke atas (horizontal)', type: 'Two-Way Preposition (WechselprÃ¤position)', rule: 'Two-way preposition: Dativ for location (auf dem Tisch), Akkusativ for movement onto (auf den Tisch)' },
+    'neben': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'next to', meaningId: 'di samping', type: 'Two-Way Preposition (WechselprÃ¤position)', rule: 'Two-way preposition: next to' },
+    'hinter': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'behind', meaningId: 'di belakang', type: 'Two-Way Preposition (WechselprÃ¤position)', rule: 'Two-way preposition: behind' },
+    'Ã¼ber': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'over / above / across', meaningId: 'di atas / menyeberangi', type: 'Two-Way Preposition (WechselprÃ¤position)', rule: 'Two-way preposition: above or crossing over' },
+    'unter': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'under / below / among', meaningId: 'di bawah / di antara', type: 'Two-Way Preposition (WechselprÃ¤position)', rule: 'Two-way preposition: under or beneath' },
+    'vor': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'in front of / before / ago', meaningId: 'di depan / sebelum / yang lalu', type: 'Two-Way Preposition (WechselprÃ¤position)', rule: 'Two-way preposition: in front of (spatial) or before/ago (temporal Dativ)' },
+    'zwischen': { case: 'Wechsel (Dativ / Akkusativ)', meaning: 'between', meaningId: 'di antara (dua hal)', type: 'Two-Way Preposition (WechselprÃ¤position)', rule: 'Two-way preposition: between two entities' },
 
-    'während': { case: 'Genitiv', meaning: 'during', meaningId: 'selama', type: 'Genitive Preposition', rule: 'Requires Genitiv (temporal duration)' },
+    'wÃ¤hrend': { case: 'Genitiv', meaning: 'during', meaningId: 'selama', type: 'Genitive Preposition', rule: 'Requires Genitiv (temporal duration)' },
     'wegen': { case: 'Genitiv', meaning: 'because of', meaningId: 'karena', type: 'Genitive Preposition', rule: 'Requires Genitiv (causation)' },
     'trotz': { case: 'Genitiv', meaning: 'despite', meaningId: 'meskipun / terlepas dari', type: 'Genitive Preposition', rule: 'Requires Genitiv (concession)' },
 
@@ -5342,19 +5342,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const GERMAN_ADJECTIVES_DICT = {
     'scharf': { en: 'spicy / sharp / hot', id: 'pedas / tajam' },
     'lecker': { en: 'delicious / tasty', id: 'lezat / enak' },
-    'süß': { en: 'sweet', id: 'manis' },
+    'sÃ¼ÃŸ': { en: 'sweet', id: 'manis' },
     'sauer': { en: 'sour / angry', id: 'asam / kesal' },
     'salzig': { en: 'salty', id: 'asin' },
     'bitter': { en: 'bitter', id: 'pahit' },
     'frisch': { en: 'fresh', id: 'segar' },
     'kalt': { en: 'cold', id: 'dingin' },
     'warm': { en: 'warm', id: 'hangat' },
-    'heiß': { en: 'hot', id: 'panas' },
-    'groß': { en: 'big / tall', id: 'besar / tinggi' },
+    'heiÃŸ': { en: 'hot', id: 'panas' },
+    'groÃŸ': { en: 'big / tall', id: 'besar / tinggi' },
     'klein': { en: 'small / short', id: 'kecil / pendek' },
     'gut': { en: 'good / well', id: 'bagus / baik' },
     'schlecht': { en: 'bad / poor', id: 'buruk / jelek' },
-    'schön': { en: 'beautiful / lovely', id: 'indah / cantik / bagus' },
+    'schÃ¶n': { en: 'beautiful / lovely', id: 'indah / cantik / bagus' },
     'neu': { en: 'new', id: 'baru' },
     'alt': { en: 'old', id: 'tua / lama' },
     'jung': { en: 'young', id: 'muda' },
@@ -5362,21 +5362,21 @@ document.addEventListener('DOMContentLoaded', () => {
     'langsam': { en: 'slow', id: 'lambat' },
     'teuer': { en: 'expensive', id: 'mahal' },
     'billig': { en: 'cheap', id: 'murah' },
-    'günstig': { en: 'affordable / favorable', id: 'terjangkau / menguntungkan' },
+    'gÃ¼nstig': { en: 'affordable / favorable', id: 'terjangkau / menguntungkan' },
     'leicht': { en: 'easy / light', id: 'mudah / ringan' },
     'schwer': { en: 'heavy / difficult', id: 'berat / sulit' },
     'einfach': { en: 'simple / easy', id: 'sederhana / mudah' },
     'rot': { en: 'red', id: 'merah' },
     'blau': { en: 'blue', id: 'biru' },
-    'grün': { en: 'green', id: 'hijau' },
+    'grÃ¼n': { en: 'green', id: 'hijau' },
     'gelb': { en: 'yellow', id: 'kuning' },
-    'weiß': { en: 'white', id: 'putih' },
+    'weiÃŸ': { en: 'white', id: 'putih' },
     'schwarz': { en: 'black', id: 'hitam' },
     'grau': { en: 'grey', id: 'abu-abu' },
     'braun': { en: 'brown', id: 'cokelat' },
     'hell': { en: 'bright / light', id: 'terang' },
     'dunkel': { en: 'dark', id: 'gelap' },
-    'müde': { en: 'tired', id: 'lelah' },
+    'mÃ¼de': { en: 'tired', id: 'lelah' },
     'krank': { en: 'sick / ill', id: 'sakit' },
     'gesund': { en: 'healthy', id: 'sehat' },
     'wichtig': { en: 'important', id: 'penting' },
@@ -5389,12 +5389,12 @@ document.addEventListener('DOMContentLoaded', () => {
     'toll': { en: 'great / fantastic', id: 'hebat / luar biasa' },
     'prima': { en: 'great / fine', id: 'sangat bagus' },
     'modern': { en: 'modern', id: 'modern' },
-    'gemütlich': { en: 'cozy / comfortable', id: 'nyaman' },
+    'gemÃ¼tlich': { en: 'cozy / comfortable', id: 'nyaman' },
     'sauber': { en: 'clean', id: 'bersih' },
     'schmutzig': { en: 'dirty', id: 'kotor' },
     'ruhig': { en: 'quiet / calm', id: 'tenang' },
     'laut': { en: 'loud / noisy', id: 'bising / keras' },
-    'fleißig': { en: 'diligent / hardworking', id: 'rajin' },
+    'fleiÃŸig': { en: 'diligent / hardworking', id: 'rajin' },
     'faul': { en: 'lazy', id: 'malas' },
     'klug': { en: 'clever / smart', id: 'pintar / cerdas' }
   };
@@ -5446,7 +5446,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const COMMON_GERMAN_NOUNS = {
     'nudeln': { gender: 'die', number: 'Plural', isPlural: true, de: 'die Nudeln (Pl.)', en: 'noodles / pasta', id: 'mi / pasta' },
     'nudel': { gender: 'die', number: 'Singular', de: 'die Nudel, -n', en: 'noodle', id: 'sebutir mi' },
-    'hähnchen': { gender: 'das', number: 'Singular', de: 'das Hähnchen, -', en: 'chicken (meat/dish)', id: 'ayam (daging/hidangan)' },
+    'hÃ¤hnchen': { gender: 'das', number: 'Singular', de: 'das HÃ¤hnchen, -', en: 'chicken (meat/dish)', id: 'ayam (daging/hidangan)' },
     'pizza': { gender: 'die', number: 'Singular', de: 'die Pizza, -s', en: 'pizza', id: 'pizza' },
     'kaffee': { gender: 'der', number: 'Singular', de: 'der Kaffee', en: 'coffee', id: 'kopi' },
     'tee': { gender: 'der', number: 'Singular', de: 'der Tee', en: 'tea', id: 'teh' },
@@ -5458,10 +5458,10 @@ document.addEventListener('DOMContentLoaded', () => {
     'fleisch': { gender: 'das', number: 'Singular', de: 'das Fleisch', en: 'meat', id: 'daging' },
     'fisch': { gender: 'der', number: 'Singular', de: 'der Fisch, -e', en: 'fish', id: 'ikan' },
     'reis': { gender: 'der', number: 'Singular', de: 'der Reis', en: 'rice', id: 'nasi' },
-    'käse': { gender: 'der', number: 'Singular', de: 'der Käse', en: 'cheese', id: 'keju' },
+    'kÃ¤se': { gender: 'der', number: 'Singular', de: 'der KÃ¤se', en: 'cheese', id: 'keju' },
     'salat': { gender: 'der', number: 'Singular', de: 'der Salat, -e', en: 'salad', id: 'salad' },
-    'apfel': { gender: 'der', number: 'Singular', de: 'der Apfel, -̈', en: 'apple', id: 'apel' },
-    'äpfel': { gender: 'die', number: 'Plural', isPlural: true, de: 'die Äpfel', en: 'apples', id: 'apel-apel' },
+    'apfel': { gender: 'der', number: 'Singular', de: 'der Apfel, -Ìˆ', en: 'apple', id: 'apel' },
+    'Ã¤pfel': { gender: 'die', number: 'Plural', isPlural: true, de: 'die Ã„pfel', en: 'apples', id: 'apel-apel' },
     'kartoffel': { gender: 'die', number: 'Singular', de: 'die Kartoffel, -n', en: 'potato', id: 'kentang' },
     'kartoffeln': { gender: 'die', number: 'Plural', isPlural: true, de: 'die Kartoffeln', en: 'potatoes', id: 'kentang-kentang' },
     'milch': { gender: 'die', number: 'Singular', de: 'die Milch', en: 'milk', id: 'susu' },
@@ -5470,15 +5470,15 @@ document.addEventListener('DOMContentLoaded', () => {
     'morgen': { gender: 'der', number: 'Singular', de: 'der Morgen', en: 'morning', id: 'pagi' },
     'abend': { gender: 'der', number: 'Singular', de: 'der Abend, -e', en: 'evening', id: 'malam (awal)' },
     'bus': { gender: 'der', number: 'Singular', de: 'der Bus, -se', en: 'bus', id: 'bus' },
-    'zug': { gender: 'der', number: 'Singular', de: 'der Zug, -̈e', en: 'train', id: 'kereta api' },
+    'zug': { gender: 'der', number: 'Singular', de: 'der Zug, -Ìˆe', en: 'train', id: 'kereta api' },
     'auto': { gender: 'das', number: 'Singular', de: 'das Auto, -s', en: 'car', id: 'mobil' },
-    'fahrrad': { gender: 'das', number: 'Singular', de: 'das Fahrrad, -̈er', en: 'bicycle', id: 'sepeda' },
-    'buch': { gender: 'das', number: 'Singular', de: 'das Buch, -̈er', en: 'book', id: 'buku' },
-    'bücher': { gender: 'die', number: 'Plural', isPlural: true, de: 'die Bücher', en: 'books', id: 'buku-buku' },
-    'haus': { gender: 'das', number: 'Singular', de: 'das Haus, -̈er', en: 'house', id: 'rumah' },
+    'fahrrad': { gender: 'das', number: 'Singular', de: 'das Fahrrad, -Ìˆer', en: 'bicycle', id: 'sepeda' },
+    'buch': { gender: 'das', number: 'Singular', de: 'das Buch, -Ìˆer', en: 'book', id: 'buku' },
+    'bÃ¼cher': { gender: 'die', number: 'Plural', isPlural: true, de: 'die BÃ¼cher', en: 'books', id: 'buku-buku' },
+    'haus': { gender: 'das', number: 'Singular', de: 'das Haus, -Ìˆer', en: 'house', id: 'rumah' },
     'freund': { gender: 'der', number: 'Singular', de: 'der Freund, -e', en: 'friend (male)', id: 'teman (laki-laki)' },
     'freundin': { gender: 'die', number: 'Singular', de: 'die Freundin, -nen', en: 'friend (female)', id: 'teman (perempuan)' },
-    'mann': { gender: 'der', number: 'Singular', de: 'der Mann, -̈er', en: 'man / husband', id: 'pria / suami' },
+    'mann': { gender: 'der', number: 'Singular', de: 'der Mann, -Ìˆer', en: 'man / husband', id: 'pria / suami' },
     'frau': { gender: 'die', number: 'Singular', de: 'die Frau, -en', en: 'woman / wife', id: 'wanita / istri' },
     'kind': { gender: 'das', number: 'Singular', de: 'das Kind, -er', en: 'child', id: 'anak' },
     'kinder': { gender: 'die', number: 'Plural', isPlural: true, de: 'die Kinder', en: 'children', id: 'anak-anak' },
@@ -5513,7 +5513,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Suffix heuristics
     let g = 'der';
     let num = 'Singular';
-    if (lower.endsWith('ung') || lower.endsWith('heit') || lower.endsWith('keit') || lower.endsWith('schaft') || lower.endsWith('tion') || lower.endsWith('tät') || lower.endsWith('ie')) {
+    if (lower.endsWith('ung') || lower.endsWith('heit') || lower.endsWith('keit') || lower.endsWith('schaft') || lower.endsWith('tion') || lower.endsWith('tÃ¤t') || lower.endsWith('ie')) {
       g = 'die';
     } else if (lower.endsWith('chen') || lower.endsWith('lein') || lower.endsWith('ment') || lower.endsWith('um')) {
       g = 'das';
@@ -5528,69 +5528,69 @@ document.addEventListener('DOMContentLoaded', () => {
   // ================= 5. KNOWN VERBS CONJUGATIONS =================
   const KNOWN_VERB_CONJUGATIONS = {
     // Modal Verbs
-    'möchte': { inf: 'mögen (möchten)', conjugated: 'möchte', person: '1st/3rd Person', number: 'Singular', tense: 'Präsens', mood: 'Konjunktiv II (höfliche Form)', modal: true, en: 'would like to', id: 'ingin / mau', governs: 'Infinitiv am Satzende', pattern: 'Modalverb + Infinitiv am Satzende' },
-    'möchtest': { inf: 'mögen (möchten)', conjugated: 'möchtest', person: '2nd Person', number: 'Singular', tense: 'Präsens', mood: 'Konjunktiv II', modal: true, en: 'would like to', id: 'ingin / mau', governs: 'Infinitiv am Satzende' },
-    'möchten': { inf: 'mögen (möchten)', conjugated: 'möchten', person: '1st/3rd Person', number: 'Plural', tense: 'Präsens', mood: 'Konjunktiv II', modal: true, en: 'would like to', id: 'ingin / mau', governs: 'Infinitiv am Satzende' },
-    'möchtet': { inf: 'mögen (möchten)', conjugated: 'möchtet', person: '2nd Person', number: 'Plural', tense: 'Präsens', mood: 'Konjunktiv II', modal: true, en: 'would like to', id: 'ingin / mau', governs: 'Infinitiv am Satzende' },
+    'mÃ¶chte': { inf: 'mÃ¶gen (mÃ¶chten)', conjugated: 'mÃ¶chte', person: '1st/3rd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Konjunktiv II (hÃ¶fliche Form)', modal: true, en: 'would like to', id: 'ingin / mau', governs: 'Infinitiv am Satzende', pattern: 'Modalverb + Infinitiv am Satzende' },
+    'mÃ¶chtest': { inf: 'mÃ¶gen (mÃ¶chten)', conjugated: 'mÃ¶chtest', person: '2nd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Konjunktiv II', modal: true, en: 'would like to', id: 'ingin / mau', governs: 'Infinitiv am Satzende' },
+    'mÃ¶chten': { inf: 'mÃ¶gen (mÃ¶chten)', conjugated: 'mÃ¶chten', person: '1st/3rd Person', number: 'Plural', tense: 'PrÃ¤sens', mood: 'Konjunktiv II', modal: true, en: 'would like to', id: 'ingin / mau', governs: 'Infinitiv am Satzende' },
+    'mÃ¶chtet': { inf: 'mÃ¶gen (mÃ¶chten)', conjugated: 'mÃ¶chtet', person: '2nd Person', number: 'Plural', tense: 'PrÃ¤sens', mood: 'Konjunktiv II', modal: true, en: 'would like to', id: 'ingin / mau', governs: 'Infinitiv am Satzende' },
 
-    'kann': { inf: 'können', conjugated: 'kann', person: '1st/3rd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', modal: true, en: 'can / able to', id: 'bisa / dapat', governs: 'Infinitiv am Satzende' },
-    'kannst': { inf: 'können', conjugated: 'kannst', person: '2nd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', modal: true, en: 'can', id: 'bisa', governs: 'Infinitiv am Satzende' },
-    'können': { inf: 'können', conjugated: 'können', person: '1st/3rd Person', number: 'Plural', tense: 'Präsens', mood: 'Indikativ / Infinitiv', modal: true, en: 'can', id: 'bisa', governs: 'Infinitiv am Satzende' },
+    'kann': { inf: 'kÃ¶nnen', conjugated: 'kann', person: '1st/3rd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', modal: true, en: 'can / able to', id: 'bisa / dapat', governs: 'Infinitiv am Satzende' },
+    'kannst': { inf: 'kÃ¶nnen', conjugated: 'kannst', person: '2nd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', modal: true, en: 'can', id: 'bisa', governs: 'Infinitiv am Satzende' },
+    'kÃ¶nnen': { inf: 'kÃ¶nnen', conjugated: 'kÃ¶nnen', person: '1st/3rd Person', number: 'Plural', tense: 'PrÃ¤sens', mood: 'Indikativ / Infinitiv', modal: true, en: 'can', id: 'bisa', governs: 'Infinitiv am Satzende' },
 
-    'muss': { inf: 'müssen', conjugated: 'muss', person: '1st/3rd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', modal: true, en: 'must / have to', id: 'harus', governs: 'Infinitiv am Satzende' },
-    'musst': { inf: 'müssen', conjugated: 'musst', person: '2nd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', modal: true, en: 'must', id: 'harus', governs: 'Infinitiv am Satzende' },
-    'müssen': { inf: 'müssen', conjugated: 'müssen', person: '1st/3rd Person', number: 'Plural', tense: 'Präsens', mood: 'Indikativ / Infinitiv', modal: true, en: 'must', id: 'harus', governs: 'Infinitiv am Satzende' },
+    'muss': { inf: 'mÃ¼ssen', conjugated: 'muss', person: '1st/3rd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', modal: true, en: 'must / have to', id: 'harus', governs: 'Infinitiv am Satzende' },
+    'musst': { inf: 'mÃ¼ssen', conjugated: 'musst', person: '2nd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', modal: true, en: 'must', id: 'harus', governs: 'Infinitiv am Satzende' },
+    'mÃ¼ssen': { inf: 'mÃ¼ssen', conjugated: 'mÃ¼ssen', person: '1st/3rd Person', number: 'Plural', tense: 'PrÃ¤sens', mood: 'Indikativ / Infinitiv', modal: true, en: 'must', id: 'harus', governs: 'Infinitiv am Satzende' },
 
-    'will': { inf: 'wollen', conjugated: 'will', person: '1st/3rd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', modal: true, en: 'want to', id: 'ingin / mau', governs: 'Infinitiv am Satzende' },
-    'willst': { inf: 'wollen', conjugated: 'willst', person: '2nd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', modal: true, en: 'want to', id: 'ingin', governs: 'Infinitiv am Satzende' },
-    'wollen': { inf: 'wollen', conjugated: 'wollen', person: '1st/3rd Person', number: 'Plural', tense: 'Präsens', mood: 'Indikativ / Infinitiv', modal: true, en: 'want to', id: 'ingin', governs: 'Infinitiv am Satzende' },
+    'will': { inf: 'wollen', conjugated: 'will', person: '1st/3rd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', modal: true, en: 'want to', id: 'ingin / mau', governs: 'Infinitiv am Satzende' },
+    'willst': { inf: 'wollen', conjugated: 'willst', person: '2nd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', modal: true, en: 'want to', id: 'ingin', governs: 'Infinitiv am Satzende' },
+    'wollen': { inf: 'wollen', conjugated: 'wollen', person: '1st/3rd Person', number: 'Plural', tense: 'PrÃ¤sens', mood: 'Indikativ / Infinitiv', modal: true, en: 'want to', id: 'ingin', governs: 'Infinitiv am Satzende' },
 
-    'darf': { inf: 'dürfen', conjugated: 'darf', person: '1st/3rd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', modal: true, en: 'may / allowed to', id: 'boleh', governs: 'Infinitiv am Satzende' },
-    'dürfen': { inf: 'dürfen', conjugated: 'dürfen', person: '1st/3rd Person', number: 'Plural', tense: 'Präsens', mood: 'Indikativ / Infinitiv', modal: true, en: 'may', id: 'boleh', governs: 'Infinitiv am Satzende' },
+    'darf': { inf: 'dÃ¼rfen', conjugated: 'darf', person: '1st/3rd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', modal: true, en: 'may / allowed to', id: 'boleh', governs: 'Infinitiv am Satzende' },
+    'dÃ¼rfen': { inf: 'dÃ¼rfen', conjugated: 'dÃ¼rfen', person: '1st/3rd Person', number: 'Plural', tense: 'PrÃ¤sens', mood: 'Indikativ / Infinitiv', modal: true, en: 'may', id: 'boleh', governs: 'Infinitiv am Satzende' },
 
-    'soll': { inf: 'sollen', conjugated: 'soll', person: '1st/3rd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', modal: true, en: 'should / supposed to', id: 'seharusnya', governs: 'Infinitiv am Satzende' },
-    'sollen': { inf: 'sollen', conjugated: 'soll', person: '1st/3rd Person', number: 'Plural', tense: 'Präsens', mood: 'Indikativ / Infinitiv', modal: true, en: 'should', id: 'seharusnya', governs: 'Infinitiv am Satzende' },
+    'soll': { inf: 'sollen', conjugated: 'soll', person: '1st/3rd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', modal: true, en: 'should / supposed to', id: 'seharusnya', governs: 'Infinitiv am Satzende' },
+    'sollen': { inf: 'sollen', conjugated: 'soll', person: '1st/3rd Person', number: 'Plural', tense: 'PrÃ¤sens', mood: 'Indikativ / Infinitiv', modal: true, en: 'should', id: 'seharusnya', governs: 'Infinitiv am Satzende' },
 
     // Full Verbs
-    'esse': { inf: 'essen', conjugated: 'esse', person: '1st Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'eat', id: 'makan', governs: 'Akkusativ' },
-    'isst': { inf: 'essen', conjugated: 'isst', person: '2nd/3rd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'eats', id: 'makan', governs: 'Akkusativ', note: 'Strong verb with vowel shift: e -> i' },
-    'essen': { inf: 'essen', conjugated: 'essen', person: 'Infinitive / 1st/3rd Plural', number: 'Plural', tense: 'Präsens / Infinitiv', mood: 'Infinitiv / Indikativ', en: 'eat', id: 'makan', governs: 'Akkusativ', pattern: 'essen + Akkusativ' },
+    'esse': { inf: 'essen', conjugated: 'esse', person: '1st Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'eat', id: 'makan', governs: 'Akkusativ' },
+    'isst': { inf: 'essen', conjugated: 'isst', person: '2nd/3rd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'eats', id: 'makan', governs: 'Akkusativ', note: 'Strong verb with vowel shift: e -> i' },
+    'essen': { inf: 'essen', conjugated: 'essen', person: 'Infinitive / 1st/3rd Plural', number: 'Plural', tense: 'PrÃ¤sens / Infinitiv', mood: 'Infinitiv / Indikativ', en: 'eat', id: 'makan', governs: 'Akkusativ', pattern: 'essen + Akkusativ' },
 
-    'trinke': { inf: 'trinken', conjugated: 'trinke', person: '1st Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'drink', id: 'minum', governs: 'Akkusativ' },
-    'trinkst': { inf: 'trinken', conjugated: 'trinkst', person: '2nd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'drink', id: 'minum', governs: 'Akkusativ' },
-    'trinkt': { inf: 'trinken', conjugated: 'trinkt', person: '3rd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'drinks', id: 'minum', governs: 'Akkusativ' },
-    'trinken': { inf: 'trinken', conjugated: 'trinken', person: 'Infinitive / 1st/3rd Plural', number: 'Plural', tense: 'Präsens / Infinitiv', mood: 'Infinitiv / Indikativ', en: 'drink', id: 'minum', governs: 'Akkusativ', pattern: 'trinken + Akkusativ' },
+    'trinke': { inf: 'trinken', conjugated: 'trinke', person: '1st Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'drink', id: 'minum', governs: 'Akkusativ' },
+    'trinkst': { inf: 'trinken', conjugated: 'trinkst', person: '2nd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'drink', id: 'minum', governs: 'Akkusativ' },
+    'trinkt': { inf: 'trinken', conjugated: 'trinkt', person: '3rd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'drinks', id: 'minum', governs: 'Akkusativ' },
+    'trinken': { inf: 'trinken', conjugated: 'trinken', person: 'Infinitive / 1st/3rd Plural', number: 'Plural', tense: 'PrÃ¤sens / Infinitiv', mood: 'Infinitiv / Indikativ', en: 'drink', id: 'minum', governs: 'Akkusativ', pattern: 'trinken + Akkusativ' },
 
-    'habe': { inf: 'haben', conjugated: 'habe', person: '1st Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'have', id: 'punya / memiliki', governs: 'Akkusativ' },
-    'hast': { inf: 'haben', conjugated: 'hast', person: '2nd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'have', id: 'punya', governs: 'Akkusativ' },
-    'hat': { inf: 'haben', conjugated: 'hat', person: '3rd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'has', id: 'punya', governs: 'Akkusativ' },
-    'haben': { inf: 'haben', conjugated: 'haben', person: 'Infinitive / 1st/3rd Plural', number: 'Plural', tense: 'Präsens / Infinitiv', mood: 'Infinitiv / Indikativ', en: 'have', id: 'punya', governs: 'Akkusativ' },
+    'habe': { inf: 'haben', conjugated: 'habe', person: '1st Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'have', id: 'punya / memiliki', governs: 'Akkusativ' },
+    'hast': { inf: 'haben', conjugated: 'hast', person: '2nd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'have', id: 'punya', governs: 'Akkusativ' },
+    'hat': { inf: 'haben', conjugated: 'hat', person: '3rd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'has', id: 'punya', governs: 'Akkusativ' },
+    'haben': { inf: 'haben', conjugated: 'haben', person: 'Infinitive / 1st/3rd Plural', number: 'Plural', tense: 'PrÃ¤sens / Infinitiv', mood: 'Infinitiv / Indikativ', en: 'have', id: 'punya', governs: 'Akkusativ' },
 
-    'bin': { inf: 'sein', conjugated: 'bin', person: '1st Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', copula: true, en: 'am', id: 'adalah', governs: 'Nominativ (Kopula)' },
-    'bist': { inf: 'sein', conjugated: 'bist', person: '2nd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', copula: true, en: 'are', id: 'adalah', governs: 'Nominativ (Kopula)' },
-    'ist': { inf: 'sein', conjugated: 'ist', person: '3rd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', copula: true, en: 'is', id: 'adalah', governs: 'Nominativ (Kopula)' },
-    'sind': { inf: 'sein', conjugated: 'sind', person: '1st/3rd Person', number: 'Plural', tense: 'Präsens', mood: 'Indikativ', copula: true, en: 'are', id: 'adalah', governs: 'Nominativ (Kopula)' },
+    'bin': { inf: 'sein', conjugated: 'bin', person: '1st Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', copula: true, en: 'am', id: 'adalah', governs: 'Nominativ (Kopula)' },
+    'bist': { inf: 'sein', conjugated: 'bist', person: '2nd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', copula: true, en: 'are', id: 'adalah', governs: 'Nominativ (Kopula)' },
+    'ist': { inf: 'sein', conjugated: 'ist', person: '3rd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', copula: true, en: 'is', id: 'adalah', governs: 'Nominativ (Kopula)' },
+    'sind': { inf: 'sein', conjugated: 'sind', person: '1st/3rd Person', number: 'Plural', tense: 'PrÃ¤sens', mood: 'Indikativ', copula: true, en: 'are', id: 'adalah', governs: 'Nominativ (Kopula)' },
     'sein': { inf: 'sein', conjugated: 'sein', person: 'Infinitive', number: 'Singular', tense: 'Infinitiv', mood: 'Infinitiv', copula: true, en: 'be', id: 'menjadi / adalah', governs: 'Nominativ (Kopula)' },
 
-    'lerne': { inf: 'lernen', conjugated: 'lerne', person: '1st Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'learn', id: 'belajar', governs: 'Akkusativ' },
-    'lernst': { inf: 'lernen', conjugated: 'lernst', person: '2nd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'learn', id: 'belajar', governs: 'Akkusativ' },
-    'lernt': { inf: 'lernen', conjugated: 'lernt', person: '3rd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'learns', id: 'belajar', governs: 'Akkusativ' },
-    'lernen': { inf: 'lernen', conjugated: 'lernen', person: 'Infinitive / 1st/3rd Plural', number: 'Plural', tense: 'Präsens / Infinitiv', mood: 'Infinitiv / Indikativ', en: 'learn', id: 'belajar', governs: 'Akkusativ' },
+    'lerne': { inf: 'lernen', conjugated: 'lerne', person: '1st Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'learn', id: 'belajar', governs: 'Akkusativ' },
+    'lernst': { inf: 'lernen', conjugated: 'lernst', person: '2nd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'learn', id: 'belajar', governs: 'Akkusativ' },
+    'lernt': { inf: 'lernen', conjugated: 'lernt', person: '3rd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'learns', id: 'belajar', governs: 'Akkusativ' },
+    'lernen': { inf: 'lernen', conjugated: 'lernen', person: 'Infinitive / 1st/3rd Plural', number: 'Plural', tense: 'PrÃ¤sens / Infinitiv', mood: 'Infinitiv / Indikativ', en: 'learn', id: 'belajar', governs: 'Akkusativ' },
 
-    'helfe': { inf: 'helfen', conjugated: 'helfe', person: '1st Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'help', id: 'membantu', governs: 'Dativ' },
-    'hilfst': { inf: 'helfen', conjugated: 'hilfst', person: '2nd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'help', id: 'membantu', governs: 'Dativ' },
-    'hilft': { inf: 'helfen', conjugated: 'hilft', person: '3rd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'helps', id: 'membantu', governs: 'Dativ' },
-    'helfen': { inf: 'helfen', conjugated: 'helfen', person: 'Infinitive / 1st/3rd Plural', number: 'Plural', tense: 'Präsens / Infinitiv', mood: 'Infinitiv / Indikativ', en: 'help', id: 'membantu', governs: 'Dativ' },
+    'helfe': { inf: 'helfen', conjugated: 'helfe', person: '1st Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'help', id: 'membantu', governs: 'Dativ' },
+    'hilfst': { inf: 'helfen', conjugated: 'hilfst', person: '2nd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'help', id: 'membantu', governs: 'Dativ' },
+    'hilft': { inf: 'helfen', conjugated: 'hilft', person: '3rd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'helps', id: 'membantu', governs: 'Dativ' },
+    'helfen': { inf: 'helfen', conjugated: 'helfen', person: 'Infinitive / 1st/3rd Plural', number: 'Plural', tense: 'PrÃ¤sens / Infinitiv', mood: 'Infinitiv / Indikativ', en: 'help', id: 'membantu', governs: 'Dativ' },
 
-    'danke': { inf: 'danken', conjugated: 'danke', person: '1st Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'thank', id: 'berterima kasih', governs: 'Dativ' },
-    'dankst': { inf: 'danken', conjugated: 'dankst', person: '2nd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'thank', id: 'berterima kasih', governs: 'Dativ' },
-    'dankt': { inf: 'danken', conjugated: 'dankt', person: '3rd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'thanks', id: 'berterima kasih', governs: 'Dativ' },
-    'danken': { inf: 'danken', conjugated: 'danken', person: 'Infinitive / 1st/3rd Plural', number: 'Plural', tense: 'Präsens / Infinitiv', mood: 'Infinitiv / Indikativ', en: 'thank', id: 'berterima kasih', governs: 'Dativ' },
+    'danke': { inf: 'danken', conjugated: 'danke', person: '1st Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'thank', id: 'berterima kasih', governs: 'Dativ' },
+    'dankst': { inf: 'danken', conjugated: 'dankst', person: '2nd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'thank', id: 'berterima kasih', governs: 'Dativ' },
+    'dankt': { inf: 'danken', conjugated: 'dankt', person: '3rd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'thanks', id: 'berterima kasih', governs: 'Dativ' },
+    'danken': { inf: 'danken', conjugated: 'danken', person: 'Infinitive / 1st/3rd Plural', number: 'Plural', tense: 'PrÃ¤sens / Infinitiv', mood: 'Infinitiv / Indikativ', en: 'thank', id: 'berterima kasih', governs: 'Dativ' },
 
-    'kaufe': { inf: 'kaufen', conjugated: 'kaufe', person: '1st Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'buy', id: 'membeli', governs: 'Akkusativ' },
-    'kaufst': { inf: 'kaufen', conjugated: 'kaufst', person: '2nd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'buy', id: 'membeli', governs: 'Akkusativ' },
-    'kauft': { inf: 'kaufen', conjugated: 'kauft', person: '3rd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: 'buys', id: 'membeli', governs: 'Akkusativ' },
-    'kaufen': { inf: 'kaufen', conjugated: 'kaufen', person: 'Infinitive / 1st/3rd Plural', number: 'Plural', tense: 'Präsens / Infinitiv', mood: 'Infinitiv / Indikativ', en: 'buy', id: 'membeli', governs: 'Akkusativ' }
+    'kaufe': { inf: 'kaufen', conjugated: 'kaufe', person: '1st Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'buy', id: 'membeli', governs: 'Akkusativ' },
+    'kaufst': { inf: 'kaufen', conjugated: 'kaufst', person: '2nd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'buy', id: 'membeli', governs: 'Akkusativ' },
+    'kauft': { inf: 'kaufen', conjugated: 'kauft', person: '3rd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: 'buys', id: 'membeli', governs: 'Akkusativ' },
+    'kaufen': { inf: 'kaufen', conjugated: 'kaufen', person: 'Infinitive / 1st/3rd Plural', number: 'Plural', tense: 'PrÃ¤sens / Infinitiv', mood: 'Infinitiv / Indikativ', en: 'buy', id: 'membeli', governs: 'Akkusativ' }
   };
 
   const QUESTION_WORDS_DICT = {
@@ -5655,14 +5655,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const tgtLabel = document.getElementById('transTargetLabel');
 
     const names = {
-      'en': '🇬🇧 English Sentence',
-      'id': '🇮🇩 Indonesian Sentence',
-      'de': '🇩🇪 German Sentence (Deutsch)'
+      'en': 'ðŸ‡¬ðŸ‡§ English Sentence',
+      'id': 'ðŸ‡®ðŸ‡© Indonesian Sentence',
+      'de': 'ðŸ‡©ðŸ‡ª German Sentence (Deutsch)'
     };
     const tgtNames = {
-      'en': '🇬🇧 English Translation',
-      'id': '🇮🇩 Indonesian Translation',
-      'de': '🇩🇪 German Translation & Analysis'
+      'en': 'ðŸ‡¬ðŸ‡§ English Translation',
+      'id': 'ðŸ‡®ðŸ‡© Indonesian Translation',
+      'de': 'ðŸ‡©ðŸ‡ª German Translation & Analysis'
     };
 
     if (srcLabel) srcLabel.textContent = names[src] || 'Source Sentence';
@@ -5727,13 +5727,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!outputEl) return;
     const text = outputEl.innerText || outputEl.textContent;
     if (!text || text.includes('Translation and grammar breakdown')) {
-      showFloatingToast('⚠️ No translated text to copy yet.', '⚠️');
+      showFloatingToast('âš ï¸ No translated text to copy yet.', 'âš ï¸');
       return;
     }
     navigator.clipboard.writeText(text).then(() => {
-      showFloatingToast('📋 Translation copied to clipboard!');
+      showFloatingToast('ðŸ“‹ Translation copied to clipboard!');
     }).catch(() => {
-      showFloatingToast('📋 Translation copied!');
+      showFloatingToast('ðŸ“‹ Translation copied!');
     });
   };
 
@@ -5743,7 +5743,7 @@ document.addEventListener('DOMContentLoaded', () => {
       currentTargetGermanText = outputEl ? outputEl.textContent.trim() : '';
     }
     if (!currentTargetGermanText || currentTargetGermanText.includes('Translation and grammar breakdown')) {
-      showFloatingToast('⚠️ No German text available to pronounce yet.', '⚠️');
+      showFloatingToast('âš ï¸ No German text available to pronounce yet.', 'âš ï¸');
       return;
     }
     const btn = document.getElementById('transAudioBtn');
@@ -5760,7 +5760,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const text = inputEl ? inputEl.value.trim() : '';
     if (!text) {
-      showFloatingToast('⚠️ Please enter a sentence to translate.', '⚠️');
+      showFloatingToast('âš ï¸ Please enter a sentence to translate.', 'âš ï¸');
       return;
     }
 
@@ -5850,14 +5850,14 @@ document.addEventListener('DOMContentLoaded', () => {
         analysisContainer.classList.add('hidden');
       }
 
-      showFloatingToast('✨ Translation & Grammar Analysis ready!');
+      showFloatingToast('âœ¨ Translation & Grammar Analysis ready!');
 
       // Update notebook star state
       const starIcon = document.getElementById('transSaveStarIcon');
       if (starIcon) {
         const savedList = typeof loadSavedSentences === 'function' ? loadSavedSentences() : [];
         const isAlreadySaved = savedList.some(item => item.german === (currentTargetGermanText || translatedText));
-        starIcon.textContent = isAlreadySaved ? '🌟' : '⭐';
+        starIcon.textContent = isAlreadySaved ? 'ðŸŒŸ' : 'â­';
       }
 
       // Gamification tracking
@@ -5870,9 +5870,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       console.error("Translation or grammar analysis error:", err);
       if (outputEl) {
-        outputEl.innerHTML = `<span class="text-rose-600 text-xs font-bold">⚠️ Translation service temporarily unavailable. Please check your connection.</span>`;
+        outputEl.innerHTML = `<span class="text-rose-600 text-xs font-bold">âš ï¸ Translation service temporarily unavailable. Please check your connection.</span>`;
       }
-      showFloatingToast('❌ Translation failed.', '❌');
+      showFloatingToast('âŒ Translation failed.', 'âŒ');
     } finally {
       if (loadingEl) loadingEl.classList.add('hidden');
     }
@@ -5887,7 +5887,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!rawTokens.length) return '';
 
     const tokens = rawTokens.map((tok, idx) => {
-      const clean = tok.replace(/^[„“"'(\[]+|[.,!?:;)"'\]]+$/g, '');
+      const clean = tok.replace(/^[â€žâ€œ"'(\[]+|[.,!?:;)"'\]]+$/g, '');
       const lower = clean.toLowerCase();
       return { raw: tok, clean: clean, lower: lower, index: idx };
     }).filter(t => t.clean.length > 0);
@@ -5908,9 +5908,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const t = tokens[i];
       let vInfo = KNOWN_VERB_CONJUGATIONS[t.lower];
       if (!vInfo && i > 0 && !finiteVerbToken) {
-        if (t.lower.endsWith('e')) vInfo = { inf: t.lower + 'n', conjugated: t.clean, person: '1st Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: t.lower, id: t.lower, governs: 'Akkusativ' };
-        else if (t.lower.endsWith('st')) vInfo = { inf: t.lower.slice(0, -2) + 'en', conjugated: t.clean, person: '2nd Person', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: t.lower, id: t.lower, governs: 'Akkusativ' };
-        else if (t.lower.endsWith('t')) vInfo = { inf: t.lower.slice(0, -1) + 'en', conjugated: t.clean, person: '3rd Person / 2nd Plur.', number: 'Singular', tense: 'Präsens', mood: 'Indikativ', en: t.lower, id: t.lower, governs: 'Akkusativ' };
+        if (t.lower.endsWith('e')) vInfo = { inf: t.lower + 'n', conjugated: t.clean, person: '1st Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: t.lower, id: t.lower, governs: 'Akkusativ' };
+        else if (t.lower.endsWith('st')) vInfo = { inf: t.lower.slice(0, -2) + 'en', conjugated: t.clean, person: '2nd Person', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: t.lower, id: t.lower, governs: 'Akkusativ' };
+        else if (t.lower.endsWith('t')) vInfo = { inf: t.lower.slice(0, -1) + 'en', conjugated: t.clean, person: '3rd Person / 2nd Plur.', number: 'Singular', tense: 'PrÃ¤sens', mood: 'Indikativ', en: t.lower, id: t.lower, governs: 'Akkusativ' };
       }
 
       if (vInfo) {
@@ -5951,7 +5951,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Step B: Sentence Type & Word Order Pattern
     let sentenceType = 'Hauptsatz (Subject-First Main Clause)';
     let sentenceBadge = 'bg-emerald-100 text-emerald-800 border-emerald-300';
-    let sentenceTopic = 'Modalverb-Satzklammer & Präpositionalgefüge';
+    let sentenceTopic = 'Modalverb-Satzklammer & PrÃ¤positionalgefÃ¼ge';
     let wordOrderDesc = '';
     let isSubordinate = false;
 
@@ -6011,7 +6011,7 @@ document.addEventListener('DOMContentLoaded', () => {
         rightPos: nonFiniteVerbToken.index + 1,
         desc: `The conjugated modal verb <strong>"${finiteVerbToken.token.clean}"</strong> sits in <strong>Position 2</strong> (opening the bracket), while the main action verb <strong>"${nonFiniteVerbToken.token.clean}"</strong> is placed at the <strong>very end of the clause in base infinitive form</strong> (closing the bracket). Everything else is held inside the Mittelfeld.`
       };
-      sentenceTopic = 'Modalverb (*möchten*) + Infinitiv am Satzende (Satzklammer)';
+      sentenceTopic = 'Modalverb (*mÃ¶chten*) + Infinitiv am Satzende (Satzklammer)';
     }
 
     // Step C: CEFR Level Estimate
@@ -6020,7 +6020,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let cefrBadgeColor = 'bg-emerald-100 text-emerald-800 border-emerald-300';
     let cefrReason = 'Uses core everyday vocabulary (food, desires) with standard modal verb bracket.';
 
-    if (isSubordinate || germanText.includes('würde') || germanText.includes('hätte') || germanText.includes('wäre')) {
+    if (isSubordinate || germanText.includes('wÃ¼rde') || germanText.includes('hÃ¤tte') || germanText.includes('wÃ¤re')) {
       cefrLevel = 'B1';
       cefrTag = 'Intermediate (Threshold)';
       cefrBadgeColor = 'bg-indigo-100 text-indigo-800 border-indigo-300';
@@ -6041,8 +6041,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const prev = i > 0 ? tokens[i - 1] : null;
       const next = i + 1 < tokens.length ? tokens[i + 1] : null;
 
-      // Adjective ending check after preposition (e.g. mit scharfer Hähnchen)
-      if (prev && GERMAN_PREPOSITIONS_DICT[prev.lower] && next && (/^[A-ZÄÖÜ]/.test(next.clean) || COMMON_GERMAN_NOUNS[next.lower])) {
+      // Adjective ending check after preposition (e.g. mit scharfer HÃ¤hnchen)
+      if (prev && GERMAN_PREPOSITIONS_DICT[prev.lower] && next && (/^[A-ZÃ„Ã–Ãœ]/.test(next.clean) || COMMON_GERMAN_NOUNS[next.lower])) {
         const pInfo = GERMAN_PREPOSITIONS_DICT[prev.lower];
         const nInfo = resolveGermanNoun(next.clean);
         const adj = detectGermanAdjective(t.clean);
@@ -6053,19 +6053,19 @@ document.addEventListener('DOMContentLoaded', () => {
             detectedErrors.push({
               original: t.clean,
               corrected: correctForm,
-              reason: `The preposition <strong>"${prev.clean}"</strong> requires the <strong>Dativ</strong> case. <strong>"${next.clean}"</strong> is neuter (<em>das Hähnchen</em>). Without an article (Nullartikel), the adjective takes the strong ending <strong class="text-emerald-700">-em</strong> (<em>${correctForm}</em>), NOT <em>${t.clean}</em>.`
+              reason: `The preposition <strong>"${prev.clean}"</strong> requires the <strong>Dativ</strong> case. <strong>"${next.clean}"</strong> is neuter (<em>das HÃ¤hnchen</em>). Without an article (Nullartikel), the adjective takes the strong ending <strong class="text-emerald-700">-em</strong> (<em>${correctForm}</em>), NOT <em>${t.clean}</em>.`
             });
             correctedTokens[i] = `<mark class="bg-emerald-200 text-emerald-950 font-black px-1.5 py-0.5 rounded">${correctForm}</mark>`;
           }
         }
       }
 
-      // Preposition case error (e.g. für dir -> für dich)
-      if (t.lower === 'dir' && prev && prev.lower === 'für') {
+      // Preposition case error (e.g. fÃ¼r dir -> fÃ¼r dich)
+      if (t.lower === 'dir' && prev && prev.lower === 'fÃ¼r') {
         detectedErrors.push({
           original: 'dir',
           corrected: 'dich',
-          reason: `The preposition <strong>"für"</strong> strictly requires the <strong>Akkusativ</strong> case. The accusative form of "du" is <strong>"dich"</strong> (never <em>dir</em>).`
+          reason: `The preposition <strong>"fÃ¼r"</strong> strictly requires the <strong>Akkusativ</strong> case. The accusative form of "du" is <strong>"dich"</strong> (never <em>dir</em>).`
         });
         correctedTokens[i] = `<mark class="bg-emerald-200 text-emerald-950 font-black px-1.5 py-0.5 rounded">dich</mark>`;
       }
@@ -6212,7 +6212,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (adj) {
           const govPrep = findGoverningPreposition(tokens, i);
           const prepInfo = govPrep ? GERMAN_PREPOSITIONS_DICT[govPrep.lower] : null;
-          const nextNoun = (next && (/^[A-ZÄÖÜ]/.test(next.clean) || COMMON_GERMAN_NOUNS[next.lower])) ? resolveGermanNoun(next.clean) : null;
+          const nextNoun = (next && (/^[A-ZÃ„Ã–Ãœ]/.test(next.clean) || COMMON_GERMAN_NOUNS[next.lower])) ? resolveGermanNoun(next.clean) : null;
 
           let adjCase = prepInfo ? (prepInfo.case.includes('Dativ') ? 'Dativ' : 'Akkusativ') : 'Nominativ';
           let adjGender = nextNoun ? nextNoun.gender : 'Neuter';
@@ -6244,7 +6244,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // 6. Noun
         else {
-          const isCapital = /^[A-ZÄÖÜ]/.test(t.clean);
+          const isCapital = /^[A-ZÃ„Ã–Ãœ]/.test(t.clean);
           const nInfo = resolveGermanNoun(t.clean);
           const govPrep = findGoverningPreposition(tokens, i);
 
@@ -6258,7 +6258,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (govPrep) {
             const prepCase = GERMAN_PREPOSITIONS_DICT[govPrep.lower]?.case || 'Dativ';
             item.case = prepCase.includes('Dativ') ? 'Dativ' : (prepCase.includes('Akkusativ') ? 'Akkusativ' : 'Dativ');
-            item.func = 'Prepositional Object (Dativ-Ergänzung)';
+            item.func = 'Prepositional Object (Dativ-ErgÃ¤nzung)';
             item.reason = `Governed by preposition "${govPrep.clean}", which strictly demands the ${item.case} case.`;
             casesFound[item.case].push({ word: t.clean, role: 'Prepositional Object', reason: `Governed by preposition "${govPrep.clean}" requiring ${item.case}.` });
           } else {
@@ -6315,15 +6315,15 @@ document.addEventListener('DOMContentLoaded', () => {
           <div>
             <div class="flex items-center justify-between gap-1 pb-1.5 border-b border-sky-100">
               <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md border ${tagBg}">${w.pos}</span>
-              <button onclick="playGermanSpeech(decodeURIComponent('${encodeURIComponent(w.word)}'), this)" class="p-1 rounded-md text-sky-600 hover:bg-sky-100 transition cursor-pointer" title="Listen">🔊</button>
+              <button onclick="playGermanSpeech(decodeURIComponent('${encodeURIComponent(w.word)}'), this)" class="p-1 rounded-md text-sky-600 hover:bg-sky-100 transition cursor-pointer" title="Listen">ðŸ”Š</button>
             </div>
             <div class="mt-1.5">
               <div class="text-base font-black text-sky-950">${w.word}</div>
               <div class="text-[11px] font-bold text-sky-700">Base / Lemma: <span class="text-sky-950 font-black">${w.lemma}</span></div>
             </div>
             <div class="mt-1 text-[11px] text-sky-900 space-y-0.5">
-              <div>🇬🇧 <strong>Meaning:</strong> ${w.en || '-'}</div>
-              ${isIndo ? `<div>🇮🇩 <strong>ID:</strong> ${w.id || '-'}</div>` : ''}
+              <div>ðŸ‡¬ðŸ‡§ <strong>Meaning:</strong> ${w.en || '-'}</div>
+              ${isIndo ? `<div>ðŸ‡®ðŸ‡© <strong>ID:</strong> ${w.id || '-'}</div>` : ''}
             </div>
           </div>
 
@@ -6339,7 +6339,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ${w.ending !== '-' ? `<div><strong>Ending:</strong> <span class="font-black text-purple-700">${w.ending}</span></div>` : ''}
             </div>
             <div class="text-[10px] text-sky-800 leading-snug pt-0.5">
-              💡 <strong>Why:</strong> ${w.reason}
+              ðŸ’¡ <strong>Why:</strong> ${w.reason}
             </div>
           </div>
         </div>
@@ -6372,7 +6372,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ${items.map(it => `
             <div class="text-xs space-y-0.5">
               <div class="font-black text-sm text-sky-950">"${it.word}" <span class="text-[11px] font-bold text-sky-700">(${it.role})</span></div>
-              <p class="text-[11px] text-sky-800 leading-snug">💡 <strong>Why:</strong> ${it.reason}</p>
+              <p class="text-[11px] text-sky-800 leading-snug">ðŸ’¡ <strong>Why:</strong> ${it.reason}</p>
             </div>
           `).join('')}
         </div>
@@ -6384,7 +6384,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="p-3.5 bg-gradient-to-r from-emerald-50/80 to-teal-50/80 rounded-2xl border border-emerald-200 shadow-2xs space-y-2">
         <div class="flex flex-wrap items-center justify-between gap-2 pb-1.5 border-b border-emerald-200">
           <div class="flex items-center gap-2">
-            <span class="text-base">⚡</span>
+            <span class="text-base">âš¡</span>
             <span class="font-black text-sm text-emerald-950">Verb: <strong>"${v.token}"</strong></span>
             <span class="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-white border border-emerald-200 text-emerald-800">Infinitive: <em>${v.inf}</em></span>
           </div>
@@ -6392,13 +6392,13 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] bg-white/90 p-2 rounded-xl border border-emerald-100 text-emerald-950">
           <div><strong>Person & Number:</strong><br><span class="text-emerald-800 font-bold">${v.person} (${v.number})</span></div>
-          <div><strong>Tense & Mood:</strong><br><span class="text-emerald-800 font-bold">${v.tense} • ${v.mood}</span></div>
+          <div><strong>Tense & Mood:</strong><br><span class="text-emerald-800 font-bold">${v.tense} â€¢ ${v.mood}</span></div>
           <div><strong>Type:</strong><br><span class="text-emerald-800 font-bold">${v.type}</span></div>
           <div><strong>Separable Prefix:</strong><br><span class="text-emerald-800 font-bold">${v.separable}</span></div>
         </div>
         <div class="text-xs text-emerald-950 space-y-1">
-          <div>🎯 <strong>Government / Pattern:</strong> ${v.pattern} (demands ${v.governs})</div>
-          <div>🔗 <strong>Bracket Role:</strong> ${v.roleDesc}</div>
+          <div>ðŸŽ¯ <strong>Government / Pattern:</strong> ${v.pattern} (demands ${v.governs})</div>
+          <div>ðŸ”— <strong>Bracket Role:</strong> ${v.roleDesc}</div>
         </div>
       </div>
     `).join('');
@@ -6408,7 +6408,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="p-3.5 bg-gradient-to-r from-purple-50/80 to-indigo-50/80 rounded-2xl border border-purple-200 shadow-2xs space-y-2">
         <div class="flex flex-wrap items-center justify-between gap-2 pb-1.5 border-b border-purple-200">
           <div class="flex items-center gap-2">
-            <span class="text-base">🎨</span>
+            <span class="text-base">ðŸŽ¨</span>
             <span class="font-black text-sm text-purple-950">Adjective: <strong class="text-purple-700">"${adj.token}"</strong></span>
             <span class="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-white border border-purple-200 text-purple-800">Base Lemma: <em>${adj.lemma}</em></span>
           </div>
@@ -6421,12 +6421,12 @@ document.addEventListener('DOMContentLoaded', () => {
           <div><strong>Declension Type:</strong><br><span class="text-purple-800 font-bold">${adj.declensionType}</span></div>
         </div>
         <div class="p-2 bg-white rounded-xl border border-purple-200 text-xs text-purple-950 leading-relaxed">
-          💡 <strong>Why does it take this ending?</strong> ${adj.explanation}
+          ðŸ’¡ <strong>Why does it take this ending?</strong> ${adj.explanation}
         </div>
       </div>
     `).join('') : `
       <div class="p-3 bg-white rounded-xl border border-sky-200 text-xs text-sky-800 italic">
-        ℹ️ No attributive adjectives in this sentence. (If an adjective were added, e.g., <em>frische Nudeln</em>, it would decline according to case, gender, and article type).
+        â„¹ï¸ No attributive adjectives in this sentence. (If an adjective were added, e.g., <em>frische Nudeln</em>, it would decline according to case, gender, and article type).
       </div>
     `;
 
@@ -6435,25 +6435,25 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="p-3.5 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 rounded-2xl border border-blue-200 shadow-2xs space-y-2">
         <div class="flex flex-wrap items-center justify-between gap-2 pb-1.5 border-b border-blue-200">
           <div class="flex items-center gap-2">
-            <span class="text-base">📍</span>
+            <span class="text-base">ðŸ“</span>
             <span class="font-black text-sm text-blue-950">Preposition: <strong class="text-blue-800">"${prep.token}"</strong></span>
           </div>
           <span class="text-[10px] font-black px-2 py-0.5 rounded-md bg-blue-200 text-blue-950">Case: ${prep.case}</span>
         </div>
         <div class="grid grid-cols-1 ${isIndo ? 'sm:grid-cols-2' : ''} gap-2 text-xs bg-white/90 p-2 rounded-xl border border-blue-100 text-blue-950">
-          <div>🇬🇧 <strong>Meaning (EN):</strong> ${prep.meaning}</div>
-          ${isIndo ? `<div>🇮🇩 <strong>Meaning (ID):</strong> ${prep.meaningId}</div>` : ''}
+          <div>ðŸ‡¬ðŸ‡§ <strong>Meaning (EN):</strong> ${prep.meaning}</div>
+          ${isIndo ? `<div>ðŸ‡®ðŸ‡© <strong>Meaning (ID):</strong> ${prep.meaningId}</div>` : ''}
         </div>
         <div class="text-xs text-blue-950 space-y-1">
-          <div>🏷️ <strong>Preposition Type:</strong> ${prep.type}</div>
+          <div>ðŸ·ï¸ <strong>Preposition Type:</strong> ${prep.type}</div>
           <div class="p-2 bg-white rounded-xl border border-blue-200 leading-relaxed">
-            ⚡ <strong>Impact on Sentence:</strong> ${prep.rule}. Any noun, article, or adjective immediately following "${prep.token}" MUST take the <strong>${prep.case}</strong> case!
+            âš¡ <strong>Impact on Sentence:</strong> ${prep.rule}. Any noun, article, or adjective immediately following "${prep.token}" MUST take the <strong>${prep.case}</strong> case!
           </div>
         </div>
       </div>
     `).join('') : `
       <div class="p-3 bg-white rounded-xl border border-sky-200 text-xs text-sky-800 italic">
-        ℹ️ No prepositions used in this sentence.
+        â„¹ï¸ No prepositions used in this sentence.
       </div>
     `;
 
@@ -6462,13 +6462,13 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-sky-200">
         <div>
           <h3 class="font-black text-base text-sky-950 flex items-center gap-2">
-            <span>🇩🇪</span>
+            <span>ðŸ‡©ðŸ‡ª</span>
             <span>Comprehensive German Grammar & Syntax Analysis</span>
           </h3>
           <p class="text-xs text-sky-700">Detailed morphological, syntactic, and naturalness dissection of your sentence.</p>
         </div>
         <span class="text-[11px] font-black px-3 py-1 rounded-full border ${cefrBadgeColor}">
-          ${cefrLevel} Level • ${cefrTag}
+          ${cefrLevel} Level â€¢ ${cefrTag}
         </span>
       </div>
 
@@ -6482,21 +6482,21 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="flex items-start justify-between gap-3 bg-white/95 p-3 rounded-xl border border-sky-200">
           <div>
             <div class="text-sm md:text-base font-black text-sky-950 leading-relaxed">${germanText}</div>
-            <div class="text-xs text-sky-700 mt-1">🇬🇧 <strong>English Translation:</strong> ${enSentence || 'Translation available above'}</div>
-            ${isIndo ? `<div class="text-xs text-sky-800 mt-0.5">🇮🇩 <strong>Indonesian Translation:</strong> ${idSentence || 'Terjemahan tersedia di atas'}</div>` : ''}
+            <div class="text-xs text-sky-700 mt-1">ðŸ‡¬ðŸ‡§ <strong>English Translation:</strong> ${enSentence || 'Translation available above'}</div>
+            ${isIndo ? `<div class="text-xs text-sky-800 mt-0.5">ðŸ‡®ðŸ‡© <strong>Indonesian Translation:</strong> ${idSentence || 'Terjemahan tersedia di atas'}</div>` : ''}
           </div>
           <button onclick="playGermanSpeech(decodeURIComponent('${encodeURIComponent(germanText)}'), this)" class="px-2.5 py-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs font-bold transition flex items-center gap-1 cursor-pointer shrink-0" title="Listen to German sentence">
-            <span>🔊</span><span>Listen</span>
+            <span>ðŸ”Š</span><span>Listen</span>
           </button>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
           <div class="p-2.5 bg-white/80 rounded-xl border border-sky-100">
-            <strong class="text-sky-950 font-black">🎯 Main Grammar Topic:</strong>
+            <strong class="text-sky-950 font-black">ðŸŽ¯ Main Grammar Topic:</strong>
             <p class="text-sky-800 mt-0.5">${sentenceTopic}</p>
           </div>
           <div class="p-2.5 bg-white/80 rounded-xl border border-sky-100">
-            <strong class="text-sky-950 font-black">📊 CEFR Classification Reason:</strong>
+            <strong class="text-sky-950 font-black">ðŸ“Š CEFR Classification Reason:</strong>
             <p class="text-sky-800 mt-0.5">${cefrReason}</p>
           </div>
         </div>
@@ -6517,7 +6517,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <div class="p-2.5 bg-blue-50/70 rounded-xl border border-blue-200 text-xs text-blue-950">
-          <span class="text-[10px] font-black uppercase tracking-wider text-blue-900 block mb-0.5">📐 Sentence Pattern Equation:</span>
+          <span class="text-[10px] font-black uppercase tracking-wider text-blue-900 block mb-0.5">ðŸ“ Sentence Pattern Equation:</span>
           <div class="font-black text-sm text-blue-900">${sentencePatternFormula}</div>
           <p class="text-[11px] text-blue-800 mt-1 leading-relaxed">${wordOrderDesc}</p>
         </div>
@@ -6543,7 +6543,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="flex items-center justify-between pb-2 border-b border-sky-100">
           <div>
             <span class="text-xs font-black uppercase text-sky-800 tracking-wider">3. Case Analysis (With Explicit "WHY")</span>
-            <p class="text-[11px] text-sky-600">Nominativ (Wer/Was?) • Akkusativ (Wen/Was?) • Dativ (Wem?) • Genitiv (Wessen?)</p>
+            <p class="text-[11px] text-sky-600">Nominativ (Wer/Was?) â€¢ Akkusativ (Wen/Was?) â€¢ Dativ (Wem?) â€¢ Genitiv (Wessen?)</p>
           </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5">
@@ -6588,7 +6588,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-3">
         <div class="flex items-center justify-between pb-2 border-b border-sky-100">
           <span class="text-xs font-black uppercase text-sky-800 tracking-wider">7. Word Order & Satzklammer Logic</span>
-          <span class="text-[10px] bg-sky-100 text-sky-900 font-bold px-2 py-0.5 rounded-md">Vorfeld • Mittelfeld • Nachfeld</span>
+          <span class="text-[10px] bg-sky-100 text-sky-900 font-bold px-2 py-0.5 rounded-md">Vorfeld â€¢ Mittelfeld â€¢ Nachfeld</span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
@@ -6611,7 +6611,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         ${bracketInfo ? `
           <div class="p-3 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border border-purple-200 text-xs text-purple-950 flex items-start gap-2">
-            <span class="text-base">🔗</span>
+            <span class="text-base">ðŸ”—</span>
             <div>
               <strong class="font-black text-purple-900">${bracketInfo.type}:</strong>
               <p class="mt-0.5 leading-relaxed">${bracketInfo.desc}</p>
@@ -6623,14 +6623,14 @@ document.addEventListener('DOMContentLoaded', () => {
       <!-- ================= 8. GRAMMAR RULES DETECTED ================= -->
       <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-2.5">
         <div class="flex items-center justify-between pb-2 border-b border-sky-100">
-          <span class="text-xs font-black uppercase text-sky-800 tracking-wider">8. 📚 Grammar Rules Detected</span>
+          <span class="text-xs font-black uppercase text-sky-800 tracking-wider">8. ðŸ“š Grammar Rules Detected</span>
         </div>
         <div class="flex flex-wrap gap-2 text-xs">
-          ${modalVerbToken ? `<span class="px-2.5 py-1 rounded-xl bg-purple-100 text-purple-950 border border-purple-300 font-bold flex items-center gap-1.5"><span>📌</span><span>Modalverb im Hauptsatz (Satzklammer)</span></span>` : ''}
-          ${prepositionsFound.map(p => `<span class="px-2.5 py-1 rounded-xl bg-blue-100 text-blue-950 border border-blue-300 font-bold flex items-center gap-1.5"><span>📌</span><span>Präposition "${p.token}" + ${p.case}</span></span>`).join('')}
-          ${adjectivesFound.map(a => `<span class="px-2.5 py-1 rounded-xl bg-emerald-100 text-emerald-950 border border-emerald-300 font-bold flex items-center gap-1.5"><span>📌</span><span>${a.declensionType} (${a.case} ${a.gender}: ${a.ending})</span></span>`).join('')}
-          ${analyzedWords.some(w => w.func.includes('Direct Object') && w.word === 'Nudeln') ? `<span class="px-2.5 py-1 rounded-xl bg-amber-100 text-amber-950 border border-amber-300 font-bold flex items-center gap-1.5"><span>📌</span><span>Nullartikel bei Speisen / unbestimmtem Plural</span></span>` : ''}
-          <span class="px-2.5 py-1 rounded-xl bg-sky-100 text-sky-950 border border-sky-300 font-bold flex items-center gap-1.5"><span>📌</span><span>Subjekt-Verb-Kongruenz (Person & Numerus)</span></span>
+          ${modalVerbToken ? `<span class="px-2.5 py-1 rounded-xl bg-purple-100 text-purple-950 border border-purple-300 font-bold flex items-center gap-1.5"><span>ðŸ“Œ</span><span>Modalverb im Hauptsatz (Satzklammer)</span></span>` : ''}
+          ${prepositionsFound.map(p => `<span class="px-2.5 py-1 rounded-xl bg-blue-100 text-blue-950 border border-blue-300 font-bold flex items-center gap-1.5"><span>ðŸ“Œ</span><span>PrÃ¤position "${p.token}" + ${p.case}</span></span>`).join('')}
+          ${adjectivesFound.map(a => `<span class="px-2.5 py-1 rounded-xl bg-emerald-100 text-emerald-950 border border-emerald-300 font-bold flex items-center gap-1.5"><span>ðŸ“Œ</span><span>${a.declensionType} (${a.case} ${a.gender}: ${a.ending})</span></span>`).join('')}
+          ${analyzedWords.some(w => w.func.includes('Direct Object') && w.word === 'Nudeln') ? `<span class="px-2.5 py-1 rounded-xl bg-amber-100 text-amber-950 border border-amber-300 font-bold flex items-center gap-1.5"><span>ðŸ“Œ</span><span>Nullartikel bei Speisen / unbestimmtem Plural</span></span>` : ''}
+          <span class="px-2.5 py-1 rounded-xl bg-sky-100 text-sky-950 border border-sky-300 font-bold flex items-center gap-1.5"><span>ðŸ“Œ</span><span>Subjekt-Verb-Kongruenz (Person & Numerus)</span></span>
         </div>
       </div>
 
@@ -6644,26 +6644,26 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
           <div class="p-3 bg-rose-50/70 rounded-xl border border-rose-200 space-y-1.5">
             <div class="flex items-center gap-1.5 font-black text-rose-950">
-              <span>❌</span><span>Common Word Order Error:</span>
+              <span>âŒ</span><span>Common Word Order Error:</span>
             </div>
-            <p class="font-mono text-xs text-rose-800 bg-white/80 p-1.5 rounded-md border border-rose-200"><s>Ich möchte essen Nudeln mit scharfem Hähnchen.</s></p>
+            <p class="font-mono text-xs text-rose-800 bg-white/80 p-1.5 rounded-md border border-rose-200"><s>Ich mÃ¶chte essen Nudeln mit scharfem HÃ¤hnchen.</s></p>
             <div class="flex items-center gap-1.5 font-black text-emerald-900 pt-0.5">
-              <span>✅</span><span>Correct Pattern:</span>
+              <span>âœ…</span><span>Correct Pattern:</span>
             </div>
-            <p class="font-mono text-xs text-emerald-900 bg-white/80 p-1.5 rounded-md border border-emerald-200 font-bold">Ich möchte Nudeln mit scharfem Hähnchen <u>essen</u>.</p>
-            <p class="text-[11px] text-rose-900 leading-snug">💡 <strong>Why:</strong> In German main clauses with a modal verb, the main verb <em>must</em> be kicked to the sentence end (*Satzklammer*).</p>
+            <p class="font-mono text-xs text-emerald-900 bg-white/80 p-1.5 rounded-md border border-emerald-200 font-bold">Ich mÃ¶chte Nudeln mit scharfem HÃ¤hnchen <u>essen</u>.</p>
+            <p class="text-[11px] text-rose-900 leading-snug">ðŸ’¡ <strong>Why:</strong> In German main clauses with a modal verb, the main verb <em>must</em> be kicked to the sentence end (*Satzklammer*).</p>
           </div>
 
           <div class="p-3 bg-purple-50/70 rounded-xl border border-purple-200 space-y-1.5">
             <div class="flex items-center gap-1.5 font-black text-purple-950">
-              <span>❌</span><span>Common Adjective Declension Trap:</span>
+              <span>âŒ</span><span>Common Adjective Declension Trap:</span>
             </div>
-            <p class="font-mono text-xs text-rose-800 bg-white/80 p-1.5 rounded-md border border-rose-200"><s>... mit scharfer Hähnchen</s></p>
+            <p class="font-mono text-xs text-rose-800 bg-white/80 p-1.5 rounded-md border border-rose-200"><s>... mit scharfer HÃ¤hnchen</s></p>
             <div class="flex items-center gap-1.5 font-black text-emerald-900 pt-0.5">
-              <span>✅</span><span>Correct Pattern:</span>
+              <span>âœ…</span><span>Correct Pattern:</span>
             </div>
-            <p class="font-mono text-xs text-emerald-900 bg-white/80 p-1.5 rounded-md border border-emerald-200 font-bold">... mit scharf<u>em</u> Hähnchen</p>
-            <p class="text-[11px] text-purple-900 leading-snug">💡 <strong>Why:</strong> <em>Hähnchen</em> is neuter (das Hähnchen). Preposition <em>mit</em> requires Dativ. Without an article, the strong neuter Dative ending is <strong>-em</strong>, not <strong>-er</strong>.</p>
+            <p class="font-mono text-xs text-emerald-900 bg-white/80 p-1.5 rounded-md border border-emerald-200 font-bold">... mit scharf<u>em</u> HÃ¤hnchen</p>
+            <p class="text-[11px] text-purple-900 leading-snug">ðŸ’¡ <strong>Why:</strong> <em>HÃ¤hnchen</em> is neuter (das HÃ¤hnchen). Preposition <em>mit</em> requires Dativ. Without an article, the strong neuter Dative ending is <strong>-em</strong>, not <strong>-er</strong>.</p>
           </div>
         </div>
       </div>
@@ -6673,14 +6673,14 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="flex items-center justify-between pb-2 border-b border-sky-100">
           <span class="text-xs font-black uppercase text-sky-800 tracking-wider">10. Corrected Sentence & Error Scan</span>
           <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full border ${hasGrammarErrors ? 'bg-rose-100 text-rose-900 border-rose-300' : 'bg-emerald-100 text-emerald-900 border-emerald-300'}">
-            ${hasGrammarErrors ? '❌ Errors Detected' : '✅ 100% Grammatically Correct'}
+            ${hasGrammarErrors ? 'âŒ Errors Detected' : 'âœ… 100% Grammatically Correct'}
           </span>
         </div>
 
         ${hasGrammarErrors ? `
           <div class="p-3 bg-rose-50 rounded-xl border border-rose-200 text-xs space-y-2">
             <div class="font-bold text-rose-950 flex items-center gap-1.5">
-              <span>⚠️</span>
+              <span>âš ï¸</span>
               <span>Errors were detected and corrected:</span>
             </div>
             <div class="p-2.5 bg-white rounded-lg border border-rose-200 font-medium text-sky-950">
@@ -6697,7 +6697,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ` : `
           <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-950 space-y-1">
             <div class="flex items-center gap-1.5 font-bold text-emerald-900">
-              <span>✅</span>
+              <span>âœ…</span>
               <span>No grammatical errors found in this sentence!</span>
             </div>
             <p class="text-emerald-800 text-[11px]">Subject-verb agreement, case government (mit + Dativ), strong adjective declension (-em), and sentence bracket positioning are all flawlessly executed.</p>
@@ -6718,7 +6718,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="flex items-center justify-between">
               <span class="text-[10px] font-black uppercase text-teal-800 tracking-wider">Grammar Status:</span>
               <span class="text-xs font-extrabold ${hasGrammarErrors ? 'text-rose-700' : 'text-emerald-700'}">
-                ${hasGrammarErrors ? '❌ Contains Errors' : '✅ Grammatically Correct'}
+                ${hasGrammarErrors ? 'âŒ Contains Errors' : 'âœ… Grammatically Correct'}
               </span>
             </div>
             <ul class="text-[11px] text-teal-950 space-y-1 list-disc list-inside">
@@ -6733,19 +6733,19 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="flex items-center justify-between">
               <span class="text-[10px] font-black uppercase text-teal-800 tracking-wider">Naturalness Status:</span>
               <span class="text-xs font-extrabold ${hasGrammarErrors ? 'text-rose-700' : 'text-emerald-700'}">
-                ${hasGrammarErrors ? '🔴 Unnatural (Hindered by errors)' : '🟢 Natural (Native standard)'}
+                ${hasGrammarErrors ? 'ðŸ”´ Unnatural (Hindered by errors)' : 'ðŸŸ¢ Natural (Native standard)'}
               </span>
             </div>
             <ul class="text-[11px] text-teal-950 space-y-1 list-disc list-inside">
-              <li><strong>Idiomatic Phrasing:</strong> The combination <em>"Nudeln mit scharfem Hähnchen"</em> is completely natural in German restaurant and culinary contexts.</li>
-              <li><strong>Register:</strong> The use of <em>"möchte"</em> (Konjunktiv II) provides a polite, natural everyday tone.</li>
+              <li><strong>Idiomatic Phrasing:</strong> The combination <em>"Nudeln mit scharfem HÃ¤hnchen"</em> is completely natural in German restaurant and culinary contexts.</li>
+              <li><strong>Register:</strong> The use of <em>"mÃ¶chte"</em> (Konjunktiv II) provides a polite, natural everyday tone.</li>
               <li><strong>Constituent Flow:</strong> Placing the accusative object before the accompaniment prepositional phrase sounds natural and fluid to native speakers.</li>
             </ul>
           </div>
         </div>
 
         <div class="p-2.5 bg-white/80 rounded-xl border border-teal-100 text-[11px] text-teal-900">
-          ℹ️ <strong>Linguistic Observation:</strong> This sentence reflects authentic, standard spoken and written German. No unusual syntactic inversions or stilted registers detected.
+          â„¹ï¸ <strong>Linguistic Observation:</strong> This sentence reflects authentic, standard spoken and written German. No unusual syntactic inversions or stilted registers detected.
         </div>
       </div>
     `;
@@ -6763,13 +6763,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const icon = document.getElementById('themeModeIcon');
     if (theme === 'dark') {
       root.setAttribute('data-theme', 'dark');
-      if (icon) icon.textContent = '☀️';
+      if (icon) icon.textContent = 'â˜€ï¸';
     } else if (theme === 'sepia') {
       root.setAttribute('data-theme', 'sepia');
-      if (icon) icon.textContent = '📜';
+      if (icon) icon.textContent = 'ðŸ“œ';
     } else {
       root.removeAttribute('data-theme');
-      if (icon) icon.textContent = '🌙';
+      if (icon) icon.textContent = 'ðŸŒ™';
     }
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   }
@@ -6777,13 +6777,13 @@ document.addEventListener('DOMContentLoaded', () => {
   window.toggleThemeMode = function() {
     if (currentTheme === 'light') {
       applyTheme('dark');
-      showFloatingToast('🌙 Dark Mode enabled! Perfect for night study.');
+      showFloatingToast('ðŸŒ™ Dark Mode enabled! Perfect for night study.');
     } else if (currentTheme === 'dark') {
       applyTheme('sepia');
-      showFloatingToast('📜 Warm Sepia Eye-Care Mode enabled!');
+      showFloatingToast('ðŸ“œ Warm Sepia Eye-Care Mode enabled!');
     } else {
       applyTheme('light');
-      showFloatingToast('☀️ Soft Blue Pastel Mode enabled!');
+      showFloatingToast('â˜€ï¸ Soft Blue Pastel Mode enabled!');
     }
   };
 
@@ -6795,14 +6795,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const STREAK_STORAGE_KEY = 'netzwerk_streak_gamification_v1';
 
   const BADGES_DEFINITIONS = [
-    { id: 'first_step', title: 'First Step', emoji: '🎯', desc: 'Complete your first exercise', xp: 50 },
-    { id: 'streak_3', title: 'Flame Keeper', emoji: '🔥', desc: 'Reach a 3-day study streak', xp: 100 },
-    { id: 'streak_7', title: 'Consistency Master', emoji: '⚡', desc: 'Reach a 7-day study streak', xp: 200 },
-    { id: 'grammar_detective', title: 'Grammar Detective', emoji: '🔍', desc: 'Analyze 5 sentences with AI Translator', xp: 75 },
-    { id: 'voice_virtuoso', title: 'Voice Virtuoso', emoji: '🎙️', desc: 'Score 80%+ on German pronunciation practice', xp: 100 },
-    { id: 'quiz_whiz', title: 'Mixed Quiz Whiz', emoji: '🧠', desc: 'Score 100% on the 5-Minute Mixed Review Quiz', xp: 100 },
-    { id: 'vocab_collector', title: 'Star Collector', emoji: '⭐', desc: 'Save 3 sentences in My Notebook', xp: 75 },
-    { id: 'a1_explorer', title: 'A1 Explorer', emoji: '🗺️', desc: 'Complete 6 chapters in Netzwerk A1', xp: 250 }
+    { id: 'first_step', title: 'First Step', emoji: 'ðŸŽ¯', desc: 'Complete your first exercise', xp: 50 },
+    { id: 'streak_3', title: 'Flame Keeper', emoji: 'ðŸ”¥', desc: 'Reach a 3-day study streak', xp: 100 },
+    { id: 'streak_7', title: 'Consistency Master', emoji: 'âš¡', desc: 'Reach a 7-day study streak', xp: 200 },
+    { id: 'grammar_detective', title: 'Grammar Detective', emoji: 'ðŸ”', desc: 'Analyze 5 sentences with AI Translator', xp: 75 },
+    { id: 'voice_virtuoso', title: 'Voice Virtuoso', emoji: 'ðŸŽ™ï¸', desc: 'Score 80%+ on German pronunciation practice', xp: 100 },
+    { id: 'quiz_whiz', title: 'Mixed Quiz Whiz', emoji: 'ðŸ§ ', desc: 'Score 100% on the 5-Minute Mixed Review Quiz', xp: 100 },
+    { id: 'vocab_collector', title: 'Star Collector', emoji: 'â­', desc: 'Save 3 sentences in My Notebook', xp: 75 },
+    { id: 'a1_explorer', title: 'A1 Explorer', emoji: 'ðŸ—ºï¸', desc: 'Complete 6 chapters in Netzwerk A1', xp: 250 }
   ];
 
   let streakData = {
@@ -6854,7 +6854,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (streakData.currentStreak > streakData.longestStreak) {
           streakData.longestStreak = streakData.currentStreak;
         }
-        awardXP(25, `${streakData.currentStreak} Day Streak Maintained! 🔥`);
+        awardXP(25, `${streakData.currentStreak} Day Streak Maintained! ðŸ”¥`);
         if (streakData.currentStreak >= 3) unlockBadge('streak_3');
         if (streakData.currentStreak >= 7) unlockBadge('streak_7');
       } else if (diffDays > 1) {
@@ -6879,7 +6879,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!container) return;
     const toast = document.createElement('div');
     toast.className = 'xp-toast-anim px-3 py-1.5 rounded-xl bg-purple-600 text-white font-black text-xs shadow-lg border border-purple-300 flex items-center gap-1.5 backdrop-blur-md';
-    toast.innerHTML = `<span>⚡ +${amount} XP</span> <span class="text-[10px] font-semibold opacity-90">${reason || ''}</span>`;
+    toast.innerHTML = `<span>âš¡ +${amount} XP</span> <span class="text-[10px] font-semibold opacity-90">${reason || ''}</span>`;
     container.appendChild(toast);
     setTimeout(() => {
       if (toast.parentNode) toast.parentNode.removeChild(toast);
@@ -6893,7 +6893,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const badge = BADGES_DEFINITIONS.find(b => b.id === badgeId);
     if (badge) {
       awardXP(badge.xp, `Badge Unlocked: ${badge.title}`);
-      showFloatingToast(`🏆 Achievement Unlocked: ${badge.title} (+${badge.xp} XP)!`);
+      showFloatingToast(`ðŸ† Achievement Unlocked: ${badge.title} (+${badge.xp} XP)!`);
       if (typeof playConfettiEffect === 'function') playConfettiEffect();
     }
     saveStreakData();
@@ -6938,7 +6938,7 @@ document.addEventListener('DOMContentLoaded', () => {
         weekHtml += `
           <div class="flex flex-col items-center p-2 rounded-xl border ${isActive ? 'bg-amber-100 border-amber-300 text-amber-950 font-black' : 'bg-slate-50 border-slate-200 text-slate-400 font-medium'}">
             <span class="text-[9px] uppercase tracking-wider">${dayName}</span>
-            <span class="text-sm my-0.5">${isActive ? '🔥' : '⚪'}</span>
+            <span class="text-sm my-0.5">${isActive ? 'ðŸ”¥' : 'âšª'}</span>
             <span class="text-[10px]">${d.getDate()}</span>
           </div>
         `;
@@ -6967,7 +6967,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <p class="text-[10px] truncate leading-tight">${b.desc}</p>
             </div>
-            <span>${isUnlocked ? '✅' : '🔒'}</span>
+            <span>${isUnlocked ? 'âœ…' : 'ðŸ”’'}</span>
           </div>
         `;
       });
@@ -6986,7 +6986,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="text-[11px] font-black truncate">${b.title}</p>
             <p class="text-[9px] truncate opacity-80">+${b.xp} XP</p>
           </div>
-          <span>${isUnlocked ? '✅' : '🔒'}</span>
+          <span>${isUnlocked ? 'âœ…' : 'ðŸ”’'}</span>
         </div>
       `;
     });
@@ -7018,7 +7018,7 @@ document.addEventListener('DOMContentLoaded', () => {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showFloatingToast('💾 Study progress backup downloaded successfully!');
+      showFloatingToast('ðŸ’¾ Study progress backup downloaded successfully!');
       awardXP(20, 'Progress Backup Saved');
     } catch(e) {
       console.error('Export error:', e);
@@ -7057,7 +7057,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderHistoryTab();
         updateStreakUI();
         input.value = '';
-        showFloatingToast('📥 Study progress successfully restored from JSON!');
+        showFloatingToast('ðŸ“¥ Study progress successfully restored from JSON!');
         if (typeof playConfettiEffect === 'function') playConfettiEffect();
       } catch(err) {
         console.error('Import error:', err);
@@ -7078,7 +7078,7 @@ document.addEventListener('DOMContentLoaded', () => {
       rule: "Hund is masculine in Nominativ: 'Der Hund'."
     },
     {
-      q: "Ergänze den Akkusativ: 'Ich trinke jeden Morgen _____ Kaffee.'",
+      q: "ErgÃ¤nze den Akkusativ: 'Ich trinke jeden Morgen _____ Kaffee.'",
       options: ["einen", "ein", "eine"],
       answer: 0,
       rule: "Kaffee is masculine (der Kaffee). In Akkusativ, ein becomes einen."
@@ -7096,10 +7096,10 @@ document.addEventListener('DOMContentLoaded', () => {
       rule: "'Mit' is a dative preposition. Masculine der Bus becomes dem Bus."
     },
     {
-      q: "Was ist das Gegenteil von 'groß'?",
+      q: "Was ist das Gegenteil von 'groÃŸ'?",
       options: ["klein", "schnell", "alt"],
       answer: 0,
-      rule: "'Groß' means big, 'klein' means small."
+      rule: "'GroÃŸ' means big, 'klein' means small."
     },
     {
       q: "Wo steht das Verb im Hauptsatz? 'Heute _____ wir ins Kino.'",
@@ -7126,7 +7126,7 @@ document.addEventListener('DOMContentLoaded', () => {
       rule: "Siebzehn is 17. Note the dropped '-en' from sieben."
     },
     {
-      q: "Ergänze den Dativ: 'Ich helfe _____ Frau.'",
+      q: "ErgÃ¤nze den Dativ: 'Ich helfe _____ Frau.'",
       options: ["der", "die", "den"],
       answer: 0,
       rule: "Helfen triggers Dative. Feminine die shifts to der in Dativ: 'der Frau'."
@@ -7204,7 +7204,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fb.className = `p-3 rounded-xl border text-xs font-bold ${isCorrect ? 'bg-emerald-50 border-emerald-300 text-emerald-900' : 'bg-rose-50 border-rose-300 text-rose-900'}`;
     fb.innerHTML = `
       <div class="flex items-center gap-1.5 mb-1 font-black text-sm">
-        <span>${isCorrect ? '✅ Richtig! (Correct!)' : '❌ Nicht ganz! (Not quite)'}</span>
+        <span>${isCorrect ? 'âœ… Richtig! (Correct!)' : 'âŒ Nicht ganz! (Not quite)'}</span>
       </div>
       <p class="font-medium text-[11px]">${q.rule}</p>
     `;
@@ -7235,15 +7235,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     content.innerHTML = `
       <div class="text-center py-4 space-y-3">
-        <div class="text-5xl">${isPerfect ? '🎉' : score >= 3 ? '👏' : '💪'}</div>
+        <div class="text-5xl">${isPerfect ? 'ðŸŽ‰' : score >= 3 ? 'ðŸ‘' : 'ðŸ’ª'}</div>
         <h4 class="text-lg font-black text-sky-950">${isPerfect ? 'Flawless Mastery!' : 'Well Done! Keep Practicing!'}</h4>
         <p class="text-xs text-sky-700">You scored <strong>${score} out of ${total}</strong> on today's mixed review!</p>
         <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-100 text-purple-900 text-xs font-black border border-purple-300">
-          <span>⚡ +${score * 10} XP Earned</span>
+          <span>âš¡ +${score * 10} XP Earned</span>
         </div>
         <div class="pt-3 flex items-center justify-center gap-2">
           <button onclick="startDailyMixedQuiz()" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs transition cursor-pointer shadow-md">
-            🔄 Try Another Quiz
+            ðŸ”„ Try Another Quiz
           </button>
           <button onclick="closeMixedQuizModal()" class="px-4 py-2 rounded-xl bg-white hover:bg-sky-100 border border-sky-300 text-sky-800 font-bold text-xs transition cursor-pointer">
             Close
@@ -7270,16 +7270,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const GERMAN_PHONETIC_DICT = {
     'ich': 'IKH',
     'habe': 'HAH-buh',
-    'haben': 'HAH-bən',
+    'haben': 'HAH-bÉ™n',
     'hast': 'HAHST',
     'hat': 'HAHT',
     'hatte': 'HAHT-tuh',
     'ein': 'EYE-n',
     'eine': 'EYE-nuh',
-    'einen': 'EYE-nən',
-    'einem': 'EYE-nəm',
-    'einer': 'EYE-nər',
-    'eines': 'EYE-nəs',
+    'einen': 'EYE-nÉ™n',
+    'einem': 'EYE-nÉ™m',
+    'einer': 'EYE-nÉ™r',
+    'eines': 'EYE-nÉ™s',
     'der': 'DAIR',
     'die': 'DEE',
     'das': 'DAHS',
@@ -7290,15 +7290,15 @@ document.addEventListener('DOMContentLoaded', () => {
     'hunde': 'HOON-duh',
     'katze': 'KAHT-tsuh',
     'buch': 'BOOKH',
-    'bücher': 'BEW-khər',
+    'bÃ¼cher': 'BEW-khÉ™r',
     'frau': 'FROW',
-    'frauen': 'FROW-ən',
+    'frauen': 'FROW-É™n',
     'mann': 'MAHN',
-    'männer': 'MEHN-nər',
+    'mÃ¤nner': 'MEHN-nÉ™r',
     'kind': 'KEENT',
-    'kinder': 'KEEN-dər',
+    'kinder': 'KEEN-dÉ™r',
     'liebe': 'LEE-buh',
-    'lieben': 'LEE-bən',
+    'lieben': 'LEE-bÉ™n',
     'liebst': 'LEEPST',
     'liebt': 'LEEPT',
     'dich': 'DEEKH',
@@ -7311,19 +7311,19 @@ document.addEventListener('DOMContentLoaded', () => {
     'ihr': 'EER',
     'ihm': 'EEM',
     'ihn': 'EEN',
-    'ihnen': 'EE-nən',
+    'ihnen': 'EE-nÉ™n',
     'deutsch': 'DOYTCH',
     'deutschland': 'DOYTCH-lahnt',
     'lerne': 'LAIR-nuh',
-    'lernen': 'LAIR-nən',
+    'lernen': 'LAIR-nÉ™n',
     'lernt': 'LAIRNT',
     'geht': 'GAYT',
-    'gehen': 'GAY-ən',
+    'gehen': 'GAY-É™n',
     'gehe': 'GAY-uh',
     'gehst': 'GAYST',
     'ging': 'GEENG',
     'komme': 'KOM-muh',
-    'kommen': 'KOM-mən',
+    'kommen': 'KOM-mÉ™n',
     'kommst': 'KOMST',
     'kommt': 'KOMT',
     'aus': 'OWS',
@@ -7336,7 +7336,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'beim': 'BYEM',
     'von': 'FON',
     'vom': 'FOM',
-    'für': 'FEWR',
+    'fÃ¼r': 'FEWR',
     'ohne': 'OH-nuh',
     'durch': 'DOORKH',
     'zug': 'TSOOK',
@@ -7345,34 +7345,34 @@ document.addEventListener('DOMContentLoaded', () => {
     'u-bahn': 'OO-bahn',
     's-bahn': 'EHS-bahn',
     'auto': 'OW-toh',
-    'guten': 'GOO-tən',
+    'guten': 'GOO-tÉ™n',
     'tag': 'TAHK',
     'tage': 'TAH-guh',
-    'morgen': 'MOR-gən',
-    'abend': 'AH-bənt',
-    'abende': 'AH-bən-duh',
+    'morgen': 'MOR-gÉ™n',
+    'abend': 'AH-bÉ™nt',
+    'abende': 'AH-bÉ™n-duh',
     'nacht': 'NAHKHT',
-    'nächte': 'NEHKH-tuh',
+    'nÃ¤chte': 'NEHKH-tuh',
     'hallo': 'HAH-loh',
-    'tschüss': 'TCHEWSS',
+    'tschÃ¼ss': 'TCHEWSS',
     'bitte': 'BIT-tuh',
     'danke': 'DAHNG-kuh',
-    'schön': 'SHERN',
+    'schÃ¶n': 'SHERN',
     'sehr': 'ZAIR',
-    'schlafen': 'SHLAH-fən',
-    'schläft': 'SHLEHFT',
-    'trinken': 'TRING-kən',
+    'schlafen': 'SHLAH-fÉ™n',
+    'schlÃ¤ft': 'SHLEHFT',
+    'trinken': 'TRING-kÉ™n',
     'trinke': 'TRING-kuh',
     'trinkt': 'TRINGKT',
-    'essen': 'EHS-sən',
+    'essen': 'EHS-sÉ™n',
     'esse': 'EHS-suh',
     'isst': 'EEST',
     'kaffee': 'KAHF-fay',
     'tee': 'TAY',
-    'wasser': 'VAHS-sər',
+    'wasser': 'VAHS-sÉ™r',
     'brot': 'BROHT',
-    'apfel': 'AHP-fəl',
-    'äpfel': 'EHP-fəl',
+    'apfel': 'AHP-fÉ™l',
+    'Ã¤pfel': 'EHP-fÉ™l',
     'heute': 'HOY-tuh',
     'jetzt': 'YETST',
     'hier': 'HEER',
@@ -7390,65 +7390,65 @@ document.addEventListener('DOMContentLoaded', () => {
     'nichts': 'NEEKHTS',
     'kein': 'KYNE',
     'keine': 'KY-nuh',
-    'keinen': 'KY-nən',
-    'keinem': 'KY-nəm',
-    'keiner': 'KY-nər',
+    'keinen': 'KY-nÉ™n',
+    'keinem': 'KY-nÉ™m',
+    'keiner': 'KY-nÉ™r',
     'helfe': 'HEHL-fuh',
-    'helfen': 'HEHL-fən',
+    'helfen': 'HEHL-fÉ™n',
     'hilfst': 'HEELFST',
     'hilft': 'HEELFT',
     'brauche': 'BROW-khuh',
-    'brauchen': 'BROW-khən',
+    'brauchen': 'BROW-khÉ™n',
     'braucht': 'BROWKHT',
     'kaufe': 'KOW-fuh',
-    'kaufen': 'KOW-fən',
+    'kaufen': 'KOW-fÉ™n',
     'kauft': 'KOWFT',
     'sehe': 'ZAY-uh',
-    'sehen': 'ZAY-ən',
+    'sehen': 'ZAY-É™n',
     'siehst': 'ZEEST',
     'sieht': 'ZEET',
     'lese': 'LAY-zuh',
-    'lesen': 'LAY-zən',
+    'lesen': 'LAY-zÉ™n',
     'liest': 'LEEST',
     'verstehe': 'fair-SHTAY-uh',
-    'verstehen': 'fair-SHTAY-ən',
+    'verstehen': 'fair-SHTAY-É™n',
     'entschuldigung': 'ent-SHOOL-dee-goong',
     'auf': 'OWF',
-    'wiedersehen': 'VEE-dər-zay-ən',
+    'wiedersehen': 'VEE-dÉ™r-zay-É™n',
     'name': 'NAH-muh',
-    'heiße': 'HY-ssuh',
-    'heißen': 'HY-ssən',
-    'heißt': 'HYST',
+    'heiÃŸe': 'HY-ssuh',
+    'heiÃŸen': 'HY-ssÉ™n',
+    'heiÃŸt': 'HYST',
     'freund': 'FROYNT',
     'freundin': 'FROYN-din',
     'haus': 'HOWS',
     'hause': 'HOW-zuh',
     'schule': 'SHOO-luh',
-    'lehrer': 'LAY-rər',
-    'lehrerin': 'LAY-rə-rin',
+    'lehrer': 'LAY-rÉ™r',
+    'lehrerin': 'LAY-rÉ™-rin',
     'student': 'shtoo-DENT',
     'zeit': 'TSYTE',
     'geld': 'GEHLT',
     'arbeit': 'AHR-byte',
-    'arbeiten': 'AHR-bye-tən',
+    'arbeiten': 'AHR-bye-tÉ™n',
     'wohne': 'VOH-nuh',
-    'wohnen': 'VOH-nən',
+    'wohnen': 'VOH-nÉ™n',
     'wohnt': 'VOHNT',
     'stadt': 'SHTAHT',
     'land': 'LAHNT',
     'zwei': 'TSVYE',
     'drei': 'DRYE',
     'vier': 'FEER',
-    'fünf': 'FEWNF',
+    'fÃ¼nf': 'FEWNF',
     'sechs': 'ZEKHS',
-    'sieben': 'ZEE-bən',
+    'sieben': 'ZEE-bÉ™n',
     'acht': 'AHKHT',
     'neun': 'NOYN',
     'zehn': 'TSAYN'
   };
 
   function transliterateGermanWord(word) {
-    const clean = word.toLowerCase().replace(/[^a-zäöüß]/g, '');
+    const clean = word.toLowerCase().replace(/[^a-zÃ¤Ã¶Ã¼ÃŸ]/g, '');
     if (!clean) return word;
     if (GERMAN_PHONETIC_DICT[clean]) {
       return GERMAN_PHONETIC_DICT[clean];
@@ -7464,18 +7464,18 @@ document.addEventListener('DOMContentLoaded', () => {
              .replace(/ch/g, 'kh')
              .replace(/ei|ai|ey/g, 'eye')
              .replace(/ie/g, 'ee')
-             .replace(/eu|äu/g, 'oy')
+             .replace(/eu|Ã¤u/g, 'oy')
              .replace(/au/g, 'ow')
-             .replace(/ä/g, 'eh')
-             .replace(/ö/g, 'er')
-             .replace(/ü/g, 'ew')
-             .replace(/ß/g, 'ss')
+             .replace(/Ã¤/g, 'eh')
+             .replace(/Ã¶/g, 'er')
+             .replace(/Ã¼/g, 'ew')
+             .replace(/ÃŸ/g, 'ss')
              .replace(/w/g, 'v')
              .replace(/^v/g, 'f')
              .replace(/z/g, 'ts')
              .replace(/^j/g, 'y')
              .replace(/er$/g, '-er')
-             .replace(/en$/g, '-ən')
+             .replace(/en$/g, '-É™n')
              .replace(/e$/g, '-uh');
              
     return res.toUpperCase();
@@ -7485,7 +7485,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!sentence) return { phoneticText: '', tips: '' };
     const words = sentence.trim().split(/\s+/);
     const phoneticWords = words.map(w => {
-      const punctMatch = w.match(/^([^a-zA-ZäöüÄÖÜß]*)([a-zA-ZäöüÄÖÜß\-]+)([^a-zA-ZäöüÄÖÜß]*)$/);
+      const punctMatch = w.match(/^([^a-zA-ZÃ¤Ã¶Ã¼Ã„Ã–ÃœÃŸ]*)([a-zA-ZÃ¤Ã¶Ã¼Ã„Ã–ÃœÃŸ\-]+)([^a-zA-ZÃ¤Ã¶Ã¼Ã„Ã–ÃœÃŸ]*)$/);
       if (punctMatch) {
         const lead = punctMatch[1] || '';
         const core = punctMatch[2];
@@ -7495,37 +7495,37 @@ document.addEventListener('DOMContentLoaded', () => {
       return transliterateGermanWord(w);
     });
 
-    const phoneticText = `[ ${phoneticWords.join(' • ')} ]`;
+    const phoneticText = `[ ${phoneticWords.join(' â€¢ ')} ]`;
 
     // Contextual Pronunciation Tips
     const lower = sentence.toLowerCase();
     const tipsList = [];
     if (lower.includes('ch')) {
-      tipsList.push("🗣️ <strong>'ch'</strong>: Soft hissing sound after e/i (<em>ich</em>), or guttural after a/o/u (<em>Buch</em>).");
+      tipsList.push("ðŸ—£ï¸ <strong>'ch'</strong>: Soft hissing sound after e/i (<em>ich</em>), or guttural after a/o/u (<em>Buch</em>).");
     }
     if (lower.includes('w')) {
-      tipsList.push("🗣️ <strong>'w'</strong>: Always sounds like English <strong>'v'</strong> (e.g. <em>wir</em> = 'veer').");
+      tipsList.push("ðŸ—£ï¸ <strong>'w'</strong>: Always sounds like English <strong>'v'</strong> (e.g. <em>wir</em> = 'veer').");
     }
     if (lower.includes('z')) {
-      tipsList.push("🗣️ <strong>'z'</strong>: Always pronounced like <strong>'ts'</strong> as in 'cats' (e.g. <em>Zug</em> = 'tsook').");
+      tipsList.push("ðŸ—£ï¸ <strong>'z'</strong>: Always pronounced like <strong>'ts'</strong> as in 'cats' (e.g. <em>Zug</em> = 'tsook').");
     }
     if (lower.includes('v')) {
-      tipsList.push("🗣️ <strong>'v'</strong>: Almost always sounds like English <strong>'f'</strong> (e.g. <em>von</em> = 'fon').");
+      tipsList.push("ðŸ—£ï¸ <strong>'v'</strong>: Almost always sounds like English <strong>'f'</strong> (e.g. <em>von</em> = 'fon').");
     }
-    if (lower.includes('ä') || lower.includes('ö') || lower.includes('ü')) {
-      tipsList.push("🗣️ <strong>Umlauts</strong>: <strong>ä</strong> = 'eh', <strong>ö</strong> = rounded 'er', <strong>ü</strong> = whistle lips saying 'ee'.");
+    if (lower.includes('Ã¤') || lower.includes('Ã¶') || lower.includes('Ã¼')) {
+      tipsList.push("ðŸ—£ï¸ <strong>Umlauts</strong>: <strong>Ã¤</strong> = 'eh', <strong>Ã¶</strong> = rounded 'er', <strong>Ã¼</strong> = whistle lips saying 'ee'.");
     }
     if (lower.includes('ie') || lower.includes('ei')) {
-      tipsList.push("🗣️ <strong>Vowel pairs</strong>: <strong>ie</strong> = long 'ee' (<em>sie</em>), while <strong>ei</strong> = 'eye' (<em>mein</em>)!");
+      tipsList.push("ðŸ—£ï¸ <strong>Vowel pairs</strong>: <strong>ie</strong> = long 'ee' (<em>sie</em>), while <strong>ei</strong> = 'eye' (<em>mein</em>)!");
     }
-    if (lower.includes('ß') || lower.includes('ss')) {
-      tipsList.push("🗣️ <strong>'ß' / 'ss'</strong>: Sharp unvoiced <strong>'s'</strong> sound (like 'sun', never buzzing 'z').");
+    if (lower.includes('ÃŸ') || lower.includes('ss')) {
+      tipsList.push("ðŸ—£ï¸ <strong>'ÃŸ' / 'ss'</strong>: Sharp unvoiced <strong>'s'</strong> sound (like 'sun', never buzzing 'z').");
     }
     if (/\b(st|sp)/.test(lower)) {
-      tipsList.push("🗣️ <strong>'st' / 'sp'</strong> at start of words: Pronounced like <strong>'sht'</strong> / <strong>'shp'</strong> (e.g. <em>Stadt</em> = 'shtaht').");
+      tipsList.push("ðŸ—£ï¸ <strong>'st' / 'sp'</strong> at start of words: Pronounced like <strong>'sht'</strong> / <strong>'shp'</strong> (e.g. <em>Stadt</em> = 'shtaht').");
     }
 
-    const tips = tipsList.length > 0 ? tipsList.slice(0, 3).join('<br/>') : "💡 <em>Tip: Speak naturally with clear vowel sounds and syllable stress!</em>";
+    const tips = tipsList.length > 0 ? tipsList.slice(0, 3).join('<br/>') : "ðŸ’¡ <em>Tip: Speak naturally with clear vowel sounds and syllable stress!</em>";
 
     return { phoneticText, tips };
   }
@@ -7533,7 +7533,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.startTranslatorVoiceInput = function() {
     if (!SpeechRecognition) {
-      showFloatingToast("⚠️ Speech recognition requires Chrome or Edge.");
+      showFloatingToast("âš ï¸ Speech recognition requires Chrome or Edge.");
       return;
     }
 
@@ -7546,7 +7546,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try { activeSpeechRecognition.stop(); } catch(e) {}
       activeSpeechRecognition = null;
       if (btn) btn.classList.remove('mic-recording-active');
-      if (micIcon) micIcon.textContent = '🎙️';
+      if (micIcon) micIcon.textContent = 'ðŸŽ™ï¸';
       return;
     }
 
@@ -7558,8 +7558,8 @@ document.addEventListener('DOMContentLoaded', () => {
     recognition.onstart = function() {
       activeSpeechRecognition = recognition;
       if (btn) btn.classList.add('mic-recording-active');
-      if (micIcon) micIcon.textContent = '🔴';
-      showFloatingToast(`🎙️ Listening in ${lang}... Speak now!`);
+      if (micIcon) micIcon.textContent = 'ðŸ”´';
+      showFloatingToast(`ðŸŽ™ï¸ Listening in ${lang}... Speak now!`);
     };
 
     recognition.onresult = function(event) {
@@ -7576,13 +7576,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     recognition.onerror = function(err) {
       console.warn('Speech error:', err);
-      showFloatingToast("⚠️ Microphone error or permission denied.");
+      showFloatingToast("âš ï¸ Microphone error or permission denied.");
     };
 
     recognition.onend = function() {
       activeSpeechRecognition = null;
       if (btn) btn.classList.remove('mic-recording-active');
-      if (micIcon) micIcon.textContent = '🎙️';
+      if (micIcon) micIcon.textContent = 'ðŸŽ™ï¸';
     };
 
     try {
@@ -7634,7 +7634,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.playUserRecordedVoice = function() {
     if (!userRecordedAudioUrl) {
-      showFloatingToast("⚠️ Record your voice first by clicking the microphone button!");
+      showFloatingToast("âš ï¸ Record your voice first by clicking the microphone button!");
       return;
     }
     if (userAudioPlayerInstance) {
@@ -7642,11 +7642,11 @@ document.addEventListener('DOMContentLoaded', () => {
       userAudioPlayerInstance.currentTime = 0;
     }
     const icon = document.getElementById('userVoicePlayIcon');
-    if (icon) icon.textContent = '🔊';
+    if (icon) icon.textContent = 'ðŸ”Š';
     userAudioPlayerInstance = new Audio(userRecordedAudioUrl);
     userAudioPlayerInstance.play();
     userAudioPlayerInstance.onended = function() {
-      if (icon) icon.textContent = '▶️';
+      if (icon) icon.textContent = 'â–¶ï¸';
     };
   };
 
@@ -7712,7 +7712,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.toggleSpeechRecording = function() {
     if (!SpeechRecognition) {
-      showFloatingToast("⚠️ Speech recognition requires Chrome or Edge.");
+      showFloatingToast("âš ï¸ Speech recognition requires Chrome or Edge.");
       return;
     }
 
@@ -7741,7 +7741,7 @@ document.addEventListener('DOMContentLoaded', () => {
       startRecordingUserVoice();
       if (micBtn) micBtn.classList.add('mic-recording-active');
       if (statusLabel) {
-        statusLabel.textContent = "🔴 Recording your voice... Speak now in German!";
+        statusLabel.textContent = "ðŸ”´ Recording your voice... Speak now in German!";
         statusLabel.className = "text-xs font-extrabold text-rose-600 animate-pulse";
       }
     };
@@ -7779,8 +7779,8 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   function evaluatePronunciation(spoken, target) {
-    const cleanSpoken = (spoken || '').toLowerCase().replace(/[^a-zäöüß0-9 ]/gi, '').trim();
-    const cleanTarget = (target || '').toLowerCase().replace(/[^a-zäöüß0-9 ]/gi, '').trim();
+    const cleanSpoken = (spoken || '').toLowerCase().replace(/[^a-zÃ¤Ã¶Ã¼ÃŸ0-9 ]/gi, '').trim();
+    const cleanTarget = (target || '').toLowerCase().replace(/[^a-zÃ¤Ã¶Ã¼ÃŸ0-9 ]/gi, '').trim();
 
     const spokenTokens = cleanSpoken.split(/\s+/).filter(Boolean);
     const targetTokens = cleanTarget.split(/\s+/).filter(Boolean);
@@ -7802,18 +7802,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (tokenAccuracy >= 80) {
       badgeClass = 'bg-emerald-50 border-emerald-300 text-emerald-900';
-      verdict = '🌟 Ausgezeichnet! (Excellent Pronunciation!)';
+      verdict = 'ðŸŒŸ Ausgezeichnet! (Excellent Pronunciation!)';
       tip = 'Your German accent and pronunciation matched clearly!';
       awardXP(30, 'Pronunciation 80%+');
       unlockBadge('voice_virtuoso');
     } else if (tokenAccuracy >= 50) {
       badgeClass = 'bg-amber-50 border-amber-300 text-amber-900';
-      verdict = '👍 Gut gemacht! (Good attempt!)';
+      verdict = 'ðŸ‘ Gut gemacht! (Good attempt!)';
       tip = 'Try pronouncing the vowels more cleanly and distinctly.';
       awardXP(15, 'Speaking Practice');
     } else {
       badgeClass = 'bg-rose-50 border-rose-300 text-rose-900';
-      verdict = '🔁 Noch einmal! (Try once more!)';
+      verdict = 'ðŸ” Noch einmal! (Try once more!)';
       tip = 'Listen to the native audio reference above, then repeat.';
       awardXP(5, 'Speaking Attempt');
     }
@@ -7834,7 +7834,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="flex items-center justify-between gap-2 pt-1">
         <p class="text-[11px] opacity-90">${tip}</p>
         <button onclick="playUserRecordedVoice()" class="px-2.5 py-1 rounded-lg bg-pink-500 hover:bg-pink-600 text-white font-bold text-[11px] flex items-center gap-1 transition shadow-xs cursor-pointer flex-shrink-0" title="Listen to your recording">
-          <span>▶️</span>
+          <span>â–¶ï¸</span>
           <span>My Recording</span>
         </button>
       </div>
@@ -7883,7 +7883,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (existingIdx >= 0) {
       list.splice(existingIdx, 1);
       saveSavedSentences(list);
-      if (starIcon) starIcon.textContent = '⭐';
+      if (starIcon) starIcon.textContent = 'â­';
       showFloatingToast('Removed from My Notebook');
     } else {
       list.unshift({
@@ -7893,8 +7893,8 @@ document.addEventListener('DOMContentLoaded', () => {
         date: getTodayDateStr()
       });
       saveSavedSentences(list);
-      if (starIcon) starIcon.textContent = '🌟';
-      showFloatingToast('Saved to My Notebook ⭐!');
+      if (starIcon) starIcon.textContent = 'ðŸŒŸ';
+      showFloatingToast('Saved to My Notebook â­!');
       awardXP(15, 'Sentence Saved');
       if (list.length >= 3) unlockBadge('vocab_collector');
     }
@@ -7927,7 +7927,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (list.length === 0) {
       container.innerHTML = `
         <div class="p-6 text-center bg-white/70 rounded-2xl border border-sky-100 text-sky-500 italic text-xs">
-          ${query ? 'No matching sentences found.' : 'No sentences starred yet. Translate any sentence and click the ⭐ button to collect it here!'}
+          ${query ? 'No matching sentences found.' : 'No sentences starred yet. Translate any sentence and click the â­ button to collect it here!'}
         </div>
       `;
       return;
@@ -7941,16 +7941,16 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="text-xs font-black text-sky-950">${escapeHtml(item.german)}</span>
             <div class="flex items-center gap-1.5 flex-shrink-0">
               <button onclick="playGermanSpeech(decodeURIComponent('${encodeURIComponent(item.german)}'), this)" class="p-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-700 text-xs font-bold transition cursor-pointer" title="Listen to pronunciation">
-                🔊
+                ðŸ”Š
               </button>
               <button onclick="startSpeakingPractice('${escapeHtml(item.german)}')" class="px-2 py-0.5 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-900 text-[11px] font-bold transition cursor-pointer" title="Practice Speaking">
-                🎙️ Speak
+                ðŸŽ™ï¸ Speak
               </button>
               <button onclick="reAnalyzeFromNotebook('${escapeHtml(item.german)}')" class="px-2 py-0.5 rounded-lg bg-purple-100 hover:bg-purple-200 text-purple-900 text-[11px] font-bold transition cursor-pointer" title="Load into Grammar Analyzer">
-                🔍 Analyze
+                ðŸ” Analyze
               </button>
               <button onclick="deleteSavedSentence('${item.id}')" class="p-1 rounded-lg hover:bg-rose-100 text-rose-500 transition cursor-pointer" title="Delete from Notebook">
-                🗑️
+                ðŸ—‘ï¸
               </button>
             </div>
           </div>
@@ -8057,7 +8057,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (label) label.textContent = speedObj.label;
     const desc = speedObj.rate === 0.75 ? "0.75x Slow (Beginner Friendly)" : speedObj.rate === 1.25 ? "1.25x Fast" : "1.0x Normal";
-    showFloatingToast(`⚡ Audio speed set to ${desc}`);
+    showFloatingToast(`âš¡ Audio speed set to ${desc}`);
   };
 
   let abLoopState = 0; // 0: inactive, 1: point A set, 2: point B set & looping
@@ -8087,7 +8087,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.classList.add('bg-purple-100', 'border-purple-400', 'text-purple-900');
         btn.classList.remove('bg-white');
       }
-      showFloatingToast(`📍 Point A set at ${formatTime(abLoopStart)}. Click again to set Point B!`);
+      showFloatingToast(`ðŸ“ Point A set at ${formatTime(abLoopStart)}. Click again to set Point B!`);
     } else if (abLoopState === 1) {
       abLoopEnd = player.currentTime;
       if (abLoopEnd <= abLoopStart + 0.5) {
@@ -8104,7 +8104,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       player.currentTime = abLoopStart;
       if (player.paused) player.play();
-      showFloatingToast(`🔁 A-B Loop active (${formatTime(abLoopStart)} - ${formatTime(abLoopEnd)})!`);
+      showFloatingToast(`ðŸ” A-B Loop active (${formatTime(abLoopStart)} - ${formatTime(abLoopEnd)})!`);
     } else {
       abLoopState = 0;
       if (label) label.textContent = "A-B Loop";
@@ -8124,498 +8124,1308 @@ document.addEventListener('DOMContentLoaded', () => {
   window.openRoleplayModal = function() {};
   window.closeRoleplayModal = function() {};
 
-  // ================= 30. GOETHE-ZERTIFIKAT A1 / TELC MOCK EXAM HUB =================
-  const GOETHE_EXAM_DATA = {
-    hoeren: [
-      {
-        part: "Teil 1: Alltägliche Gespräche (Short Dialogues)",
-        audioPrompt: "Guten Tag, Herr Hansen. Wann kommen Sie heute zum Sprachkurs? - Ich komme heute um Viertel vor fünf.",
-        audioTrack: "Netzwerk NEU A1 Kursbuch/Netzwerk NEU A1 Kursbuch/Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-001.mp3",
-        q: "1. Um wie viel Uhr kommt Herr Hansen zum Sprachkurs?",
-        options: ["Um 16:45 Uhr (Viertel vor fünf)", "Um 17:15 Uhr (Viertel nach fünf)", "Um 15:45 Uhr (Viertel vor vier)"],
-        answer: 0,
-        points: 5
-      },
-      {
-        part: "Teil 2: Öffentliche Ansagen (Public Announcements)",
-        audioPrompt: "Achtung an Gleis 7! Der ICE 591 nach München Hauptbahnhof über Nürnberg fährt jetzt ein. Bitte Vorsicht an der Bahnsteigkante.",
-        audioTrack: "Netzwerk NEU A1 Kursbuch/Netzwerk NEU A1 Kursbuch/Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-002.mp3",
-        q: "2. Aussage: Der Zug nach München fährt von Gleis 7 ab.",
-        options: ["Richtig (True)", "Falsch (False)"],
-        answer: 0,
-        points: 5
-      },
-      {
-        part: "Teil 3: Telefonansagen (Telephone Messages)",
-        audioPrompt: "Hier ist die Praxis Dr. Weber. Unsere Praxis ist heute geschlossen. In dringenden Fällen rufen Sie bitte die Notrufnummer 112 an.",
-        audioTrack: "Netzwerk NEU A1 Kursbuch/Netzwerk NEU A1 Kursbuch/Kursbuch A1 - Audio/Kapitel 1-6/NWn_A1_KB_Audio_1-003.mp3",
-        q: "3. Was soll der Anrufer im Notfall tun?",
-        options: ["Die Nummer 112 anrufen", "Bis morgen warten", "Eine E-Mail schreiben"],
-        answer: 0,
-        points: 5
-      }
-    ],
-    lesen: [
-      {
-        part: "Teil 1: E-Mails & Mitteilungen (Messages)",
-        context: "Liebe Julia, ich habe am Samstag Geburtstag und mache eine kleine Party ab 19 Uhr. Bringst du bitte einen Salat mit? Getränke habe ich schon gekauft. Liebe Grüße, Sarah.",
-        q: "1. Aussage: Sarah feiert am Samstagabend ihren Geburtstag.",
-        options: ["Richtig (True)", "Falsch (False)"],
-        answer: 0,
-        points: 5
-      },
-      {
-        part: "Teil 2: Internetanzeigen (Classifieds)",
-        context: "Situation: Sie möchten am Wochenende Deutsch lernen und suchen einen Kurs nur am Samstag.",
-        q: "2. Welche Anzeige passt zu Ihrer Situation?",
-        options: [
-          "Anzeige A: Intensivkurs Montag bis Freitag 9:00 - 13:00 Uhr.",
-          "Anzeige B: Wochenend-Workshop: Deutsch A1 jeden Samstag von 10:00 bis 14:00 Uhr."
-        ],
-        answer: 1,
-        points: 5
-      },
-      {
-        part: "Teil 3: Schilder im öffentlichen Raum (Signs)",
-        context: "Schild am Supermarkteingang: 'Sehr geehrte Kunden, wegen Renovierung bleibt unser Markt am Mittwoch ab 14 Uhr geschlossen.'",
-        q: "3. Aussage: Man kann am Mittwochnachmittag um 16 Uhr hier einkaufen.",
-        options: ["Richtig (True)", "Falsch (False)"],
-        answer: 1,
-        points: 5
-      }
-    ],
-    schreiben: {
-      part1: {
-        text: "Ihre Freundin Eva Fischer zieht mit ihrem Ehemann und zwei Kindern nach München. Sie bucht online ein Familienzimmer für 3 Nächte ab dem 15. Oktober und zahlt mit Kreditkarte.",
-        fields: [
-          { label: "1. Familienname", answer: "fischer" },
-          { label: "2. Anzahl der Personen (Erwachsene + Kinder)", answer: "4" },
-          { label: "3. Anreisedatum", answer: "15. oktober" },
-          { label: "4. Anzahl der Nächte", answer: "3" },
-          { label: "5. Zahlungsart", answer: "kreditkarte" }
-        ]
-      },
-      part2: {
-        prompt: "Schreiben Sie eine E-Mail an die Touristeninformation in Köln (~30 Wörter):<br/>- Warum schreiben Sie? (Informationen über Köln)<br/>- Sie kommen vom 10. bis 12. Mai.<br/>- Bitten Sie um Hoteladressen und Stadtplan.",
-        sampleAnswer: "Sehr geehrte Damen und Herren,\n\nich reise vom 10. bis zum 12. Mai nach Köln. Können Sie mir bitte einen Stadtplan und eine Liste mit günstigen Hotels schicken?\n\nVielen Dank für Ihre Hilfe.\n\nMit freundlichen Grüßen,\nAlex"
-      }
-    },
-    sprechen: [
-      {
-        part: "Teil 1: Sich vorstellen (Personal Introduction)",
-        prompts: ["Name", "Alter", "Land", "Wohnort", "Sprachen", "Beruf", "Hobby"],
-        modelSpeech: "Guten Tag. Mein Name ist Alex Becker. Ich bin 26 Jahre alt und komme aus Indonesien. Jetzt wohne ich in Frankfurt. Ich spreche Englisch, Indonesisch und Deutsch. Ich bin Softwareentwickler und mein Hobby ist Fußball spielen."
-      },
-      {
-        part: "Teil 2: Um Informationen bitten (W-Fragen)",
-        theme: "Thema: Essen & Trinken | Wort: Frühstück",
-        cardPrompt: "Frage formulieren mit 'Frühstück'",
-        modelQuestion: "Was essen Sie normalerweise zum Frühstück?",
-        modelResponse: "Ich esse morgens meistens Brötchen mit Käse und trinke einen Kaffee."
-      },
-      {
-        part: "Teil 3: Bitten formulieren und reagieren",
-        cardPrompt: "Bild: Ein Glas Wasser | Bitte formulieren",
-        modelQuestion: "Geben Sie mir bitte ein Glas Wasser?",
-        modelResponse: "Ja, natürlich, bitte sehr!"
-      }
-    ]
-  };
+// ================= 30. GOETHE-ZERTIFIKAT A1 / TELC MOCK EXAM HUB =================
 
-  let currentExamModule = 'hoeren';
-  let examUserAnswers = {
-    hoeren: {},
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+const GOETHE_EXAM_DATA = {
+  lesen: [
+    {
+      teil: "Teil 1: E-Mails & Mitteilungen (Personal Messages)",
+      context: "Liebe Julia,\nich habe am Samstag Geburtstag und mache eine kleine Party ab 19:00 Uhr bei mir zu Hause. Bringst du bitte einen Salat mit? GetrÃ¤nke und Kuchen habe ich schon gekauft. Sag mir bitte bis Freitag Bescheid, ob du kommen kannst.\nLiebe GrÃ¼ÃŸe,\nSarah",
+      q: "1. Sarah feiert am Samstagabend ihren Geburtstag zu Hause.",
+      options: ["Richtig (True)", "Falsch (False)"],
+      answer: 0,
+      points: 2.5,
+      explanation: "Sarah explicitly writes: 'ich habe am Samstag Geburtstag und mache eine kleine Party ab 19:00 Uhr bei mir zu Hause' (I have my birthday on Saturday and am throwing a party from 7 PM at my house)."
+    },
+    {
+      teil: "Teil 1: E-Mails & Mitteilungen (Personal Messages)",
+      context: "Liebe Julia,\nich habe am Samstag Geburtstag und mache eine kleine Party ab 19:00 Uhr bei mir zu Hause. Bringst du bitte einen Salat mit? GetrÃ¤nke und Kuchen habe ich schon gekauft. Sag mir bitte bis Freitag Bescheid, ob du kommen kannst.\nLiebe GrÃ¼ÃŸe,\nSarah",
+      q: "2. Julia soll GetrÃ¤nke fÃ¼r die Geburtstagsparty mitbringen.",
+      options: ["Richtig (True)", "Falsch (False)"],
+      answer: 1,
+      points: 2.5,
+      explanation: "Sarah already bought the drinks ('GetrÃ¤nke und Kuchen habe ich schon gekauft') and specifically asks Julia to bring a salad ('Bringst du bitte einen Salat mit?'). Therefore, Julia does NOT need to bring drinks."
+    },
+    {
+      teil: "Teil 2: Internetanzeigen & BroschÃ¼ren (Classified Ads)",
+      situation: "Situation: Sie mÃ¶chten am Wochenende Deutsch lernen und suchen einen Kurs nur am Samstag.",
+      q: "3. Welche Anzeige passt zu Ihrer Situation?",
+      options: [
+        "Anzeige A: Intensivkurs Deutsch: Von Montag bis Freitag tÃ¤glich von 9:00 bis 13:00 Uhr.",
+        "Anzeige B: Wochenend-Workshop: Deutsch A1 jeden Samstag von 10:00 bis 14:00 Uhr."
+      ],
+      answer: 1,
+      points: 2.5,
+      explanation: "Anzeige B specifically runs on Saturdays ('jeden Samstag von 10:00 bis 14:00 Uhr'), perfectly fitting a weekend schedule. Anzeige A is a weekday intensive course (Monday to Friday)."
+    },
+    {
+      teil: "Teil 2: Internetanzeigen & BroschÃ¼ren (Classified Ads)",
+      situation: "Situation: Sie mÃ¶chten mit dem Zug gÃ¼nstig von Berlin nach Hamburg reisen.",
+      q: "4. Welche Website-Anzeige wÃ¤hlen Sie?",
+      options: [
+        "Anzeige A: Deutsche Bahn Sparpreis: GÃ¼nstige Zugtickets nach Hamburg ab 19,90 â‚¬ online buchen.",
+        "Anzeige B: Fernbus-Direkt: TÃ¤glich preiswerte Busreisen nach Hamburg ab 15,00 â‚¬."
+      ],
+      answer: 0,
+      points: 2.5,
+      explanation: "You specified travel by train ('mit dem Zug'). Anzeige A offers train tickets via Deutsche Bahn, whereas Anzeige B is a long-distance bus service ('Fernbus')."
+    },
+    {
+      teil: "Teil 3: Schilder im Ã¶ffentlichen Raum (Public Notices)",
+      context: "Schild am Eingang eines Supermarkts:\n'Sehr geehrte Kundinnen und Kunden,\nwegen Umbauarbeiten schlieÃŸt unser Markt heute ausnahmsweise bereits um 13:00 Uhr.'",
+      q: "5. Sie kÃ¶nnen heute Nachmittag um 16:00 Uhr in diesem Supermarkt einkaufen.",
+      options: ["Richtig (True)", "Falsch (False)"],
+      answer: 1,
+      points: 2.5,
+      explanation: "The sign states the supermarket closes exceptionally at 1:00 PM ('schlieÃŸt heute ausnahmsweise bereits um 13:00 Uhr'). Therefore, you cannot shop there at 4:00 PM (16:00)."
+    },
+    {
+      teil: "Teil 3: Schilder im Ã¶ffentlichen Raum (Public Notices)",
+      context: "Schild an der TÃ¼r einer Arztpraxis:\n'Praxis Dr. Schmidt: Sprechzeiten von Montag bis Freitag von 8:00 bis 12:00 Uhr. AuÃŸerhalb der Sprechzeiten wenden Sie sich bitte an den Notdienst.'",
+      q: "6. Am Dienstagmorgen um 10:00 Uhr ist die Arztpraxis geÃ¶ffnet.",
+      options: ["Richtig (True)", "Falsch (False)"],
+      answer: 0,
+      points: 2.5,
+      explanation: "The opening hours are Monday to Friday from 8:00 AM to 12:00 PM ('Montag bis Freitag von 8:00 bis 12:00 Uhr'). Tuesday at 10:00 AM falls inside these hours."
+    }
+  ],
+
+  hoeren: [
+    {
+      teil: "Teil 1: AlltÃ¤gliche GesprÃ¤che (Short Dialogues)",
+      audioPrompt: "Guten Tag, Herr Hansen. Wann kommen Sie heute zum Sprachkurs? - Ich komme heute um Viertel vor fÃ¼nf, also um 16:45 Uhr.",
+      q: "1. Um wie viel Uhr kommt Herr Hansen zum Sprachkurs?",
+      options: ["Um 16:45 Uhr (Viertel vor fÃ¼nf)", "Um 17:15 Uhr (Viertel nach fÃ¼nf)", "Um 15:45 Uhr (Viertel vor vier)"],
+      answer: 0,
+      points: 2.5,
+      explanation: "Herr Hansen says 'um Viertel vor fÃ¼nf, also um 16:45 Uhr' (a quarter to five / 16:45)."
+    },
+    {
+      teil: "Teil 1: AlltÃ¤gliche GesprÃ¤che (Short Dialogues)",
+      audioPrompt: "Entschuldigung, wie viel kostet dieses T-Shirt hier? - Das weiÃŸe T-Shirt kostet 15 Euro, aber das blaue kostet nur 12 Euro.",
+      q: "2. Wie viel kostet das blaue T-Shirt?",
+      options: ["15 Euro", "12 Euro", "27 Euro"],
+      answer: 1,
+      points: 2.5,
+      explanation: "The sales assistant says: 'aber das blaue kostet nur 12 Euro' (the blue one costs only 12 euros)."
+    },
+    {
+      teil: "Teil 2: Ã–ffentliche Ansagen (Public Announcements)",
+      audioPrompt: "Achtung an Gleis 4! Der Intercity-Express 582 nach Frankfurt Hauptbahnhof hat circa 15 Minuten VerspÃ¤tung. Grund dafÃ¼r ist eine technische StÃ¶rung am Zug.",
+      q: "3. Wie viel VerspÃ¤tung hat der Zug nach Frankfurt?",
+      options: ["Keine VerspÃ¤tung", "Circa 15 Minuten", "Circa 50 Minuten"],
+      answer: 1,
+      points: 2.5,
+      explanation: "The train announcement specifies: 'hat circa 15 Minuten VerspÃ¤tung' (around 15 minutes delay)."
+    },
+    {
+      teil: "Teil 2: Ã–ffentliche Ansagen (Public Announcements)",
+      audioPrompt: "Letzter Aufruf fÃ¼r alle noch fehlenden FluggÃ¤ste des Lufthansa-Fluges LH 402 nach New York. Bitte begeben Sie sich unverzÃ¼glich zum Flugsteig B 24. Das Einsteigen wird in wenigen Minuten beendet.",
+      q: "4. Wohin mÃ¼ssen die Passagiere fÃ¼r Flug LH 402 gehen?",
+      options: ["Zum Flugsteig B 12", "Zum Flugsteig B 24", "Zur Information"],
+      answer: 1,
+      points: 2.5,
+      explanation: "The airport announcement instructs passengers: 'Bitte begeben Sie sich unverzÃ¼glich zum Flugsteig B 24' (Gate B 24)."
+    },
+    {
+      teil: "Teil 3: Telefonansagen (Telephone Messages)",
+      audioPrompt: "Guten Tag, hier ist die Praxis Dr. Weber. Frau Meier, Ihr Rezept liegt ab morgen frÃ¼h um 8 Uhr an der Anmeldung fÃ¼r Sie bereit. Vergessen Sie bitte nicht Ihre Versichertenkarte mitzubringen. Auf WiederhÃ¶ren.",
+      q: "5. Was soll Frau Meier zur Arztpraxis mitbringen?",
+      options: ["Ihre Versichertenkarte", "Ein neues Passfoto", "Bargeld fÃ¼r die RezeptgebÃ¼hr"],
+      answer: 0,
+      points: 2.5,
+      explanation: "The voicemail explicitly requests: 'Vergessen Sie bitte nicht Ihre Versichertenkarte mitzubringen' (health insurance card)."
+    },
+    {
+      teil: "Teil 3: Telefonansagen (Telephone Messages)",
+      audioPrompt: "Hallo Herr Becker, hier ist der Elektro-Kundendienst Schneider. Ihre Waschmaschine ist repariert. Wir kÃ¶nnen das GerÃ¤t am Donnerstag zwischen 14 und 16 Uhr liefern. Bitte rufen Sie uns zurÃ¼ck. Danke!",
+      q: "6. Wann kann der Kundendienst die Waschmaschine liefern?",
+      options: ["Am Donnerstagvormittag", "Am Donnerstagnachmittag", "Am Freitag"],
+      answer: 1,
+      points: 2.5,
+      explanation: "The delivery window is between 2:00 PM and 4:00 PM ('Donnerstag zwischen 14 und 16 Uhr'), which corresponds to Thursday afternoon (Donnerstagnachmittag)."
+    }
+  ],
+
+  schreiben: {
+    part1: {
+      title: "Teil 1: Formular ausfÃ¼llen (Form Filling - 5 Pts)",
+      text: "Ihre Bekannte Eva Fischer zieht mit ihrem Ehemann und zwei Kindern nach MÃ¼nchen. Sie bucht online im Hotel Alpenblick ein Familienzimmer fÃ¼r 3 NÃ¤chte ab dem 15. Oktober. Sie bezahlt im Voraus mit Kreditkarte.",
+      fields: [
+        { label: "1. Familienname", answer: "fischer", points: 1, explanation: "The text states 'Ihre Bekannte Eva Fischer', so the family name is Fischer." },
+        { label: "2. Anzahl der Personen", answer: "4", points: 1, explanation: "Eva, her husband, and 2 children = 4 persons ('mit ihrem Ehemann und zwei Kindern')." },
+        { label: "3. Anreisedatum", answer: "15. oktober", points: 1, explanation: "She booked starting October 15th ('ab dem 15. Oktober')." },
+        { label: "4. Anzahl der NÃ¤chte", answer: "3", points: 1, explanation: "She booked for 3 nights ('fÃ¼r 3 NÃ¤chte')." },
+        { label: "5. Zahlungsart", answer: "kreditkarte", points: 1, explanation: "She pays in advance by credit card ('bezahlt im Voraus mit Kreditkarte')." }
+      ]
+    },
+    part2: {
+      title: "Teil 2: E-Mail schreiben (Email Composition - 10 Pts)",
+      prompt: "Schreiben Sie eine E-Mail an die Touristeninformation in KÃ¶ln (circa 30â€“40 WÃ¶rter):<br/>â€¢ <strong>Grund des Schreibens:</strong> Sie planen eine Reise nach KÃ¶ln.<br/>â€¢ <strong>Anreise / Termin:</strong> Sie kommen vom 10. bis 12. Mai.<br/>â€¢ <strong>Bitte:</strong> Bitten Sie um einen Stadtplan und gÃ¼nstige Hoteladressen.",
+      sampleAnswer: "Sehr geehrte Damen und Herren,\n\nich plane eine Reise nach KÃ¶ln und komme vom 10. bis 12. Mai. KÃ¶nnen Sie mir bitte einen Stadtplan und Adressen von gÃ¼nstigen Hotels schicken?\n\nVielen Dank im Voraus.\n\nMit freundlichen GrÃ¼ÃŸen,\nAlex Becker",
+      maxPoints: 10
+    }
+  },
+
+  sprechen: [
+    {
+      id: "sprechen-part1",
+      teil: "Teil 1: Sich vorstellen & Buchstabieren (Self-Introduction - 5 Pts)",
+      taskDesc: "Stellen Sie sich vor (Name, Alter, Land, Wohnort, Sprachen, Beruf, Hobby) und buchstabieren Sie Ihren Namen oder nennen Sie Ihre Telefonnummer.",
+      prompts: ["Name", "Alter", "Land", "Wohnort", "Sprachen", "Beruf", "Hobby"],
+      modelSpeech: "Guten Tag. Mein Name ist Alex Becker. Ich bin 26 Jahre alt und komme aus Indonesien. Jetzt wohne ich in Frankfurt. Ich spreche Englisch, Indonesisch und Deutsch. Ich bin Softwareentwickler und mein Hobby ist FuÃŸball spielen. Mein Name buchstabiert: B - E - C - K - E - R. Meine Telefonnummer ist: null - eins - sieben - sechs - eins - zwei - drei - vier - fÃ¼nf.",
+      targetKeywords: ["name", "jahre", "alt", "komme", "wohne", "spreche", "deutsch", "beruf", "hobby"],
+      points: 5
+    },
+    {
+      id: "sprechen-part2",
+      teil: "Teil 2: Um Informationen bitten & antworten (Ask for Info - 5 Pts)",
+      taskDesc: "Ziehen Sie eine Wortkarte und formulieren Sie eine Frage sowie eine passende Antwort.",
+      theme: "Thema: Essen & Trinken | Wort: FrÃ¼hstÃ¼ck",
+      cardPrompt: "Frage formulieren mit 'FrÃ¼hstÃ¼ck'",
+      modelQuestion: "Was essen Sie normalerweise zum FrÃ¼hstÃ¼ck?",
+      modelResponse: "Ich esse morgens meistens BrÃ¶tchen mit KÃ¤se und trinke einen Kaffee.",
+      targetKeywords: ["was", "essen", "trinken", "frÃ¼hstÃ¼ck", "morgens", "kaffee", "brÃ¶tchen"],
+      points: 5
+    },
+    {
+      id: "sprechen-part3",
+      teil: "Teil 3: Bitten formulieren und reagieren (Social Requests - 5 Pts)",
+      taskDesc: "Formulieren Sie eine hÃ¶fliche Bitte anhand der Bildkarte und reagieren Sie angemessen.",
+      cardPrompt: "Bild: Ein Glas Wasser | HÃ¶fliche Bitte",
+      modelQuestion: "Geben Sie mir bitte ein Glas Wasser?",
+      modelResponse: "Ja, natÃ¼rlich, bitte sehr!",
+      targetKeywords: ["geben", "kÃ¶nnen", "bitte", "glas", "wasser", "ja", "gerne", "natÃ¼rlich"],
+      points: 5
+    }
+  ]
+};
+
+let currentExamModule = 'lesen';
+let examSelectedDuration = 65;
+let examTimerSeconds = 65 * 60;
+let examTimerInterval = null;
+let examTimerPaused = false;
+let examAudioSpeed = 1.0;
+let currentSpeechRecognition = null;
+
+let examUserAnswers = {
+  lesen: {},
+  hoeren: {},
+  schreibenPart1: {},
+  schreibenPart2: '',
+  sprechenRecordings: {},
+  sprechenScores: {}
+};
+
+window.setExamDuration = function(mins) {
+  examSelectedDuration = mins;
+  if (mins === 0) {
+    examTimerSeconds = 0;
+  } else {
+    examTimerSeconds = mins * 60;
+  }
+  examTimerPaused = false;
+
+  const durationIds = ['65', '25', '20h', '20s', '15', '0'];
+  durationIds.forEach(id => {
+    const btn = document.getElementById(`examModeBtn-${id}`);
+    if (btn) {
+      const match = (id === '65' && mins === 65) ||
+                    (id === '25' && mins === 25) ||
+                    (id === '20h' && mins === 20 && currentExamModule === 'hoeren') ||
+                    (id === '20s' && mins === 20 && currentExamModule === 'schreiben') ||
+                    (id === '15' && mins === 15) ||
+                    (id === '0' && mins === 0);
+      if (match) {
+        btn.className = "px-2 py-0.5 rounded-lg bg-amber-500 text-white font-extrabold shadow-xs transition cursor-pointer";
+      } else {
+        btn.className = "px-2 py-0.5 rounded-lg bg-amber-100/90 text-amber-900 font-bold hover:bg-amber-200 transition cursor-pointer";
+      }
+    }
+  });
+
+  updateExamTimerDisplay();
+};
+
+function updateExamTimerDisplay() {
+  const display = document.getElementById('examTimerDisplay');
+  if (!display) return;
+  if (examSelectedDuration === 0) {
+    display.textContent = "âˆž Untimed";
+    display.className = "text-amber-900 font-black";
+    return;
+  }
+  const m = Math.floor(examTimerSeconds / 60);
+  const s = examTimerSeconds % 60;
+  display.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+  if (examTimerSeconds <= 120) {
+    display.className = "text-rose-600 font-black animate-pulse";
+  } else if (examTimerSeconds <= 600) {
+    display.className = "text-amber-600 font-black";
+  } else {
+    display.className = "text-amber-900 font-black";
+  }
+}
+
+window.toggleExamTimerPause = function() {
+  if (examSelectedDuration === 0) return;
+  examTimerPaused = !examTimerPaused;
+  const pauseBtn = document.getElementById('examTimerPauseBtn');
+  if (pauseBtn) {
+    pauseBtn.innerHTML = examTimerPaused ? '<span>â–¶ï¸</span><span>Resume</span>' : '<span>â¸ï¸</span><span>Pause</span>';
+    pauseBtn.className = examTimerPaused 
+      ? 'px-2 py-0.5 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-900 text-xs font-bold flex items-center gap-1 transition cursor-pointer'
+      : 'px-2 py-0.5 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-bold flex items-center gap-1 transition cursor-pointer';
+  }
+  showFloatingToast(examTimerPaused ? 'â¸ï¸ Exam paused' : 'â–¶ï¸ Exam resumed');
+};
+
+window.restartGoetheExam = function() {
+  if (!confirm('Are you sure you want to restart the exam? All your current answers will be reset.')) return;
+  examUserAnswers = {
     lesen: {},
+    hoeren: {},
     schreibenPart1: {},
     schreibenPart2: '',
-    sprechenCompleted: {}
+    sprechenRecordings: {},
+    sprechenScores: {}
   };
-  let examSelectedDuration = 65;
-  let examTimerSeconds = 65 * 60; // 3900s (65 minutes official Goethe written standard)
-  let examTimerInterval = null;
+  setExamDuration(examSelectedDuration);
+  switchExamModule('lesen');
+  showFloatingToast('ðŸ”„ Exam restarted.');
+};
 
-  window.setExamDuration = function(mins) {
-    examSelectedDuration = mins;
-    examTimerSeconds = mins * 60;
-    const btn65 = document.getElementById('examModeBtn-65');
-    const btn30 = document.getElementById('examModeBtn-30');
-    if (btn65 && btn30) {
-      if (mins === 65) {
-        btn65.className = "px-2 py-0.5 rounded-lg bg-amber-500 text-white shadow-xs transition cursor-pointer";
-        btn30.className = "px-2 py-0.5 rounded-lg text-amber-900 hover:bg-amber-100 transition cursor-pointer";
-      } else {
-        btn30.className = "px-2 py-0.5 rounded-lg bg-amber-500 text-white shadow-xs transition cursor-pointer";
-        btn65.className = "px-2 py-0.5 rounded-lg text-amber-900 hover:bg-amber-100 transition cursor-pointer";
-      }
-    }
-    const display = document.getElementById('examTimerDisplay');
-    if (display) {
-      const m = Math.floor(examTimerSeconds / 60);
-      const s = examTimerSeconds % 60;
-      display.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
-    }
-  };
-
-  window.openGoetheExamModal = function() {
-    const modal = document.getElementById('goetheExamModal');
-    if (!modal) return;
-    modal.classList.remove('hidden');
-    if (!examTimerInterval) {
-      examTimerSeconds = examSelectedDuration * 60;
-      setExamDuration(examSelectedDuration);
-      startExamTimer();
-    }
-    switchExamModule('hoeren');
-  };
-
-  window.closeGoetheExamModal = function() {
-    const modal = document.getElementById('goetheExamModal');
-    if (modal) modal.classList.add('hidden');
-    if (examTimerInterval) {
+function startExamTimer() {
+  if (examTimerInterval) clearInterval(examTimerInterval);
+  examTimerInterval = setInterval(() => {
+    if (examSelectedDuration === 0 || examTimerPaused) return;
+    if (examTimerSeconds > 0) {
+      examTimerSeconds--;
+      updateExamTimerDisplay();
+    } else {
       clearInterval(examTimerInterval);
-      examTimerInterval = null;
+      showFloatingToast("â±ï¸ Exam time is up! Evaluating your exam...");
+      finishGoetheExam();
     }
-  };
+  }, 1000);
+}
 
-  function startExamTimer() {
-    if (examTimerInterval) clearInterval(examTimerInterval);
-    const display = document.getElementById('examTimerDisplay');
-    examTimerInterval = setInterval(() => {
-      if (examTimerSeconds > 0) {
-        examTimerSeconds--;
-        const m = Math.floor(examTimerSeconds / 60);
-        const s = examTimerSeconds % 60;
-        if (display) display.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+window.openGoetheExamModal = function() {
+  const modal = document.getElementById('goetheExamModal');
+  if (!modal) return;
+  modal.classList.remove('hidden');
+  if (!examTimerInterval) {
+    setExamDuration(examSelectedDuration);
+    startExamTimer();
+  }
+  switchExamModule('lesen');
+};
+
+window.closeGoetheExamModal = function() {
+  const modal = document.getElementById('goetheExamModal');
+  if (modal) modal.classList.add('hidden');
+  if (examTimerInterval) {
+    clearInterval(examTimerInterval);
+    examTimerInterval = null;
+  }
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+  if (currentSpeechRecognition) {
+    try { currentSpeechRecognition.abort(); } catch(e) {}
+    currentSpeechRecognition = null;
+  }
+};
+
+window.switchExamModule = function(mod) {
+  currentExamModule = mod;
+  const modules = ['lesen', 'hoeren', 'schreiben', 'sprechen'];
+  modules.forEach(m => {
+    const tab = document.getElementById(`examTab-${m}`);
+    if (tab) {
+      if (m === mod) {
+        tab.className = "py-1.5 px-2 rounded-xl bg-indigo-600 text-white font-black shadow-xs transition";
       } else {
-        clearInterval(examTimerInterval);
-        showFloatingToast("⏱️ Exam time is up! Submitting your answers...");
-        finishGoetheExam();
+        tab.className = "py-1.5 px-2 rounded-xl text-sky-800 hover:bg-white/80 font-bold transition";
       }
-    }, 1000);
+    }
+  });
+
+  const finishBtn = document.getElementById('examFinishBtn');
+  const nextBtn = document.getElementById('examNextModuleBtn');
+  const prevBtn = document.getElementById('examPrevModuleBtn');
+
+  if (prevBtn) {
+    if (mod === 'lesen') prevBtn.classList.add('hidden');
+    else prevBtn.classList.remove('hidden');
   }
 
-  window.switchExamModule = function(mod) {
-    currentExamModule = mod;
-    const modules = ['hoeren', 'lesen', 'schreiben', 'sprechen'];
-    modules.forEach(m => {
-      const tab = document.getElementById(`examTab-${m}`);
-      if (tab) {
-        if (m === mod) {
-          tab.className = "py-1.5 px-2 rounded-lg bg-indigo-600 text-white shadow-xs transition";
+  if (mod === 'sprechen') {
+    if (finishBtn) finishBtn.classList.remove('hidden');
+    if (nextBtn) nextBtn.classList.add('hidden');
+  } else {
+    if (finishBtn) finishBtn.classList.add('hidden');
+    if (nextBtn) nextBtn.classList.remove('hidden');
+  }
+
+  renderExamModuleContent();
+  updateExamProgressFooter();
+};
+
+window.prevExamModule = function() {
+  if (currentExamModule === 'hoeren') switchExamModule('lesen');
+  else if (currentExamModule === 'schreiben') switchExamModule('hoeren');
+  else if (currentExamModule === 'sprechen') switchExamModule('schreiben');
+};
+
+window.nextExamModule = function() {
+  if (currentExamModule === 'lesen') switchExamModule('hoeren');
+  else if (currentExamModule === 'hoeren') switchExamModule('schreiben');
+  else if (currentExamModule === 'schreiben') switchExamModule('sprechen');
+};
+
+window.setExamAudioSpeed = function(speed) {
+  examAudioSpeed = parseFloat(speed) || 1.0;
+  const btnSlow = document.getElementById('examSpeedBtn-08');
+  const btnNorm = document.getElementById('examSpeedBtn-10');
+  if (btnSlow && btnNorm) {
+    if (examAudioSpeed === 0.8) {
+      btnSlow.className = "px-2 py-0.5 rounded-lg bg-indigo-600 text-white font-bold text-[10px] shadow-xs cursor-pointer";
+      btnNorm.className = "px-2 py-0.5 rounded-lg bg-indigo-100 text-indigo-900 font-bold text-[10px] hover:bg-indigo-200 cursor-pointer";
+    } else {
+      btnNorm.className = "px-2 py-0.5 rounded-lg bg-indigo-600 text-white font-bold text-[10px] shadow-xs cursor-pointer";
+      btnSlow.className = "px-2 py-0.5 rounded-lg bg-indigo-100 text-indigo-900 font-bold text-[10px] hover:bg-indigo-200 cursor-pointer";
+    }
+  }
+};
+
+window.playExamSpeech = function(text, btn = null) {
+  if (!('speechSynthesis' in window)) {
+    showFloatingToast('âš ï¸ Audio synthesis not supported in this browser.', 'âš ï¸');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'de-DE';
+  utter.rate = examAudioSpeed;
+  
+  const voices = window.speechSynthesis.getVoices();
+  const deVoice = voices.find(v => v.lang.startsWith('de') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('German') || v.name.includes('Deutsch'))) ||
+                  voices.find(v => v.lang.startsWith('de'));
+  if (deVoice) utter.voice = deVoice;
+
+  if (btn) {
+    const originalContent = btn.innerHTML;
+    btn.innerHTML = '<span>ðŸ”Š</span><span class="animate-pulse">Playing...</span>';
+    btn.disabled = true;
+    utter.onend = () => {
+      btn.innerHTML = originalContent;
+      btn.disabled = false;
+    };
+    utter.onerror = () => {
+      btn.innerHTML = originalContent;
+      btn.disabled = false;
+    };
+  }
+
+  window.speechSynthesis.speak(utter);
+};
+
+window.evaluateExamEmailNLP = function(text) {
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  const wordCount = words.length;
+
+  const greetingRegex = /(sehr geehrte damen und herren|sehr geehrte[rn]?\s+[A-Za-zÃ¤Ã¶Ã¼ÃŸ]+|liebe[rn]?\s+[A-Za-zÃ¤Ã¶Ã¼ÃŸ]+|hallo\s+[A-Za-zÃ¤Ã¶Ã¼ÃŸ]*|guten tag\s+[A-Za-zÃ¤Ã¶Ã¼ÃŸ]*)/i;
+  const greetingMatch = text.match(greetingRegex);
+  const hasGreeting = !!greetingMatch;
+
+  const closingRegex = /(mit freundlichen grÃ¼ÃŸen|viele grÃ¼ÃŸe|herzliche grÃ¼ÃŸe|liebe grÃ¼ÃŸe|beste grÃ¼ÃŸe|dein[e]?\s+[A-Za-zÃ¤Ã¶Ã¼ÃŸ]+)/i;
+  const closingMatch = text.match(closingRegex);
+  const hasClosing = !!closingMatch;
+
+  const lp1Regex = /(warum|reise|fahre|komme|besuche|urlaub|kÃ¶ln|plane)/i;
+  const hasLp1 = lp1Regex.test(text);
+
+  const lp2Regex = /(mai|10\.|12\.|vom\s+10|bis\s+12|am 10|ankunft|anreise)/i;
+  const hasLp2 = lp2Regex.test(text);
+
+  const lp3Regex = /(stadtplan|plan|hotel|hotels|Ã¼bernachtung|unterkunft|schicken|senden|empfehlen)/i;
+  const hasLp3 = lp3Regex.test(text);
+
+  let score = 0;
+  if (hasGreeting) score += 1.5;
+  if (hasClosing) score += 1.5;
+  
+  if (wordCount >= 30) score += 2.5;
+  else if (wordCount >= 20) score += 1.5;
+  else if (wordCount >= 10) score += 1.0;
+  else if (wordCount > 0) score += 0.5;
+
+  if (hasLp1) score += 1.5;
+  if (hasLp2) score += 1.5;
+  if (hasLp3) score += 1.5;
+
+  return {
+    wordCount,
+    hasGreeting,
+    greetingMatch: greetingMatch ? greetingMatch[0] : '',
+    hasClosing,
+    closingMatch: closingMatch ? closingMatch[0] : '',
+    hasLp1,
+    hasLp2,
+    hasLp3,
+    score: Math.min(10, Math.round(score * 10) / 10)
+  };
+};
+
+window.handleExamEmailInput = function(val) {
+  examUserAnswers.schreibenPart2 = val;
+  const nlp = evaluateExamEmailNLP(val);
+  
+  const wordCountEl = document.getElementById('examEmailWordCount');
+  const progressBar = document.getElementById('examWordProgressBar');
+  const greetingPill = document.getElementById('nlpPillGreeting');
+  const closingPill = document.getElementById('nlpPillClosing');
+  const lp1Pill = document.getElementById('nlpPillLp1');
+  const lp2Pill = document.getElementById('nlpPillLp2');
+  const lp3Pill = document.getElementById('nlpPillLp3');
+  const scoreBadge = document.getElementById('nlpScoreBadge');
+
+  if (wordCountEl) {
+    wordCountEl.textContent = `${nlp.wordCount} / 30 words`;
+    wordCountEl.className = nlp.wordCount >= 30 ? "text-xs font-black text-emerald-700" : "text-xs font-bold text-amber-700";
+  }
+  if (progressBar) {
+    const pct = Math.min(100, Math.round((nlp.wordCount / 30) * 100));
+    progressBar.style.width = `${pct}%`;
+    progressBar.className = pct >= 100 ? "h-1.5 bg-emerald-500 rounded-full transition-all duration-300" : "h-1.5 bg-amber-400 rounded-full transition-all duration-300";
+  }
+  if (greetingPill) {
+    greetingPill.innerHTML = nlp.hasGreeting ? '<span>âœ… Greeting</span>' : '<span>âšª Greeting</span>';
+    greetingPill.className = nlp.hasGreeting ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium';
+  }
+  if (closingPill) {
+    closingPill.innerHTML = nlp.hasClosing ? '<span>âœ… Sign-Off</span>' : '<span>âšª Sign-Off</span>';
+    closingPill.className = nlp.hasClosing ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium';
+  }
+  if (lp1Pill) {
+    lp1Pill.innerHTML = nlp.hasLp1 ? '<span>âœ… 1. Travel Reason</span>' : '<span>âšª 1. Travel Reason</span>';
+    lp1Pill.className = nlp.hasLp1 ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium';
+  }
+  if (lp2Pill) {
+    lp2Pill.innerHTML = nlp.hasLp2 ? '<span>âœ… 2. Travel Dates</span>' : '<span>âšª 2. Travel Dates</span>';
+    lp2Pill.className = nlp.hasLp2 ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium';
+  }
+  if (lp3Pill) {
+    lp3Pill.innerHTML = nlp.hasLp3 ? '<span>âœ… 3. Map & Hotels</span>' : '<span>âšª 3. Map & Hotels</span>';
+    lp3Pill.className = nlp.hasLp3 ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium';
+  }
+  if (scoreBadge) {
+    scoreBadge.textContent = `${nlp.score} / 10 Pts`;
+  }
+  updateExamProgressFooter();
+};
+
+window.startSprechenRecognition = function(partIdx, keywordsArray) {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const statusEl = document.getElementById(`sprechenStatus-${partIdx}`);
+  const transcriptEl = document.getElementById(`sprechenTranscript-${partIdx}`);
+  const micBtn = document.getElementById(`sprechenMicBtn-${partIdx}`);
+  const scoreBox = document.getElementById(`sprechenScoreBox-${partIdx}`);
+
+  if (!SpeechRecognition) {
+    showFloatingToast("âš ï¸ Speech Recognition is not supported in this browser. Please use Google Chrome or self-assess below.", "âš ï¸");
+    if (transcriptEl) {
+      transcriptEl.innerHTML = '<span class="text-amber-800 italic">Speech Recognition not supported in this browser. You can listen to the model speech above and self-award points.</span>';
+    }
+    return;
+  }
+
+  if (currentSpeechRecognition) {
+    try { currentSpeechRecognition.abort(); } catch(e) {}
+    currentSpeechRecognition = null;
+  }
+
+  try {
+    const recognition = new SpeechRecognition();
+    currentSpeechRecognition = recognition;
+
+    recognition.lang = 'de-DE';
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+
+    if (micBtn) {
+      micBtn.className = "px-3 py-1.5 rounded-xl bg-rose-600 text-white font-bold text-xs flex items-center gap-1.5 animate-pulse shadow-md cursor-pointer";
+      micBtn.innerHTML = "<span>ðŸ”´</span><span>Listening in German...</span>";
+    }
+    if (statusEl) {
+      statusEl.textContent = "ðŸŽ™ï¸ Speak clearly in German now...";
+      statusEl.className = "text-[11px] font-bold text-rose-700";
+    }
+
+    let finalTranscript = '';
+
+    recognition.onresult = (e) => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; ++i) {
+        if (e.results[i].isFinal) {
+          finalTranscript += e.results[i][0].transcript;
         } else {
-          tab.className = "py-1.5 px-2 rounded-lg text-sky-700 hover:bg-white/60 transition";
+          interim += e.results[i][0].transcript;
         }
       }
-    });
-
-    const finishBtn = document.getElementById('examFinishBtn');
-    const nextBtn = document.getElementById('examNextModuleBtn');
-    if (mod === 'sprechen') {
-      if (finishBtn) finishBtn.classList.remove('hidden');
-      if (nextBtn) nextBtn.classList.add('hidden');
-    } else {
-      if (finishBtn) finishBtn.classList.add('hidden');
-      if (nextBtn) nextBtn.classList.remove('hidden');
-    }
-
-    renderExamModuleContent();
-  };
-
-  window.nextExamModule = function() {
-    if (currentExamModule === 'hoeren') switchExamModule('lesen');
-    else if (currentExamModule === 'lesen') switchExamModule('schreiben');
-    else if (currentExamModule === 'schreiben') switchExamModule('sprechen');
-  };
-
-  function renderExamModuleContent() {
-    const container = document.getElementById('examModuleContainer');
-    if (!container) return;
-
-    let html = '';
-    if (currentExamModule === 'hoeren') {
-      html += `
-        <div class="p-3 bg-indigo-50/70 rounded-xl border border-indigo-200 text-xs text-indigo-900 font-medium">
-          🎧 <strong>Modul Hören:</strong> Listen to each audio prompt carefully and choose the correct answer. You can replay the audio by clicking the 🔊 button.
-        </div>
-      `;
-      GOETHE_EXAM_DATA.hoeren.forEach((item, idx) => {
-        const savedAns = examUserAnswers.hoeren[idx];
-        html += `
-          <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-2.5">
-            <div class="flex items-center justify-between">
-              <span class="text-[10px] font-black uppercase text-indigo-700 tracking-wider">${item.part}</span>
-              <button onclick="playGermanSpeech(decodeURIComponent('${encodeURIComponent(item.audioPrompt)}'))" class="px-2.5 py-1 rounded-lg bg-indigo-100 hover:bg-indigo-200 text-indigo-900 text-xs font-bold transition cursor-pointer flex items-center gap-1 shadow-2xs">
-                <span>🔊</span>
-                <span>Play Audio Track</span>
-              </button>
-            </div>
-            <p class="text-xs font-black text-sky-950">${escapeHtml(item.q)}</p>
-            <div class="space-y-1.5">
-              ${item.options.map((opt, optIdx) => `
-                <label class="flex items-center gap-2.5 p-2 rounded-xl border cursor-pointer transition ${savedAns === optIdx ? 'bg-indigo-50 border-indigo-400 font-bold' : 'hover:bg-sky-50 border-sky-200 text-sky-900'}">
-                  <input type="radio" name="hoeren-ans-${idx}" value="${optIdx}" ${savedAns === optIdx ? 'checked' : ''} onchange="saveHoerenAnswer(${idx}, ${optIdx})" class="accent-indigo-600">
-                  <span class="text-xs">${escapeHtml(opt)}</span>
-                </label>
-              `).join('')}
-            </div>
-          </div>
-        `;
-      });
-    } else if (currentExamModule === 'lesen') {
-      html += `
-        <div class="p-3 bg-indigo-50/70 rounded-xl border border-indigo-200 text-xs text-indigo-900 font-medium">
-          📖 <strong>Modul Lesen:</strong> Read the notices and emails below, then determine whether the statements are True or False.
-        </div>
-      `;
-      GOETHE_EXAM_DATA.lesen.forEach((item, idx) => {
-        const savedAns = examUserAnswers.lesen[idx];
-        html += `
-          <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-2.5">
-            <span class="text-[10px] font-black uppercase text-indigo-700 tracking-wider">${item.part}</span>
-            <div class="p-3 bg-sky-50/80 rounded-xl border border-sky-200 text-xs text-sky-950 font-serif leading-relaxed italic">
-              "${escapeHtml(item.context)}"
-            </div>
-            <p class="text-xs font-black text-sky-950">${escapeHtml(item.q)}</p>
-            <div class="space-y-1.5">
-              ${item.options.map((opt, optIdx) => `
-                <label class="flex items-center gap-2.5 p-2 rounded-xl border cursor-pointer transition ${savedAns === optIdx ? 'bg-indigo-50 border-indigo-400 font-bold' : 'hover:bg-sky-50 border-sky-200 text-sky-900'}">
-                  <input type="radio" name="lesen-ans-${idx}" value="${optIdx}" ${savedAns === optIdx ? 'checked' : ''} onchange="saveLesenAnswer(${idx}, ${optIdx})" class="accent-indigo-600">
-                  <span class="text-xs">${escapeHtml(opt)}</span>
-                </label>
-              `).join('')}
-            </div>
-          </div>
-        `;
-      });
-    } else if (currentExamModule === 'schreiben') {
-      html += `
-        <div class="p-3 bg-indigo-50/70 rounded-xl border border-indigo-200 text-xs text-indigo-900 font-medium">
-          ✍️ <strong>Modul Schreiben:</strong> Part 1 requires filling in 5 missing fields in the registration form. Part 2 requires writing a short email (~30 words).
-        </div>
-
-        <!-- Part 1: Formular Ausfüllen -->
-        <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-3">
-          <span class="text-[10px] font-black uppercase text-indigo-700 tracking-wider">Teil 1: Formular ausfüllen (Form Filling)</span>
-          <p class="text-xs text-sky-800 bg-sky-50 p-2.5 rounded-xl border border-sky-200 leading-relaxed font-medium">
-            ${escapeHtml(GOETHE_EXAM_DATA.schreiben.part1.text)}
-          </p>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-            ${GOETHE_EXAM_DATA.schreiben.part1.fields.map((f, fIdx) => `
-              <div class="space-y-1">
-                <label class="text-[11px] font-bold text-sky-950">${f.label}:</label>
-                <input type="text" value="${escapeHtml(examUserAnswers.schreibenPart1[fIdx] || '')}" oninput="saveSchreibenFormField(${fIdx}, this.value)" placeholder="Enter answer..." class="w-full px-3 py-1.5 rounded-xl bg-white border border-sky-300 text-xs text-sky-950 font-medium focus:outline-none focus:border-indigo-500">
-              </div>
-            `).join('')}
-          </div>
-        </div>
-
-        <!-- Part 2: Brief / E-Mail Schreiben -->
-        <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] font-black uppercase text-indigo-700 tracking-wider">Teil 2: E-Mail schreiben (~30 Wörter)</span>
-            <span id="examEmailWordCount" class="text-xs font-bold text-sky-600">0 words</span>
-          </div>
-          <div class="text-xs text-sky-900 leading-relaxed bg-indigo-50/60 p-2.5 rounded-xl border border-indigo-200">
-            ${GOETHE_EXAM_DATA.schreiben.part2.prompt}
-          </div>
-          <textarea id="examEmailInput" rows="5" oninput="handleExamEmailInput(this.value)" placeholder="Sehr geehrte Damen und Herren, ..." class="w-full p-3 rounded-xl bg-white border border-sky-300 text-xs text-sky-950 font-mono leading-relaxed focus:outline-none focus:border-indigo-500">${escapeHtml(examUserAnswers.schreibenPart2 || '')}</textarea>
-          
-          <button onclick="toggleExamModelAnswer()" class="text-xs text-indigo-700 hover:text-indigo-900 font-bold underline cursor-pointer">
-            💡 Toggle Official Model Answer & Rubric
-          </button>
-          <div id="examModelAnswerBox" class="hidden p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-950 font-serif leading-relaxed whitespace-pre-line">
-            <strong>Sample 100% Score Answer:</strong>
-            ${escapeHtml(GOETHE_EXAM_DATA.schreiben.part2.sampleAnswer)}
-          </div>
-        </div>
-      `;
-    } else if (currentExamModule === 'sprechen') {
-      html += `
-        <div class="p-3 bg-indigo-50/70 rounded-xl border border-indigo-200 text-xs text-indigo-900 font-medium">
-          🗣️ <strong>Modul Sprechen:</strong> Review the official Goethe oral cards below. Click 🔊 to listen to authentic native pronunciation models for each part.
-        </div>
-      `;
-      GOETHE_EXAM_DATA.sprechen.forEach((item, idx) => {
-        html += `
-          <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-3">
-            <div class="flex items-center justify-between">
-              <span class="text-[10px] font-black uppercase text-indigo-700 tracking-wider">${item.part}</span>
-              <button onclick="playGermanSpeech(decodeURIComponent('${encodeURIComponent(item.modelSpeech || item.modelQuestion)}'))" class="px-2.5 py-1 rounded-lg bg-indigo-100 hover:bg-indigo-200 text-indigo-900 text-xs font-bold transition cursor-pointer flex items-center gap-1 shadow-2xs">
-                <span>🔊</span>
-                <span>Listen to Model Audio</span>
-              </button>
-            </div>
-            ${item.prompts ? `
-              <div class="flex flex-wrap gap-1.5 py-1">
-                ${item.prompts.map(p => `<span class="px-2 py-0.5 rounded-lg bg-sky-100 text-sky-800 text-xs font-bold">${p}</span>`).join('')}
-              </div>
-              <div class="p-3 bg-sky-50 rounded-xl border border-sky-200 text-xs text-sky-950 leading-relaxed">
-                <strong>Model Introduction:</strong> "${escapeHtml(item.modelSpeech)}"
-              </div>
-            ` : `
-              <div class="p-2.5 bg-sky-50 rounded-xl border border-sky-200 text-xs font-bold text-sky-950">
-                Card Prompt: ${escapeHtml(item.cardPrompt)}
-              </div>
-              <div class="space-y-1 text-xs text-sky-900">
-                <p><strong>Question:</strong> <em class="text-indigo-900">"${escapeHtml(item.modelQuestion)}"</em></p>
-                <p><strong>Response:</strong> <em class="text-emerald-900">"${escapeHtml(item.modelResponse)}"</em></p>
-              </div>
-            `}
-          </div>
-        `;
-      });
-    }
-
-    container.innerHTML = html;
-  }
-
-  window.saveHoerenAnswer = function(qIdx, optIdx) {
-    examUserAnswers.hoeren[qIdx] = optIdx;
-  };
-
-  window.saveLesenAnswer = function(qIdx, optIdx) {
-    examUserAnswers.lesen[qIdx] = optIdx;
-  };
-
-  window.saveSchreibenFormField = function(fIdx, val) {
-    examUserAnswers.schreibenPart1[fIdx] = val.trim().toLowerCase();
-  };
-
-  window.handleExamEmailInput = function(val) {
-    examUserAnswers.schreibenPart2 = val;
-    const words = val.trim().split(/\s+/).filter(Boolean);
-    const countEl = document.getElementById('examEmailWordCount');
-    if (countEl) countEl.textContent = `${words.length} words`;
-  };
-
-  window.toggleExamModelAnswer = function() {
-    const box = document.getElementById('examModelAnswerBox');
-    if (box) box.classList.toggle('hidden');
-  };
-
-  window.finishGoetheExam = function() {
-    if (examTimerInterval) clearInterval(examTimerInterval);
-
-    // Calculate Scores
-    let hoerenPts = 0;
-    GOETHE_EXAM_DATA.hoeren.forEach((item, idx) => {
-      if (examUserAnswers.hoeren[idx] === item.answer) hoerenPts += item.points;
-    });
-
-    let lesenPts = 0;
-    GOETHE_EXAM_DATA.lesen.forEach((item, idx) => {
-      if (examUserAnswers.lesen[idx] === item.answer) lesenPts += item.points;
-    });
-
-    let schreibenPts = 0;
-    GOETHE_EXAM_DATA.schreiben.part1.fields.forEach((f, idx) => {
-      const userVal = examUserAnswers.schreibenPart1[idx] || '';
-      if (userVal && (userVal.includes(f.answer) || f.answer.includes(userVal))) {
-        schreibenPts += 1.5;
+      if (transcriptEl) {
+        transcriptEl.textContent = finalTranscript || interim;
       }
-    });
-    // Email word count points (up to 7.5 points)
-    const emailWords = (examUserAnswers.schreibenPart2 || '').trim().split(/\s+/).filter(Boolean);
-    if (emailWords.length >= 20) schreibenPts += 7.5;
-    else if (emailWords.length >= 10) schreibenPts += 4;
-    schreibenPts = Math.min(15, Math.round(schreibenPts));
+    };
 
-    // Sprechen estimated points (awarded for review)
-    let sprechenPts = 13;
+    recognition.onerror = (e) => {
+      if (statusEl) {
+        statusEl.textContent = `âš ï¸ Error: ${e.error || 'Recording error'}`;
+        statusEl.className = "text-[11px] text-amber-700";
+      }
+      if (micBtn) {
+        micBtn.className = "px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 transition shadow-xs cursor-pointer";
+        micBtn.innerHTML = "<span>ðŸŽ™ï¸</span><span>Record Answer</span>";
+      }
+    };
 
-    const totalRaw = hoerenPts + lesenPts + schreibenPts + sprechenPts;
-    const totalPercentage = Math.round((totalRaw / 60) * 100);
-    const isPassed = totalPercentage >= 60;
+    recognition.onend = () => {
+      if (micBtn) {
+        micBtn.className = "px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 transition shadow-xs cursor-pointer";
+        micBtn.innerHTML = "<span>ðŸŽ™ï¸</span><span>Record Again</span>";
+      }
+      currentSpeechRecognition = null;
 
-    let grade = "Nicht bestanden (Failed)";
-    if (totalPercentage >= 90) grade = "Sehr gut (Excellent)";
-    else if (totalPercentage >= 80) grade = "Gut (Good)";
-    else if (totalPercentage >= 70) grade = "Befriedigend (Satisfactory)";
-    else if (totalPercentage >= 60) grade = "Ausreichend (Passed)";
+      const recognized = (finalTranscript || (transcriptEl ? transcriptEl.textContent : '')).trim().toLowerCase();
+      examUserAnswers.sprechenRecordings[partIdx] = recognized;
 
-    if (isPassed) {
-      awardXP(50, 'Goethe A1 Exam Passed');
-      unlockBadge('goethe_ready');
-    }
+      if (!recognized) {
+        if (statusEl) statusEl.textContent = "No speech detected. Click record and try again.";
+        return;
+      }
 
-    const container = document.getElementById('examModuleContainer');
-    if (!container) return;
+      let matches = 0;
+      keywordsArray.forEach(kw => {
+        if (recognized.includes(kw.toLowerCase())) matches++;
+      });
 
-    container.innerHTML = `
-      <div class="p-6 bg-white rounded-2xl border-2 ${isPassed ? 'border-emerald-400 bg-gradient-to-br from-emerald-50/50 to-teal-50/50' : 'border-rose-300 bg-rose-50/50'} text-center space-y-4">
-        <div class="text-5xl">${isPassed ? '🏆' : '📚'}</div>
-        <h3 class="text-xl font-black text-sky-950">${isPassed ? 'Herzlichen Glückwunsch! Exam Passed!' : 'Good Effort! Keep Reviewing!'}</h3>
-        <p class="text-xs text-sky-700">Official Goethe-Zertifikat A1 / Start Deutsch 1 Simulation Results</p>
-        
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-lg mx-auto py-2">
-          <div class="p-2.5 bg-white rounded-xl border border-sky-200">
-            <div class="text-[10px] font-bold text-sky-600">🎧 Hören</div>
-            <div class="text-sm font-black text-sky-950">${hoerenPts} / 15</div>
-          </div>
-          <div class="p-2.5 bg-white rounded-xl border border-sky-200">
-            <div class="text-[10px] font-bold text-sky-600">📖 Lesen</div>
-            <div class="text-sm font-black text-sky-950">${lesenPts} / 15</div>
-          </div>
-          <div class="p-2.5 bg-white rounded-xl border border-sky-200">
-            <div class="text-[10px] font-bold text-sky-600">✍️ Schreiben</div>
-            <div class="text-sm font-black text-sky-950">${schreibenPts} / 15</div>
-          </div>
-          <div class="p-2.5 bg-white rounded-xl border border-sky-200">
-            <div class="text-[10px] font-bold text-sky-600">🗣️ Sprechen</div>
-            <div class="text-sm font-black text-sky-950">${sprechenPts} / 15</div>
-          </div>
-        </div>
+      let partScore = 3;
+      if (matches >= 4) partScore = 5;
+      else if (matches >= 2) partScore = 4;
 
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full ${isPassed ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-rose-100 text-rose-900 border border-rose-300'} text-xs font-black">
-          <span>Overall Score: ${totalRaw} / 60 Pts (${totalPercentage}%)</span>
-          <span>•</span>
-          <span>${grade}</span>
-        </div>
+      examUserAnswers.sprechenScores[partIdx] = partScore;
 
-        ${isPassed ? `
-          <div class="p-4 bg-white/90 rounded-2xl border border-emerald-300 text-left space-y-1.5 max-w-md mx-auto shadow-sm">
-            <div class="flex items-center gap-2 text-emerald-800 font-extrabold text-xs">
-              <span>📜</span>
-              <span>Cheeya Studio A1 Certificate of Proficiency</span>
+      if (statusEl) {
+        statusEl.innerHTML = `<span class="text-emerald-700 font-extrabold">âœ… Pronunciation analyzed! (${matches} keywords recognized â€¢ ${partScore}/5 Pts)</span>`;
+      }
+      if (scoreBox) {
+        scoreBox.innerHTML = `
+          <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-950 flex items-center justify-between">
+            <div>
+              <strong>Fluency & Accuracy:</strong> ${partScore === 5 ? 'ðŸŒŸ High Fluency' : partScore === 4 ? 'ðŸ‘ Good Fluency' : 'ðŸ“š Acceptable A1'}<br/>
+              <span class="text-[11px] text-emerald-800">Spoken: "${escapeHtml(recognized)}"</span>
             </div>
-            <p class="text-[11px] text-sky-900">This verifies successful mastery of German Language Level A1 competencies across Listening, Reading, Writing, and Speaking.</p>
-            <button onclick="window.print()" class="mt-2 w-full py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition cursor-pointer">
-              🖨️ Print / Save Official Certificate
-            </button>
+            <span class="text-sm font-black px-2.5 py-1 rounded-lg bg-emerald-200 text-emerald-900 shrink-0">${partScore} / 5 Pts</span>
           </div>
-        ` : ''}
+        `;
+      }
+      updateExamProgressFooter();
+    };
 
-        <div class="pt-2">
-          <button onclick="openGoetheExamModal()" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs transition cursor-pointer shadow-xs">
-            🔄 Retake Exam
-          </button>
+    recognition.start();
+  } catch (err) {
+    showFloatingToast("âš ï¸ Could not start speech recognition: " + err.message);
+  }
+};
+
+window.setSprechenSelfScore = function(partIdx, pts) {
+  examUserAnswers.sprechenScores[partIdx] = pts;
+  const scoreBox = document.getElementById(`sprechenScoreBox-${partIdx}`);
+  if (scoreBox) {
+    scoreBox.innerHTML = `
+      <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-950 flex items-center justify-between">
+        <span>âœ… Score confirmed:</span>
+        <span class="text-sm font-black px-2.5 py-1 rounded-lg bg-emerald-200 text-emerald-900">${pts} / 5 Pts</span>
+      </div>
+    `;
+  }
+  updateExamProgressFooter();
+};
+
+window.saveHoerenAnswer = function(qIdx, optIdx) {
+  examUserAnswers.hoeren[qIdx] = optIdx;
+  updateExamProgressFooter();
+};
+
+window.saveLesenAnswer = function(qIdx, optIdx) {
+  examUserAnswers.lesen[qIdx] = optIdx;
+  updateExamProgressFooter();
+};
+
+window.saveSchreibenFormField = function(fIdx, val) {
+  examUserAnswers.schreibenPart1[fIdx] = val.trim().toLowerCase();
+  updateExamProgressFooter();
+};
+
+window.toggleExamModelAnswer = function() {
+  const box = document.getElementById('examModelAnswerBox');
+  if (box) box.classList.toggle('hidden');
+};
+
+function updateExamProgressFooter() {
+  const statusEl = document.getElementById('examScoreStatus');
+  if (!statusEl) return;
+
+  if (currentExamModule === 'lesen') {
+    const answered = Object.keys(examUserAnswers.lesen).length;
+    statusEl.innerHTML = `<span>Modul Lesen Progress:</span> <strong class="text-indigo-900">${answered} / 6 Questions Answered</strong>`;
+  } else if (currentExamModule === 'hoeren') {
+    const answered = Object.keys(examUserAnswers.hoeren).length;
+    statusEl.innerHTML = `<span>Modul HÃ¶ren Progress:</span> <strong class="text-indigo-900">${answered} / 6 Questions Answered</strong>`;
+  } else if (currentExamModule === 'schreiben') {
+    const fFilled = Object.keys(examUserAnswers.schreibenPart1).length;
+    const nlp = evaluateExamEmailNLP(examUserAnswers.schreibenPart2 || '');
+    statusEl.innerHTML = `<span>Modul Schreiben Progress:</span> <strong class="text-indigo-900">${fFilled}/5 Form Fields â€¢ ${nlp.wordCount} words (${nlp.score}/10 Pts)</strong>`;
+  } else if (currentExamModule === 'sprechen') {
+    const scored = Object.keys(examUserAnswers.sprechenScores).length;
+    statusEl.innerHTML = `<span>Modul Sprechen Progress:</span> <strong class="text-indigo-900">${scored} / 3 Tasks Recorded / Evaluated</strong>`;
+  }
+}
+
+function renderExamModuleContent() {
+  const container = document.getElementById('examModuleContainer');
+  if (!container) return;
+
+  let html = '';
+
+  // ---------------- MODULE 1: LESEN ----------------
+  if (currentExamModule === 'lesen') {
+    html += `
+      <div class="p-3.5 bg-indigo-50/70 rounded-2xl border border-indigo-200 text-xs text-indigo-950 leading-relaxed">
+        <div class="flex items-center justify-between font-bold mb-1">
+          <span class="flex items-center gap-1.5 text-indigo-900">
+            <span>ðŸ“–</span>
+            <span class="text-sm font-black">Modul 1: Lesen (Reading - 25 Min, 15 Points)</span>
+          </span>
+          <span class="px-2.5 py-0.5 rounded-full bg-indigo-200/80 text-indigo-900 font-extrabold text-[11px]">3 Teile â€¢ 6 Questions</span>
         </div>
+        Read each short text, email, or public sign carefully and select the best option.
       </div>
     `;
 
-    const finishBtn = document.getElementById('examFinishBtn');
-    const nextBtn = document.getElementById('examNextModuleBtn');
-    if (finishBtn) finishBtn.classList.add('hidden');
-    if (nextBtn) nextBtn.classList.add('hidden');
-  };
+    GOETHE_EXAM_DATA.lesen.forEach((item, idx) => {
+      const savedAns = examUserAnswers.lesen[idx];
+      html += `
+        <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase tracking-wider text-sky-700">${item.teil}</span>
+            <span class="px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 text-[10px] font-bold">Question ${idx + 1} of 6 (2.5 Pts)</span>
+          </div>
+          ${item.context ? `
+            <div class="p-3 bg-sky-50/80 rounded-xl border border-sky-200 text-xs text-sky-950 font-serif leading-relaxed italic whitespace-pre-line">
+              "${escapeHtml(item.context)}"
+            </div>
+          ` : ''}
+          ${item.situation ? `
+            <div class="p-2.5 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-950 font-medium">
+              ${escapeHtml(item.situation)}
+            </div>
+          ` : ''}
+          <p class="text-xs font-black text-sky-950">${escapeHtml(item.q)}</p>
+          <div class="space-y-1.5">
+            ${item.options.map((opt, optIdx) => `
+              <label class="flex items-center gap-2.5 p-2.5 rounded-xl border cursor-pointer transition ${savedAns === optIdx ? 'bg-indigo-50 border-indigo-400 font-bold shadow-xs' : 'hover:bg-sky-50 border-sky-200 text-sky-900'}">
+                <input type="radio" name="lesen-ans-${idx}" value="${optIdx}" ${savedAns === optIdx ? 'checked' : ''} onchange="saveLesenAnswer(${idx}, ${optIdx})" class="accent-indigo-600">
+                <span class="text-xs">${escapeHtml(opt)}</span>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  // ---------------- MODULE 2: HÃ–REN ----------------
+  else if (currentExamModule === 'hoeren') {
+    html += `
+      <div class="p-3.5 bg-indigo-50/70 rounded-2xl border border-indigo-200 text-xs text-indigo-950 leading-relaxed">
+        <div class="flex flex-wrap items-center justify-between gap-2 font-bold mb-1">
+          <span class="flex items-center gap-1.5 text-indigo-900">
+            <span>ðŸŽ§</span>
+            <span class="text-sm font-black">Modul 2: HÃ¶ren (Listening - 20 Min, 15 Points)</span>
+          </span>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[11px] text-sky-800">Speed:</span>
+            <button id="examSpeedBtn-08" onclick="setExamAudioSpeed(0.8)" class="px-2 py-0.5 rounded-lg ${examAudioSpeed === 0.8 ? 'bg-indigo-600 text-white font-bold text-[10px] shadow-xs cursor-pointer' : 'bg-indigo-100 text-indigo-900 font-bold text-[10px] hover:bg-indigo-200 cursor-pointer'}">0.8x Slow</button>
+            <button id="examSpeedBtn-10" onclick="setExamAudioSpeed(1.0)" class="px-2 py-0.5 rounded-lg ${examAudioSpeed === 1.0 ? 'bg-indigo-600 text-white font-bold text-[10px] shadow-xs cursor-pointer' : 'bg-indigo-100 text-indigo-900 font-bold text-[10px] hover:bg-indigo-200 cursor-pointer'}">1.0x Normal</button>
+          </div>
+        </div>
+        Click the ðŸ”Š button to play the authentic German audio simulation. Each prompt can be replayed.
+      </div>
+    `;
+
+    GOETHE_EXAM_DATA.hoeren.forEach((item, idx) => {
+      const savedAns = examUserAnswers.hoeren[idx];
+      html += `
+        <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase tracking-wider text-sky-700">${item.teil}</span>
+            <span class="px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 text-[10px] font-bold">Question ${idx + 1} of 6 (2.5 Pts)</span>
+          </div>
+          <div class="flex items-center justify-between p-3 bg-sky-50/80 rounded-xl border border-sky-200">
+            <div class="text-xs text-sky-900 font-medium flex items-center gap-2">
+              <span class="text-base">ðŸŽ™ï¸</span>
+              <span>Authentic German Audio Recording</span>
+            </div>
+            <button onclick="playExamSpeech(decodeURIComponent('${encodeURIComponent(item.audioPrompt)}'), this)" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition cursor-pointer flex items-center gap-1.5 shadow-2xs">
+              <span>ðŸ”Š</span>
+              <span>Play Audio</span>
+            </button>
+          </div>
+          <p class="text-xs font-black text-sky-950">${escapeHtml(item.q)}</p>
+          <div class="space-y-1.5">
+            ${item.options.map((opt, optIdx) => `
+              <label class="flex items-center gap-2.5 p-2.5 rounded-xl border cursor-pointer transition ${savedAns === optIdx ? 'bg-indigo-50 border-indigo-400 font-bold shadow-xs' : 'hover:bg-sky-50 border-sky-200 text-sky-900'}">
+                <input type="radio" name="hoeren-ans-${idx}" value="${optIdx}" ${savedAns === optIdx ? 'checked' : ''} onchange="saveHoerenAnswer(${idx}, ${optIdx})" class="accent-indigo-600">
+                <span class="text-xs">${escapeHtml(opt)}</span>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  // ---------------- MODULE 3: SCHREIBEN ----------------
+  else if (currentExamModule === 'schreiben') {
+    const nlp = evaluateExamEmailNLP(examUserAnswers.schreibenPart2 || '');
+    const pct = Math.min(100, Math.round((nlp.wordCount / 30) * 100));
+
+    html += `
+      <div class="p-3.5 bg-indigo-50/70 rounded-2xl border border-indigo-200 text-xs text-indigo-950 leading-relaxed">
+        <div class="flex items-center justify-between font-bold mb-1">
+          <span class="flex items-center gap-1.5 text-indigo-900">
+            <span>âœï¸</span>
+            <span class="text-sm font-black">Modul 3: Schreiben (Writing - 20 Min, 15 Points)</span>
+          </span>
+          <span class="px-2.5 py-0.5 rounded-full bg-indigo-200/80 text-indigo-900 font-extrabold text-[11px]">Teil 1 (5 Pts) + Teil 2 (10 Pts)</span>
+        </div>
+        Complete both parts: 1) Fill in the missing registration form fields. 2) Compose a short email (~30â€“40 words) with real-time AI evaluation.
+      </div>
+
+      <!-- Part 1: Formular AusfÃ¼llen -->
+      <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-black uppercase tracking-wider text-sky-700">${GOETHE_EXAM_DATA.schreiben.part1.title}</span>
+          <span class="px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 text-[10px] font-bold">5 Fields â€¢ 5 Points</span>
+        </div>
+        <div class="p-3 bg-sky-50 rounded-xl border border-sky-200 text-xs text-sky-950 leading-relaxed font-serif italic">
+          "${escapeHtml(GOETHE_EXAM_DATA.schreiben.part1.text)}"
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+          ${GOETHE_EXAM_DATA.schreiben.part1.fields.map((f, fIdx) => `
+            <div class="space-y-1">
+              <label class="text-[11px] font-bold text-sky-950 block">${f.label}:</label>
+              <input type="text" value="${escapeHtml(examUserAnswers.schreibenPart1[fIdx] || '')}" oninput="saveSchreibenFormField(${fIdx}, this.value)" placeholder="Enter answer..." class="w-full px-3 py-1.5 rounded-xl bg-white border border-sky-300 text-xs text-sky-950 font-medium focus:outline-none focus:border-indigo-500 shadow-2xs">
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- Part 2: Brief / E-Mail Schreiben with Real-Time AI NLP Evaluator -->
+      <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-black uppercase tracking-wider text-sky-700">${GOETHE_EXAM_DATA.schreiben.part2.title}</span>
+          <div class="flex items-center gap-2">
+            <span id="nlpScoreBadge" class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-black">${nlp.score} / 10 Pts</span>
+            <span id="examEmailWordCount" class="${nlp.wordCount >= 30 ? 'text-xs font-black text-emerald-700' : 'text-xs font-bold text-amber-700'}">${nlp.wordCount} / 30 words</span>
+          </div>
+        </div>
+
+        <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+          <div id="examWordProgressBar" style="width: ${pct}%" class="${pct >= 100 ? 'h-1.5 bg-emerald-500 rounded-full transition-all duration-300' : 'h-1.5 bg-amber-400 rounded-full transition-all duration-300'}"></div>
+        </div>
+
+        <div class="text-xs text-sky-950 leading-relaxed bg-indigo-50/70 p-3 rounded-xl border border-indigo-200">
+          ${GOETHE_EXAM_DATA.schreiben.part2.prompt}
+        </div>
+
+        <!-- Real-Time Leitpunkte & Structure Badges -->
+        <div class="flex flex-wrap gap-1.5 pt-1">
+          <span id="nlpPillGreeting" class="${nlp.hasGreeting ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium'}">
+            ${nlp.hasGreeting ? 'âœ… Greeting' : 'âšª Greeting'}
+          </span>
+          <span id="nlpPillLp1" class="${nlp.hasLp1 ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium'}">
+            ${nlp.hasLp1 ? 'âœ… 1. Travel Reason' : 'âšª 1. Travel Reason'}
+          </span>
+          <span id="nlpPillLp2" class="${nlp.hasLp2 ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium'}">
+            ${nlp.hasLp2 ? 'âœ… 2. Travel Dates' : 'âšª 2. Travel Dates'}
+          </span>
+          <span id="nlpPillLp3" class="${nlp.hasLp3 ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium'}">
+            ${nlp.hasLp3 ? 'âœ… 3. Map & Hotels' : 'âšª 3. Map & Hotels'}
+          </span>
+          <span id="nlpPillClosing" class="${nlp.hasClosing ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium'}">
+            ${nlp.hasClosing ? 'âœ… Sign-Off' : 'âšª Sign-Off'}
+          </span>
+        </div>
+
+        <textarea id="examEmailInput" rows="5" oninput="handleExamEmailInput(this.value)" placeholder="Sehr geehrte Damen und Herren,\n\nich plane eine Reise nach KÃ¶ln..." class="w-full p-3 rounded-xl bg-white border border-sky-300 text-xs text-sky-950 font-mono leading-relaxed focus:outline-none focus:border-indigo-500 shadow-2xs">${escapeHtml(examUserAnswers.schreibenPart2 || '')}</textarea>
+
+        <div class="flex items-center justify-between pt-1">
+          <button onclick="toggleExamModelAnswer()" class="text-xs text-indigo-700 hover:text-indigo-900 font-bold underline cursor-pointer">
+            ðŸ’¡ Toggle Official Model Answer & Rubric
+          </button>
+        </div>
+        <div id="examModelAnswerBox" class="hidden p-3.5 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-950 space-y-1.5 leading-relaxed">
+          <div class="font-bold text-emerald-900">Official Goethe Model Solution (100% Score):</div>
+          <p class="font-serif italic whitespace-pre-line text-emerald-950">${escapeHtml(GOETHE_EXAM_DATA.schreiben.part2.sampleAnswer)}</p>
+        </div>
+      </div>
+    `;
+  }
+
+  // ---------------- MODULE 4: SPRECHEN ----------------
+  else if (currentExamModule === 'sprechen') {
+    html += `
+      <div class="p-3.5 bg-indigo-50/70 rounded-2xl border border-indigo-200 text-xs text-indigo-950 leading-relaxed">
+        <div class="flex items-center justify-between font-bold mb-1">
+          <span class="flex items-center gap-1.5 text-indigo-900">
+            <span>ðŸ—£ï¸</span>
+            <span class="text-sm font-black">Modul 4: Sprechen (Speaking - 15 Min, 15 Points)</span>
+          </span>
+          <span class="px-2.5 py-0.5 rounded-full bg-indigo-200/80 text-indigo-900 font-extrabold text-[11px]">3 Teile â€¢ 15 Points</span>
+        </div>
+        Listen to the native pronunciation model, then click ðŸŽ™ï¸ to record your German response or self-award points.
+      </div>
+    `;
+
+    GOETHE_EXAM_DATA.sprechen.forEach((item, idx) => {
+      const partScore = examUserAnswers.sprechenScores[idx];
+      const transcript = examUserAnswers.sprechenRecordings[idx];
+
+      html += `
+        <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase tracking-wider text-sky-700">${item.teil}</span>
+            <span class="px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 text-[10px] font-bold">Part ${idx + 1} of 3 (5 Pts)</span>
+          </div>
+          <p class="text-xs text-sky-900 font-medium">${item.taskDesc}</p>
+
+          ${item.prompts ? `
+            <div class="flex flex-wrap gap-1.5 py-1">
+              ${item.prompts.map(p => `<span class="px-2 py-0.5 rounded-lg bg-sky-100 text-sky-800 text-xs font-bold border border-sky-200">${p}</span>`).join('')}
+            </div>
+          ` : ''}
+
+          ${item.theme ? `
+            <div class="p-2 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-950 font-bold">
+              ${escapeHtml(item.theme)}
+            </div>
+          ` : ''}
+
+          ${item.cardPrompt ? `
+            <div class="text-xs font-bold text-sky-950">
+              Prompt: <span class="text-indigo-900">${escapeHtml(item.cardPrompt)}</span>
+            </div>
+          ` : ''}
+
+          <!-- Audio Simulation Model Player -->
+          <div class="flex items-center justify-between p-3 bg-sky-50/80 rounded-xl border border-sky-200">
+            <div class="text-xs text-sky-900 font-medium">
+              Native German Model Audio
+            </div>
+            <button onclick="playExamSpeech(decodeURIComponent('${encodeURIComponent(item.modelSpeech || (item.modelQuestion + ' ' + item.modelResponse))}'), this)" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition cursor-pointer flex items-center gap-1.5 shadow-2xs">
+              <span>ðŸ”Š</span>
+              <span>Listen to Model</span>
+            </button>
+          </div>
+
+          <!-- Speech Recording & AI Keyword Evaluator -->
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <button id="sprechenMicBtn-${idx}" onclick="startSprechenRecognition(${idx}, ${JSON.stringify(item.targetKeywords)})" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 transition shadow-xs cursor-pointer">
+                <span>ðŸŽ™ï¸</span>
+                <span>Record Answer</span>
+              </button>
+              <div id="sprechenStatus-${idx}" class="text-[11px] text-slate-600 font-medium">Click Record and speak clearly in German...</div>
+            </div>
+
+            <div id="sprechenTranscript-${idx}" class="p-2.5 bg-white rounded-lg border border-slate-200 text-xs text-slate-800 font-mono min-h-[36px]">
+              ${transcript ? escapeHtml(transcript) : '<span class="text-slate-400 italic">Recognized speech will appear here...</span>'}
+            </div>
+
+            <div id="sprechenScoreBox-${idx}">
+              ${partScore !== undefined ? `
+                <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-950 flex items-center justify-between">
+                  <span>âœ… Recorded & Evaluated Score:</span>
+                  <span class="text-sm font-black px-2.5 py-1 rounded-lg bg-emerald-200 text-emerald-900">${partScore} / 5 Pts</span>
+                </div>
+              ` : `
+                <div class="flex items-center justify-between gap-2 pt-1">
+                  <span class="text-[11px] text-slate-500 font-medium">Or self-assess your fluency:</span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setSprechenSelfScore(${idx}, 5)" class="px-2 py-0.5 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-bold text-[10px] cursor-pointer">5 Pts (Fluent)</button>
+                    <button onclick="setSprechenSelfScore(${idx}, 4)" class="px-2 py-0.5 rounded-lg bg-indigo-100 hover:bg-indigo-200 text-indigo-900 font-bold text-[10px] cursor-pointer">4 Pts (Good)</button>
+                    <button onclick="setSprechenSelfScore(${idx}, 3)" class="px-2 py-0.5 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-[10px] cursor-pointer">3 Pts (Basic)</button>
+                  </div>
+                </div>
+              `}
+            </div>
+          </div>
+
+        </div>
+      `;
+    });
+  }
+
+  container.innerHTML = html;
+}
+
+window.finishGoetheExam = function() {
+  if (examTimerInterval) {
+    clearInterval(examTimerInterval);
+    examTimerInterval = null;
+  }
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+  if (currentSpeechRecognition) {
+    try { currentSpeechRecognition.abort(); } catch(e) {}
+    currentSpeechRecognition = null;
+  }
+
+  // 1. LESEN SCORING (Max 15 Pts)
+  let lesenPts = 0;
+  GOETHE_EXAM_DATA.lesen.forEach((item, idx) => {
+    if (examUserAnswers.lesen[idx] === item.answer) {
+      lesenPts += item.points;
+    }
+  });
+
+  // 2. HÃ–REN SCORING (Max 15 Pts)
+  let hoerenPts = 0;
+  GOETHE_EXAM_DATA.hoeren.forEach((item, idx) => {
+    if (examUserAnswers.hoeren[idx] === item.answer) {
+      hoerenPts += item.points;
+    }
+  });
+
+  // 3. SCHREIBEN SCORING (Max 15 Pts: Teil 1 max 5, Teil 2 max 10)
+  let schreibenPart1Pts = 0;
+  GOETHE_EXAM_DATA.schreiben.part1.fields.forEach((f, idx) => {
+    const userVal = (examUserAnswers.schreibenPart1[idx] || '').trim().toLowerCase();
+    const correctVal = f.answer.toLowerCase();
+    if (userVal && (userVal.includes(correctVal) || correctVal.includes(userVal))) {
+      schreibenPart1Pts += f.points;
+    }
+  });
+  const nlp = evaluateExamEmailNLP(examUserAnswers.schreibenPart2 || '');
+  const schreibenPart2Pts = nlp.score;
+  const schreibenPts = Math.min(15, Math.round((schreibenPart1Pts + schreibenPart2Pts) * 10) / 10);
+
+  // 4. SPRECHEN SCORING (Max 15 Pts: 3 parts x 5 pts)
+  let sprechenPts = 0;
+  GOETHE_EXAM_DATA.sprechen.forEach((item, idx) => {
+    const s = examUserAnswers.sprechenScores[idx] !== undefined ? examUserAnswers.sprechenScores[idx] : 4;
+    sprechenPts += s;
+  });
+  sprechenPts = Math.min(15, sprechenPts);
+
+  // TOTAL CALCULATION (Total 60 Pts)
+  const totalRaw = Math.round((lesenPts + hoerenPts + schreibenPts + sprechenPts) * 10) / 10;
+  const totalPercentage = Math.round((totalRaw / 60) * 100);
+  const isPassed = totalPercentage >= 60;
+
+  let grade = "Nicht bestanden (Failed)";
+  if (totalPercentage >= 90) grade = "Sehr gut (Excellent)";
+  else if (totalPercentage >= 80) grade = "Gut (Good)";
+  else if (totalPercentage >= 70) grade = "Befriedigend (Satisfactory)";
+  else if (totalPercentage >= 60) grade = "Ausreichend (Passed)";
+
+  if (isPassed) {
+    if (typeof awardXP === 'function') awardXP(50, 'Goethe A1 Exam Passed');
+    if (typeof unlockBadge === 'function') unlockBadge('goethe_ready');
+  }
+
+  const container = document.getElementById('examModuleContainer');
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="p-6 bg-white rounded-2xl border-2 ${isPassed ? 'border-emerald-400 bg-gradient-to-br from-emerald-50/50 to-teal-50/50' : 'border-rose-300 bg-rose-50/50'} text-center space-y-4">
+      <div class="text-5xl">${isPassed ? 'ðŸ†' : 'ðŸ“š'}</div>
+      <h3 class="text-xl font-black text-sky-950">${isPassed ? 'Herzlichen GlÃ¼ckwunsch! Exam Passed!' : 'Good Effort! Keep Reviewing!'}</h3>
+      <p class="text-xs text-sky-700 font-medium">Official Goethe-Zertifikat A1 (Start Deutsch 1) & telc A1 Evaluation</p>
+      
+      <!-- 4 Module Breakdown Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-xl mx-auto py-2">
+        <div class="p-3 bg-white rounded-xl border border-sky-200 shadow-2xs">
+          <div class="text-[11px] font-bold text-sky-600">ðŸ“– Lesen</div>
+          <div class="text-base font-black text-sky-950">${lesenPts} / 15</div>
+        </div>
+        <div class="p-3 bg-white rounded-xl border border-sky-200 shadow-2xs">
+          <div class="text-[11px] font-bold text-sky-600">ðŸŽ§ HÃ¶ren</div>
+          <div class="text-base font-black text-sky-950">${hoerenPts} / 15</div>
+        </div>
+        <div class="p-3 bg-white rounded-xl border border-sky-200 shadow-2xs">
+          <div class="text-[11px] font-bold text-sky-600">âœï¸ Schreiben</div>
+          <div class="text-base font-black text-sky-950">${schreibenPts} / 15</div>
+        </div>
+        <div class="p-3 bg-white rounded-xl border border-sky-200 shadow-2xs">
+          <div class="text-[11px] font-bold text-sky-600">ðŸ—£ï¸ Sprechen</div>
+          <div class="text-base font-black text-sky-950">${sprechenPts} / 15</div>
+        </div>
+      </div>
+
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full ${isPassed ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-rose-100 text-rose-900 border border-rose-300'} text-xs font-black shadow-2xs">
+        <span>Total: ${totalRaw} / 60 Points (${totalPercentage}%)</span>
+        <span>â€¢</span>
+        <span>${grade}</span>
+      </div>
+
+      <!-- Action Buttons: Review All Answers + Print Certificate -->
+      <div class="flex flex-wrap items-center justify-center gap-2.5 pt-2">
+        <button onclick="openExamReviewModal()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs transition shadow-sm cursor-pointer flex items-center gap-1.5">
+          <span>ðŸ”</span>
+          <span>Review All Answers & Explanations</span>
+        </button>
+        ${isPassed ? `
+          <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs transition shadow-sm cursor-pointer flex items-center gap-1.5">
+            <span>ðŸ“œ</span>
+            <span>Print Official Certificate</span>
+          </button>
+        ` : ''}
+        <button onclick="restartGoetheExam()" class="px-4 py-2 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-900 font-bold text-xs transition cursor-pointer flex items-center gap-1.5">
+          <span>ðŸ”„</span>
+          <span>Retake Exam</span>
+        </button>
+      </div>
+
+      ${isPassed ? `
+        <div class="p-4 bg-white/90 rounded-2xl border border-emerald-300 text-left space-y-1.5 max-w-md mx-auto shadow-sm mt-3">
+          <div class="flex items-center gap-2 text-emerald-900 font-black text-xs">
+            <span>ðŸŽ“</span>
+            <span>Cheeya Studio Goethe A1 Certificate of Proficiency</span>
+          </div>
+          <p class="text-[11px] text-sky-900 leading-relaxed">
+            Certified proficiency in German Level A1 competencies across Reading, Listening, Writing, and Speaking with final score of <strong>${totalPercentage}% (${grade})</strong>.
+          </p>
+        </div>
+      ` : ''}
+    </div>
+  `;
+
+  const finishBtn = document.getElementById('examFinishBtn');
+  const nextBtn = document.getElementById('examNextModuleBtn');
+  const prevBtn = document.getElementById('examPrevModuleBtn');
+  if (finishBtn) finishBtn.classList.add('hidden');
+  if (nextBtn) nextBtn.classList.add('hidden');
+  if (prevBtn) prevBtn.classList.add('hidden');
+
+  const statusEl = document.getElementById('examScoreStatus');
+  if (statusEl) {
+    statusEl.innerHTML = `Exam Completed: <strong class="text-emerald-900">${totalRaw} / 60 Pts (${totalPercentage}%)</strong>`;
+  }
+};
+
+window.openExamReviewModal = function() {
+  const modal = document.getElementById('goetheReviewModal');
+  const body = document.getElementById('goetheReviewModalBody');
+  if (!modal || !body) return;
+
+  let html = '';
+
+  // 1. LESEN REVIEW
+  html += `
+    <div class="space-y-3">
+      <div class="flex items-center gap-2 pb-2 border-b border-sky-200">
+        <span class="text-base">ðŸ“–</span>
+        <h4 class="text-sm font-black text-sky-950 uppercase tracking-wider">Modul Lesen (Reading) Review</h4>
+      </div>
+  `;
+  GOETHE_EXAM_DATA.lesen.forEach((item, idx) => {
+    const userAns = examUserAnswers.lesen[idx];
+    const isCorrect = (userAns === item.answer);
+    html += `
+      <div class="p-3.5 bg-white rounded-2xl border ${isCorrect ? 'border-emerald-200 bg-emerald-50/30' : 'border-rose-200 bg-rose-50/30'} space-y-2 text-xs shadow-2xs">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-black uppercase tracking-wider text-sky-700">${item.teil}</span>
+          <span class="text-xs font-black px-2 py-0.5 rounded-full ${isCorrect ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-rose-100 text-rose-900 border border-rose-300'}">
+            ${isCorrect ? 'âœ… Correct (+2.5 Pts)' : 'âŒ Incorrect (0 Pts)'}
+          </span>
+        </div>
+        ${item.context ? `<div class="p-2.5 bg-sky-50/80 rounded-xl border border-sky-100 text-sky-900 font-serif italic whitespace-pre-line text-[11px]">"${escapeHtml(item.context)}"</div>` : ''}
+        ${item.situation ? `<div class="p-2 bg-indigo-50/70 rounded-xl text-indigo-950 font-bold text-[11px]">${escapeHtml(item.situation)}</div>` : ''}
+        <div class="font-bold text-sky-950">${escapeHtml(item.q)}</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+          <div class="p-2 rounded-xl border ${isCorrect ? 'border-emerald-300 bg-white' : 'border-rose-300 bg-white'}">
+            <strong>Your Answer:</strong> ${userAns !== undefined ? escapeHtml(item.options[userAns]) : '<em class="text-rose-600">Unanswered</em>'}
+          </div>
+          <div class="p-2 rounded-xl border border-emerald-300 bg-emerald-50/80 text-emerald-950 font-bold">
+            <strong>Official Correct Answer:</strong> ${escapeHtml(item.options[item.answer])}
+          </div>
+        </div>
+        <div class="p-2 bg-sky-50 rounded-xl text-sky-900 text-[11px] leading-relaxed">
+          ðŸ’¡ <strong>Explanation:</strong> ${escapeHtml(item.explanation)}
+        </div>
+      </div>
+    `;
+  });
+  html += `</div>`;
+
+  // 2. HÃ–REN REVIEW
+  html += `
+    <div class="space-y-3 mt-6">
+      <div class="flex items-center gap-2 pb-2 border-b border-sky-200">
+        <span class="text-base">ðŸŽ§</span>
+        <h4 class="text-sm font-black text-sky-950 uppercase tracking-wider">Modul HÃ¶ren (Listening) Review</h4>
+      </div>
+  `;
+  GOETHE_EXAM_DATA.hoeren.forEach((item, idx) => {
+    const userAns = examUserAnswers.hoeren[idx];
+    const isCorrect = (userAns === item.answer);
+    html += `
+      <div class="p-3.5 bg-white rounded-2xl border ${isCorrect ? 'border-emerald-200 bg-emerald-50/30' : 'border-rose-200 bg-rose-50/30'} space-y-2 text-xs shadow-2xs">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-black uppercase tracking-wider text-sky-700">${item.teil}</span>
+          <span class="text-xs font-black px-2 py-0.5 rounded-full ${isCorrect ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-rose-100 text-rose-900 border border-rose-300'}">
+            ${isCorrect ? 'âœ… Correct (+2.5 Pts)' : 'âŒ Incorrect (0 Pts)'}
+          </span>
+        </div>
+        <div class="p-2.5 bg-indigo-50/70 rounded-xl border border-indigo-100 text-indigo-950 font-mono text-[11px] leading-relaxed">
+          ðŸ—£ï¸ <strong>Audio Transcript:</strong> "${escapeHtml(item.audioPrompt)}"
+        </div>
+        <div class="font-bold text-sky-950">${escapeHtml(item.q)}</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+          <div class="p-2 rounded-xl border ${isCorrect ? 'border-emerald-300 bg-white' : 'border-rose-300 bg-white'}">
+            <strong>Your Answer:</strong> ${userAns !== undefined ? escapeHtml(item.options[userAns]) : '<em class="text-rose-600">Unanswered</em>'}
+          </div>
+          <div class="p-2 rounded-xl border border-emerald-300 bg-emerald-50/80 text-emerald-950 font-bold">
+            <strong>Official Correct Answer:</strong> ${escapeHtml(item.options[item.answer])}
+          </div>
+        </div>
+        <div class="p-2 bg-sky-50 rounded-xl text-sky-900 text-[11px] leading-relaxed">
+          ðŸ’¡ <strong>Explanation:</strong> ${escapeHtml(item.explanation)}
+        </div>
+      </div>
+    `;
+  });
+  html += `</div>`;
+
+  // 3. SCHREIBEN REVIEW
+  const nlp = evaluateExamEmailNLP(examUserAnswers.schreibenPart2 || '');
+  html += `
+    <div class="space-y-3 mt-6">
+      <div class="flex items-center gap-2 pb-2 border-b border-sky-200">
+        <span class="text-base">âœï¸</span>
+        <h4 class="text-sm font-black text-sky-950 uppercase tracking-wider">Modul Schreiben (Writing) Review</h4>
+      </div>
+
+      <!-- Part 1 Form Filling Review -->
+      <div class="p-4 bg-white rounded-2xl border border-sky-200 space-y-2.5 shadow-2xs">
+        <div class="font-black text-xs text-sky-950">Teil 1: Formular ausfÃ¼llen (Form Fields)</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+          ${GOETHE_EXAM_DATA.schreiben.part1.fields.map((f, fIdx) => {
+            const userVal = (examUserAnswers.schreibenPart1[fIdx] || '').trim().toLowerCase();
+            const correctVal = f.answer.toLowerCase();
+            const isFCorrect = userVal && (userVal.includes(correctVal) || correctVal.includes(userVal));
+            return `
+              <div class="p-2.5 rounded-xl border ${isFCorrect ? 'border-emerald-200 bg-emerald-50/40' : 'border-rose-200 bg-rose-50/40'} space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-sky-900">${f.label}:</span>
+                  <span class="text-[10px] font-black">${isFCorrect ? 'âœ… +1 Pt' : 'âŒ 0 Pts'}</span>
+                </div>
+                <div>Your input: <strong>"${escapeHtml(examUserAnswers.schreibenPart1[fIdx] || '-')}"</strong></div>
+                <div class="text-emerald-800">Expected: <strong>"${escapeHtml(f.answer)}"</strong></div>
+                <div class="text-[10px] text-sky-700">ðŸ’¡ ${f.explanation}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+
+      <!-- Part 2 Email Review -->
+      <div class="p-4 bg-white rounded-2xl border border-sky-200 space-y-3 shadow-2xs text-xs">
+        <div class="flex items-center justify-between">
+          <div class="font-black text-xs text-sky-950">Teil 2: E-Mail Composition (${nlp.score} / 10 Pts)</div>
+          <span class="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-900 font-bold text-[10px]">${nlp.wordCount} words</span>
+        </div>
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 font-mono text-[11px] whitespace-pre-line leading-relaxed">
+          ${escapeHtml(examUserAnswers.schreibenPart2 || 'No email written.')}
+        </div>
+        <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 space-y-1">
+          <span class="font-bold text-emerald-950 block">Official Goethe Model Solution (100% Score):</span>
+          <p class="font-serif text-[11px] text-emerald-900 whitespace-pre-line leading-relaxed italic">${escapeHtml(GOETHE_EXAM_DATA.schreiben.part2.sampleAnswer)}</p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // 4. SPRECHEN REVIEW
+  html += `
+    <div class="space-y-3 mt-6">
+      <div class="flex items-center gap-2 pb-2 border-b border-sky-200">
+        <span class="text-base">ðŸ—£ï¸</span>
+        <h4 class="text-sm font-black text-sky-950 uppercase tracking-wider">Modul Sprechen (Speaking) Review</h4>
+      </div>
+  `;
+  GOETHE_EXAM_DATA.sprechen.forEach((item, sIdx) => {
+    const score = examUserAnswers.sprechenScores[sIdx] !== undefined ? examUserAnswers.sprechenScores[sIdx] : 4;
+    const transcript = examUserAnswers.sprechenRecordings[sIdx] || '';
+    html += `
+      <div class="p-3.5 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-2 text-xs">
+        <div class="flex items-center justify-between">
+          <span class="font-black text-sky-950">${item.teil}</span>
+          <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-bold text-[11px]">${score} / 5 Pts</span>
+        </div>
+        <p class="text-sky-800 text-[11px]">${item.taskDesc}</p>
+        ${transcript ? `<div class="p-2 bg-slate-50 rounded-xl border text-[11px] font-mono">Recognized Speech: "${escapeHtml(transcript)}"</div>` : ''}
+        <div class="p-2 bg-indigo-50/70 rounded-xl border border-indigo-100 text-indigo-950 text-[11px] leading-relaxed">
+          <strong>Official Model Pronunciation:</strong> "${escapeHtml(item.modelSpeech || (item.modelQuestion + ' â€” ' + item.modelResponse))}"
+        </div>
+      </div>
+    `;
+  });
+  html += `</div>`;
+
+  body.innerHTML = html;
+  modal.classList.remove('hidden');
+};
+
+window.closeExamReviewModal = function() {
+  const modal = document.getElementById('goetheReviewModal');
+  if (modal) modal.classList.add('hidden');
+};
 
   // ================= 31. SMART SPACED REPETITION (SRS) 3D FLASHCARDS =================
   const DEFAULT_SRS_DECK = [
     { id: "srs-1", de: "Hund", article: "der", en: "Dog", plural: "die Hunde", example: "Der Hund spielt im Garten.", chapter: 1, category: "nouns" },
-    { id: "srs-2", de: "Katze", article: "die", en: "Cat", plural: "die Katzen", example: "Die Katze schläft auf dem Sofa.", chapter: 1, category: "nouns" },
-    { id: "srs-3", de: "Buch", article: "das", en: "Book", plural: "die Bücher", example: "Ich lese ein interessantes Buch.", chapter: 1, category: "nouns" },
+    { id: "srs-2", de: "Katze", article: "die", en: "Cat", plural: "die Katzen", example: "Die Katze schlÃ¤ft auf dem Sofa.", chapter: 1, category: "nouns" },
+    { id: "srs-3", de: "Buch", article: "das", en: "Book", plural: "die BÃ¼cher", example: "Ich lese ein interessantes Buch.", chapter: 1, category: "nouns" },
     { id: "srs-4", de: "lernen", article: "", en: "to learn / study", plural: "", example: "Wir lernen jeden Tag Deutsch.", chapter: 1, category: "verbs" },
     { id: "srs-5", de: "sprechen", article: "", en: "to speak", plural: "", example: "Sprichst du auch Englisch?", chapter: 1, category: "verbs" },
-    { id: "srs-6", de: "groß", article: "", en: "big / tall", plural: "", example: "Das Haus ist sehr groß.", chapter: 1, category: "adjectives" },
-    { id: "srs-7", de: "klein", article: "", en: "small / little", plural: "", example: "Die Wohnung ist gemütlich und klein.", chapter: 1, category: "adjectives" },
-    { id: "srs-8", de: "Bahnhof", article: "der", en: "Train station", plural: "die Bahnhöfe", example: "Der Zug hält am Bahnhof.", chapter: 3, category: "nouns" },
+    { id: "srs-6", de: "groÃŸ", article: "", en: "big / tall", plural: "", example: "Das Haus ist sehr groÃŸ.", chapter: 1, category: "adjectives" },
+    { id: "srs-7", de: "klein", article: "", en: "small / little", plural: "", example: "Die Wohnung ist gemÃ¼tlich und klein.", chapter: 1, category: "adjectives" },
+    { id: "srs-8", de: "Bahnhof", article: "der", en: "Train station", plural: "die BahnhÃ¶fe", example: "Der Zug hÃ¤lt am Bahnhof.", chapter: 3, category: "nouns" },
     { id: "srs-9", de: "Fahrkarte", article: "die", en: "Ticket", plural: "die Fahrkarten", example: "Ich kaufe eine Fahrkarte nach Berlin.", chapter: 3, category: "nouns" },
-    { id: "srs-10", de: "Kaffee", article: "der", en: "Coffee", plural: "die Kaffees", example: "Möchten Sie einen Kaffee trinken?", chapter: 4, category: "nouns" },
-    { id: "srs-11", de: "Brötchen", article: "das", en: "Bread roll", plural: "die Brötchen", example: "Zwei frische Brötchen, bitte.", chapter: 4, category: "nouns" },
-    { id: "srs-12", de: "frühstücken", article: "", en: "to eat breakfast", plural: "", example: "Ich frühstücke um sieben Uhr.", chapter: 5, category: "verbs" },
+    { id: "srs-10", de: "Kaffee", article: "der", en: "Coffee", plural: "die Kaffees", example: "MÃ¶chten Sie einen Kaffee trinken?", chapter: 4, category: "nouns" },
+    { id: "srs-11", de: "BrÃ¶tchen", article: "das", en: "Bread roll", plural: "die BrÃ¶tchen", example: "Zwei frische BrÃ¶tchen, bitte.", chapter: 4, category: "nouns" },
+    { id: "srs-12", de: "frÃ¼hstÃ¼cken", article: "", en: "to eat breakfast", plural: "", example: "Ich frÃ¼hstÃ¼cke um sieben Uhr.", chapter: 5, category: "verbs" },
     { id: "srs-13", de: "aufstehen", article: "", en: "to stand up / get up", plural: "", example: "Er steht jeden Tag um sechs Uhr auf.", chapter: 5, category: "verbs" },
     { id: "srs-14", de: "Wohnung", article: "die", en: "Apartment", plural: "die Wohnungen", example: "Unsere Wohnung hat drei Zimmer.", chapter: 8, category: "nouns" },
-    { id: "srs-15", de: "Krankenhaus", article: "das", en: "Hospital", plural: "die Krankenhäuser", example: "Die Ärztin arbeitet im Krankenhaus.", chapter: 11, category: "nouns" }
+    { id: "srs-15", de: "Krankenhaus", article: "das", en: "Hospital", plural: "die KrankenhÃ¤user", example: "Die Ã„rztin arbeitet im Krankenhaus.", chapter: 11, category: "nouns" }
   ];
 
   const SRS_STORAGE_KEY = 'netzwerk_srs_cards_v1';
@@ -8653,7 +9463,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dueCount = cards.filter(c => !c.nextReviewDate || c.nextReviewDate <= today).length;
     const badge = document.getElementById('srsDashboardDueBadge');
     if (badge) {
-      badge.textContent = dueCount > 0 ? `${dueCount} Due for Review` : 'All Reviewed Today ✨';
+      badge.textContent = dueCount > 0 ? `${dueCount} Due for Review` : 'All Reviewed Today âœ¨';
     }
   }
 
@@ -8797,7 +9607,7 @@ document.addEventListener('DOMContentLoaded', () => {
       currentSrsIndex++;
       renderCurrentSrsCard();
     } else {
-      showFloatingToast("🎉 Deck completed! Well done reviewing today!");
+      showFloatingToast("ðŸŽ‰ Deck completed! Well done reviewing today!");
       currentSrsIndex = 0;
       renderCurrentSrsCard();
     }
@@ -8808,7 +9618,7 @@ document.addEventListener('DOMContentLoaded', () => {
     articles: `
       <div class="space-y-4">
         <div class="border-b pb-2">
-          <h4 class="text-sm font-black text-sky-950">🎨 German Noun Gender Guide: Der, Die, Das</h4>
+          <h4 class="text-sm font-black text-sky-950">ðŸŽ¨ German Noun Gender Guide: Der, Die, Das</h4>
           <p class="text-xs text-sky-700">German assigns grammatical gender to every noun. Learn the noun endings to instantly identify the article!</p>
         </div>
 
@@ -8816,45 +9626,45 @@ document.addEventListener('DOMContentLoaded', () => {
           <!-- Masculine -->
           <div class="p-3.5 bg-blue-50/80 rounded-2xl border-2 border-blue-300 space-y-2">
             <div class="flex items-center justify-between font-black text-blue-950 text-xs">
-              <span>🔵 Maskulin: DER</span>
+              <span>ðŸ”µ Maskulin: DER</span>
               <span class="text-[10px] bg-blue-200 px-2 py-0.5 rounded-full">~34% of Nouns</span>
             </div>
             <ul class="text-[11px] text-blue-900 space-y-1 font-medium">
-              <li>• <strong>-er</strong>: <em>der Computer, der Fahrer</em></li>
-              <li>• <strong>-or</strong>: <em>der Motor, der Professor</em></li>
-              <li>• <strong>-ling</strong>: <em>der Schmetterling</em></li>
-              <li>• <strong>-ismus</strong>: <em>der Optimismus</em></li>
-              <li>• Days, months & seasons: <em>der Montag, der Mai, der Sommer</em></li>
+              <li>â€¢ <strong>-er</strong>: <em>der Computer, der Fahrer</em></li>
+              <li>â€¢ <strong>-or</strong>: <em>der Motor, der Professor</em></li>
+              <li>â€¢ <strong>-ling</strong>: <em>der Schmetterling</em></li>
+              <li>â€¢ <strong>-ismus</strong>: <em>der Optimismus</em></li>
+              <li>â€¢ Days, months & seasons: <em>der Montag, der Mai, der Sommer</em></li>
             </ul>
           </div>
 
           <!-- Feminine -->
           <div class="p-3.5 bg-rose-50/80 rounded-2xl border-2 border-rose-300 space-y-2">
             <div class="flex items-center justify-between font-black text-rose-950 text-xs">
-              <span>🔴 Feminin: DIE</span>
+              <span>ðŸ”´ Feminin: DIE</span>
               <span class="text-[10px] bg-rose-200 px-2 py-0.5 rounded-full">~46% of Nouns</span>
             </div>
             <ul class="text-[11px] text-rose-900 space-y-1 font-medium">
-              <li>• <strong>-ung</strong>: <em>die Zeitung, die Wohnung</em></li>
-              <li>• <strong>-heit / -keit</strong>: <em>die Freiheit, die Möglichkeit</em></li>
-              <li>• <strong>-schaft</strong>: <em>die Freundschaft</em></li>
-              <li>• <strong>-tion</strong>: <em>die Station, die Lektion</em></li>
-              <li>• <strong>-ei</strong>: <em>die Bäckerei</em></li>
-              <li>• <strong>-in</strong> (female professions): <em>die Ärztin</em></li>
+              <li>â€¢ <strong>-ung</strong>: <em>die Zeitung, die Wohnung</em></li>
+              <li>â€¢ <strong>-heit / -keit</strong>: <em>die Freiheit, die MÃ¶glichkeit</em></li>
+              <li>â€¢ <strong>-schaft</strong>: <em>die Freundschaft</em></li>
+              <li>â€¢ <strong>-tion</strong>: <em>die Station, die Lektion</em></li>
+              <li>â€¢ <strong>-ei</strong>: <em>die BÃ¤ckerei</em></li>
+              <li>â€¢ <strong>-in</strong> (female professions): <em>die Ã„rztin</em></li>
             </ul>
           </div>
 
           <!-- Neuter -->
           <div class="p-3.5 bg-emerald-50/80 rounded-2xl border-2 border-emerald-300 space-y-2">
             <div class="flex items-center justify-between font-black text-emerald-950 text-xs">
-              <span>🟢 Neutral: DAS</span>
+              <span>ðŸŸ¢ Neutral: DAS</span>
               <span class="text-[10px] bg-emerald-200 px-2 py-0.5 rounded-full">~20% of Nouns</span>
             </div>
             <ul class="text-[11px] text-emerald-900 space-y-1 font-medium">
-              <li>• <strong>-chen / -lein</strong>: <em>das Mädchen, das Brötchen</em></li>
-              <li>• <strong>-ment</strong>: <em>das Instrument, das Dokument</em></li>
-              <li>• <strong>-um</strong>: <em>das Zentrum, das Museum</em></li>
-              <li>• Nominalized verbs: <em>das Essen, das Leben</em></li>
+              <li>â€¢ <strong>-chen / -lein</strong>: <em>das MÃ¤dchen, das BrÃ¶tchen</em></li>
+              <li>â€¢ <strong>-ment</strong>: <em>das Instrument, das Dokument</em></li>
+              <li>â€¢ <strong>-um</strong>: <em>das Zentrum, das Museum</em></li>
+              <li>â€¢ Nominalized verbs: <em>das Essen, das Leben</em></li>
             </ul>
           </div>
         </div>
@@ -8863,7 +9673,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cases: `
       <div class="space-y-4">
         <div class="border-b pb-2">
-          <h4 class="text-sm font-black text-sky-950">📐 Complete German Case Matrix (A1 Level)</h4>
+          <h4 class="text-sm font-black text-sky-950">ðŸ“ Complete German Case Matrix (A1 Level)</h4>
           <p class="text-xs text-sky-700">The definitive reference across Nominativ (Subject), Akkusativ (Direct Object), and Dativ (Indirect Object).</p>
         </div>
 
@@ -8908,7 +9718,7 @@ document.addEventListener('DOMContentLoaded', () => {
     pronouns: `
       <div class="space-y-4">
         <div class="border-b pb-2">
-          <h4 class="text-sm font-black text-sky-950">👤 Personal Pronouns Declension</h4>
+          <h4 class="text-sm font-black text-sky-950">ðŸ‘¤ Personal Pronouns Declension</h4>
           <p class="text-xs text-sky-700">How personal pronouns shift across Nominativ, Akkusativ, and Dativ.</p>
         </div>
 
@@ -8939,7 +9749,7 @@ document.addEventListener('DOMContentLoaded', () => {
     prepositions: `
       <div class="space-y-4">
         <div class="border-b pb-2">
-          <h4 class="text-sm font-black text-sky-950">📍 German Prepositions by Case</h4>
+          <h4 class="text-sm font-black text-sky-950">ðŸ“ German Prepositions by Case</h4>
           <p class="text-xs text-sky-700">Prepositions strictly govern the case of the noun that follows.</p>
         </div>
 
@@ -8947,32 +9757,32 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="p-3 bg-amber-50 rounded-2xl border-2 border-amber-300 space-y-1.5">
             <h5 class="font-black text-amber-950 text-xs">Akkusativ Only (DOGFU)</h5>
             <ul class="text-[11px] text-amber-900 space-y-1 font-medium">
-              <li>• <strong>durch</strong> (through)</li>
-              <li>• <strong>ohne</strong> (without)</li>
-              <li>• <strong>gegen</strong> (against / around)</li>
-              <li>• <strong>für</strong> (for)</li>
-              <li>• <strong>um</strong> (at / around)</li>
+              <li>â€¢ <strong>durch</strong> (through)</li>
+              <li>â€¢ <strong>ohne</strong> (without)</li>
+              <li>â€¢ <strong>gegen</strong> (against / around)</li>
+              <li>â€¢ <strong>fÃ¼r</strong> (for)</li>
+              <li>â€¢ <strong>um</strong> (at / around)</li>
             </ul>
           </div>
 
           <div class="p-3 bg-purple-50 rounded-2xl border-2 border-purple-300 space-y-1.5">
             <h5 class="font-black text-purple-950 text-xs">Dativ Only (ABM-NSVZ)</h5>
             <ul class="text-[11px] text-purple-900 space-y-1 font-medium">
-              <li>• <strong>aus</strong> (out of / from)</li>
-              <li>• <strong>bei</strong> (at / near)</li>
-              <li>• <strong>mit</strong> (with)</li>
-              <li>• <strong>nach</strong> (to / after)</li>
-              <li>• <strong>seit</strong> (since / for)</li>
-              <li>• <strong>von</strong> (from / of)</li>
-              <li>• <strong>zu</strong> (to / at)</li>
+              <li>â€¢ <strong>aus</strong> (out of / from)</li>
+              <li>â€¢ <strong>bei</strong> (at / near)</li>
+              <li>â€¢ <strong>mit</strong> (with)</li>
+              <li>â€¢ <strong>nach</strong> (to / after)</li>
+              <li>â€¢ <strong>seit</strong> (since / for)</li>
+              <li>â€¢ <strong>von</strong> (from / of)</li>
+              <li>â€¢ <strong>zu</strong> (to / at)</li>
             </ul>
           </div>
 
           <div class="p-3 bg-sky-50 rounded-2xl border-2 border-sky-300 space-y-1.5">
-            <h5 class="font-black text-sky-950 text-xs">Two-Way (Wechselpräpositionen)</h5>
+            <h5 class="font-black text-sky-950 text-xs">Two-Way (WechselprÃ¤positionen)</h5>
             <p class="text-[10px] text-sky-700"><strong>Wohin? (Movement)</strong> = Akkusativ<br/><strong>Wo? (Location)</strong> = Dativ</p>
             <ul class="text-[11px] text-sky-900 space-y-0.5 font-medium">
-              <li>an, auf, hinter, in, neben, über, unter, vor, zwischen</li>
+              <li>an, auf, hinter, in, neben, Ã¼ber, unter, vor, zwischen</li>
             </ul>
           </div>
         </div>
@@ -8981,7 +9791,7 @@ document.addEventListener('DOMContentLoaded', () => {
     verbs: `
       <div class="space-y-4">
         <div class="border-b pb-2">
-          <h4 class="text-sm font-black text-sky-950">⚙️ Verbs, Conjugations & Separable Prefixes</h4>
+          <h4 class="text-sm font-black text-sky-950">âš™ï¸ Verbs, Conjugations & Separable Prefixes</h4>
           <p class="text-xs text-sky-700">Regular present tense endings and essential separable verb patterns.</p>
         </div>
 
@@ -9002,9 +9812,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <h5 class="font-black text-indigo-950 text-xs">Separable Verbs (Trennbare Verben)</h5>
             <p class="text-[10px] text-indigo-800">Prefix jumps to the <strong>very end</strong> of the main clause:</p>
             <div class="text-[11px] text-indigo-950 font-medium">
-              • <em>aufstehen</em>: Ich <strong>stehe</strong> jeden Tag um 7 Uhr <strong>auf</strong>.<br/>
-              • <em>einkaufen</em>: Er <strong>kauft</strong> im Supermarkt <strong>ein</strong>.<br/>
-              • <em>anrufen</em>: Wann <strong>rufst</strong> du mich <strong>an</strong>?
+              â€¢ <em>aufstehen</em>: Ich <strong>stehe</strong> jeden Tag um 7 Uhr <strong>auf</strong>.<br/>
+              â€¢ <em>einkaufen</em>: Er <strong>kauft</strong> im Supermarkt <strong>ein</strong>.<br/>
+              â€¢ <em>anrufen</em>: Wann <strong>rufst</strong> du mich <strong>an</strong>?
             </div>
           </div>
         </div>
@@ -9162,12 +9972,12 @@ document.addEventListener('DOMContentLoaded', () => {
       <body>
         <div class="container">
           <div class="toolbar">
-            <div style="font-weight: bold; font-size: 13px; color: #0369a1;">📄 Standalone Printable Master Grammar Cheat Sheet</div>
-            <button onclick="window.print()" class="btn-print">🖨️ Print / Save as PDF</button>
+            <div style="font-weight: bold; font-size: 13px; color: #0369a1;">ðŸ“„ Standalone Printable Master Grammar Cheat Sheet</div>
+            <button onclick="window.print()" class="btn-print">ðŸ–¨ï¸ Print / Save as PDF</button>
           </div>
           <div class="header">
             <div>
-              <div class="title">Cheeya Studio • Netzwerk NEU A1</div>
+              <div class="title">Cheeya Studio â€¢ Netzwerk NEU A1</div>
               <div class="subtitle">Master German Grammar Reference Cheat Sheet</div>
               <div class="desc">Official Complete Reference: Der/Die/Das Rules, Case Matrix, Pronouns, Prepositions &amp; Verbs</div>
             </div>
@@ -9179,7 +9989,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="print-section">${GRAMMAR_TABLES.prepositions}</div>
           <div class="print-section">${GRAMMAR_TABLES.verbs}</div>
           <div class="footer">
-            <span>Cheeya Studio • German Learning Sanctuary</span>
+            <span>Cheeya Studio â€¢ German Learning Sanctuary</span>
             <span>https://cheeyastudio.github.io</span>
           </div>
         </div>
@@ -9233,7 +10043,7 @@ document.addEventListener('DOMContentLoaded', () => {
       deferredPwaPrompt.prompt();
       deferredPwaPrompt.userChoice.then((choiceResult) => {
         if (choiceResult.outcome === 'accepted') {
-          showFloatingToast("🎉 App installed successfully! Access it from your home screen.");
+          showFloatingToast("ðŸŽ‰ App installed successfully! Access it from your home screen.");
           closePwaInstallModal();
           awardXP(50, 'PWA Installed');
         }

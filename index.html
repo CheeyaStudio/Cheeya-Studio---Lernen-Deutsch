@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" class="h-full bg-sky-50">
 <head>
   <meta charset="UTF-8">
@@ -1566,56 +1566,80 @@
 
   <!-- ================= 2. MODAL: GOETHE-ZERTIFIKAT A1 MOCK EXAM HUB ================= -->
   <div id="goetheExamModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-3 md:p-6 hidden">
-    <div class="blue-glass-card max-w-3xl w-full max-h-[92vh] p-5 md:p-7 shadow-2xl flex flex-col border-2 border-indigo-300 overflow-hidden">
+    <div class="blue-glass-card max-w-4xl w-full max-h-[94vh] p-4 md:p-6 shadow-2xl flex flex-col border-2 border-indigo-300 overflow-hidden bg-white/95">
       
       <!-- Modal Header with Timer & Points -->
       <div class="flex flex-wrap items-center justify-between pb-3 border-b border-sky-200 mb-3 flex-shrink-0 gap-2">
         <div class="flex items-center gap-2.5">
           <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xl shadow-xs">
-            &#x1F393;
+            ðŸŽ“
           </div>
           <div>
             <h3 class="font-extrabold text-base text-sky-950 flex items-center gap-2">
-              <span>Goethe-Zertifikat A1 Mock Exam Hub</span>
-              <span class="text-[10px] bg-indigo-100 text-indigo-900 font-extrabold px-2 py-0.5 rounded-full border border-indigo-300">Start Deutsch 1</span>
+              <span>Goethe-Zertifikat A1 Exam Simulator</span>
+              <span class="text-[10px] bg-indigo-100 text-indigo-900 font-extrabold px-2 py-0.5 rounded-full border border-indigo-300">Start Deutsch 1 &amp; telc A1</span>
             </h3>
-            <p class="text-xs text-sky-600 font-medium">Official 4-module Goethe simulation &bull; Written Exam: 65 Min &bull; Pass: 60% (36/60 Pts)</p>
+            <p class="text-xs text-sky-600 font-medium">Official 4-module simulation &bull; 60 Total Points &bull; Pass: 60% (36/60 Pts)</p>
           </div>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2">
           <!-- Timer Display & Duration Selector -->
           <div class="flex items-center gap-1 bg-amber-50 border border-amber-300 p-1 rounded-xl text-xs font-black">
-            <button id="examModeBtn-65" onclick="setExamDuration(65)" class="px-2 py-0.5 rounded-lg bg-amber-500 text-white shadow-xs transition cursor-pointer" title="Official Goethe Written Exam Standard">
-              🏛️ 65 Min
+            <button id="examModeBtn-65" onclick="setExamDuration(65)" class="px-2 py-0.5 rounded-lg bg-amber-500 text-white shadow-xs transition cursor-pointer" title="Official Full Written Exam (65 Min)">
+              65m Full
             </button>
-            <button id="examModeBtn-30" onclick="setExamDuration(30)" class="px-2 py-0.5 rounded-lg text-amber-900 hover:bg-amber-100 transition cursor-pointer" title="Express Practice Drill">
-              ⚡ 30 Min
+            <button id="examModeBtn-25" onclick="setExamDuration(25)" class="px-2 py-0.5 rounded-lg bg-amber-100/90 text-amber-900 hover:bg-amber-200 transition cursor-pointer" title="Lesen Module Drill (25 Min)">
+              25m Lesen
+            </button>
+            <button id="examModeBtn-20h" onclick="setExamDuration(20)" class="px-2 py-0.5 rounded-lg bg-amber-100/90 text-amber-900 hover:bg-amber-200 transition cursor-pointer" title="HÃ¶ren Module Drill (20 Min)">
+              20m HÃ¶ren
+            </button>
+            <button id="examModeBtn-20s" onclick="setExamDuration(20)" class="px-2 py-0.5 rounded-lg bg-amber-100/90 text-amber-900 hover:bg-amber-200 transition cursor-pointer" title="Schreiben Module Drill (20 Min)">
+              20m Schreiben
+            </button>
+            <button id="examModeBtn-15" onclick="setExamDuration(15)" class="px-2 py-0.5 rounded-lg bg-amber-100/90 text-amber-900 hover:bg-amber-200 transition cursor-pointer" title="Sprechen Module Drill (15 Min)">
+              15m Sprechen
+            </button>
+            <button id="examModeBtn-0" onclick="setExamDuration(0)" class="px-2 py-0.5 rounded-lg bg-amber-100/90 text-amber-900 hover:bg-amber-200 transition cursor-pointer" title="Untimed Practice Mode">
+              âˆž Untimed
             </button>
             <div class="flex items-center gap-1 px-1.5 text-amber-900">
-              <span>⏱️</span>
+              <span>â±ï¸</span>
               <span id="examTimerDisplay">65:00</span>
             </div>
           </div>
-          <button onclick="closeGoetheExamModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-          </button>
+
+          <!-- Timer Controls -->
+          <div class="flex items-center gap-1">
+            <button id="examTimerPauseBtn" onclick="toggleExamTimerPause()" class="px-2 py-1 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-bold flex items-center gap-1 transition cursor-pointer" title="Pause / Resume Timer">
+              <span>â¸ï¸</span>
+              <span>Pause</span>
+            </button>
+            <button onclick="restartGoetheExam()" class="px-2 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center gap-1 transition cursor-pointer" title="Reset Exam Answers & Timer">
+              <span>ðŸ”„</span>
+              <span>Reset</span>
+            </button>
+            <button onclick="closeGoetheExamModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer" title="Close Modal">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- 4 Module Navigation Tabs -->
       <div class="grid grid-cols-4 gap-1.5 p-1 bg-sky-100/80 rounded-xl mb-3 border border-sky-200 flex-shrink-0 text-center text-xs font-black">
-        <button id="examTab-hoeren" onclick="switchExamModule('hoeren')" class="py-1.5 px-2 rounded-lg bg-indigo-600 text-white shadow-xs transition">
-          &#x1F3A7; 1. H&ouml;ren (15 Pts)
+        <button id="examTab-lesen" onclick="switchExamModule('lesen')" class="py-1.5 px-2 rounded-xl bg-indigo-600 text-white shadow-xs transition">
+          ðŸ“– 1. Lesen (15 Pts)
         </button>
-        <button id="examTab-lesen" onclick="switchExamModule('lesen')" class="py-1.5 px-2 rounded-lg text-sky-700 hover:bg-white/60 transition">
-          &#x1F4D6; 2. Lesen (15 Pts)
+        <button id="examTab-hoeren" onclick="switchExamModule('hoeren')" class="py-1.5 px-2 rounded-xl text-sky-800 hover:bg-white/80 transition">
+          ðŸŽ§ 2. HÃ¶ren (15 Pts)
         </button>
-        <button id="examTab-schreiben" onclick="switchExamModule('schreiben')" class="py-1.5 px-2 rounded-lg text-sky-700 hover:bg-white/60 transition">
-          &#x270D;&#xFE0F; 3. Schreiben (15 Pts)
+        <button id="examTab-schreiben" onclick="switchExamModule('schreiben')" class="py-1.5 px-2 rounded-xl text-sky-800 hover:bg-white/80 transition">
+          âœï¸ 3. Schreiben (15 Pts)
         </button>
-        <button id="examTab-sprechen" onclick="switchExamModule('sprechen')" class="py-1.5 px-2 rounded-lg text-sky-700 hover:bg-white/60 transition">
-          &#x1F5E3;&#xFE0F; 4. Sprechen (15 Pts)
+        <button id="examTab-sprechen" onclick="switchExamModule('sprechen')" class="py-1.5 px-2 rounded-xl text-sky-800 hover:bg-white/80 transition">
+          ðŸ—£ï¸ 4. Sprechen (15 Pts)
         </button>
       </div>
 
@@ -1624,25 +1648,66 @@
         <!-- Populated from JS -->
       </div>
 
-      <!-- Footer Controls (Submit Module / Final Evaluation) -->
+      <!-- Footer Controls (Navigation & Final Evaluation) -->
       <div class="flex items-center justify-between pt-2 border-t border-sky-200 flex-shrink-0">
         <div class="text-xs font-bold text-sky-800">
-          <span id="examScoreStatus">Current Module Score: 0 / 15 Pts</span>
+          <span id="examScoreStatus">Loading module progress...</span>
         </div>
         <div class="flex items-center gap-2">
-          <button id="examNextModuleBtn" onclick="nextExamModule()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black transition shadow-sm cursor-pointer">
-            <span>Next Module</span>
-            <span>&#x2794;</span>
+          <button id="examPrevModuleBtn" onclick="prevExamModule()" class="hidden px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-black transition shadow-2xs cursor-pointer flex items-center gap-1">
+            <span>â¬…ï¸</span>
+            <span>Previous</span>
           </button>
-          <button id="examFinishBtn" onclick="finishGoetheExam()" class="hidden px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black transition shadow-sm cursor-pointer">
+          <button id="examNextModuleBtn" onclick="nextExamModule()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black transition shadow-sm cursor-pointer flex items-center gap-1">
+            <span>Next Module</span>
+            <span>âž¡ï¸</span>
+          </button>
+          <button id="examFinishBtn" onclick="finishGoetheExam()" class="hidden px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black transition shadow-sm cursor-pointer flex items-center gap-1">
             <span>Finish &amp; Calculate Total Score</span>
-            <span>&#x1F3C6;</span>
+            <span>ðŸ†</span>
           </button>
         </div>
       </div>
 
     </div>
   </div>
+
+  <!-- ================= 2.1 MODAL: GOETHE EXAM DETAILED REVIEW ================= -->
+  <div id="goetheReviewModal" class="fixed inset-0 z-[60] modal-backdrop flex items-center justify-center p-3 md:p-6 hidden">
+    <div class="blue-glass-card max-w-3xl w-full max-h-[92vh] p-5 md:p-7 shadow-2xl flex flex-col border-2 border-indigo-400 overflow-hidden bg-white/95">
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-sky-200 mb-3 flex-shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xl shadow-xs">
+            ðŸ”
+          </div>
+          <div>
+            <h3 class="font-extrabold text-base text-sky-950 flex items-center gap-2">
+              <span>Goethe-Zertifikat A1 Detailed Answer Review</span>
+              <span class="text-[10px] bg-emerald-100 text-emerald-900 font-extrabold px-2 py-0.5 rounded-full border border-emerald-300">Official Explanations</span>
+            </h3>
+            <p class="text-xs text-sky-600 font-medium">Question-by-question analysis, grammar rationale, and model solutions</p>
+          </div>
+        </div>
+        <button onclick="closeExamReviewModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Scrollable Review Body -->
+      <div id="goetheReviewModalBody" class="flex-1 overflow-y-auto p-4 bg-sky-50/70 rounded-2xl border border-sky-200 space-y-4 mb-3">
+        <!-- Populated from JS -->
+      </div>
+
+      <!-- Footer -->
+      <div class="flex items-center justify-end pt-2 border-t border-sky-200 flex-shrink-0">
+        <button onclick="closeExamReviewModal()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black transition shadow-sm cursor-pointer">
+          Close Review
+        </button>
+      </div>
+    </div>
+  </div>
+
 
   <!-- ================= 3. MODAL: SMART SPACED REPETITION (SRS) FLASHCARDS ================= -->
   <div id="srsFlashcardModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-3 md:p-6 hidden">
