@@ -81,8 +81,14 @@
     <!-- Right Controls: 2 Organized Rows (Learning Tools & Study Utilities) -->
     <div class="flex flex-col items-end gap-1.5 flex-shrink-0 max-w-full overflow-x-auto scrollbar-none py-0.5">
 
-      <!-- Row 1: Core Learning Hubs (Exactly 5 Items: Progress, A1 Exam, Flashcards, Notebook, Grammar Hub) -->
+      <!-- Row 1: Core Learning Hubs (Translator, Progress, A1 Exam, Flashcards, Notebook, Grammar Hub) -->
       <div class="flex items-center gap-1.5 sm:gap-2 flex-nowrap">
+        <!-- 0. Smart Translator & Grammar Analyzer Full-Page Trigger -->
+        <button id="navTab-translator" onclick="switchView('translator')" class="px-2.5 sm:px-3 py-1 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="AI Smart German Translator & 12-Module Grammar Analyzer">
+          <span>🌐</span>
+          <span>Smart Translator</span>
+        </button>
+
         <!-- 1. Progress Tracker Trigger Button -->
         <button id="navTab-progress" onclick="switchView('progress')" class="px-2.5 sm:px-3 py-1 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="View Learning Progress & Exercise History">
           <span>📊</span>
@@ -202,12 +208,13 @@
   </header>
 
   <!-- Mobile View Selector Bar (Shown only on small screens) -->
-  <div class="lg:hidden flex items-center justify-around bg-sky-100/90 border-b border-sky-200 px-2 py-1.5 text-xs font-bold flex-shrink-0 z-20">
-    <button onclick="switchView('dashboard')" class="px-2 py-1 rounded-lg text-sky-800">🏠 Dashboard</button>
-    <button onclick="switchView('lesson')" class="px-2 py-1 rounded-lg text-sky-800">📘 Lesson</button>
-    <button onclick="switchView('pdf')" class="px-2 py-1 rounded-lg text-sky-800">📖 PDF</button>
-    <button onclick="switchView('vocab')" class="px-2 py-1 rounded-lg text-sky-800">📚 Vocab</button>
-    <button onclick="switchView('progress')" class="px-2 py-1 rounded-lg text-sky-800">📊 Progress</button>
+  <div class="lg:hidden flex items-center justify-around bg-sky-100/90 border-b border-sky-200 px-2 py-1.5 text-xs font-bold flex-shrink-0 z-20 overflow-x-auto scrollbar-none gap-1">
+    <button onclick="switchView('dashboard')" class="px-2 py-1 rounded-lg text-sky-800 shrink-0">🏠 Dashboard</button>
+    <button onclick="switchView('translator')" class="px-2 py-1 rounded-lg text-sky-800 shrink-0">🌐 Translator</button>
+    <button onclick="switchView('lesson')" class="px-2 py-1 rounded-lg text-sky-800 shrink-0">📘 Lesson</button>
+    <button onclick="switchView('pdf')" class="px-2 py-1 rounded-lg text-sky-800 shrink-0">📖 PDF</button>
+    <button onclick="switchView('vocab')" class="px-2 py-1 rounded-lg text-sky-800 shrink-0">📚 Vocab</button>
+    <button onclick="switchView('progress')" class="px-2 py-1 rounded-lg text-sky-800 shrink-0">📊 Progress</button>
   </div>
 
   <!-- ================= MAIN FULL-WIDTH WORKSPACE (NO 50/50 SPLIT!) ================= -->
@@ -389,8 +396,87 @@
       </div>
 
 
-      <!-- ================= DASHBOARD: AI SMART TRANSLATOR & GERMAN GRAMMAR ANALYZER ================= -->
-      <div id="translatorSection" class="blue-glass-card p-5 md:p-7 border-2 border-sky-300 shadow-xl flex-shrink-0 relative overflow-hidden bg-gradient-to-br from-white/95 via-sky-50/90 to-blue-50/90 mb-2">
+      <!-- ================= DASHBOARD: QUICK ACCESS TO FULL-PAGE SMART TRANSLATOR ================= -->
+      <div onclick="switchView('translator')" class="blue-glass-card p-5 md:p-6 border-2 border-sky-300 shadow-md hover:shadow-xl transition cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 text-white rounded-2xl group flex-shrink-0 mb-2">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-3xl shrink-0 group-hover:scale-105 transition shadow-md border border-white/30">
+            🌐
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <h3 class="text-base md:text-xl font-black tracking-tight">AI Smart German Translator & Grammar Analyzer</h3>
+              <span class="text-[10px] bg-white/20 px-2.5 py-0.5 rounded-full font-extrabold border border-white/30 tracking-wide">12-Module Deep Analysis</span>
+            </div>
+            <p class="text-xs text-sky-100 mt-1 max-w-2xl leading-relaxed">
+              Buka halaman khusus penerjemah & bedah tata bahasa Jerman super detail: kata per kata, deklinasi kata sifat, aturan kasus, kurung kata kerja, detektor kesalahan, dan audio penutur asli.
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 shrink-0 self-end md:self-center">
+          <button class="px-5 py-2.5 rounded-xl bg-white text-sky-950 text-xs font-black shadow-md group-hover:bg-sky-50 group-hover:shadow-lg transition flex items-center gap-2 cursor-pointer">
+            <span>Buka Halaman Translator</span>
+            <span class="text-sm">➔</span>
+          </button>
+        </div>
+      </div>
+
+
+      <!-- Chapter Directory Grid (12 Cards) -->
+      <div class="flex-shrink-0">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-lg font-extrabold text-sky-950 flex items-center gap-2">
+              <span>📚</span>
+              <span>12 Coursebook Chapters (Kapitel 1 - 12)</span>
+            </h3>
+            <p class="text-xs text-sky-700">Select any chapter below to jump straight to its lesson guide, practice exercises, audio tracks, or PDF pages.</p>
+          </div>
+        </div>
+
+        <div id="dashboardChapterGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <!-- Populated dynamically by JavaScript -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= VIEW: DEDICATED FULL-PAGE AI SMART TRANSLATOR & 12-MODULE GRAMMAR ANALYZER ================= -->
+    <section id="view-translator" class="app-view flex-col flex-1 overflow-y-auto p-4 md:p-8 space-y-6 bg-gradient-to-b from-sky-50/70 via-white to-sky-50/70">
+      
+      <!-- Top Action & Navigation Bar for Translator Page -->
+      <div class="blue-glass-card p-4 md:p-5 border-2 border-sky-300 bg-white/95 flex flex-wrap items-center justify-between gap-4 shadow-sm rounded-2xl flex-shrink-0">
+        <div class="flex items-center gap-3">
+          <button onclick="switchView('dashboard')" class="px-3.5 py-2 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-black flex items-center gap-2 transition shadow-xs cursor-pointer" title="Back to Dashboard">
+            <span>←</span>
+            <span>Dashboard</span>
+          </button>
+          <div class="h-6 w-px bg-sky-200 hidden sm:block"></div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="text-base md:text-xl font-black text-sky-950 flex items-center gap-2">
+                <span>🌐</span>
+                <span>AI Smart German Translator & Grammar Analyzer</span>
+              </h2>
+              <span class="text-[10px] bg-sky-100 text-sky-800 font-extrabold px-2.5 py-0.5 rounded-full border border-sky-300 hidden md:inline">Full Page Language Lab</span>
+            </div>
+            <p class="text-xs text-sky-700 font-medium">Bilingual translation (EN 🇬🇧 • ID 🇮🇩 • DE 🇩🇪) with 12 pedagogical breakdown modules & native speech.</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap">
+          <button onclick="openNotebookModal()" class="px-3 py-1.5 rounded-xl bg-purple-100 hover:bg-purple-200 border border-purple-300 text-purple-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="My Starred German Sentences Notebook">
+            <span>⭐</span>
+            <span>My Notebook</span>
+          </button>
+          <button onclick="openGrammarModal()" class="px-3 py-1.5 rounded-xl bg-blue-100 hover:bg-blue-200 border border-blue-300 text-blue-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Comprehensive German Grammar Reference">
+            <span>📑</span>
+            <span>Quick Grammar</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Translator Card Container (Full Width) -->
+      <div id="translatorSection" class="blue-glass-card p-5 md:p-8 border-2 border-sky-300 shadow-xl flex-shrink-0 relative overflow-hidden bg-gradient-to-br from-white/95 via-sky-50/90 to-blue-50/90">
         
         <!-- Header -->
         <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-sky-200">
@@ -536,23 +622,6 @@
           <!-- Populated dynamically by app.js -->
         </div>
 
-      </div>
-
-      <!-- Chapter Directory Grid (12 Cards) -->
-      <div class="flex-shrink-0">
-        <div class="flex items-center justify-between mb-4">
-          <div>
-            <h3 class="text-lg font-extrabold text-sky-950 flex items-center gap-2">
-              <span>📚</span>
-              <span>12 Coursebook Chapters (Kapitel 1 - 12)</span>
-            </h3>
-            <p class="text-xs text-sky-700">Select any chapter below to jump straight to its lesson guide, practice exercises, audio tracks, or PDF pages.</p>
-          </div>
-        </div>
-
-        <div id="dashboardChapterGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          <!-- Populated dynamically by JavaScript -->
-        </div>
       </div>
 
     </section>

@@ -1890,7 +1890,7 @@ document.addEventListener('DOMContentLoaded', () => {
     currentActiveView = viewName;
 
     // Update Top Navigation Tabs
-    const navTabs = ['dashboard', 'lesson', 'pdf', 'vocab', 'progress'];
+    const navTabs = ['dashboard', 'lesson', 'pdf', 'vocab', 'progress', 'translator'];
     navTabs.forEach(name => {
       const btn = document.getElementById(`navTab-${name}`);
       if (btn) {
@@ -1921,6 +1921,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Trigger View-Specific Handlers
     if (viewName === 'dashboard') {
       renderDashboard();
+    } else if (viewName === 'translator') {
+      const inputEl = document.getElementById('transInputText');
+      if (inputEl && window.innerWidth >= 768) {
+        setTimeout(() => inputEl.focus(), 150);
+      }
     } else if (viewName === 'lesson') {
       const chapter = NETZWERK_DATA.chapters[currentChapterIndex];
       renderAutoLesson(chapter);
@@ -7995,7 +8000,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderMusicTracksList();
 
   function handleRoute(hash) {
-    if (['dashboard', 'lesson', 'pdf', 'vocab', 'progress'].includes(hash)) {
+    if (['dashboard', 'lesson', 'pdf', 'vocab', 'progress', 'translator'].includes(hash)) {
       switchView(hash);
     } else if (hash === 'roleplay') {
       switchView('dashboard');
