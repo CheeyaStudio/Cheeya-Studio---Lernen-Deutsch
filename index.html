@@ -1572,7 +1572,7 @@
       <div class="flex flex-wrap items-center justify-between pb-3 border-b border-sky-200 mb-3 flex-shrink-0 gap-2">
         <div class="flex items-center gap-2.5">
           <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xl shadow-xs">
-            ðŸŽ“
+            &#127891;
           </div>
           <div>
             <h3 class="font-extrabold text-base text-sky-950 flex items-center gap-2">
@@ -1592,8 +1592,8 @@
             <button id="examModeBtn-25" onclick="setExamDuration(25)" class="px-2 py-0.5 rounded-lg bg-amber-100/90 text-amber-900 hover:bg-amber-200 transition cursor-pointer" title="Lesen Module Drill (25 Min)">
               25m Lesen
             </button>
-            <button id="examModeBtn-20h" onclick="setExamDuration(20)" class="px-2 py-0.5 rounded-lg bg-amber-100/90 text-amber-900 hover:bg-amber-200 transition cursor-pointer" title="HÃ¶ren Module Drill (20 Min)">
-              20m HÃ¶ren
+            <button id="examModeBtn-20h" onclick="setExamDuration(20)" class="px-2 py-0.5 rounded-lg bg-amber-100/90 text-amber-900 hover:bg-amber-200 transition cursor-pointer" title="H&ouml;ren Module Drill (20 Min)">
+              20m H&ouml;ren
             </button>
             <button id="examModeBtn-20s" onclick="setExamDuration(20)" class="px-2 py-0.5 rounded-lg bg-amber-100/90 text-amber-900 hover:bg-amber-200 transition cursor-pointer" title="Schreiben Module Drill (20 Min)">
               20m Schreiben
@@ -1602,10 +1602,10 @@
               15m Sprechen
             </button>
             <button id="examModeBtn-0" onclick="setExamDuration(0)" class="px-2 py-0.5 rounded-lg bg-amber-100/90 text-amber-900 hover:bg-amber-200 transition cursor-pointer" title="Untimed Practice Mode">
-              âˆž Untimed
+              &infin; Untimed
             </button>
             <div class="flex items-center gap-1 px-1.5 text-amber-900">
-              <span>â±ï¸</span>
+              <span>&#9201;&#65039;</span>
               <span id="examTimerDisplay">65:00</span>
             </div>
           </div>
@@ -1613,11 +1613,11 @@
           <!-- Timer Controls -->
           <div class="flex items-center gap-1">
             <button id="examTimerPauseBtn" onclick="toggleExamTimerPause()" class="px-2 py-1 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-bold flex items-center gap-1 transition cursor-pointer" title="Pause / Resume Timer">
-              <span>â¸ï¸</span>
+              <span>&#9208;&#65039;</span>
               <span>Pause</span>
             </button>
             <button onclick="restartGoetheExam()" class="px-2 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center gap-1 transition cursor-pointer" title="Reset Exam Answers & Timer">
-              <span>ðŸ”„</span>
+              <span>&#128260;</span>
               <span>Reset</span>
             </button>
             <button onclick="closeGoetheExamModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer" title="Close Modal">
@@ -1630,16 +1630,16 @@
       <!-- 4 Module Navigation Tabs -->
       <div class="grid grid-cols-4 gap-1.5 p-1 bg-sky-100/80 rounded-xl mb-3 border border-sky-200 flex-shrink-0 text-center text-xs font-black">
         <button id="examTab-lesen" onclick="switchExamModule('lesen')" class="py-1.5 px-2 rounded-xl bg-indigo-600 text-white shadow-xs transition">
-          ðŸ“– 1. Lesen (15 Pts)
+          &#128214; 1. Lesen (15 Pts)
         </button>
         <button id="examTab-hoeren" onclick="switchExamModule('hoeren')" class="py-1.5 px-2 rounded-xl text-sky-800 hover:bg-white/80 transition">
-          ðŸŽ§ 2. HÃ¶ren (15 Pts)
+          &#127911; 2. H&ouml;ren (15 Pts)
         </button>
         <button id="examTab-schreiben" onclick="switchExamModule('schreiben')" class="py-1.5 px-2 rounded-xl text-sky-800 hover:bg-white/80 transition">
-          âœï¸ 3. Schreiben (15 Pts)
+          &#9997;&#65039; 3. Schreiben (15 Pts)
         </button>
         <button id="examTab-sprechen" onclick="switchExamModule('sprechen')" class="py-1.5 px-2 rounded-xl text-sky-800 hover:bg-white/80 transition">
-          ðŸ—£ï¸ 4. Sprechen (15 Pts)
+          &#128483;&#65039; 4. Sprechen (15 Pts)
         </button>
       </div>
 
@@ -1655,16 +1655,16 @@
         </div>
         <div class="flex items-center gap-2">
           <button id="examPrevModuleBtn" onclick="prevExamModule()" class="hidden px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-black transition shadow-2xs cursor-pointer flex items-center gap-1">
-            <span>â¬…ï¸</span>
+            <span>&#11013;&#65039;</span>
             <span>Previous</span>
           </button>
           <button id="examNextModuleBtn" onclick="nextExamModule()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black transition shadow-sm cursor-pointer flex items-center gap-1">
             <span>Next Module</span>
-            <span>âž¡ï¸</span>
+            <span>&#10145;&#65039;</span>
           </button>
           <button id="examFinishBtn" onclick="finishGoetheExam()" class="hidden px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black transition shadow-sm cursor-pointer flex items-center gap-1">
             <span>Finish &amp; Calculate Total Score</span>
-            <span>ðŸ†</span>
+            <span>&#127942;</span>
           </button>
         </div>
       </div>
@@ -1679,7 +1679,7 @@
       <div class="flex items-center justify-between pb-3 border-b border-sky-200 mb-3 flex-shrink-0">
         <div class="flex items-center gap-2.5">
           <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xl shadow-xs">
-            ðŸ”
+            &#128269;
           </div>
           <div>
             <h3 class="font-extrabold text-base text-sky-950 flex items-center gap-2">

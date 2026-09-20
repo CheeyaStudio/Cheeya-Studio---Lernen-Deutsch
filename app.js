@@ -1,4 +1,4 @@
-﻿// app.js - Controller UI & Interactivity for Cheeya Studio Netzwerk Learning Hub (English Edition)
+// app.js - Controller UI & Interactivity for Cheeya Studio Netzwerk Learning Hub (English Edition)
 
 // ================= ANTI-THEFT & CONTENT PROTECTION SHIELD =================
 (function initSecurityShield() {
@@ -8638,127 +8638,190 @@ window.handleExamEmailInput = function(val) {
   updateExamProgressFooter();
 };
 
-window.startSprechenRecognition = function(partIdx, keywordsArray) {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let examMediaRecorders = {};
+let examMediaStreams = {};
+let examRecordedAudioBlobs = {};
+let examRecordTimers = {};
+
+window.toggleSprechenRecording = async function(partIdx, keywordsArray) {
+  const micBtn = document.getElementById(`sprechenMicBtn-${partIdx}`);
   const statusEl = document.getElementById(`sprechenStatus-${partIdx}`);
   const transcriptEl = document.getElementById(`sprechenTranscript-${partIdx}`);
-  const micBtn = document.getElementById(`sprechenMicBtn-${partIdx}`);
   const scoreBox = document.getElementById(`sprechenScoreBox-${partIdx}`);
 
-  if (!SpeechRecognition) {
-    showFloatingToast("⚠️ Speech Recognition is not supported in this browser. Please use Google Chrome or self-assess below.", "⚠️");
-    if (transcriptEl) {
-      transcriptEl.innerHTML = '<span class="text-amber-800 italic">Speech Recognition not supported in this browser. You can listen to the model speech above and self-award points.</span>';
+  // If already recording -> STOP
+  if (examMediaRecorders[partIdx] && examMediaRecorders[partIdx].state === 'recording') {
+    try {
+      examMediaRecorders[partIdx].stop();
+    } catch(e) {}
+    if (currentSpeechRecognition) {
+      try { currentSpeechRecognition.stop(); } catch(e) {}
     }
     return;
   }
 
-  if (currentSpeechRecognition) {
-    try { currentSpeechRecognition.abort(); } catch(e) {}
-    currentSpeechRecognition = null;
-  }
-
+  // Otherwise -> START RECORDING
   try {
-    const recognition = new SpeechRecognition();
-    currentSpeechRecognition = recognition;
+    let stream = null;
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch(micErr) {
+        console.warn('Microphone permission or access error:', micErr);
+      }
+    }
 
-    recognition.lang = 'de-DE';
-    recognition.interimResults = true;
-    recognition.maxAlternatives = 1;
+    let recordedChunks = [];
+    let recSeconds = 0;
 
+    // 1. Setup MediaRecorder if microphone stream is available
+    if (stream && typeof MediaRecorder !== 'undefined') {
+      examMediaStreams[partIdx] = stream;
+      const mediaRecorder = new MediaRecorder(stream);
+      examMediaRecorders[partIdx] = mediaRecorder;
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) recordedChunks.push(e.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        clearInterval(examRecordTimers[partIdx]);
+        const audioBlob = new Blob(recordedChunks, { type: 'audio/webm' });
+        examRecordedAudioBlobs[partIdx] = audioBlob;
+        const audioUrl = URL.createObjectURL(audioBlob);
+
+        // Stop media stream tracks
+        stream.getTracks().forEach(track => track.stop());
+
+        if (micBtn) {
+          micBtn.className = "px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 transition shadow-xs cursor-pointer";
+          micBtn.innerHTML = "<span>🎙️</span><span>Record Again</span>";
+        }
+
+        if (statusEl) {
+          statusEl.innerHTML = `
+            <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-950 space-y-1.5 mt-1">
+              <div class="flex items-center justify-between font-bold">
+                <span class="flex items-center gap-1 text-emerald-900">
+                  <span>✅</span>
+                  <span>Audio Recorded (${recSeconds}s)</span>
+                </span>
+                <span class="text-[10px] text-emerald-700">Listen back to your voice:</span>
+              </div>
+              <audio controls src="${audioUrl}" class="w-full h-8 rounded-lg"></audio>
+            </div>
+          `;
+        }
+
+        // Auto-select good score if not yet scored
+        if (examUserAnswers.sprechenScores[partIdx] === undefined) {
+          setSprechenSelfScore(partIdx, 4);
+        }
+      };
+
+      mediaRecorder.start();
+    }
+
+    // Update button to stop mode with live counter
     if (micBtn) {
-      micBtn.className = "px-3 py-1.5 rounded-xl bg-rose-600 text-white font-bold text-xs flex items-center gap-1.5 animate-pulse shadow-md cursor-pointer";
-      micBtn.innerHTML = "<span>🔴</span><span>Listening in German...</span>";
+      micBtn.className = "px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-1.5 animate-pulse shadow-md cursor-pointer";
+      micBtn.innerHTML = `<span>⏹️</span><span>Stop Recording (<span id="recTimer-${partIdx}">0s</span>)</span>`;
     }
     if (statusEl) {
-      statusEl.textContent = "🎙️ Speak clearly in German now...";
-      statusEl.className = "text-[11px] font-bold text-rose-700";
+      statusEl.innerHTML = `<span class="text-rose-700 font-bold text-xs">🔴 Recording your voice now... Speak in German, then click "Stop Recording" when done.</span>`;
     }
 
-    let finalTranscript = '';
+    clearInterval(examRecordTimers[partIdx]);
+    examRecordTimers[partIdx] = setInterval(() => {
+      recSeconds++;
+      const timerSpan = document.getElementById(`recTimer-${partIdx}`);
+      if (timerSpan) timerSpan.textContent = `${recSeconds}s`;
+      if (recSeconds >= 30) {
+        // Auto stop after 30 seconds
+        toggleSprechenRecording(partIdx, keywordsArray);
+      }
+    }, 1000);
 
-    recognition.onresult = (e) => {
-      let interim = '';
-      for (let i = e.resultIndex; i < e.results.length; ++i) {
-        if (e.results[i].isFinal) {
-          finalTranscript += e.results[i][0].transcript;
-        } else {
-          interim += e.results[i][0].transcript;
+    // 2. Concurrently attempt SpeechRecognition for auto-transcription
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      try {
+        if (currentSpeechRecognition) {
+          try { currentSpeechRecognition.abort(); } catch(e) {}
         }
-      }
-      if (transcriptEl) {
-        transcriptEl.textContent = finalTranscript || interim;
-      }
-    };
+        const recognition = new SpeechRecognition();
+        currentSpeechRecognition = recognition;
+        recognition.lang = 'de-DE';
+        recognition.interimResults = true;
+        recognition.maxAlternatives = 1;
 
-    recognition.onerror = (e) => {
-      if (statusEl) {
-        statusEl.textContent = `⚠️ Error: ${e.error || 'Recording error'}`;
-        statusEl.className = "text-[11px] text-amber-700";
+        let finalTranscript = '';
+        recognition.onresult = (e) => {
+          let interim = '';
+          for (let i = e.resultIndex; i < e.results.length; ++i) {
+            if (e.results[i].isFinal) finalTranscript += e.results[i][0].transcript;
+            else interim += e.results[i][0].transcript;
+          }
+          if (transcriptEl) transcriptEl.textContent = finalTranscript || interim;
+        };
+
+        recognition.onend = () => {
+          const recognized = (finalTranscript || (transcriptEl ? transcriptEl.textContent : '')).trim().toLowerCase();
+          examUserAnswers.sprechenRecordings[partIdx] = recognized;
+          if (recognized && keywordsArray) {
+            let matches = 0;
+            keywordsArray.forEach(kw => {
+              if (recognized.includes(kw.toLowerCase())) matches++;
+            });
+            let partScore = 3;
+            if (matches >= 4) partScore = 5;
+            else if (matches >= 2) partScore = 4;
+            setSprechenSelfScore(partIdx, partScore);
+          }
+        };
+
+        recognition.onerror = (e) => {
+          console.warn('SpeechRecognition error (fallback to MediaRecorder active):', e.error);
+        };
+
+        recognition.start();
+      } catch(sttErr) {
+        console.warn('SpeechRecognition start error:', sttErr);
       }
+    } else if (!stream) {
+      clearInterval(examRecordTimers[partIdx]);
       if (micBtn) {
-        micBtn.className = "px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 transition shadow-xs cursor-pointer";
+        micBtn.className = "px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer";
         micBtn.innerHTML = "<span>🎙️</span><span>Record Answer</span>";
       }
-    };
-
-    recognition.onend = () => {
-      if (micBtn) {
-        micBtn.className = "px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 transition shadow-xs cursor-pointer";
-        micBtn.innerHTML = "<span>🎙️</span><span>Record Again</span>";
-      }
-      currentSpeechRecognition = null;
-
-      const recognized = (finalTranscript || (transcriptEl ? transcriptEl.textContent : '')).trim().toLowerCase();
-      examUserAnswers.sprechenRecordings[partIdx] = recognized;
-
-      if (!recognized) {
-        if (statusEl) statusEl.textContent = "No speech detected. Click record and try again.";
-        return;
-      }
-
-      let matches = 0;
-      keywordsArray.forEach(kw => {
-        if (recognized.includes(kw.toLowerCase())) matches++;
-      });
-
-      let partScore = 3;
-      if (matches >= 4) partScore = 5;
-      else if (matches >= 2) partScore = 4;
-
-      examUserAnswers.sprechenScores[partIdx] = partScore;
-
       if (statusEl) {
-        statusEl.innerHTML = `<span class="text-emerald-700 font-extrabold">✅ Pronunciation analyzed! (${matches} keywords recognized • ${partScore}/5 Pts)</span>`;
+        statusEl.innerHTML = `<span class="text-amber-800 text-[11px] font-medium">💡 Microphone permission not granted. Listen to the model audio above and self-award your score below:</span>`;
       }
-      if (scoreBox) {
-        scoreBox.innerHTML = `
-          <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-950 flex items-center justify-between">
-            <div>
-              <strong>Fluency & Accuracy:</strong> ${partScore === 5 ? '🌟 High Fluency' : partScore === 4 ? '👍 Good Fluency' : '📚 Acceptable A1'}<br/>
-              <span class="text-[11px] text-emerald-800">Spoken: "${escapeHtml(recognized)}"</span>
-            </div>
-            <span class="text-sm font-black px-2.5 py-1 rounded-lg bg-emerald-200 text-emerald-900 shrink-0">${partScore} / 5 Pts</span>
-          </div>
-        `;
-      }
-      updateExamProgressFooter();
-    };
+    }
 
-    recognition.start();
   } catch (err) {
-    showFloatingToast("⚠️ Could not start speech recognition: " + err.message);
+    showFloatingToast("⚠️ Recording error: " + err.message);
   }
 };
+
+window.startSprechenRecognition = window.toggleSprechenRecording;
 
 window.setSprechenSelfScore = function(partIdx, pts) {
   examUserAnswers.sprechenScores[partIdx] = pts;
   const scoreBox = document.getElementById(`sprechenScoreBox-${partIdx}`);
   if (scoreBox) {
     scoreBox.innerHTML = `
-      <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-950 flex items-center justify-between">
-        <span>✅ Score confirmed:</span>
-        <span class="text-sm font-black px-2.5 py-1 rounded-lg bg-emerald-200 text-emerald-900">${pts} / 5 Pts</span>
+      <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-950 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span>✅ Score confirmed:</span>
+          <span class="text-sm font-black px-2.5 py-0.5 rounded-lg bg-emerald-200 text-emerald-900">${pts} / 5 Pts</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="text-[10px] text-slate-500">Change:</span>
+          <button onclick="setSprechenSelfScore(${partIdx}, 5)" class="px-2 py-0.5 rounded-lg ${pts===5 ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-900'} font-bold text-[10px] cursor-pointer">5 Pts</button>
+          <button onclick="setSprechenSelfScore(${partIdx}, 4)" class="px-2 py-0.5 rounded-lg ${pts===4 ? 'bg-indigo-600 text-white' : 'bg-indigo-100 text-indigo-900'} font-bold text-[10px] cursor-pointer">4 Pts</button>
+          <button onclick="setSprechenSelfScore(${partIdx}, 3)" class="px-2 py-0.5 rounded-lg ${pts===3 ? 'bg-amber-600 text-white' : 'bg-amber-100 text-amber-900'} font-bold text-[10px] cursor-pointer">3 Pts</button>
+        </div>
       </div>
     `;
   }
