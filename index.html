@@ -26,8 +26,32 @@
   <!-- Anti-Scraping & Privacy Meta Protection -->
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 
+  <!-- Immediate Inline Security Shield (Blocks right-click, Save Page, View Source, and DevTools shortcuts) -->
+  <script>
+    (function() {
+      function block(e) {
+        if (e.preventDefault) e.preventDefault();
+        if (e.stopPropagation) e.stopPropagation();
+        return false;
+      }
+      document.addEventListener('contextmenu', block, true);
+      window.addEventListener('contextmenu', block, true);
+
+      function handleKeys(e) {
+        if (e.key === 'F12' || e.keyCode === 123) return block(e);
+        if (e.ctrlKey || e.metaKey) {
+          var k = (e.key || '').toLowerCase();
+          if (k === 'u' || k === 's' || k === 'p') return block(e);
+          if (e.shiftKey && (k === 'i' || k === 'j' || k === 'c')) return block(e);
+        }
+      }
+      document.addEventListener('keydown', handleKeys, true);
+      window.addEventListener('keydown', handleKeys, true);
+    })();
+  </script>
+
   <!-- Custom Soft Pastel Blue Theme & Scalable Font Styling -->
-  <link rel="stylesheet" href="style.css?v=20260920_protected">
+  <link rel="stylesheet" href="style.css?v=20260920_v14">
 </head>
 <body class="h-full flex flex-col antialiased select-none relative overflow-hidden" oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
 
@@ -1849,6 +1873,6 @@
 
   <!-- SCRIPT LOGIC -->
   <script src="media-data.js?v=20260913_360q"></script>
-  <script src="app.js?v=20260915_pdf_direct"></script>
+  <script src="app.js?v=20260920_v14"></script>
 </body>
 </html>
