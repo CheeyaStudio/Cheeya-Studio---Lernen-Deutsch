@@ -42,9 +42,9 @@ const NETZWERK_DATA = {
         { title: "Film 002: Wer bist du? (with Subtitles)", path: BASE_PATH + "Kursbuch A1 - Video/Kapitel_1-2/NWn_A1_Film_002_UT.mp4" },
         { title: "Film 003: Wie geht's? (with Subtitles)", path: BASE_PATH + "Kursbuch A1 - Video/Kapitel_1-2/NWn_A1_Film_003_UT.mp4" },
         { title: "Film 001-003: Kapitel 1 Komplett", path: BASE_PATH + "Kursbuch A1 - Video/Kapitel_1-2/NWn_A1_Film_001-003_UT.mp4" },
-        { title: "G-Clip 01: Verben im PrÃ¤sens", path: BASE_PATH + "Kursbuch A1 - Video/G-Clip 01.mp4" },
+        { title: "G-Clip 01: Verben im Präsens", path: BASE_PATH + "Kursbuch A1 - Video/G-Clip 01.mp4" },
         { title: "P-Clip 01: Das Alphabet & Aussprache", path: BASE_PATH + "Kursbuch A1 - Video/P-Clip 01.mp4" },
-        { title: "R-Clip 01: BegrÃ¼ÃŸung & Verabschiedung", path: BASE_PATH + "Kursbuch A1 - Video/R-Clip 01_-_mit_Untertiteln.mp4" }
+        { title: "R-Clip 01: Begrüßung & Verabschiedung", path: BASE_PATH + "Kursbuch A1 - Video/R-Clip 01_-_mit_Untertiteln.mp4" }
       ],
       autoTeaching: {
         cheeyaGreeting: "Herzlich willkommen zu Kapitel 1: Guten Tag! Lernen Sie Begrüßungen, sich und andere vorzustellen, das deutsche Alphabet mit Aussprache und die Zahlen von 0 bis 20.",
@@ -2144,8 +2144,8 @@ The following key verbs always require an object in the **Akkusativ**:
       videos: [
         { title: "Film 010: Alltag und Termine", path: BASE_PATH + "Kursbuch A1 - Video/Kapitel_5/NWn_A1_Film_010.mp4" },
         { title: "Film 010: Alltag und Termine (UT)", path: BASE_PATH + "Kursbuch A1 - Video/Kapitel_5/NWn_A1_Film_010_UT.mp4" },
-        { title: "Film 011: PÃ¼nktlichkeit & VerspÃ¤tung", path: BASE_PATH + "Kursbuch A1 - Video/Kapitel_5/NWn_A1_Film_011.mp4" },
-        { title: "Film 011: PÃ¼nktlichkeit (UT)", path: BASE_PATH + "Kursbuch A1 - Video/Kapitel_5/NWn_A1_Film_011_UT.mp4" },
+        { title: "Film 011: Pünktlichkeit & Verspätung", path: BASE_PATH + "Kursbuch A1 - Video/Kapitel_5/NWn_A1_Film_011.mp4" },
+        { title: "Film 011: Pünktlichkeit (UT)", path: BASE_PATH + "Kursbuch A1 - Video/Kapitel_5/NWn_A1_Film_011_UT.mp4" },
         { title: "Film 012: Familie & Tagesablauf (UT)", path: BASE_PATH + "Kursbuch A1 - Video/Kapitel_5/NWn_A1_Film_012_UT.mp4" },
         { title: "G-Clip 03: Modalverben & Satzklammer", path: BASE_PATH + "Kursbuch A1 - Video/G-Clip 03.mp4" },
         { title: "R-Clip 03: Uhrzeit & Termine vereinbaren", path: BASE_PATH + "Kursbuch A1 - Video/R-Clip 03_-_mit_Untertiteln.mp4" }
@@ -3140,9 +3140,9 @@ The following key verbs always require an object in the **Akkusativ**:
         { title: "Film 017: Kontakte & E-Mails", path: BASE_PATH + "Kursbuch A1 - Video/Kapitel_7/Netzwerk_neu_A1_Film_017.mp4" },
         { title: "Film 017: Kontakte (UT)", path: BASE_PATH + "Kursbuch A1 - Video/Kapitel_7/Netzwerk_neu_A1_Film_017_UT.mp4" },
         { title: "Film 016-017: Kapitel 7 Komplett (UT)", path: BASE_PATH + "Kursbuch A1 - Video/Kapitel_7/Netzwerk_neu_A1_Film_16-17_UT.mp4" },
-        { title: "G-Clip 04: Dativ mit PrÃ¤positionen", path: BASE_PATH + "Kursbuch A1 - Video/G-Clip 04.mp4" },
+        { title: "G-Clip 04: Dativ mit Präpositionen", path: BASE_PATH + "Kursbuch A1 - Video/G-Clip 04.mp4" },
         { title: "P-Clip 04: Aussprache & Wortakzent", path: BASE_PATH + "Kursbuch A1 - Video/P-Clip 04.mp4" },
-        { title: "R-Clip 04: Small Talk im BÃ¼ro", path: BASE_PATH + "Kursbuch A1 - Video/R-Clip 04_UT.mp4" }
+        { title: "R-Clip 04: Small Talk im Büro", path: BASE_PATH + "Kursbuch A1 - Video/R-Clip 04_UT.mp4" }
       ],
       autoTeaching: {
         cheeyaGreeting: "Willkommen zu Kapitel 7: Kontakte! Lernen Sie Büroabläufe zu beschreiben, formelle E-Mails zu verfassen, Small Talk zu führen und den Dativ mit Präpositionen zu gebrauchen.",
@@ -4101,8 +4101,8 @@ The following key verbs always require an object in the **Akkusativ**:
         { id: "2-034", name: "Track 2-034", path: BASE_PATH + "Kursbuch A1 - Audio/Kapitel 7-12/NWn_A1_KB_Audio_2-034.mp3" }
       ],
       videos: [
-        { title: "Film 022: Meine Wohnung & MÃ¶bel", path: BASE_PATH + "Kursbuch A1 - Video/Kapitel_9/Netzwerk_neu_A1_Film_022.mp4" },
-        { title: "G-Clip 04: WechselprÃ¤positionen (Wohin vs Wo)", path: BASE_PATH + "Kursbuch A1 - Video/G-Clip 04.mp4" },
+        { title: "Film 022: Meine Wohnung & Möbel", path: BASE_PATH + "Kursbuch A1 - Video/Kapitel_9/Netzwerk_neu_A1_Film_022.mp4" },
+        { title: "G-Clip 04: Wechselpräpositionen (Wohin vs Wo)", path: BASE_PATH + "Kursbuch A1 - Video/G-Clip 04.mp4" },
         { title: "R-Clip 04: Wohnung beschreiben", path: BASE_PATH + "Kursbuch A1 - Video/R-Clip 04.mp4" }
       ],
       autoTeaching: {
