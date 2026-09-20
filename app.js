@@ -9561,207 +9561,1134 @@ window.restartGermanExam = window.restartGoetheExam;
 window.openGermanReviewModal = window.openExamReviewModal;
 window.closeGermanReviewModal = window.closeExamReviewModal;
 
-  // ================= 31. SMART SPACED REPETITION (SRS) 3D FLASHCARDS =================
-  const DEFAULT_SRS_DECK = [
-    { id: "srs-1", de: "Hund", article: "der", en: "Dog", plural: "die Hunde", example: "Der Hund spielt im Garten.", chapter: 1, category: "nouns" },
-    { id: "srs-2", de: "Katze", article: "die", en: "Cat", plural: "die Katzen", example: "Die Katze schläft auf dem Sofa.", chapter: 1, category: "nouns" },
-    { id: "srs-3", de: "Buch", article: "das", en: "Book", plural: "die Bücher", example: "Ich lese ein interessantes Buch.", chapter: 1, category: "nouns" },
-    { id: "srs-4", de: "lernen", article: "", en: "to learn / study", plural: "", example: "Wir lernen jeden Tag Deutsch.", chapter: 1, category: "verbs" },
-    { id: "srs-5", de: "sprechen", article: "", en: "to speak", plural: "", example: "Sprichst du auch Englisch?", chapter: 1, category: "verbs" },
-    { id: "srs-6", de: "groß", article: "", en: "big / tall", plural: "", example: "Das Haus ist sehr groß.", chapter: 1, category: "adjectives" },
-    { id: "srs-7", de: "klein", article: "", en: "small / little", plural: "", example: "Die Wohnung ist gemütlich und klein.", chapter: 1, category: "adjectives" },
-    { id: "srs-8", de: "Bahnhof", article: "der", en: "Train station", plural: "die Bahnhöfe", example: "Der Zug hält am Bahnhof.", chapter: 3, category: "nouns" },
-    { id: "srs-9", de: "Fahrkarte", article: "die", en: "Ticket", plural: "die Fahrkarten", example: "Ich kaufe eine Fahrkarte nach Berlin.", chapter: 3, category: "nouns" },
-    { id: "srs-10", de: "Kaffee", article: "der", en: "Coffee", plural: "die Kaffees", example: "Möchten Sie einen Kaffee trinken?", chapter: 4, category: "nouns" },
-    { id: "srs-11", de: "Brötchen", article: "das", en: "Bread roll", plural: "die Brötchen", example: "Zwei frische Brötchen, bitte.", chapter: 4, category: "nouns" },
-    { id: "srs-12", de: "frühstücken", article: "", en: "to eat breakfast", plural: "", example: "Ich frühstücke um sieben Uhr.", chapter: 5, category: "verbs" },
-    { id: "srs-13", de: "aufstehen", article: "", en: "to stand up / get up", plural: "", example: "Er steht jeden Tag um sechs Uhr auf.", chapter: 5, category: "verbs" },
-    { id: "srs-14", de: "Wohnung", article: "die", en: "Apartment", plural: "die Wohnungen", example: "Unsere Wohnung hat drei Zimmer.", chapter: 8, category: "nouns" },
-    { id: "srs-15", de: "Krankenhaus", article: "das", en: "Hospital", plural: "die Krankenhäuser", example: "Die Ärztin arbeitet im Krankenhaus.", chapter: 11, category: "nouns" }
-  ];
+  // ================= 31. 3D GERMAN VOCABULARY FLASHCARDS SYSTEM (DUAL-DECK 2,000 WORDS) =================
+  const DUAL_FC_STORAGE_KEY = 'netzwerk_flashcards_mastered_v1';
+  let srsActiveDeck = 'nouns'; // 'nouns' or 'verbs'
+  let srsViewMode = 'card'; // 'card' or 'grid'
+  let srsStudyFilter = 'toLearn'; // 'toLearn', 'mastered', 'all'
+  let srsActiveCategory = 'all';
+  let srsSearchQuery = '';
+  let srsCurrentIndex = 0;
+  let srsIsFlipped = false;
+  let srsGridPage = 1;
+  const SRS_GRID_PAGE_SIZE = 24;
 
-  const SRS_STORAGE_KEY = 'netzwerk_srs_cards_v1';
-  let currentSrsDeck = [];
-  let currentSrsIndex = 0;
-  let isSrsFlipped = false;
+  let srsMasteredData = {
+    nouns: [],
+    verbs: [],
+    historyOrder: [] // [{ id, deck, timestamp }] newest first
+  };
 
-  function loadSrsCards() {
+  function loadSrsMasteredData() {
     try {
-      const saved = localStorage.getItem(SRS_STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
-    } catch(e) {}
-    // Seed default cards with initial intervals
-    const seeded = DEFAULT_SRS_DECK.map(c => ({
-      ...c,
-      interval: 0,
-      repetitions: 0,
-      easeFactor: 2.5,
-      nextReviewDate: getTodayDateStr()
-    }));
-    saveSrsCards(seeded);
-    return seeded;
+      const raw = localStorage.getItem(DUAL_FC_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          srsMasteredData.nouns = Array.isArray(parsed.nouns) ? parsed.nouns : [];
+          srsMasteredData.verbs = Array.isArray(parsed.verbs) ? parsed.verbs : [];
+          srsMasteredData.historyOrder = Array.isArray(parsed.historyOrder) ? parsed.historyOrder : [];
+        }
+      }
+    } catch(e) {
+      console.error('Error loading SRS mastered data:', e);
+    }
+    updateSrsDashboardBadge();
   }
 
-  function saveSrsCards(cards) {
+  function saveSrsMasteredData() {
     try {
-      localStorage.setItem(SRS_STORAGE_KEY, JSON.stringify(cards));
-      updateSrsDueBadge();
-    } catch(e) {}
+      localStorage.setItem(DUAL_FC_STORAGE_KEY, JSON.stringify(srsMasteredData));
+    } catch(e) {
+      console.error('Error saving SRS mastered data:', e);
+    }
+    updateSrsDashboardBadge();
   }
 
-  function updateSrsDueBadge() {
-    const cards = loadSrsCards();
-    const today = getTodayDateStr();
-    const dueCount = cards.filter(c => !c.nextReviewDate || c.nextReviewDate <= today).length;
+  function updateSrsDashboardBadge() {
+    const totalMastered = (srsMasteredData.nouns?.length || 0) + (srsMasteredData.verbs?.length || 0);
     const badge = document.getElementById('srsDashboardDueBadge');
     if (badge) {
-      badge.textContent = dueCount > 0 ? `${dueCount} Due for Review` : 'All Reviewed Today ✨';
+      badge.textContent = totalMastered > 0 ? `${totalMastered} / 2,000 Mastered ⭐` : '2,000 Words Available';
     }
   }
 
+  function isSrsWordMastered(id, deck = srsActiveDeck) {
+    const list = deck === 'verbs' ? srsMasteredData.verbs : srsMasteredData.nouns;
+    return list.includes(id);
+  }
+
+  function getSrsRawDeckList(deck = srsActiveDeck) {
+    if (typeof window.FLASHCARDS_DATA === 'undefined') return [];
+    return deck === 'verbs' ? (window.FLASHCARDS_DATA.verbs || []) : (window.FLASHCARDS_DATA.nouns || []);
+  }
+
+  function getSrsFilteredList() {
+    let list = getSrsRawDeckList(srsActiveDeck);
+
+    // 1. Study Mode Filter
+    if (srsStudyFilter === 'toLearn') {
+      list = list.filter(item => !isSrsWordMastered(item.id, srsActiveDeck));
+    } else if (srsStudyFilter === 'mastered') {
+      list = list.filter(item => isSrsWordMastered(item.id, srsActiveDeck));
+    }
+
+    // 2. Category Filter
+    if (srsActiveCategory !== 'all') {
+      list = list.filter(item => item.category === srsActiveCategory);
+    }
+
+    // 3. Search Query Filter
+    if (srsSearchQuery && srsSearchQuery.trim()) {
+      const q = srsSearchQuery.toLowerCase().trim();
+      list = list.filter(item => {
+        if (srsActiveDeck === 'nouns') {
+          return (item.de && item.de.toLowerCase().includes(q)) ||
+                 (item.article && item.article.toLowerCase() === q) ||
+                 (item.en && item.en.toLowerCase().includes(q)) ||
+                 (item.id_trans && item.id_trans.toLowerCase().includes(q)) ||
+                 (item.plural && item.plural.toLowerCase().includes(q)) ||
+                 (item.category && item.category.toLowerCase().includes(q));
+        } else {
+          return (item.infinitive && item.infinitive.toLowerCase().includes(q)) ||
+                 (item.en && item.en.toLowerCase().includes(q)) ||
+                 (item.id_trans && item.id_trans.toLowerCase().includes(q)) ||
+                 (item.category && item.category.toLowerCase().includes(q));
+        }
+      });
+    }
+
+    return list;
+  }
+
+  function populateSrsCategorySelect() {
+    const sel = document.getElementById('srsCategorySelect');
+    if (!sel) return;
+    const rawList = getSrsRawDeckList(srsActiveDeck);
+    const catMap = {};
+    rawList.forEach(item => {
+      catMap[item.category] = (catMap[item.category] || 0) + 1;
+    });
+    const categories = Object.keys(catMap).sort();
+
+    let html = `<option value="all">✨ All Categories (${rawList.length} Words)</option>`;
+    categories.forEach(c => {
+      const isSel = srsActiveCategory === c ? 'selected' : '';
+      html += `<option value="${c}" ${isSel}>${c} (${catMap[c]})</option>`;
+    });
+    sel.innerHTML = html;
+  }
+
   window.openSrsModal = function() {
+    loadSrsMasteredData();
     const modal = document.getElementById('srsFlashcardModal');
     if (!modal) return;
     modal.classList.remove('hidden');
-    filterSrsDeck();
+
+    populateSrsCategorySelect();
+    renderSrsHeaderAndFilters();
+    renderSrsCurrentView();
+
+    window.removeEventListener('keydown', handleSrsKeyboardShortcuts);
+    window.addEventListener('keydown', handleSrsKeyboardShortcuts);
   };
 
   window.closeSrsModal = function() {
     const modal = document.getElementById('srsFlashcardModal');
     if (modal) modal.classList.add('hidden');
+    window.removeEventListener('keydown', handleSrsKeyboardShortcuts);
   };
 
-  window.filterSrsDeck = function() {
-    const chapSel = document.getElementById('srsChapterSelect');
+  function handleSrsKeyboardShortcuts(e) {
+    const modal = document.getElementById('srsFlashcardModal');
+    if (!modal || modal.classList.contains('hidden')) return;
+
+    // Ignore if inside an input or select
+    const tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+    if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+
+    if (e.code === 'Space') {
+      e.preventDefault();
+      window.flipCurrentSrsCard();
+    } else if (e.code === 'ArrowRight') {
+      e.preventDefault();
+      window.nextSrsCard();
+    } else if (e.code === 'ArrowLeft') {
+      e.preventDefault();
+      window.prevSrsCard();
+    } else if (e.key === 'm' || e.key === 'M') {
+      e.preventDefault();
+      window.toggleSrsMasterCurrent();
+    } else if (e.key === 'a' || e.key === 'A') {
+      e.preventDefault();
+      window.playSrsWordAudio();
+    }
+  }
+
+  window.switchSrsDeck = function(deck) {
+    if (srsActiveDeck === deck) return;
+    srsActiveDeck = deck;
+    srsCurrentIndex = 0;
+    srsGridPage = 1;
+    srsActiveCategory = 'all';
+    srsIsFlipped = false;
+
+    populateSrsCategorySelect();
+    renderSrsHeaderAndFilters();
+    renderSrsCurrentView();
+  };
+
+  window.switchSrsView = function(view) {
+    srsViewMode = view;
+    renderSrsHeaderAndFilters();
+    renderSrsCurrentView();
+  };
+
+  window.setSrsStudyFilter = function(filter) {
+    srsStudyFilter = filter;
+    srsCurrentIndex = 0;
+    srsGridPage = 1;
+    srsIsFlipped = false;
+    renderSrsHeaderAndFilters();
+    renderSrsCurrentView();
+  };
+
+  window.handleSrsSearch = function(query) {
+    srsSearchQuery = query;
+    srsCurrentIndex = 0;
+    srsGridPage = 1;
+    renderSrsHeaderAndFilters();
+    renderSrsCurrentView();
+  };
+
+  window.handleSrsCategory = function(category) {
+    srsActiveCategory = category;
+    srsCurrentIndex = 0;
+    srsGridPage = 1;
+    renderSrsHeaderAndFilters();
+    renderSrsCurrentView();
+  };
+
+  window.resetSrsFilters = function() {
+    srsActiveCategory = 'all';
+    srsSearchQuery = '';
+    srsStudyFilter = 'toLearn';
+    const sInput = document.getElementById('srsSearchInput');
+    if (sInput) sInput.value = '';
     const catSel = document.getElementById('srsCategorySelect');
-    const chapVal = chapSel ? chapSel.value : 'all';
-    const catVal = catSel ? catSel.value : 'all';
-
-    let cards = loadSrsCards();
-    if (chapVal !== 'all') {
-      cards = cards.filter(c => c.chapter.toString() === chapVal);
-    }
-    if (catVal !== 'all') {
-      cards = cards.filter(c => c.category === catVal);
-    }
-
-    currentSrsDeck = cards.length > 0 ? cards : loadSrsCards();
-    currentSrsIndex = 0;
-    isSrsFlipped = false;
-    renderCurrentSrsCard();
+    if (catSel) catSel.value = 'all';
+    srsCurrentIndex = 0;
+    srsGridPage = 1;
+    populateSrsCategorySelect();
+    renderSrsHeaderAndFilters();
+    renderSrsCurrentView();
   };
 
-  function renderCurrentSrsCard() {
-    if (currentSrsDeck.length === 0) return;
-    const card = currentSrsDeck[currentSrsIndex];
+  function renderSrsHeaderAndFilters() {
+    const isNoun = srsActiveDeck === 'nouns';
 
-    const cardContainer = document.getElementById('srsFlashcardContainer');
-    if (cardContainer) cardContainer.classList.remove('flashcard-flipped');
-    isSrsFlipped = false;
+    // Deck Buttons
+    const btnNouns = document.getElementById('srsDeckBtnNouns');
+    const btnVerbs = document.getElementById('srsDeckBtnVerbs');
+    if (btnNouns) {
+      btnNouns.className = isNoun
+        ? "px-3 py-1.5 rounded-xl transition-all bg-sky-600 text-white shadow-xs flex items-center gap-1.5 cursor-pointer font-bold"
+        : "px-3 py-1.5 rounded-xl transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1.5 cursor-pointer font-bold";
+    }
+    if (btnVerbs) {
+      btnVerbs.className = !isNoun
+        ? "px-3 py-1.5 rounded-xl transition-all bg-purple-600 text-white shadow-xs flex items-center gap-1.5 cursor-pointer font-bold"
+        : "px-3 py-1.5 rounded-xl transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1.5 cursor-pointer font-bold";
+    }
 
-    // Count label
-    const countEl = document.getElementById('srsCardCountLabel');
-    if (countEl) countEl.textContent = `Card ${currentSrsIndex + 1} of ${currentSrsDeck.length}`;
+    // View Buttons
+    const btnCard = document.getElementById('srsViewBtnCard');
+    const btnGrid = document.getElementById('srsViewBtnGrid');
+    if (btnCard) {
+      btnCard.className = srsViewMode === 'card'
+        ? "px-3 py-1.5 rounded-xl transition-all bg-slate-800 text-white shadow-xs flex items-center gap-1 cursor-pointer font-bold"
+        : "px-3 py-1.5 rounded-xl transition-all bg-white text-slate-600 border border-slate-200 hover:text-slate-900 flex items-center gap-1 cursor-pointer font-bold";
+    }
+    if (btnGrid) {
+      btnGrid.className = srsViewMode === 'grid'
+        ? "px-3 py-1.5 rounded-xl transition-all bg-slate-800 text-white shadow-xs flex items-center gap-1 cursor-pointer font-bold"
+        : "px-3 py-1.5 rounded-xl transition-all bg-white text-slate-600 border border-slate-200 hover:text-slate-900 flex items-center gap-1 cursor-pointer font-bold";
+    }
 
-    // Front elements
+    // Counts for Current Deck
+    const rawList = getSrsRawDeckList(srsActiveDeck);
+    const masteredInDeck = isNoun ? srsMasteredData.nouns.length : srsMasteredData.verbs.length;
+    const toLearnInDeck = Math.max(0, rawList.length - masteredInDeck);
+
+    const toLearnBadge = document.getElementById('srsToLearnBadge');
+    if (toLearnBadge) toLearnBadge.textContent = toLearnInDeck;
+    const masteredBadge = document.getElementById('srsMasteredBadge');
+    if (masteredBadge) masteredBadge.textContent = masteredInDeck;
+    const allBadge = document.getElementById('srsAllBadge');
+    if (allBadge) allBadge.textContent = rawList.length;
+
+    // Study Filter Buttons styling
+    const fToLearn = document.getElementById('srsFilterBtnToLearn');
+    const fMastered = document.getElementById('srsFilterBtnMastered');
+    const fAll = document.getElementById('srsFilterBtnAll');
+    if (fToLearn) {
+      fToLearn.className = srsStudyFilter === 'toLearn'
+        ? "px-2.5 py-1 rounded-lg transition-all bg-emerald-600 text-white shadow-2xs flex items-center gap-1 cursor-pointer font-bold"
+        : "px-2.5 py-1 rounded-lg transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1 cursor-pointer font-bold";
+    }
+    if (fMastered) {
+      fMastered.className = srsStudyFilter === 'mastered'
+        ? "px-2.5 py-1 rounded-lg transition-all bg-amber-500 text-white shadow-2xs flex items-center gap-1 cursor-pointer font-bold"
+        : "px-2.5 py-1 rounded-lg transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1 cursor-pointer font-bold";
+    }
+    if (fAll) {
+      fAll.className = srsStudyFilter === 'all'
+        ? "px-2.5 py-1 rounded-lg transition-all bg-slate-800 text-white shadow-2xs flex items-center gap-1 cursor-pointer font-bold"
+        : "px-2.5 py-1 rounded-lg transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1 cursor-pointer font-bold";
+    }
+
+    // Header History Count Badge
+    const histBadge = document.getElementById('srsHistoryCountBadge');
+    const totalAllMastered = srsMasteredData.nouns.length + srsMasteredData.verbs.length;
+    if (histBadge) histBadge.textContent = totalAllMastered;
+
+    // Progress Bar
+    const percent = rawList.length > 0 ? ((masteredInDeck / rawList.length) * 100).toFixed(1) : 0;
+    const pBar = document.getElementById('srsProgressBar');
+    if (pBar) pBar.style.width = `${percent}%`;
+    const pText = document.getElementById('srsProgressText');
+    if (pText) {
+      const deckLabel = isNoun ? 'Nouns' : 'Verbs';
+      pText.textContent = `${masteredInDeck} / ${rawList.length} ${deckLabel} Mastered (${percent}%)`;
+    }
+  }
+
+  function renderSrsCurrentView() {
+    const cardArea = document.getElementById('srsCardModeArea');
+    const gridArea = document.getElementById('srsGridModeArea');
+    const emptyNotice = document.getElementById('srsEmptyNotice');
+
+    const filtered = getSrsFilteredList();
+
+    if (filtered.length === 0) {
+      if (cardArea) cardArea.classList.add('hidden');
+      if (gridArea) gridArea.classList.add('hidden');
+      if (emptyNotice) {
+        emptyNotice.classList.remove('hidden');
+        const icon = document.getElementById('srsEmptyIcon');
+        const title = document.getElementById('srsEmptyTitle');
+        const desc = document.getElementById('srsEmptyDesc');
+        const raw = getSrsRawDeckList(srsActiveDeck);
+        const isAllMastered = srsStudyFilter === 'toLearn' && raw.length > 0 && raw.every(x => isSrsWordMastered(x.id, srsActiveDeck));
+
+        if (isAllMastered) {
+          if (icon) icon.textContent = '🎉';
+          if (title) title.textContent = 'All Words Mastered in this Deck!';
+          if (desc) desc.textContent = 'Congratulations! You have mastered all words. Click below to review them.';
+        } else {
+          if (icon) icon.textContent = '🔍';
+          if (title) title.textContent = 'No words match your filters or search.';
+          if (desc) desc.textContent = 'Try clearing your search or switching categories above.';
+        }
+      }
+      return;
+    }
+
+    if (emptyNotice) emptyNotice.classList.add('hidden');
+
+    if (srsViewMode === 'card') {
+      if (cardArea) cardArea.classList.remove('hidden');
+      if (gridArea) gridArea.classList.add('hidden');
+      renderSrsCardView(filtered);
+    } else {
+      if (cardArea) cardArea.classList.add('hidden');
+      if (gridArea) gridArea.classList.remove('hidden');
+      renderSrsGridExplorer(filtered);
+    }
+  }
+
+  function renderSrsCardView(list) {
+    if (!list || list.length === 0) return;
+    if (srsCurrentIndex >= list.length) srsCurrentIndex = 0;
+    if (srsCurrentIndex < 0) srsCurrentIndex = list.length - 1;
+
+    const card = list[srsCurrentIndex];
+    const isNoun = srsActiveDeck === 'nouns';
+    const isMastered = isSrsWordMastered(card.id, srsActiveDeck);
+
+    // Reset flip
+    const inner = document.getElementById('srsFlashcardInner');
+    if (inner) {
+      inner.classList.remove('flipped');
+      srsIsFlipped = false;
+    }
+
+    // Counter
+    const counter = document.getElementById('srsCardCounter');
+    if (counter) counter.textContent = `${srsCurrentIndex + 1} / ${list.length}`;
+
+    // FRONT ELEMENTS
     const frontWord = document.getElementById('srsFrontWord');
-    const frontGender = document.getElementById('srsFrontGenderBadge');
-    const frontPhonetic = document.getElementById('srsFrontPhonetic');
-    if (frontWord) frontWord.textContent = card.de;
+    const frontArticle = document.getElementById('srsFrontArticleBadge');
+    const frontType = document.getElementById('srsFrontTypeBadge');
+    const frontCat = document.getElementById('srsFrontCategoryBadge');
+    const frontPlural = document.getElementById('srsFrontPluralHint');
+    const frontVerbHint = document.getElementById('srsFrontVerbConjugationHint');
 
-    if (frontGender) {
-      if (card.article === 'der') {
-        frontGender.textContent = 'der';
-        frontGender.className = 'px-2.5 py-1 rounded-full text-xs font-black bg-blue-100 text-blue-900 border border-blue-300';
-      } else if (card.article === 'die') {
-        frontGender.textContent = 'die';
-        frontGender.className = 'px-2.5 py-1 rounded-full text-xs font-black bg-rose-100 text-rose-900 border border-rose-300';
-      } else if (card.article === 'das') {
-        frontGender.textContent = 'das';
-        frontGender.className = 'px-2.5 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-900 border border-emerald-300';
-      } else {
-        frontGender.textContent = card.category;
-        frontGender.className = 'px-2.5 py-1 rounded-full text-xs font-black bg-purple-100 text-purple-900 border border-purple-300';
+    if (frontCat) frontCat.textContent = card.category;
+
+    if (isNoun) {
+      if (frontWord) {
+        let colorCls = 'text-sky-800';
+        if (card.article === 'die') colorCls = 'text-rose-700';
+        if (card.article === 'das') colorCls = 'text-emerald-800';
+        frontWord.className = `text-3xl sm:text-4xl font-black ${colorCls} tracking-tight select-all`;
+        frontWord.textContent = `${card.article} ${card.de}`;
+      }
+      if (frontArticle) {
+        frontArticle.classList.remove('hidden');
+        frontArticle.textContent = card.article;
+        if (card.article === 'der') {
+          frontArticle.className = 'px-3 py-1 rounded-xl text-xs font-black uppercase bg-sky-500 text-white shadow-2xs';
+        } else if (card.article === 'die') {
+          frontArticle.className = 'px-3 py-1 rounded-xl text-xs font-black uppercase bg-rose-500 text-white shadow-2xs';
+        } else if (card.article === 'das') {
+          frontArticle.className = 'px-3 py-1 rounded-xl text-xs font-black uppercase bg-emerald-500 text-white shadow-2xs';
+        }
+      }
+      if (frontType) frontType.classList.add('hidden');
+      if (frontPlural) {
+        frontPlural.classList.remove('hidden');
+        frontPlural.textContent = `Plural: ${card.plural || '-'}`;
+      }
+      if (frontVerbHint) frontVerbHint.classList.add('hidden');
+    } else {
+      // Verbs
+      if (frontWord) {
+        frontWord.className = 'text-3xl sm:text-4xl font-black text-purple-950 tracking-tight select-all';
+        frontWord.textContent = card.infinitive;
+      }
+      if (frontArticle) {
+        frontArticle.className = 'px-3 py-1 rounded-xl text-xs font-black uppercase bg-purple-600 text-white shadow-2xs';
+        frontArticle.textContent = '⚡ Verb';
+      }
+      if (frontType) {
+        if (card.vokalwechsel) {
+          frontType.classList.remove('hidden');
+          frontType.textContent = '⚠️ Vokalwechsel';
+          frontType.className = 'px-2 py-0.5 rounded-lg text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200';
+        } else if (card.irregular) {
+          frontType.classList.remove('hidden');
+          frontType.textContent = 'Irregular';
+          frontType.className = 'px-2 py-0.5 rounded-lg text-[10px] font-bold bg-indigo-100 text-indigo-800 border border-indigo-200';
+        } else {
+          frontType.classList.add('hidden');
+        }
+      }
+      if (frontPlural) frontPlural.classList.add('hidden');
+      if (frontVerbHint && card.conjugation) {
+        frontVerbHint.classList.remove('hidden');
+        frontVerbHint.textContent = `ich ${card.conjugation.ich} • du ${card.conjugation.du}`;
       }
     }
 
-    if (frontPhonetic && typeof generateGermanPhonetics === 'function') {
-      const ph = generateGermanPhonetics(card.article ? `${card.article} ${card.de}` : card.de);
-      frontPhonetic.textContent = ph.phoneticText;
+    // BACK ELEMENTS
+    const backEn = document.getElementById('srsBackEnglish');
+    const backId = document.getElementById('srsBackIndonesian');
+    const nounBackSec = document.getElementById('srsNounBackSection');
+    const verbBackSec = document.getElementById('srsVerbBackSection');
+    const pluralFull = document.getElementById('srsBackPluralFull');
+    const vokalBadge = document.getElementById('srsVerbVokalwechselBadge');
+
+    const exDe = document.getElementById('srsBackExampleDe');
+    const exEn = document.getElementById('srsBackExampleEn');
+    const exId = document.getElementById('srsBackExampleId');
+
+    if (backEn) backEn.textContent = card.en || '-';
+    if (backId) backId.textContent = `🇮🇩 ${card.id_trans || '-'}`;
+
+    if (isNoun) {
+      if (nounBackSec) nounBackSec.classList.remove('hidden');
+      if (verbBackSec) verbBackSec.classList.add('hidden');
+      if (pluralFull) pluralFull.textContent = card.plural || '-';
+    } else {
+      if (nounBackSec) nounBackSec.classList.add('hidden');
+      if (verbBackSec) verbBackSec.classList.remove('hidden');
+
+      if (vokalBadge) {
+        if (card.vokalwechsel) vokalBadge.classList.remove('hidden');
+        else vokalBadge.classList.add('hidden');
+      }
+
+      if (card.conjugation) {
+        const c = card.conjugation;
+        const ichEl = document.getElementById('srsVcIch');
+        const duEl = document.getElementById('srsVcDu');
+        const erEl = document.getElementById('srsVcEr');
+        const wirEl = document.getElementById('srsVcWir');
+        const ihrEl = document.getElementById('srsVcIhr');
+        const sieEl = document.getElementById('srsVcSie');
+
+        if (ichEl) ichEl.textContent = c.ich || '-';
+        if (duEl) {
+          duEl.textContent = c.du || '-';
+          if (card.vokalwechsel) duEl.parentElement.className = 'p-1 rounded bg-amber-100 border border-amber-300 text-amber-950 font-black';
+          else duEl.parentElement.className = 'p-1 rounded bg-slate-50 border border-slate-100';
+        }
+        if (erEl) {
+          erEl.textContent = c.er || '-';
+          if (card.vokalwechsel) erEl.parentElement.className = 'p-1 rounded bg-amber-100 border border-amber-300 text-amber-950 font-black';
+          else erEl.parentElement.className = 'p-1 rounded bg-slate-50 border border-slate-100';
+        }
+        if (wirEl) wirEl.textContent = c.wir || '-';
+        if (ihrEl) ihrEl.textContent = c.ihr || '-';
+        if (sieEl) sieEl.textContent = c.sie || '-';
+      }
     }
 
-    // Back elements
-    const backEnglish = document.getElementById('srsBackEnglish');
-    const backPlural = document.getElementById('srsBackPlural');
-    const backExample = document.getElementById('srsBackExample');
+    if (card.example) {
+      if (exDe) exDe.textContent = `"${card.example.de || ''}"`;
+      if (exEn) exEn.textContent = `"${card.example.en || ''}"`;
+      if (exId) exId.textContent = `"${card.example.id || ''}"`;
+    }
 
-    if (backEnglish) backEnglish.textContent = card.en;
-    if (backPlural) backPlural.textContent = card.plural ? `Plural: ${card.plural}` : `Category: ${card.category}`;
-    if (backExample) backExample.textContent = card.example ? `"${card.example}"` : '';
+    // Update Star Buttons (Front, Back, Controls)
+    updateSrsStarButtonUI(isMastered);
+  }
+
+  function updateSrsStarButtonUI(isMastered) {
+    const fBtn = document.getElementById('srsFrontStarBtn');
+    const fIcon = document.getElementById('srsFrontStarIcon');
+    const fText = document.getElementById('srsFrontStarText');
+
+    const bBtn = document.getElementById('srsBackStarBtn');
+    const bIcon = document.getElementById('srsBackStarIcon');
+    const bText = document.getElementById('srsBackStarText');
+
+    const cBtn = document.getElementById('srsControlsStarBtn');
+    const cIcon = document.getElementById('srsControlsStarIcon');
+    const cText = document.getElementById('srsControlsStarText');
+
+    const activeCls = 'px-2.5 py-1 rounded-xl text-xs font-bold border border-amber-400 bg-amber-200 text-amber-950 shadow-xs transition flex items-center gap-1 cursor-pointer';
+    const inactiveCls = 'px-2.5 py-1 rounded-xl text-xs font-bold border border-slate-200 bg-white hover:bg-amber-50 text-slate-600 transition flex items-center gap-1 cursor-pointer';
+
+    const cActiveCls = 'px-3.5 py-1.5 rounded-xl font-extrabold text-xs shadow-md transition flex items-center gap-1.5 border border-amber-400 bg-amber-400 text-amber-950 cursor-pointer';
+    const cInactiveCls = 'px-3.5 py-1.5 rounded-xl font-bold text-xs shadow-xs transition flex items-center gap-1.5 border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900 cursor-pointer';
+
+    if (fBtn) fBtn.className = isMastered ? activeCls : inactiveCls;
+    if (fIcon) fIcon.textContent = isMastered ? '⭐' : '☆';
+    if (fText) fText.textContent = isMastered ? 'Mastered ✓' : 'Master';
+
+    if (bBtn) bBtn.className = isMastered ? activeCls : inactiveCls;
+    if (bIcon) bIcon.textContent = isMastered ? '⭐' : '☆';
+    if (bText) bText.textContent = isMastered ? 'Mastered ✓' : 'Master';
+
+    if (cBtn) cBtn.className = isMastered ? cActiveCls : cInactiveCls;
+    if (cIcon) cIcon.textContent = isMastered ? '⭐' : '☆';
+    if (cText) cText.textContent = isMastered ? 'Mastered (Done ✓)' : 'Mark Mastered (M)';
   }
 
   window.flipCurrentSrsCard = function() {
-    const cardContainer = document.getElementById('srsFlashcardContainer');
-    if (!cardContainer) return;
-    isSrsFlipped = !isSrsFlipped;
-    if (isSrsFlipped) {
-      cardContainer.classList.add('flashcard-flipped');
+    const inner = document.getElementById('srsFlashcardInner');
+    if (!inner) return;
+    srsIsFlipped = !srsIsFlipped;
+    if (srsIsFlipped) {
+      inner.classList.add('flipped');
     } else {
-      cardContainer.classList.remove('flashcard-flipped');
+      inner.classList.remove('flipped');
     }
   };
 
-  window.playSrsAudio = function() {
-    if (currentSrsDeck.length === 0) return;
-    const card = currentSrsDeck[currentSrsIndex];
-    const phrase = card.article ? `${card.article} ${card.de}` : card.de;
-    if (typeof playGermanSpeech === 'function') playGermanSpeech(phrase);
+  window.nextSrsCard = function() {
+    const list = getSrsFilteredList();
+    if (list.length === 0) return;
+    srsCurrentIndex++;
+    if (srsCurrentIndex >= list.length) srsCurrentIndex = 0;
+    renderSrsCardView(list);
   };
 
-  window.gradeCurrentSrsCard = function(rating) {
-    if (currentSrsDeck.length === 0) return;
-    const card = currentSrsDeck[currentSrsIndex];
+  window.prevSrsCard = function() {
+    const list = getSrsFilteredList();
+    if (list.length === 0) return;
+    srsCurrentIndex--;
+    if (srsCurrentIndex < 0) srsCurrentIndex = list.length - 1;
+    renderSrsCardView(list);
+  };
 
-    // SuperMemo-2 Spaced Repetition logic
-    let daysToAdd = 1;
-    if (rating === 1) { // Again
-      card.interval = 0;
-      card.repetitions = 0;
-      daysToAdd = 0;
-    } else if (rating === 2) { // Hard
-      card.interval = 1;
-      daysToAdd = 1;
-    } else if (rating === 3) { // Good
-      card.interval = card.interval === 0 ? 1 : card.interval === 1 ? 3 : Math.round(card.interval * card.easeFactor);
-      daysToAdd = card.interval;
-      card.repetitions++;
-    } else if (rating === 4) { // Easy
-      card.interval = card.interval === 0 ? 3 : Math.round(card.interval * card.easeFactor * 1.3);
-      daysToAdd = card.interval;
-      card.easeFactor = Math.min(3.0, card.easeFactor + 0.15);
-      card.repetitions++;
+  window.shuffleSrsDeck = function() {
+    const list = getSrsFilteredList();
+    if (list.length > 1) {
+      srsCurrentIndex = Math.floor(Math.random() * list.length);
+      renderSrsCardView(list);
+      showFloatingToast('🔀 Deck shuffled!');
+    }
+  };
+
+  window.toggleSrsMasterCurrent = function() {
+    const list = getSrsFilteredList();
+    if (list.length === 0) return;
+    const card = list[srsCurrentIndex];
+    if (!card) return;
+
+    const isNoun = srsActiveDeck === 'nouns';
+    const arr = isNoun ? srsMasteredData.nouns : srsMasteredData.verbs;
+    const existingIdx = arr.indexOf(card.id);
+
+    let isNowMastered = false;
+    if (existingIdx >= 0) {
+      // Unmark
+      arr.splice(existingIdx, 1);
+      srsMasteredData.historyOrder = srsMasteredData.historyOrder.filter(e => !(e.id === card.id && e.deck === srsActiveDeck));
+      isNowMastered = false;
+      showFloatingToast(`Returned "${card.de || card.infinitive}" to practice deck`);
+    } else {
+      // Mark as Mastered
+      arr.unshift(card.id);
+      srsMasteredData.historyOrder.unshift({
+        id: card.id,
+        deck: srsActiveDeck,
+        timestamp: Date.now()
+      });
+      isNowMastered = true;
+      if (typeof awardXP === 'function') awardXP(10, 'Vocabulary Mastered ⭐');
+      showFloatingToast(`⭐ Mastered "${card.de || card.infinitive}"!`);
     }
 
-    const d = new Date();
-    d.setDate(d.getDate() + daysToAdd);
-    card.nextReviewDate = d.toISOString().split('T')[0];
+    saveSrsMasteredData();
+    renderSrsHeaderAndFilters();
+    updateSrsStarButtonUI(isNowMastered);
 
-    // Update in all cards
-    const allCards = loadSrsCards();
-    const idx = allCards.findIndex(c => c.id === card.id);
-    if (idx >= 0) allCards[idx] = card;
-    saveSrsCards(allCards);
+    // If currently in Grid mode, re-render grid
+    if (srsViewMode === 'grid') {
+      renderSrsGridExplorer(getSrsFilteredList());
+    }
+  };
 
-    awardXP(5, 'Flashcard Reviewed');
+  window.playSrsWordAudio = function() {
+    const list = getSrsFilteredList();
+    if (list.length === 0) return;
+    const card = list[srsCurrentIndex];
+    if (!card) return;
 
-    // Move to next card in current review deck
-    if (currentSrsIndex + 1 < currentSrsDeck.length) {
-      currentSrsIndex++;
-      renderCurrentSrsCard();
+    const phrase = srsActiveDeck === 'nouns' ? `${card.article} ${card.de}` : card.infinitive;
+    if (typeof playGermanSpeech === 'function') {
+      playGermanSpeech(phrase);
+    } else if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(phrase);
+      u.lang = 'de-DE';
+      window.speechSynthesis.speak(u);
+    }
+  };
+
+  window.playSrsSentenceAudio = function() {
+    const list = getSrsFilteredList();
+    if (list.length === 0) return;
+    const card = list[srsCurrentIndex];
+    if (!card || !card.example) return;
+
+    const phrase = card.example.de;
+    if (typeof playGermanSpeech === 'function') {
+      playGermanSpeech(phrase);
+    } else if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(phrase);
+      u.lang = 'de-DE';
+      window.speechSynthesis.speak(u);
+    }
+  };
+
+  function renderSrsGridExplorer(list) {
+    const container = document.getElementById('srsGridContainer');
+    const pagination = document.getElementById('srsGridPagination');
+    if (!container) return;
+
+    const totalPages = Math.ceil(list.length / SRS_GRID_PAGE_SIZE) || 1;
+    if (srsGridPage > totalPages) srsGridPage = totalPages;
+    if (srsGridPage < 1) srsGridPage = 1;
+
+    const start = (srsGridPage - 1) * SRS_GRID_PAGE_SIZE;
+    const pageItems = list.slice(start, start + SRS_GRID_PAGE_SIZE);
+
+    const isNoun = srsActiveDeck === 'nouns';
+
+    let html = '';
+    pageItems.forEach((item, idx) => {
+      const isMastered = isSrsWordMastered(item.id, srsActiveDeck);
+      let badgeCls = 'bg-purple-600 text-white';
+      let wordTitle = item.infinitive;
+      let extraHint = item.vokalwechsel ? '⚠️ Vokalwechsel' : (item.irregular ? 'Irregular' : '');
+
+      if (isNoun) {
+        if (item.article === 'der') badgeCls = 'bg-sky-500 text-white';
+        else if (item.article === 'die') badgeCls = 'bg-rose-500 text-white';
+        else if (item.article === 'das') badgeCls = 'bg-emerald-500 text-white';
+        wordTitle = `${item.article} ${item.de}`;
+        extraHint = item.plural ? `Pl: ${item.plural}` : '';
+      }
+
+      const speakText = isNoun ? `${item.article} ${item.de}` : item.infinitive;
+
+      html += `
+        <div class="p-3 rounded-2xl bg-white border ${isMastered ? 'border-amber-300 bg-amber-50/30' : 'border-slate-200'} hover:shadow-md transition flex flex-col justify-between space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="${badgeCls} px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider shadow-2xs">${isNoun ? item.article : 'Verb'}</span>
+            <div class="flex items-center gap-1">
+              <button onclick="toggleSrsGridMaster('${item.id}'); event.stopPropagation();" class="p-1 rounded-lg hover:bg-amber-100 text-xs transition cursor-pointer" title="${isMastered ? 'Marked as Mastered' : 'Mark as Mastered'}">
+                ${isMastered ? '⭐' : '☆'}
+              </button>
+              <button onclick="playGermanSpeech('${speakText.replace(/'/g, "\\'")}'); event.stopPropagation();" class="p-1 rounded-lg hover:bg-sky-100 text-sky-700 text-xs transition cursor-pointer" title="Pronounce">
+                🔊
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="font-black text-sm text-slate-900 leading-tight">${wordTitle}</h4>
+            <p class="text-[11px] font-medium text-slate-600 truncate">${item.en || ''}</p>
+            <p class="text-[10px] font-semibold text-pink-700 truncate">🇮🇩 ${item.id_trans || ''}</p>
+          </div>
+
+          <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1.5 border-t border-slate-100">
+            <span class="truncate max-w-[100px]">${item.category}</span>
+            <span class="font-mono font-bold text-slate-500">${extraHint}</span>
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+
+    // Pagination controls
+    if (pagination) {
+      pagination.innerHTML = `
+        <button onclick="changeSrsGridPage(${srsGridPage - 1})" class="px-3 py-1 rounded-lg border border-slate-200 bg-white text-xs font-bold text-slate-700 ${srsGridPage <= 1 ? 'opacity-40 pointer-events-none' : 'hover:bg-slate-100 cursor-pointer'}">
+          ◀ Prev
+        </button>
+        <span class="text-xs font-bold text-slate-600 px-2">Page ${srsGridPage} of ${totalPages} (${list.length} words)</span>
+        <button onclick="changeSrsGridPage(${srsGridPage + 1})" class="px-3 py-1 rounded-lg border border-slate-200 bg-white text-xs font-bold text-slate-700 ${srsGridPage >= totalPages ? 'opacity-40 pointer-events-none' : 'hover:bg-slate-100 cursor-pointer'}">
+          Next ▶
+        </button>
+      `;
+    }
+  }
+
+  window.changeSrsGridPage = function(page) {
+    srsGridPage = page;
+    renderSrsGridExplorer(getSrsFilteredList());
+  };
+
+  window.toggleSrsGridMaster = function(id) {
+    const isNoun = srsActiveDeck === 'nouns';
+    const arr = isNoun ? srsMasteredData.nouns : srsMasteredData.verbs;
+    const idx = arr.indexOf(id);
+
+    if (idx >= 0) {
+      arr.splice(idx, 1);
+      srsMasteredData.historyOrder = srsMasteredData.historyOrder.filter(e => !(e.id === id && e.deck === srsActiveDeck));
+      showFloatingToast('Word returned to practice deck');
     } else {
-      showFloatingToast("🎉 Deck completed! Well done reviewing today!");
-      currentSrsIndex = 0;
-      renderCurrentSrsCard();
+      arr.unshift(id);
+      srsMasteredData.historyOrder.unshift({
+        id: id,
+        deck: srsActiveDeck,
+        timestamp: Date.now()
+      });
+      if (typeof awardXP === 'function') awardXP(10, 'Vocabulary Mastered ⭐');
+      showFloatingToast('⭐ Word marked as Mastered!');
+    }
+
+    saveSrsMasteredData();
+    renderSrsHeaderAndFilters();
+    renderSrsGridExplorer(getSrsFilteredList());
+  };
+
+  // ================= 31b. MASTERED VOCABULARY HISTORY & PRINTABLE STUDY SHEET =================
+  let srsHistoryFilter = 'all'; // 'all', 'nouns', 'verbs'
+  let srsHistorySearchQuery = '';
+
+  window.openSrsHistoryModal = function() {
+    loadSrsMasteredData();
+    const modal = document.getElementById('srsHistoryModal');
+    if (!modal) return;
+    srsHistoryFilter = 'all';
+    srsHistorySearchQuery = '';
+    const inp = document.getElementById('srsHistSearchInput');
+    if (inp) inp.value = '';
+
+    updateSrsHistoryStats();
+    renderSrsHistoryList();
+    modal.classList.remove('hidden');
+  };
+
+  window.closeSrsHistoryModal = function() {
+    const modal = document.getElementById('srsHistoryModal');
+    if (modal) modal.classList.add('hidden');
+  };
+
+  window.setSrsHistoryFilter = function(filter) {
+    srsHistoryFilter = filter;
+    ['all', 'nouns', 'verbs'].forEach(f => {
+      const btn = document.getElementById(`srsHistFilter${f.charAt(0).toUpperCase() + f.slice(1)}`);
+      if (btn) {
+        btn.className = f === filter
+          ? "px-3 py-1 rounded-lg bg-white text-slate-800 shadow-xs cursor-pointer font-bold"
+          : "px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 cursor-pointer font-bold";
+      }
+    });
+    renderSrsHistoryList();
+  };
+
+  window.handleSrsHistorySearch = function(query) {
+    srsHistorySearchQuery = (query || '').toLowerCase().trim();
+    renderSrsHistoryList();
+  };
+
+  function getMasteredWordsList(filter = srsHistoryFilter) {
+    const result = [];
+    if (typeof window.FLASHCARDS_DATA === 'undefined') return result;
+
+    const nounMap = new Map();
+    (window.FLASHCARDS_DATA.nouns || []).forEach(n => nounMap.set(n.id, n));
+
+    const verbMap = new Map();
+    (window.FLASHCARDS_DATA.verbs || []).forEach(v => verbMap.set(v.id, v));
+
+    // Follow historyOrder sequence (newest first)
+    const seen = new Set();
+    (srsMasteredData.historyOrder || []).forEach(entry => {
+      const key = `${entry.deck}_${entry.id}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+
+      if (filter === 'all' || filter === entry.deck) {
+        if (entry.deck === 'nouns' && srsMasteredData.nouns.includes(entry.id)) {
+          const item = nounMap.get(entry.id);
+          if (item) result.push({ ...item, deckType: 'nouns', timestamp: entry.timestamp });
+        } else if (entry.deck === 'verbs' && srsMasteredData.verbs.includes(entry.id)) {
+          const item = verbMap.get(entry.id);
+          if (item) result.push({ ...item, deckType: 'verbs', timestamp: entry.timestamp });
+        }
+      }
+    });
+
+    // Fallback if historyOrder missed any items
+    if (filter === 'all' || filter === 'nouns') {
+      srsMasteredData.nouns.forEach(id => {
+        if (!seen.has(`nouns_${id}`)) {
+          const item = nounMap.get(id);
+          if (item) result.push({ ...item, deckType: 'nouns', timestamp: 0 });
+        }
+      });
+    }
+    if (filter === 'all' || filter === 'verbs') {
+      srsMasteredData.verbs.forEach(id => {
+        if (!seen.has(`verbs_${id}`)) {
+          const item = verbMap.get(id);
+          if (item) result.push({ ...item, deckType: 'verbs', timestamp: 0 });
+        }
+      });
+    }
+
+    return result;
+  }
+
+  function updateSrsHistoryStats() {
+    const tTotal = document.getElementById('srsHistTotalCount');
+    const tNouns = document.getElementById('srsHistNounCount');
+    const tVerbs = document.getElementById('srsHistVerbCount');
+    const nCnt = srsMasteredData.nouns.length;
+    const vCnt = srsMasteredData.verbs.length;
+
+    if (tTotal) tTotal.textContent = nCnt + vCnt;
+    if (tNouns) tNouns.textContent = nCnt;
+    if (tVerbs) tVerbs.textContent = vCnt;
+  }
+
+  function renderSrsHistoryList() {
+    const container = document.getElementById('srsHistoryListContainer');
+    const summary = document.getElementById('srsHistoryFooterSummary');
+    if (!container) return;
+
+    let words = getMasteredWordsList(srsHistoryFilter);
+    if (srsHistorySearchQuery) {
+      const q = srsHistorySearchQuery;
+      words = words.filter(w => {
+        return (w.de && w.de.toLowerCase().includes(q)) ||
+               (w.infinitive && w.infinitive.toLowerCase().includes(q)) ||
+               (w.en && w.en.toLowerCase().includes(q)) ||
+               (w.id_trans && w.id_trans.toLowerCase().includes(q)) ||
+               (w.article && w.article.toLowerCase().includes(q)) ||
+               (w.category && w.category.toLowerCase().includes(q));
+      });
+    }
+
+    if (summary) summary.textContent = `${words.length} mastered words shown (newest at top)`;
+
+    if (words.length === 0) {
+      container.innerHTML = `
+        <div class="py-12 px-4 text-center space-y-2">
+          <div class="text-3xl">🌟</div>
+          <h4 class="font-bold text-slate-800 text-sm">No Mastered Words Found</h4>
+          <p class="text-xs text-slate-500 max-w-sm mx-auto">
+            Click the "⭐ Mark Mastered" button on any flashcard while studying. Your mastered vocabulary will appear here with audio and printable study sheets!
+          </p>
+        </div>
+      `;
+      return;
+    }
+
+    let html = `
+      <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-extrabold text-slate-600 uppercase tracking-wider">
+              <th class="p-2.5 w-10 text-center">#</th>
+              <th class="p-2.5">German Word</th>
+              <th class="p-2.5">Details</th>
+              <th class="p-2.5">Translation</th>
+              <th class="p-2.5">Category</th>
+              <th class="p-2.5 hidden sm:table-cell">Example Sentence</th>
+              <th class="p-2.5 w-20 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white">
+    `;
+
+    words.forEach((w, idx) => {
+      const isNoun = w.deckType === 'nouns';
+      let badgeCls = 'bg-purple-600 text-white';
+      let wordTitle = w.infinitive;
+      let details = w.vokalwechsel ? '⚠️ Vokalwechsel' : (w.irregular ? 'Irregular' : 'Regular Verb');
+
+      if (isNoun) {
+        if (w.article === 'der') badgeCls = 'bg-sky-500 text-white';
+        else if (w.article === 'die') badgeCls = 'bg-rose-500 text-white';
+        else if (w.article === 'das') badgeCls = 'bg-emerald-500 text-white';
+        wordTitle = `${w.article} ${w.de}`;
+        details = w.plural ? `Plural: ${w.plural}` : '-';
+      }
+
+      const speakText = isNoun ? `${w.article} ${w.de}` : w.infinitive;
+      const exDe = w.example?.de || '-';
+
+      html += `
+        <tr class="hover:bg-slate-50 transition">
+          <td class="p-2.5 text-center text-slate-400 font-mono text-[11px]">${idx + 1}</td>
+          <td class="p-2.5 font-bold text-slate-900">
+            <div class="flex items-center gap-1.5">
+              <span class="${badgeCls} px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider shadow-2xs">${isNoun ? w.article : 'Verb'}</span>
+              <span>${wordTitle}</span>
+            </div>
+          </td>
+          <td class="p-2.5 text-slate-600 font-mono text-[11px]">${details}</td>
+          <td class="p-2.5 text-slate-700">
+            <div>${w.en || '-'}</div>
+            <div class="text-[10px] text-pink-700 font-semibold">🇮🇩 ${w.id_trans || '-'}</div>
+          </td>
+          <td class="p-2.5 text-slate-500 text-[11px]">${w.category || '-'}</td>
+          <td class="p-2.5 text-slate-500 italic hidden sm:table-cell max-w-xs truncate" title="${exDe}">
+            ${exDe}
+          </td>
+          <td class="p-2.5 text-center">
+            <div class="flex items-center justify-center gap-1">
+              <button onclick="playGermanSpeech('${speakText.replace(/'/g, "\\'")}'); event.stopPropagation();" class="p-1 rounded-lg hover:bg-sky-100 text-sky-700 transition cursor-pointer" title="Pronounce">
+                🔊
+              </button>
+              <button onclick="removeMasteredWord('${w.id}', '${w.deckType}'); event.stopPropagation();" class="p-1 rounded-lg hover:bg-rose-100 text-rose-500 transition cursor-pointer" title="Remove from Mastered">
+                ✕
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    });
+
+    html += `
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    container.innerHTML = html;
+  }
+
+  window.removeMasteredWord = function(id, deck) {
+    const arr = deck === 'nouns' ? srsMasteredData.nouns : srsMasteredData.verbs;
+    const idx = arr.indexOf(id);
+    if (idx >= 0) {
+      arr.splice(idx, 1);
+      srsMasteredData.historyOrder = srsMasteredData.historyOrder.filter(e => !(e.id === id && e.deck === deck));
+      saveSrsMasteredData();
+      updateSrsHistoryStats();
+      renderSrsHistoryList();
+      renderSrsHeaderAndFilters();
+      renderSrsCurrentView();
+      showFloatingToast('Word returned to practice deck');
+    }
+  };
+
+  window.resetSrsMastered = function(deck = 'current') {
+    const targetDeck = deck === 'all' ? 'all' : srsActiveDeck;
+    const count = targetDeck === 'all'
+      ? (srsMasteredData.nouns.length + srsMasteredData.verbs.length)
+      : (targetDeck === 'nouns' ? srsMasteredData.nouns.length : srsMasteredData.verbs.length);
+
+    if (count === 0) {
+      showFloatingToast('No mastered words to reset');
+      return;
+    }
+
+    const msg = targetDeck === 'all'
+      ? `Are you sure you want to reset all ${count} mastered words?\n\nThey will all return to your practice decks.`
+      : `Are you sure you want to reset all ${count} mastered ${targetDeck}?\n\nThey will return to your practice deck.`;
+
+    if (!confirm(msg)) return;
+
+    if (targetDeck === 'all') {
+      srsMasteredData.nouns = [];
+      srsMasteredData.verbs = [];
+      srsMasteredData.historyOrder = [];
+    } else if (targetDeck === 'nouns') {
+      srsMasteredData.nouns = [];
+      srsMasteredData.historyOrder = srsMasteredData.historyOrder.filter(e => e.deck !== 'nouns');
+    } else {
+      srsMasteredData.verbs = [];
+      srsMasteredData.historyOrder = srsMasteredData.historyOrder.filter(e => e.deck !== 'verbs');
+    }
+
+    saveSrsMasteredData();
+    updateSrsHistoryStats();
+    renderSrsHistoryList();
+    renderSrsHeaderAndFilters();
+    renderSrsCurrentView();
+    showFloatingToast('🔄 Mastered words have been reset to the practice deck!');
+  };
+
+  window.printSrsStudySheet = function() {
+    const words = getMasteredWordsList(srsHistoryFilter || 'all');
+    if (words.length === 0) {
+      alert('No mastered words to print yet! Mark some words as mastered first.');
+      return;
+    }
+
+    const nCnt = words.filter(w => w.deckType === 'nouns').length;
+    const vCnt = words.filter(w => w.deckType === 'verbs').length;
+    const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    const rowsHtml = words.map((w, idx) => {
+      const isNoun = w.deckType === 'nouns';
+      let badgeBg = '#8b5cf6'; // purple
+      let badgeText = 'Verb';
+      let wordText = w.infinitive;
+      let details = w.vokalwechsel ? 'Vokalwechsel' : (w.irregular ? 'Irregular' : 'Regular Verb');
+
+      if (isNoun) {
+        if (w.article === 'der') { badgeBg = '#0284c7'; badgeText = 'der'; }
+        else if (w.article === 'die') { badgeBg = '#e11d48'; badgeText = 'die'; }
+        else if (w.article === 'das') { badgeBg = '#059669'; badgeText = 'das'; }
+        wordText = `${w.article} ${w.de}`;
+        details = w.plural ? `Pl: ${w.plural}` : '-';
+      }
+
+      const ex = w.example ? `${w.example.de}<br><small style="color:#64748b;">${w.example.en} • 🇮🇩 ${w.example.id}</small>` : '-';
+
+      return `
+        <tr>
+          <td style="text-align:center;color:#64748b;font-weight:bold;">${idx + 1}</td>
+          <td>
+            <span style="display:inline-block;padding:2px 6px;border-radius:4px;font-size:8pt;font-weight:bold;color:#fff;background:${badgeBg};margin-right:6px;">${badgeText}</span>
+            <b style="font-size:10pt;">${wordText}</b>
+          </td>
+          <td style="font-family:monospace;font-size:8.5pt;">${details}</td>
+          <td><b>${w.en || '-'}</b><br><small style="color:#be185d;">🇮🇩 ${w.id_trans || '-'}</small></td>
+          <td style="color:#475569;font-size:8.5pt;">${w.category || '-'}</td>
+          <td style="font-size:8.5pt;">${ex}</td>
+        </tr>
+      `;
+    }).join('');
+
+    const printHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>German A1 Mastered Vocabulary Study Sheet</title>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 20px; color: #0f172a; }
+          .header-banner { background: #be185d; color: white; padding: 16px 20px; border-radius: 12px; margin-bottom: 16px; }
+          .header-banner h1 { margin: 0 0 4px 0; font-size: 18pt; font-weight: 900; }
+          .header-banner p { margin: 0; font-size: 9.5pt; opacity: 0.9; }
+          .info-box { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; font-size: 9pt; }
+          .legend { display: flex; gap: 14px; font-weight: bold; font-size: 8.5pt; margin-top: 4px; }
+          .legend span { display: inline-flex; align-items: center; gap: 4px; }
+          table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 9pt; }
+          th { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 7px 9px; text-align: left; font-size: 8.5pt; font-weight: 800; text-transform: uppercase; color: #334155; }
+          td { border: 1px solid #e2e8f0; padding: 7px 9px; vertical-align: top; }
+          tr:nth-child(even) { background-color: #f8fafc; }
+          @media print {
+            body { margin: 0; }
+            .no-print { display: none; }
+            tr { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="no-print" style="margin-bottom:12px;display:flex;justify-content:flex-end;">
+          <button onclick="window.print()" style="padding:8px 16px;background:#be185d;color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">🖨️ Print / Save as PDF</button>
+        </div>
+
+        <div class="header-banner">
+          <h1>🧠 CHEEYA GERMAN A1 - MASTERED VOCABULARY</h1>
+          <p>Official 3D Flashcard Mastery Record • Netzwerk Neu Curriculum</p>
+        </div>
+
+        <div class="info-box">
+          <div>
+            <b>Total Mastered:</b> ${words.length} words (${nCnt} Nouns, ${vCnt} Verbs)
+            <div class="legend">
+              <span style="color:#0284c7;">■ der (Maskulin)</span>
+              <span style="color:#e11d48;">■ die (Feminin)</span>
+              <span style="color:#059669;">■ das (Netral)</span>
+              <span style="color:#8b5cf6;">■ Verben (Verb)</span>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <b>Export Date:</b> ${dateStr}
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width:30px;text-align:center;">#</th>
+              <th style="width:160px;">German Word</th>
+              <th style="width:110px;">Details</th>
+              <th style="width:130px;">Translations</th>
+              <th style="width:100px;">Category</th>
+              <th>Example Sentence</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
+        <script>
+          window.onload = function() {
+            setTimeout(function() { window.print(); }, 400);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWin = window.open('', '_blank');
+    if (printWin) {
+      printWin.document.open();
+      printWin.document.write(printHtml);
+      printWin.document.close();
+    } else {
+      alert('Pop-up blocked! Please allow pop-ups for this site to print the study sheet.');
     }
   };
 

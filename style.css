@@ -707,6 +707,7 @@ input, textarea {
   transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
   transform-style: preserve-3d;
 }
+.flashcard-inner.flipped,
 .flashcard-flipped .flashcard-inner {
   transform: rotateY(180deg);
 }

@@ -102,9 +102,9 @@
         </button>
 
         <!-- 1.3 Smart SRS Flashcards Trigger -->
-        <button id="navSrsBtn" onclick="openSrsModal()" class="px-2.5 sm:px-3 py-1 rounded-xl bg-pink-100/90 hover:bg-pink-200 border border-pink-300 text-pink-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Smart Spaced Repetition (SRS) 3D Flashcard Trainer">
+        <button id="navSrsBtn" onclick="openSrsModal()" class="px-2.5 sm:px-3 py-1 rounded-xl bg-pink-100/90 hover:bg-pink-200 border border-pink-300 text-pink-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="3D German Vocabulary Flashcards (1,000 Nouns & 1,000 Verbs)">
           <span>🧠</span>
-          <span>Flashcards</span>
+          <span>3D Flashcards</span>
         </button>
 
         <!-- 1.5. Starred Sentences Notebook -->
@@ -364,14 +364,14 @@
               🧠
             </div>
             <div>
-              <div class="text-[10px] font-black uppercase tracking-wider text-pink-700">Anki / Leitner System</div>
-              <h4 class="text-xs font-black text-sky-950 group-hover:text-pink-700 transition">Smart SRS Flashcards</h4>
+              <div class="text-[10px] font-black uppercase tracking-wider text-pink-700">Dual-Deck Spaced Repetition</div>
+              <h4 class="text-xs font-black text-sky-950 group-hover:text-pink-700 transition">3D German Vocabulary Flashcards</h4>
             </div>
           </div>
-          <p class="text-[11px] text-sky-700 font-medium leading-relaxed">Spaced repetition memory trainer with 3D flip cards, color-coded der/die/das, audio, and automatic daily review intervals.</p>
+          <p class="text-[11px] text-sky-700 font-medium leading-relaxed">2,000 words: 1,000 Nouns (der/die/das &amp; plurals) and 1,000 Verbs (with 6-subject conjugations), 3D flip card, audio &amp; mastery tracking.</p>
           <div class="mt-2.5 flex items-center justify-between text-[10px] font-black text-pink-800">
-            <span id="srsDashboardDueBadge">Daily Reviews Ready</span>
-            <span class="group-hover:translate-x-1 transition-transform">Review Now ➔</span>
+            <span id="srsDashboardDueBadge">2,000 Words Available</span>
+            <span class="group-hover:translate-x-1 transition-transform">Start Training ➔</span>
           </div>
         </div>
 
@@ -1708,108 +1708,362 @@
     </div>
   </div>
 
-  <!-- ================= 3. MODAL: SMART SPACED REPETITION (SRS) FLASHCARDS ================= -->
-  <div id="srsFlashcardModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-3 md:p-6 hidden">
-    <div class="blue-glass-card max-w-xl w-full max-h-[92vh] p-5 md:p-6 shadow-2xl flex flex-col border-2 border-pink-300 text-center">
+  <!-- ================= 3. MODAL: 3D GERMAN VOCABULARY FLASHCARDS (DUAL-DECK 2,000 WORDS) ================= -->
+  <div id="srsFlashcardModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-2 sm:p-4 md:p-6 hidden">
+    <div class="blue-glass-card max-w-4xl w-full max-h-[94vh] p-4 sm:p-5 md:p-6 shadow-2xl flex flex-col border-2 border-pink-300 text-left overflow-hidden bg-white/95 backdrop-blur-md rounded-3xl">
       
-      <!-- Header & Deck Selector -->
-      <div class="flex items-center justify-between pb-3 border-b border-sky-200 mb-3 flex-shrink-0">
-        <div class="flex items-center gap-2 text-left">
-          <span class="text-2xl">&#x1F9E0;</span>
+      <!-- Modal Header -->
+      <div class="flex flex-wrap items-center justify-between pb-3 border-b border-sky-200 gap-2 flex-shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-500 via-rose-500 to-amber-400 text-white flex items-center justify-center text-xl shadow-sm shadow-pink-200">
+            🧠
+          </div>
           <div>
-            <h3 class="font-extrabold text-base text-sky-950">Smart SRS 3D Flashcards</h3>
-            <p class="text-[11px] text-sky-600 font-medium">SuperMemo-2 Spaced Repetition Memory Deck</p>
+            <div class="flex items-center gap-2">
+              <h3 class="font-black text-base sm:text-lg text-sky-950">3D German Vocabulary Flashcards</h3>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-pink-100 text-pink-800 text-[10px] font-black uppercase tracking-wider">Dual-Deck</span>
+            </div>
+            <p id="srsModalSubtitle" class="text-[11px] text-sky-700 font-medium">1,000 Nouns (der/die/das) & 1,000 Verbs with Conjugations • 3D Interactive Spaced Repetition</p>
           </div>
         </div>
-        <button onclick="closeSrsModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-      </div>
 
-      <!-- Filter Controls: Chapter + Category Filter -->
-      <div class="flex items-center gap-2 mb-3 flex-shrink-0">
-        <select id="srsChapterSelect" onchange="filterSrsDeck()" class="flex-1 bg-white border border-sky-300 text-xs rounded-xl px-2.5 py-1.5 font-bold text-sky-900 focus:outline-none">
-          <option value="all">All Chapters (1-12)</option>
-          <option value="1">Chapter 1: Guten Tag!</option>
-          <option value="2">Chapter 2: Freunde, Kollegen</option>
-          <option value="3">Chapter 3: In der Stadt</option>
-          <option value="4">Chapter 4: Guten Appetit!</option>
-          <option value="5">Chapter 5: Tag f&uuml;r Tag</option>
-          <option value="6">Chapter 6: Zeit mit Freunden</option>
-          <option value="7">Chapter 7: Kontakte</option>
-          <option value="8">Chapter 8: Meine Wohnung</option>
-          <option value="9">Chapter 9: Alles neu!</option>
-          <option value="10">Chapter 10: Die Kleidung</option>
-          <option value="11">Chapter 11: Gesund und fit</option>
-          <option value="12">Chapter 12: Sch&ouml;ne Ferien!</option>
-        </select>
-        <select id="srsCategorySelect" onchange="filterSrsDeck()" class="bg-white border border-sky-300 text-xs rounded-xl px-2.5 py-1.5 font-bold text-sky-900 focus:outline-none">
-          <option value="all">All Types</option>
-          <option value="nouns">Nouns (der/die/das)</option>
-          <option value="verbs">Verbs</option>
-          <option value="adjectives">Adjectives</option>
-        </select>
-      </div>
-
-      <!-- Status Indicator (Cards Remaining & Due Status) -->
-      <div class="flex items-center justify-between text-xs font-bold text-sky-700 mb-2 px-1">
-        <span id="srsCardCountLabel">Card 1 of 15</span>
-        <span id="srsDueStatusBadge" class="px-2 py-0.5 rounded-full bg-pink-100 text-pink-900 border border-pink-200 text-[10px]">Due Today</span>
-      </div>
-
-      <!-- 3D Flip Card Container -->
-      <div class="perspective-1000 w-full h-64 cursor-pointer my-2 flex-shrink-0" onclick="flipCurrentSrsCard()" id="srsFlashcardContainer">
-        <div class="flashcard-inner relative w-full h-full shadow-lg rounded-2xl" id="srsFlashcardCard">
-          
-          <!-- Front Face -->
-          <div class="flashcard-front bg-gradient-to-br from-white via-sky-50 to-blue-50/70 border-2 border-sky-300 p-6 flex flex-col items-center justify-between">
-            <div class="flex items-center justify-between w-full">
-              <span id="srsFrontGenderBadge" class="px-2.5 py-1 rounded-full text-xs font-black bg-blue-100 text-blue-900 border border-blue-300">der</span>
-              <button onclick="event.stopPropagation(); playSrsAudio()" class="p-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-800 text-sm transition cursor-pointer" title="Listen to pronunciation">&#x1F50A;</button>
-            </div>
-            <div>
-              <h2 id="srsFrontWord" class="text-3xl font-black text-sky-950 tracking-wide mb-1">Hund</h2>
-              <p id="srsFrontPhonetic" class="text-xs font-mono font-bold text-purple-900">[ HOONT ]</p>
-            </div>
-            <p class="text-[11px] text-sky-400 font-bold uppercase tracking-wider">Click or spacebar to reveal meaning &#x2794;</p>
-          </div>
-
-          <!-- Back Face -->
-          <div class="flashcard-back bg-gradient-to-br from-purple-50 via-indigo-50 to-pink-50 border-2 border-purple-300 p-6 flex flex-col items-center justify-between">
-            <div class="flex items-center justify-between w-full">
-              <span id="srsBackPlural" class="text-xs font-black text-purple-800">Plural: die Hunde</span>
-              <span class="text-[10px] font-bold bg-white px-2 py-0.5 rounded-md border border-purple-200 text-purple-700">Answer Revealed</span>
-            </div>
-            <div>
-              <h3 id="srsBackEnglish" class="text-2xl font-black text-purple-950 mb-1.5">Dog</h3>
-              <p id="srsBackExample" class="text-xs font-medium text-purple-900 italic">"Der Hund spielt im Garten."</p>
-            </div>
-            <p class="text-[10px] text-purple-600 font-medium">Rate your recall below to schedule next review:</p>
-          </div>
-
+        <div class="flex items-center gap-2">
+          <!-- Mastered History Button -->
+          <button onclick="openSrsHistoryModal()" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="View Memorized Words History">
+            <span>📜</span>
+            <span>Mastered History (<b id="srsHistoryCountBadge">0</b>)</span>
+          </button>
+          <!-- Print Study Sheet Button -->
+          <button onclick="printSrsStudySheet()" class="px-2.5 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold flex items-center gap-1 transition cursor-pointer" title="Print Mastered Vocabulary Study Sheet">
+            <span>🖨️</span>
+            <span class="hidden sm:inline">Print Sheet</span>
+          </button>
+          <!-- Reset Mastered Button -->
+          <button onclick="resetSrsMastered()" class="px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold flex items-center gap-1 transition cursor-pointer" title="Reset Mastered Words in this Deck">
+            <span>🔄</span>
+            <span class="hidden sm:inline">Reset</span>
+          </button>
+          <!-- Close Button -->
+          <button onclick="closeSrsModal()" class="p-1.5 rounded-xl text-sky-400 hover:text-sky-700 hover:bg-sky-100 transition cursor-pointer" title="Close">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
         </div>
       </div>
 
-      <!-- 4 SuperMemo SRS Rating Buttons -->
-      <div class="grid grid-cols-4 gap-2 pt-2 border-t border-sky-200 flex-shrink-0">
-        <button onclick="gradeCurrentSrsCard(1)" class="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-300 text-rose-900 text-xs font-black flex flex-col items-center transition cursor-pointer">
-          <span>Again</span>
-          <span class="text-[9px] font-medium opacity-80">&lt; 1 min</span>
-        </button>
-        <button onclick="gradeCurrentSrsCard(2)" class="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 text-xs font-black flex flex-col items-center transition cursor-pointer">
-          <span>Hard</span>
-          <span class="text-[9px] font-medium opacity-80">1 day</span>
-        </button>
-        <button onclick="gradeCurrentSrsCard(3)" class="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-black flex flex-col items-center transition cursor-pointer">
-          <span>Good</span>
-          <span class="text-[9px] font-medium opacity-80">3 days</span>
-        </button>
-        <button onclick="gradeCurrentSrsCard(4)" class="p-2 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-300 text-sky-900 text-xs font-black flex flex-col items-center transition cursor-pointer">
-          <span>Easy</span>
-          <span class="text-[9px] font-medium opacity-80">7 days</span>
+      <!-- Controls Row: Deck Selector & View Switcher & Study Filters -->
+      <div class="flex flex-wrap items-center justify-between gap-2.5 py-2.5 border-b border-sky-100 flex-shrink-0">
+        <!-- Deck Switcher -->
+        <div class="inline-flex p-1 bg-slate-100 rounded-2xl border border-slate-200 text-xs font-bold shrink-0">
+          <button id="srsDeckBtnNouns" onclick="switchSrsDeck('nouns')" class="px-3 py-1.5 rounded-xl transition-all bg-sky-600 text-white shadow-xs flex items-center gap-1.5 cursor-pointer">
+            <span>📘</span>
+            <span>Nouns (1,000)</span>
+          </button>
+          <button id="srsDeckBtnVerbs" onclick="switchSrsDeck('verbs')" class="px-3 py-1.5 rounded-xl transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1.5 cursor-pointer">
+            <span>⚡</span>
+            <span>Verbs (1,000)</span>
+          </button>
+        </div>
+
+        <!-- View Mode Switcher -->
+        <div class="inline-flex p-1 bg-slate-100 rounded-2xl border border-slate-200 text-xs font-bold shrink-0">
+          <button id="srsViewBtnCard" onclick="switchSrsView('card')" class="px-3 py-1.5 rounded-xl transition-all bg-slate-800 text-white shadow-xs flex items-center gap-1 cursor-pointer">
+            <span>🎯</span>
+            <span>3D Card</span>
+          </button>
+          <button id="srsViewBtnGrid" onclick="switchSrsView('grid')" class="px-3 py-1.5 rounded-xl transition-all bg-white text-slate-600 border border-slate-200 hover:text-slate-900 flex items-center gap-1 cursor-pointer">
+            <span>📝</span>
+            <span>Grid Explorer</span>
+          </button>
+        </div>
+
+        <!-- Study Filter (To Learn vs Mastered vs All) -->
+        <div class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs font-bold shrink-0">
+          <button id="srsFilterBtnToLearn" onclick="setSrsStudyFilter('toLearn')" class="px-2.5 py-1 rounded-lg transition-all bg-emerald-600 text-white shadow-2xs flex items-center gap-1 cursor-pointer" title="Only show words you haven't mastered yet">
+            <span>🎯</span>
+            <span>To Learn (<b id="srsToLearnBadge">1000</b>)</span>
+          </button>
+          <button id="srsFilterBtnMastered" onclick="setSrsStudyFilter('mastered')" class="px-2.5 py-1 rounded-lg transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1 cursor-pointer" title="Only show words you marked as mastered">
+            <span>⭐</span>
+            <span>Mastered (<b id="srsMasteredBadge">0</b>)</span>
+          </button>
+          <button id="srsFilterBtnAll" onclick="setSrsStudyFilter('all')" class="px-2.5 py-1 rounded-lg transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1 cursor-pointer" title="Show all words">
+            <span>📚</span>
+            <span>All</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Search, Category & Progress Bar Section -->
+      <div class="py-2.5 space-y-2 border-b border-sky-100 flex-shrink-0">
+        <div class="flex flex-col sm:flex-row items-center gap-2.5">
+          <!-- Search Box -->
+          <div class="relative flex-1 w-full">
+            <input type="text" id="srsSearchInput" oninput="handleSrsSearch(this.value)" placeholder="Search German word, translation, plural, category..." class="w-full pl-9 pr-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-medium outline-none focus:border-pink-500 focus:bg-white transition-all text-slate-800 placeholder:text-slate-400">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
+          <!-- Category Selector -->
+          <div class="w-full sm:w-64">
+            <select id="srsCategorySelect" onchange="handleSrsCategory(this.value)" class="w-full bg-slate-50 border border-slate-200 text-xs rounded-xl px-2.5 py-1.5 font-bold text-slate-700 outline-none focus:border-pink-500 focus:bg-white transition-all">
+              <option value="all">✨ All Categories (1,000 Words)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Progress Bar & Stats -->
+        <div class="flex items-center gap-3">
+          <div class="flex-1 bg-slate-200 h-2.5 rounded-full overflow-hidden shadow-inner">
+            <div id="srsProgressBar" class="h-full bg-gradient-to-r from-emerald-500 via-teal-500 to-sky-500 transition-all duration-300" style="width: 0%"></div>
+          </div>
+          <span id="srsProgressText" class="text-[11px] font-bold text-slate-600 shrink-0">0 / 1,000 Mastered (0.0%)</span>
+        </div>
+      </div>
+
+      <!-- Main Body Container -->
+      <div class="flex-1 overflow-y-auto py-2">
+
+        <!-- Empty State Notice -->
+        <div id="srsEmptyNotice" class="hidden text-center py-10 px-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3 my-4">
+          <div id="srsEmptyIcon" class="text-4xl">🔍</div>
+          <div id="srsEmptyTitle" class="text-sm font-bold text-slate-800">No words match your current filters.</div>
+          <p id="srsEmptyDesc" class="text-xs text-slate-500 max-w-sm mx-auto">Try clearing your search or switching filters above.</p>
+          <button onclick="resetSrsFilters()" class="px-4 py-1.5 rounded-xl bg-pink-500 hover:bg-pink-600 text-white text-xs font-bold cursor-pointer transition">Clear Filters</button>
+        </div>
+
+        <!-- 1. CARD VIEW MODE -->
+        <div id="srsCardModeArea" class="flex flex-col items-center justify-center max-w-xl mx-auto">
+          <!-- 3D Perspective Card Container -->
+          <div class="perspective-1000 w-full h-[370px] sm:h-[400px] cursor-pointer select-none my-1" onclick="flipCurrentSrsCard()">
+            <div id="srsFlashcardInner" class="flashcard-inner relative w-full h-full shadow-lg rounded-2xl">
+              
+              <!-- Front Face -->
+              <div id="srsCardFront" class="flashcard-front bg-gradient-to-br from-white via-sky-50/50 to-blue-50/40 border-2 border-sky-300 p-5 sm:p-6 flex flex-col justify-between shadow-md">
+                <!-- Top Header on Front -->
+                <div class="flex items-center justify-between w-full">
+                  <div class="flex items-center gap-1.5">
+                    <span id="srsFrontArticleBadge" class="px-3 py-1 rounded-xl text-xs font-black uppercase bg-sky-500 text-white shadow-2xs">der</span>
+                    <span id="srsFrontTypeBadge" class="hidden px-2 py-0.5 rounded-lg text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-200">Vokalwechsel</span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <button id="srsFrontStarBtn" onclick="event.stopPropagation(); toggleSrsMasterCurrent();" class="px-2.5 py-1 rounded-xl text-xs font-bold border border-slate-200 bg-white hover:bg-amber-50 text-slate-600 transition flex items-center gap-1 cursor-pointer" title="Toggle Mastered Status">
+                      <span id="srsFrontStarIcon">☆</span>
+                      <span id="srsFrontStarText">Master</span>
+                    </button>
+                    <span id="srsFrontCategoryBadge" class="text-[11px] font-bold text-slate-500 bg-white/90 border border-slate-200 px-2.5 py-0.5 rounded-lg">Essen & Trinken</span>
+                  </div>
+                </div>
+
+                <!-- Center Content on Front -->
+                <div class="my-auto text-center space-y-1.5">
+                  <h2 id="srsFrontWord" class="text-3xl sm:text-4xl font-black text-sky-950 tracking-tight select-all">der Apfel</h2>
+                  <div id="srsFrontPluralHint" class="text-xs sm:text-sm font-semibold text-sky-800">Plural: die Äpfel</div>
+                  <div id="srsFrontVerbConjugationHint" class="hidden text-xs font-mono text-purple-800 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200 inline-block">ich stehe auf • du stehst auf</div>
+                </div>
+
+                <!-- Bottom Bar on Front -->
+                <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-sky-100/70">
+                  <span class="text-[11px] font-medium text-slate-500 flex items-center gap-1">
+                    <span>↻</span>
+                    <span>Click or Space to flip</span>
+                  </span>
+                  <button onclick="event.stopPropagation(); playSrsWordAudio();" class="p-2 px-3 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-800 font-bold transition flex items-center gap-1.5 cursor-pointer" title="Listen to pronunciation">
+                    <span>🔊</span>
+                    <span class="text-xs">Pronounce</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Back Face -->
+              <div id="srsCardBack" class="flashcard-back bg-gradient-to-br from-white via-purple-50/40 to-sky-50/40 border-2 border-purple-300 p-5 sm:p-6 flex flex-col justify-between text-left overflow-y-auto shadow-md">
+                <!-- Top Header on Back -->
+                <div class="flex items-center justify-between w-full pb-2 border-b border-purple-100">
+                  <span class="text-xs font-bold text-purple-700 bg-purple-100 px-2.5 py-0.5 rounded-lg">Translation & Usage</span>
+                  <div class="flex items-center gap-1.5">
+                    <button id="srsBackStarBtn" onclick="event.stopPropagation(); toggleSrsMasterCurrent();" class="px-2.5 py-1 rounded-xl text-xs font-bold border border-slate-200 bg-white hover:bg-amber-50 text-slate-600 transition flex items-center gap-1 cursor-pointer" title="Toggle Mastered Status">
+                      <span id="srsBackStarIcon">☆</span>
+                      <span id="srsBackStarText">Master</span>
+                    </button>
+                    <span id="srsBackLevelBadge" class="text-[10px] font-mono text-slate-400">A1 German</span>
+                  </div>
+                </div>
+
+                <!-- Center Content on Back -->
+                <div class="my-auto space-y-2 py-1">
+                  <!-- Translations -->
+                  <div>
+                    <div class="flex items-baseline gap-2">
+                      <h3 id="srsBackEnglish" class="text-xl sm:text-2xl font-black text-slate-800">apple</h3>
+                      <span id="srsBackIndonesian" class="text-xs sm:text-sm font-bold text-pink-700 bg-pink-50 px-2 py-0.5 rounded-lg border border-pink-200">🇮🇩 apel</span>
+                    </div>
+                  </div>
+
+                  <!-- Noun Specific Section -->
+                  <div id="srsNounBackSection" class="p-2.5 bg-white/90 rounded-xl border border-sky-100 text-xs space-y-1">
+                    <div class="flex items-center justify-between">
+                      <span class="font-bold text-sky-900">Grammar & Plural:</span>
+                      <span id="srsBackPluralFull" class="font-mono font-bold text-sky-700">die Äpfel</span>
+                    </div>
+                  </div>
+
+                  <!-- Verb Specific Conjugation Section -->
+                  <div id="srsVerbBackSection" class="hidden p-2.5 bg-white/90 rounded-xl border border-purple-100 text-xs space-y-1.5">
+                    <div class="flex items-center justify-between">
+                      <span class="font-black text-[11px] uppercase tracking-wide text-purple-900">6-Person Conjugation</span>
+                      <span id="srsVerbVokalwechselBadge" class="hidden text-[10px] font-bold px-2 py-0.2 rounded bg-amber-100 text-amber-800 border border-amber-200">⚠️ Vokalwechsel</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-1 text-[11px]">
+                      <div class="p-1 rounded bg-slate-50 border border-slate-100"><span class="text-slate-400">ich:</span> <b id="srsVcIch" class="text-slate-800"></b></div>
+                      <div class="p-1 rounded bg-slate-50 border border-slate-100"><span class="text-slate-400">du:</span> <b id="srsVcDu" class="text-slate-800"></b></div>
+                      <div class="p-1 rounded bg-slate-50 border border-slate-100"><span class="text-slate-400">er/sie:</span> <b id="srsVcEr" class="text-slate-800"></b></div>
+                      <div class="p-1 rounded bg-slate-50 border border-slate-100"><span class="text-slate-400">wir:</span> <b id="srsVcWir" class="text-slate-800"></b></div>
+                      <div class="p-1 rounded bg-slate-50 border border-slate-100"><span class="text-slate-400">ihr:</span> <b id="srsVcIhr" class="text-slate-800"></b></div>
+                      <div class="p-1 rounded bg-slate-50 border border-slate-100"><span class="text-slate-400">sie/Sie:</span> <b id="srsVcSie" class="text-slate-800"></b></div>
+                    </div>
+                  </div>
+
+                  <!-- Example Sentence Section -->
+                  <div class="p-2.5 bg-white/90 rounded-xl border border-purple-100 text-xs space-y-1">
+                    <span class="font-bold text-purple-800">💬 Example Sentence:</span>
+                    <p id="srsBackExampleDe" class="font-semibold text-slate-900 text-xs italic">"Der Apfel ist rot und frisch."</p>
+                    <p id="srsBackExampleEn" class="text-[11px] text-slate-500">"The apple is red and fresh."</p>
+                    <p id="srsBackExampleId" class="text-[10px] text-slate-400">"Apel itu merah dan segar."</p>
+                  </div>
+                </div>
+
+                <!-- Bottom Bar on Back -->
+                <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-purple-100">
+                  <span class="text-[11px] font-medium text-slate-500 flex items-center gap-1">
+                    <span>↺</span>
+                    <span>Click to flip back</span>
+                  </span>
+                  <button onclick="event.stopPropagation(); playSrsSentenceAudio();" class="p-2 px-3 rounded-xl bg-purple-100 hover:bg-purple-200 text-purple-800 font-bold transition flex items-center gap-1.5 cursor-pointer" title="Listen to example sentence">
+                    <span>🔊</span>
+                    <span class="text-xs">Sentence</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Controls Navigation Bar -->
+          <div class="w-full flex flex-wrap items-center justify-between gap-2 mt-3 pt-2 border-t border-slate-100">
+            <div class="flex items-center gap-1.5">
+              <button onclick="prevSrsCard()" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition flex items-center gap-1 cursor-pointer">
+                <span>◀</span>
+                <span>Prev</span>
+              </button>
+              <button onclick="flipCurrentSrsCard()" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition flex items-center gap-1 cursor-pointer">
+                <span>↻</span>
+                <span>Flip (Space)</span>
+              </button>
+            </div>
+
+            <!-- Master Toggle Button in Controls -->
+            <button id="srsControlsStarBtn" onclick="toggleSrsMasterCurrent()" class="px-3.5 py-1.5 rounded-xl font-bold text-xs shadow-xs transition flex items-center gap-1.5 border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900 cursor-pointer">
+              <span id="srsControlsStarIcon">☆</span>
+              <span id="srsControlsStarText">Mark Mastered (M)</span>
+            </button>
+
+            <div class="flex items-center gap-2">
+              <button onclick="shuffleSrsDeck()" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1 cursor-pointer" title="Shuffle Deck">
+                <span>🔀</span>
+              </button>
+              <span id="srsCardCounter" class="text-xs font-mono font-bold text-slate-500">1 / 1,000</span>
+              <button onclick="nextSrsCard()" class="px-3 py-1.5 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-bold text-xs shadow-xs transition flex items-center gap-1 cursor-pointer">
+                <span>Next</span>
+                <span>▶</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. GRID EXPLORER MODE -->
+        <div id="srsGridModeArea" class="hidden space-y-3">
+          <div id="srsGridContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 max-h-[52vh] overflow-y-auto p-1">
+            <!-- Grid items injected dynamically -->
+          </div>
+          <!-- Pagination -->
+          <div id="srsGridPagination" class="flex items-center justify-center gap-2 pt-2 border-t border-slate-100">
+            <!-- Injected dynamically -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= 3b. SUB-MODAL: MASTERED VOCABULARY HISTORY ================= -->
+  <div id="srsHistoryModal" class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-2 sm:p-4 hidden" onclick="closeSrsHistoryModal()">
+    <div class="bg-white max-w-4xl w-full max-h-[92vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-amber-300 animate-in fade-in" onclick="event.stopPropagation()">
+      <!-- Header -->
+      <div class="p-4 sm:p-5 border-b border-amber-100 flex items-center justify-between bg-gradient-to-r from-amber-50 via-orange-50/40 to-white">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-400 text-white flex items-center justify-center text-lg shadow-sm shadow-amber-200">
+            📜
+          </div>
+          <div>
+            <h2 class="text-base sm:text-lg font-black text-slate-800">Mastered Vocabulary History</h2>
+            <p class="text-xs text-slate-500">All words you have memorized with full details, audio, and printable study sheet</p>
+          </div>
+        </div>
+        <button onclick="closeSrsHistoryModal()" class="w-8 h-8 rounded-full bg-white hover:bg-slate-100 border border-slate-200 text-slate-500 hover:text-slate-700 flex items-center justify-center text-lg font-bold transition cursor-pointer" title="Close">
+          &times;
         </button>
       </div>
 
+      <!-- Stats Bar & Actions -->
+      <div class="p-3 sm:p-4 bg-slate-50/80 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2.5">
+        <div class="flex items-center gap-2 text-xs font-bold">
+          <span class="px-3 py-1 rounded-xl bg-amber-100 text-amber-800 border border-amber-200">
+            Total: <b id="srsHistTotalCount">0</b> words
+          </span>
+          <span class="px-3 py-1 rounded-xl bg-sky-100 text-sky-800 border border-sky-200">
+            📘 <b id="srsHistNounCount">0</b> Nouns
+          </span>
+          <span class="px-3 py-1 rounded-xl bg-purple-100 text-purple-800 border border-purple-200">
+            ⚡ <b id="srsHistVerbCount">0</b> Verbs
+          </span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="resetSrsMastered('all')" class="px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs flex items-center gap-1 transition cursor-pointer" title="Reset all memorized words">
+            <span>🔄</span>
+            <span>Reset All</span>
+          </button>
+          <button onclick="printSrsStudySheet()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold text-xs shadow-sm shadow-amber-200 flex items-center gap-1.5 transition cursor-pointer">
+            <span>🖨️</span>
+            <span>Print Study Sheet</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter & Search Sub-bar -->
+      <div class="p-3 bg-white border-b border-slate-100 flex flex-col sm:flex-row items-center gap-2.5">
+        <div class="inline-flex p-0.5 bg-slate-100 rounded-xl text-xs font-bold shrink-0">
+          <button id="srsHistFilterAll" onclick="setSrsHistoryFilter('all')" class="px-3 py-1 rounded-lg bg-white text-slate-800 shadow-xs cursor-pointer">All</button>
+          <button id="srsHistFilterNouns" onclick="setSrsHistoryFilter('nouns')" class="px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 cursor-pointer">Nouns</button>
+          <button id="srsHistFilterVerbs" onclick="setSrsHistoryFilter('verbs')" class="px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 cursor-pointer">Verbs</button>
+        </div>
+
+        <div class="relative flex-1 w-full">
+          <input type="text" id="srsHistSearchInput" oninput="handleSrsHistorySearch(this.value)" placeholder="Search mastered words (German, English, or Indonesian)..." class="w-full pl-9 pr-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-medium outline-none focus:border-amber-500 focus:bg-white transition">
+          <svg class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+      </div>
+
+      <!-- Scrollable Word List Container -->
+      <div id="srsHistoryListContainer" class="p-3 sm:p-4 overflow-y-auto space-y-2 flex-1 text-xs max-h-[50vh]">
+        <!-- Injected dynamically -->
+      </div>
+
+      <!-- Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+        <span id="srsHistoryFooterSummary" class="text-slate-500 text-xs">0 words shown</span>
+        <button onclick="closeSrsHistoryModal()" class="px-4 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs transition cursor-pointer">
+          Close
+        </button>
+      </div>
     </div>
   </div>
 
@@ -2005,6 +2259,7 @@
   <div id="floatingXPContainer" class="fixed top-20 right-6 z-50 pointer-events-none flex flex-col gap-2"></div>
 
   <!-- SCRIPT LOGIC -->
+  <script src="flashcards-data.js?v=20260920_v1"></script>
   <script src="media-data.js?v=20260920_v15"></script>
   <script src="app.js?v=20260920_v15"></script>
 </body>
