@@ -8124,7 +8124,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.openRoleplayModal = function() {};
   window.closeRoleplayModal = function() {};
 
-// ================= 30. GOETHE-ZERTIFIKAT A1 / TELC MOCK EXAM HUB =================
+// ================= 30. GERMAN A1 PRACTICE EXAM SIMULATOR & AI EVALUATOR =================
 
 function escapeHtml(str) {
   if (!str) return '';
@@ -8140,7 +8140,7 @@ const GOETHE_EXAM_DATA = {
   lesen: [
     {
       teil: "Teil 1: E-Mails & Mitteilungen (Personal Messages)",
-      context: "Liebe Julia,\nich habe am Samstag Geburtstag und mache eine kleine Party ab 19:00 Uhr bei mir zu Hause. Bringst du bitte einen Salat mit? GetrÃ¤nke und Kuchen habe ich schon gekauft. Sag mir bitte bis Freitag Bescheid, ob du kommen kannst.\nLiebe GrÃ¼ÃŸe,\nSarah",
+      context: "Liebe Julia,\nich habe am Samstag Geburtstag und mache eine kleine Party ab 19:00 Uhr bei mir zu Hause. Bringst du bitte einen Salat mit? Getränke und Kuchen habe ich schon gekauft. Sag mir bitte bis Freitag Bescheid, ob du kommen kannst.\nLiebe Grüße,\nSarah",
       q: "1. Sarah feiert am Samstagabend ihren Geburtstag zu Hause.",
       options: ["Richtig (True)", "Falsch (False)"],
       answer: 0,
@@ -8149,19 +8149,19 @@ const GOETHE_EXAM_DATA = {
     },
     {
       teil: "Teil 1: E-Mails & Mitteilungen (Personal Messages)",
-      context: "Liebe Julia,\nich habe am Samstag Geburtstag und mache eine kleine Party ab 19:00 Uhr bei mir zu Hause. Bringst du bitte einen Salat mit? GetrÃ¤nke und Kuchen habe ich schon gekauft. Sag mir bitte bis Freitag Bescheid, ob du kommen kannst.\nLiebe GrÃ¼ÃŸe,\nSarah",
-      q: "2. Julia soll GetrÃ¤nke fÃ¼r die Geburtstagsparty mitbringen.",
+      context: "Liebe Julia,\nich habe am Samstag Geburtstag und mache eine kleine Party ab 19:00 Uhr bei mir zu Hause. Bringst du bitte einen Salat mit? Getränke und Kuchen habe ich schon gekauft. Sag mir bitte bis Freitag Bescheid, ob du kommen kannst.\nLiebe Grüße,\nSarah",
+      q: "2. Julia soll Getränke für die Geburtstagsparty mitbringen.",
       options: ["Richtig (True)", "Falsch (False)"],
       answer: 1,
       points: 2.5,
-      explanation: "Sarah already bought the drinks ('GetrÃ¤nke und Kuchen habe ich schon gekauft') and specifically asks Julia to bring a salad ('Bringst du bitte einen Salat mit?'). Therefore, Julia does NOT need to bring drinks."
+      explanation: "Sarah already bought the drinks ('Getränke und Kuchen habe ich schon gekauft') and specifically asks Julia to bring a salad ('Bringst du bitte einen Salat mit?'). Therefore, Julia does NOT need to bring drinks."
     },
     {
-      teil: "Teil 2: Internetanzeigen & BroschÃ¼ren (Classified Ads)",
-      situation: "Situation: Sie mÃ¶chten am Wochenende Deutsch lernen und suchen einen Kurs nur am Samstag.",
+      teil: "Teil 2: Internetanzeigen & Broschüren (Classified Ads)",
+      situation: "Situation: Sie möchten am Wochenende Deutsch lernen und suchen einen Kurs nur am Samstag.",
       q: "3. Welche Anzeige passt zu Ihrer Situation?",
       options: [
-        "Anzeige A: Intensivkurs Deutsch: Von Montag bis Freitag tÃ¤glich von 9:00 bis 13:00 Uhr.",
+        "Anzeige A: Intensivkurs Deutsch: Von Montag bis Freitag täglich von 9:00 bis 13:00 Uhr.",
         "Anzeige B: Wochenend-Workshop: Deutsch A1 jeden Samstag von 10:00 bis 14:00 Uhr."
       ],
       answer: 1,
@@ -8169,30 +8169,30 @@ const GOETHE_EXAM_DATA = {
       explanation: "Anzeige B specifically runs on Saturdays ('jeden Samstag von 10:00 bis 14:00 Uhr'), perfectly fitting a weekend schedule. Anzeige A is a weekday intensive course (Monday to Friday)."
     },
     {
-      teil: "Teil 2: Internetanzeigen & BroschÃ¼ren (Classified Ads)",
-      situation: "Situation: Sie mÃ¶chten mit dem Zug gÃ¼nstig von Berlin nach Hamburg reisen.",
-      q: "4. Welche Website-Anzeige wÃ¤hlen Sie?",
+      teil: "Teil 2: Internetanzeigen & Broschüren (Classified Ads)",
+      situation: "Situation: Sie möchten mit dem Zug günstig von Berlin nach Hamburg reisen.",
+      q: "4. Welche Website-Anzeige wählen Sie?",
       options: [
-        "Anzeige A: Deutsche Bahn Sparpreis: GÃ¼nstige Zugtickets nach Hamburg ab 19,90 â‚¬ online buchen.",
-        "Anzeige B: Fernbus-Direkt: TÃ¤glich preiswerte Busreisen nach Hamburg ab 15,00 â‚¬."
+        "Anzeige A: Deutsche Bahn Sparpreis: Günstige Zugtickets nach Hamburg ab 19,90 € online buchen.",
+        "Anzeige B: Fernbus-Direkt: Täglich preiswerte Busreisen nach Hamburg ab 15,00 €."
       ],
       answer: 0,
       points: 2.5,
       explanation: "You specified travel by train ('mit dem Zug'). Anzeige A offers train tickets via Deutsche Bahn, whereas Anzeige B is a long-distance bus service ('Fernbus')."
     },
     {
-      teil: "Teil 3: Schilder im Ã¶ffentlichen Raum (Public Notices)",
-      context: "Schild am Eingang eines Supermarkts:\n'Sehr geehrte Kundinnen und Kunden,\nwegen Umbauarbeiten schlieÃŸt unser Markt heute ausnahmsweise bereits um 13:00 Uhr.'",
-      q: "5. Sie kÃ¶nnen heute Nachmittag um 16:00 Uhr in diesem Supermarkt einkaufen.",
+      teil: "Teil 3: Schilder im öffentlichen Raum (Public Notices)",
+      context: "Schild am Eingang eines Supermarkts:\n'Sehr geehrte Kundinnen und Kunden,\nwegen Umbauarbeiten schließt unser Markt heute ausnahmsweise bereits um 13:00 Uhr.'",
+      q: "5. Sie können heute Nachmittag um 16:00 Uhr in diesem Supermarkt einkaufen.",
       options: ["Richtig (True)", "Falsch (False)"],
       answer: 1,
       points: 2.5,
-      explanation: "The sign states the supermarket closes exceptionally at 1:00 PM ('schlieÃŸt heute ausnahmsweise bereits um 13:00 Uhr'). Therefore, you cannot shop there at 4:00 PM (16:00)."
+      explanation: "The sign states the supermarket closes exceptionally at 1:00 PM ('schließt heute ausnahmsweise bereits um 13:00 Uhr'). Therefore, you cannot shop there at 4:00 PM (16:00)."
     },
     {
-      teil: "Teil 3: Schilder im Ã¶ffentlichen Raum (Public Notices)",
-      context: "Schild an der TÃ¼r einer Arztpraxis:\n'Praxis Dr. Schmidt: Sprechzeiten von Montag bis Freitag von 8:00 bis 12:00 Uhr. AuÃŸerhalb der Sprechzeiten wenden Sie sich bitte an den Notdienst.'",
-      q: "6. Am Dienstagmorgen um 10:00 Uhr ist die Arztpraxis geÃ¶ffnet.",
+      teil: "Teil 3: Schilder im öffentlichen Raum (Public Notices)",
+      context: "Schild an der Tür einer Arztpraxis:\n'Praxis Dr. Schmidt: Sprechzeiten von Montag bis Freitag von 8:00 bis 12:00 Uhr. Außerhalb der Sprechzeiten wenden Sie sich bitte an den Notdienst.'",
+      q: "6. Am Dienstagmorgen um 10:00 Uhr ist die Arztpraxis geöffnet.",
       options: ["Richtig (True)", "Falsch (False)"],
       answer: 0,
       points: 2.5,
@@ -8202,17 +8202,17 @@ const GOETHE_EXAM_DATA = {
 
   hoeren: [
     {
-      teil: "Teil 1: AlltÃ¤gliche GesprÃ¤che (Short Dialogues)",
-      audioPrompt: "Guten Tag, Herr Hansen. Wann kommen Sie heute zum Sprachkurs? - Ich komme heute um Viertel vor fÃ¼nf, also um 16:45 Uhr.",
+      teil: "Teil 1: Alltägliche Gespräche (Short Dialogues)",
+      audioPrompt: "Guten Tag, Herr Hansen. Wann kommen Sie heute zum Sprachkurs? - Ich komme heute um Viertel vor fünf, also um 16:45 Uhr.",
       q: "1. Um wie viel Uhr kommt Herr Hansen zum Sprachkurs?",
-      options: ["Um 16:45 Uhr (Viertel vor fÃ¼nf)", "Um 17:15 Uhr (Viertel nach fÃ¼nf)", "Um 15:45 Uhr (Viertel vor vier)"],
+      options: ["Um 16:45 Uhr (Viertel vor fünf)", "Um 17:15 Uhr (Viertel nach fünf)", "Um 15:45 Uhr (Viertel vor vier)"],
       answer: 0,
       points: 2.5,
-      explanation: "Herr Hansen says 'um Viertel vor fÃ¼nf, also um 16:45 Uhr' (a quarter to five / 16:45)."
+      explanation: "Herr Hansen says 'um Viertel vor fünf, also um 16:45 Uhr' (a quarter to five / 16:45)."
     },
     {
-      teil: "Teil 1: AlltÃ¤gliche GesprÃ¤che (Short Dialogues)",
-      audioPrompt: "Entschuldigung, wie viel kostet dieses T-Shirt hier? - Das weiÃŸe T-Shirt kostet 15 Euro, aber das blaue kostet nur 12 Euro.",
+      teil: "Teil 1: Alltägliche Gespräche (Short Dialogues)",
+      audioPrompt: "Entschuldigung, wie viel kostet dieses T-Shirt hier? - Das weiße T-Shirt kostet 15 Euro, aber das blaue kostet nur 12 Euro.",
       q: "2. Wie viel kostet das blaue T-Shirt?",
       options: ["15 Euro", "12 Euro", "27 Euro"],
       answer: 1,
@@ -8220,35 +8220,35 @@ const GOETHE_EXAM_DATA = {
       explanation: "The sales assistant says: 'aber das blaue kostet nur 12 Euro' (the blue one costs only 12 euros)."
     },
     {
-      teil: "Teil 2: Ã–ffentliche Ansagen (Public Announcements)",
-      audioPrompt: "Achtung an Gleis 4! Der Intercity-Express 582 nach Frankfurt Hauptbahnhof hat circa 15 Minuten VerspÃ¤tung. Grund dafÃ¼r ist eine technische StÃ¶rung am Zug.",
-      q: "3. Wie viel VerspÃ¤tung hat der Zug nach Frankfurt?",
-      options: ["Keine VerspÃ¤tung", "Circa 15 Minuten", "Circa 50 Minuten"],
+      teil: "Teil 2: Öffentliche Ansagen (Public Announcements)",
+      audioPrompt: "Achtung an Gleis 4! Der Intercity-Express 582 nach Frankfurt Hauptbahnhof hat circa 15 Minuten Verspätung. Grund dafür ist eine technische Störung am Zug.",
+      q: "3. Wie viel Verspätung hat der Zug nach Frankfurt?",
+      options: ["Keine Verspätung", "Circa 15 Minuten", "Circa 50 Minuten"],
       answer: 1,
       points: 2.5,
-      explanation: "The train announcement specifies: 'hat circa 15 Minuten VerspÃ¤tung' (around 15 minutes delay)."
+      explanation: "The train announcement specifies: 'hat circa 15 Minuten Verspätung' (around 15 minutes delay)."
     },
     {
-      teil: "Teil 2: Ã–ffentliche Ansagen (Public Announcements)",
-      audioPrompt: "Letzter Aufruf fÃ¼r alle noch fehlenden FluggÃ¤ste des Lufthansa-Fluges LH 402 nach New York. Bitte begeben Sie sich unverzÃ¼glich zum Flugsteig B 24. Das Einsteigen wird in wenigen Minuten beendet.",
-      q: "4. Wohin mÃ¼ssen die Passagiere fÃ¼r Flug LH 402 gehen?",
+      teil: "Teil 2: Öffentliche Ansagen (Public Announcements)",
+      audioPrompt: "Letzter Aufruf für alle noch fehlenden Fluggäste des Lufthansa-Fluges LH 402 nach New York. Bitte begeben Sie sich unverzüglich zum Flugsteig B 24. Das Einsteigen wird in wenigen Minuten beendet.",
+      q: "4. Wohin müssen die Passagiere für Flug LH 402 gehen?",
       options: ["Zum Flugsteig B 12", "Zum Flugsteig B 24", "Zur Information"],
       answer: 1,
       points: 2.5,
-      explanation: "The airport announcement instructs passengers: 'Bitte begeben Sie sich unverzÃ¼glich zum Flugsteig B 24' (Gate B 24)."
+      explanation: "The airport announcement instructs passengers: 'Bitte begeben Sie sich unverzüglich zum Flugsteig B 24' (Gate B 24)."
     },
     {
       teil: "Teil 3: Telefonansagen (Telephone Messages)",
-      audioPrompt: "Guten Tag, hier ist die Praxis Dr. Weber. Frau Meier, Ihr Rezept liegt ab morgen frÃ¼h um 8 Uhr an der Anmeldung fÃ¼r Sie bereit. Vergessen Sie bitte nicht Ihre Versichertenkarte mitzubringen. Auf WiederhÃ¶ren.",
+      audioPrompt: "Guten Tag, hier ist die Praxis Dr. Weber. Frau Meier, Ihr Rezept liegt ab morgen früh um 8 Uhr an der Anmeldung für Sie bereit. Vergessen Sie bitte nicht Ihre Versichertenkarte mitzubringen. Auf Wiederhören.",
       q: "5. Was soll Frau Meier zur Arztpraxis mitbringen?",
-      options: ["Ihre Versichertenkarte", "Ein neues Passfoto", "Bargeld fÃ¼r die RezeptgebÃ¼hr"],
+      options: ["Ihre Versichertenkarte", "Ein neues Passfoto", "Bargeld für die Rezeptgebühr"],
       answer: 0,
       points: 2.5,
       explanation: "The voicemail explicitly requests: 'Vergessen Sie bitte nicht Ihre Versichertenkarte mitzubringen' (health insurance card)."
     },
     {
       teil: "Teil 3: Telefonansagen (Telephone Messages)",
-      audioPrompt: "Hallo Herr Becker, hier ist der Elektro-Kundendienst Schneider. Ihre Waschmaschine ist repariert. Wir kÃ¶nnen das GerÃ¤t am Donnerstag zwischen 14 und 16 Uhr liefern. Bitte rufen Sie uns zurÃ¼ck. Danke!",
+      audioPrompt: "Hallo Herr Becker, hier ist der Elektro-Kundendienst Schneider. Ihre Waschmaschine ist repariert. Wir können das Gerät am Donnerstag zwischen 14 und 16 Uhr liefern. Bitte rufen Sie uns zurück. Danke!",
       q: "6. Wann kann der Kundendienst die Waschmaschine liefern?",
       options: ["Am Donnerstagvormittag", "Am Donnerstagnachmittag", "Am Freitag"],
       answer: 1,
@@ -8259,20 +8259,20 @@ const GOETHE_EXAM_DATA = {
 
   schreiben: {
     part1: {
-      title: "Teil 1: Formular ausfÃ¼llen (Form Filling - 5 Pts)",
-      text: "Ihre Bekannte Eva Fischer zieht mit ihrem Ehemann und zwei Kindern nach MÃ¼nchen. Sie bucht online im Hotel Alpenblick ein Familienzimmer fÃ¼r 3 NÃ¤chte ab dem 15. Oktober. Sie bezahlt im Voraus mit Kreditkarte.",
+      title: "Teil 1: Formular ausfüllen (Form Filling - 5 Pts)",
+      text: "Ihre Bekannte Eva Fischer zieht mit ihrem Ehemann und zwei Kindern nach München. Sie bucht online im Hotel Alpenblick ein Familienzimmer für 3 Nächte ab dem 15. Oktober. Sie bezahlt im Voraus mit Kreditkarte.",
       fields: [
         { label: "1. Familienname", answer: "fischer", points: 1, explanation: "The text states 'Ihre Bekannte Eva Fischer', so the family name is Fischer." },
         { label: "2. Anzahl der Personen", answer: "4", points: 1, explanation: "Eva, her husband, and 2 children = 4 persons ('mit ihrem Ehemann und zwei Kindern')." },
         { label: "3. Anreisedatum", answer: "15. oktober", points: 1, explanation: "She booked starting October 15th ('ab dem 15. Oktober')." },
-        { label: "4. Anzahl der NÃ¤chte", answer: "3", points: 1, explanation: "She booked for 3 nights ('fÃ¼r 3 NÃ¤chte')." },
+        { label: "4. Anzahl der Nächte", answer: "3", points: 1, explanation: "She booked for 3 nights ('für 3 Nächte')." },
         { label: "5. Zahlungsart", answer: "kreditkarte", points: 1, explanation: "She pays in advance by credit card ('bezahlt im Voraus mit Kreditkarte')." }
       ]
     },
     part2: {
       title: "Teil 2: E-Mail schreiben (Email Composition - 10 Pts)",
-      prompt: "Schreiben Sie eine E-Mail an die Touristeninformation in KÃ¶ln (circa 30â€“40 WÃ¶rter):<br/>â€¢ <strong>Grund des Schreibens:</strong> Sie planen eine Reise nach KÃ¶ln.<br/>â€¢ <strong>Anreise / Termin:</strong> Sie kommen vom 10. bis 12. Mai.<br/>â€¢ <strong>Bitte:</strong> Bitten Sie um einen Stadtplan und gÃ¼nstige Hoteladressen.",
-      sampleAnswer: "Sehr geehrte Damen und Herren,\n\nich plane eine Reise nach KÃ¶ln und komme vom 10. bis 12. Mai. KÃ¶nnen Sie mir bitte einen Stadtplan und Adressen von gÃ¼nstigen Hotels schicken?\n\nVielen Dank im Voraus.\n\nMit freundlichen GrÃ¼ÃŸen,\nAlex Becker",
+      prompt: "Schreiben Sie eine E-Mail an die Touristeninformation in Köln (circa 30–40 Wörter):<br/>• <strong>Grund des Schreibens:</strong> Sie planen eine Reise nach Köln.<br/>• <strong>Anreise / Termin:</strong> Sie kommen vom 10. bis 12. Mai.<br/>• <strong>Bitte:</strong> Bitten Sie um einen Stadtplan und günstige Hoteladressen.",
+      sampleAnswer: "Sehr geehrte Damen und Herren,\n\nich plane eine Reise nach Köln und komme vom 10. bis 12. Mai. Können Sie mir bitte einen Stadtplan und Adressen von günstigen Hotels schicken?\n\nVielen Dank im Voraus.\n\nMit freundlichen Grüßen,\nAlex Becker",
       maxPoints: 10
     }
   },
@@ -8283,7 +8283,7 @@ const GOETHE_EXAM_DATA = {
       teil: "Teil 1: Sich vorstellen & Buchstabieren (Self-Introduction - 5 Pts)",
       taskDesc: "Stellen Sie sich vor (Name, Alter, Land, Wohnort, Sprachen, Beruf, Hobby) und buchstabieren Sie Ihren Namen oder nennen Sie Ihre Telefonnummer.",
       prompts: ["Name", "Alter", "Land", "Wohnort", "Sprachen", "Beruf", "Hobby"],
-      modelSpeech: "Guten Tag. Mein Name ist Alex Becker. Ich bin 26 Jahre alt und komme aus Indonesien. Jetzt wohne ich in Frankfurt. Ich spreche Englisch, Indonesisch und Deutsch. Ich bin Softwareentwickler und mein Hobby ist FuÃŸball spielen. Mein Name buchstabiert: B - E - C - K - E - R. Meine Telefonnummer ist: null - eins - sieben - sechs - eins - zwei - drei - vier - fÃ¼nf.",
+      modelSpeech: "Guten Tag. Mein Name ist Alex Becker. Ich bin 26 Jahre alt und komme aus Indonesien. Jetzt wohne ich in Frankfurt. Ich spreche Englisch, Indonesisch und Deutsch. Ich bin Softwareentwickler und mein Hobby ist Fußball spielen. Mein Name buchstabiert: B - E - C - K - E - R. Meine Telefonnummer ist: null - eins - sieben - sechs - eins - zwei - drei - vier - fünf.",
       targetKeywords: ["name", "jahre", "alt", "komme", "wohne", "spreche", "deutsch", "beruf", "hobby"],
       points: 5
     },
@@ -8291,21 +8291,21 @@ const GOETHE_EXAM_DATA = {
       id: "sprechen-part2",
       teil: "Teil 2: Um Informationen bitten & antworten (Ask for Info - 5 Pts)",
       taskDesc: "Ziehen Sie eine Wortkarte und formulieren Sie eine Frage sowie eine passende Antwort.",
-      theme: "Thema: Essen & Trinken | Wort: FrÃ¼hstÃ¼ck",
-      cardPrompt: "Frage formulieren mit 'FrÃ¼hstÃ¼ck'",
-      modelQuestion: "Was essen Sie normalerweise zum FrÃ¼hstÃ¼ck?",
-      modelResponse: "Ich esse morgens meistens BrÃ¶tchen mit KÃ¤se und trinke einen Kaffee.",
-      targetKeywords: ["was", "essen", "trinken", "frÃ¼hstÃ¼ck", "morgens", "kaffee", "brÃ¶tchen"],
+      theme: "Thema: Essen & Trinken | Wort: Frühstück",
+      cardPrompt: "Frage formulieren mit 'Frühstück'",
+      modelQuestion: "Was essen Sie normalerweise zum Frühstück?",
+      modelResponse: "Ich esse morgens meistens Brötchen mit Käse und trinke einen Kaffee.",
+      targetKeywords: ["was", "essen", "trinken", "frühstück", "morgens", "kaffee", "brötchen"],
       points: 5
     },
     {
       id: "sprechen-part3",
       teil: "Teil 3: Bitten formulieren und reagieren (Social Requests - 5 Pts)",
-      taskDesc: "Formulieren Sie eine hÃ¶fliche Bitte anhand der Bildkarte und reagieren Sie angemessen.",
-      cardPrompt: "Bild: Ein Glas Wasser | HÃ¶fliche Bitte",
+      taskDesc: "Formulieren Sie eine höfliche Bitte anhand der Bildkarte und reagieren Sie angemessen.",
+      cardPrompt: "Bild: Ein Glas Wasser | Höfliche Bitte",
       modelQuestion: "Geben Sie mir bitte ein Glas Wasser?",
-      modelResponse: "Ja, natÃ¼rlich, bitte sehr!",
-      targetKeywords: ["geben", "kÃ¶nnen", "bitte", "glas", "wasser", "ja", "gerne", "natÃ¼rlich"],
+      modelResponse: "Ja, natürlich, bitte sehr!",
+      targetKeywords: ["geben", "können", "bitte", "glas", "wasser", "ja", "gerne", "natürlich"],
       points: 5
     }
   ]
@@ -8362,7 +8362,7 @@ function updateExamTimerDisplay() {
   const display = document.getElementById('examTimerDisplay');
   if (!display) return;
   if (examSelectedDuration === 0) {
-    display.textContent = "âˆž Untimed";
+    display.textContent = "∞ Untimed";
     display.className = "text-amber-900 font-black";
     return;
   }
@@ -8383,12 +8383,12 @@ window.toggleExamTimerPause = function() {
   examTimerPaused = !examTimerPaused;
   const pauseBtn = document.getElementById('examTimerPauseBtn');
   if (pauseBtn) {
-    pauseBtn.innerHTML = examTimerPaused ? '<span>â–¶ï¸</span><span>Resume</span>' : '<span>â¸ï¸</span><span>Pause</span>';
+    pauseBtn.innerHTML = examTimerPaused ? '<span>▶️</span><span>Resume</span>' : '<span>⏸️</span><span>Pause</span>';
     pauseBtn.className = examTimerPaused 
       ? 'px-2 py-0.5 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-900 text-xs font-bold flex items-center gap-1 transition cursor-pointer'
       : 'px-2 py-0.5 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-bold flex items-center gap-1 transition cursor-pointer';
   }
-  showFloatingToast(examTimerPaused ? 'â¸ï¸ Exam paused' : 'â–¶ï¸ Exam resumed');
+  showFloatingToast(examTimerPaused ? '⏸️ Exam paused' : '▶️ Exam resumed');
 };
 
 window.restartGoetheExam = function() {
@@ -8403,7 +8403,7 @@ window.restartGoetheExam = function() {
   };
   setExamDuration(examSelectedDuration);
   switchExamModule('lesen');
-  showFloatingToast('ðŸ”„ Exam restarted.');
+  showFloatingToast('🔄 Exam restarted.');
 };
 
 function startExamTimer() {
@@ -8415,7 +8415,7 @@ function startExamTimer() {
       updateExamTimerDisplay();
     } else {
       clearInterval(examTimerInterval);
-      showFloatingToast("â±ï¸ Exam time is up! Evaluating your exam...");
+      showFloatingToast("⏱️ Exam time is up! Evaluating your exam...");
       finishGoetheExam();
     }
   }, 1000);
@@ -8512,7 +8512,7 @@ window.setExamAudioSpeed = function(speed) {
 
 window.playExamSpeech = function(text, btn = null) {
   if (!('speechSynthesis' in window)) {
-    showFloatingToast('âš ï¸ Audio synthesis not supported in this browser.', 'âš ï¸');
+    showFloatingToast('⚠️ Audio synthesis not supported in this browser.', '⚠️');
     return;
   }
   window.speechSynthesis.cancel();
@@ -8528,7 +8528,7 @@ window.playExamSpeech = function(text, btn = null) {
 
   if (btn) {
     const originalContent = btn.innerHTML;
-    btn.innerHTML = '<span>ðŸ”Š</span><span class="animate-pulse">Playing...</span>';
+    btn.innerHTML = '<span>🔊</span><span class="animate-pulse">Playing...</span>';
     btn.disabled = true;
     utter.onend = () => {
       btn.innerHTML = originalContent;
@@ -8547,21 +8547,21 @@ window.evaluateExamEmailNLP = function(text) {
   const words = text.trim().split(/\s+/).filter(Boolean);
   const wordCount = words.length;
 
-  const greetingRegex = /(sehr geehrte damen und herren|sehr geehrte[rn]?\s+[A-Za-zÃ¤Ã¶Ã¼ÃŸ]+|liebe[rn]?\s+[A-Za-zÃ¤Ã¶Ã¼ÃŸ]+|hallo\s+[A-Za-zÃ¤Ã¶Ã¼ÃŸ]*|guten tag\s+[A-Za-zÃ¤Ã¶Ã¼ÃŸ]*)/i;
+  const greetingRegex = /(sehr geehrte damen und herren|sehr geehrte[rn]?\s+[A-Za-zäöüß]+|liebe[rn]?\s+[A-Za-zäöüß]+|hallo\s+[A-Za-zäöüß]*|guten tag\s+[A-Za-zäöüß]*)/i;
   const greetingMatch = text.match(greetingRegex);
   const hasGreeting = !!greetingMatch;
 
-  const closingRegex = /(mit freundlichen grÃ¼ÃŸen|viele grÃ¼ÃŸe|herzliche grÃ¼ÃŸe|liebe grÃ¼ÃŸe|beste grÃ¼ÃŸe|dein[e]?\s+[A-Za-zÃ¤Ã¶Ã¼ÃŸ]+)/i;
+  const closingRegex = /(mit freundlichen grüßen|viele grüße|herzliche grüße|liebe grüße|beste grüße|dein[e]?\s+[A-Za-zäöüß]+)/i;
   const closingMatch = text.match(closingRegex);
   const hasClosing = !!closingMatch;
 
-  const lp1Regex = /(warum|reise|fahre|komme|besuche|urlaub|kÃ¶ln|plane)/i;
+  const lp1Regex = /(warum|reise|fahre|komme|besuche|urlaub|köln|plane)/i;
   const hasLp1 = lp1Regex.test(text);
 
   const lp2Regex = /(mai|10\.|12\.|vom\s+10|bis\s+12|am 10|ankunft|anreise)/i;
   const hasLp2 = lp2Regex.test(text);
 
-  const lp3Regex = /(stadtplan|plan|hotel|hotels|Ã¼bernachtung|unterkunft|schicken|senden|empfehlen)/i;
+  const lp3Regex = /(stadtplan|plan|hotel|hotels|übernachtung|unterkunft|schicken|senden|empfehlen)/i;
   const hasLp3 = lp3Regex.test(text);
 
   let score = 0;
@@ -8613,23 +8613,23 @@ window.handleExamEmailInput = function(val) {
     progressBar.className = pct >= 100 ? "h-1.5 bg-emerald-500 rounded-full transition-all duration-300" : "h-1.5 bg-amber-400 rounded-full transition-all duration-300";
   }
   if (greetingPill) {
-    greetingPill.innerHTML = nlp.hasGreeting ? '<span>âœ… Greeting</span>' : '<span>âšª Greeting</span>';
+    greetingPill.innerHTML = nlp.hasGreeting ? '<span>✅ Greeting</span>' : '<span>⚪ Greeting</span>';
     greetingPill.className = nlp.hasGreeting ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium';
   }
   if (closingPill) {
-    closingPill.innerHTML = nlp.hasClosing ? '<span>âœ… Sign-Off</span>' : '<span>âšª Sign-Off</span>';
+    closingPill.innerHTML = nlp.hasClosing ? '<span>✅ Sign-Off</span>' : '<span>⚪ Sign-Off</span>';
     closingPill.className = nlp.hasClosing ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium';
   }
   if (lp1Pill) {
-    lp1Pill.innerHTML = nlp.hasLp1 ? '<span>âœ… 1. Travel Reason</span>' : '<span>âšª 1. Travel Reason</span>';
+    lp1Pill.innerHTML = nlp.hasLp1 ? '<span>✅ 1. Travel Reason</span>' : '<span>⚪ 1. Travel Reason</span>';
     lp1Pill.className = nlp.hasLp1 ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium';
   }
   if (lp2Pill) {
-    lp2Pill.innerHTML = nlp.hasLp2 ? '<span>âœ… 2. Travel Dates</span>' : '<span>âšª 2. Travel Dates</span>';
+    lp2Pill.innerHTML = nlp.hasLp2 ? '<span>✅ 2. Travel Dates</span>' : '<span>⚪ 2. Travel Dates</span>';
     lp2Pill.className = nlp.hasLp2 ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium';
   }
   if (lp3Pill) {
-    lp3Pill.innerHTML = nlp.hasLp3 ? '<span>âœ… 3. Map & Hotels</span>' : '<span>âšª 3. Map & Hotels</span>';
+    lp3Pill.innerHTML = nlp.hasLp3 ? '<span>✅ 3. Map & Hotels</span>' : '<span>⚪ 3. Map & Hotels</span>';
     lp3Pill.className = nlp.hasLp3 ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium';
   }
   if (scoreBadge) {
@@ -8646,7 +8646,7 @@ window.startSprechenRecognition = function(partIdx, keywordsArray) {
   const scoreBox = document.getElementById(`sprechenScoreBox-${partIdx}`);
 
   if (!SpeechRecognition) {
-    showFloatingToast("âš ï¸ Speech Recognition is not supported in this browser. Please use Google Chrome or self-assess below.", "âš ï¸");
+    showFloatingToast("⚠️ Speech Recognition is not supported in this browser. Please use Google Chrome or self-assess below.", "⚠️");
     if (transcriptEl) {
       transcriptEl.innerHTML = '<span class="text-amber-800 italic">Speech Recognition not supported in this browser. You can listen to the model speech above and self-award points.</span>';
     }
@@ -8668,10 +8668,10 @@ window.startSprechenRecognition = function(partIdx, keywordsArray) {
 
     if (micBtn) {
       micBtn.className = "px-3 py-1.5 rounded-xl bg-rose-600 text-white font-bold text-xs flex items-center gap-1.5 animate-pulse shadow-md cursor-pointer";
-      micBtn.innerHTML = "<span>ðŸ”´</span><span>Listening in German...</span>";
+      micBtn.innerHTML = "<span>🔴</span><span>Listening in German...</span>";
     }
     if (statusEl) {
-      statusEl.textContent = "ðŸŽ™ï¸ Speak clearly in German now...";
+      statusEl.textContent = "🎙️ Speak clearly in German now...";
       statusEl.className = "text-[11px] font-bold text-rose-700";
     }
 
@@ -8693,19 +8693,19 @@ window.startSprechenRecognition = function(partIdx, keywordsArray) {
 
     recognition.onerror = (e) => {
       if (statusEl) {
-        statusEl.textContent = `âš ï¸ Error: ${e.error || 'Recording error'}`;
+        statusEl.textContent = `⚠️ Error: ${e.error || 'Recording error'}`;
         statusEl.className = "text-[11px] text-amber-700";
       }
       if (micBtn) {
         micBtn.className = "px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 transition shadow-xs cursor-pointer";
-        micBtn.innerHTML = "<span>ðŸŽ™ï¸</span><span>Record Answer</span>";
+        micBtn.innerHTML = "<span>🎙️</span><span>Record Answer</span>";
       }
     };
 
     recognition.onend = () => {
       if (micBtn) {
         micBtn.className = "px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 transition shadow-xs cursor-pointer";
-        micBtn.innerHTML = "<span>ðŸŽ™ï¸</span><span>Record Again</span>";
+        micBtn.innerHTML = "<span>🎙️</span><span>Record Again</span>";
       }
       currentSpeechRecognition = null;
 
@@ -8729,13 +8729,13 @@ window.startSprechenRecognition = function(partIdx, keywordsArray) {
       examUserAnswers.sprechenScores[partIdx] = partScore;
 
       if (statusEl) {
-        statusEl.innerHTML = `<span class="text-emerald-700 font-extrabold">âœ… Pronunciation analyzed! (${matches} keywords recognized â€¢ ${partScore}/5 Pts)</span>`;
+        statusEl.innerHTML = `<span class="text-emerald-700 font-extrabold">✅ Pronunciation analyzed! (${matches} keywords recognized • ${partScore}/5 Pts)</span>`;
       }
       if (scoreBox) {
         scoreBox.innerHTML = `
           <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-950 flex items-center justify-between">
             <div>
-              <strong>Fluency & Accuracy:</strong> ${partScore === 5 ? 'ðŸŒŸ High Fluency' : partScore === 4 ? 'ðŸ‘ Good Fluency' : 'ðŸ“š Acceptable A1'}<br/>
+              <strong>Fluency & Accuracy:</strong> ${partScore === 5 ? '🌟 High Fluency' : partScore === 4 ? '👍 Good Fluency' : '📚 Acceptable A1'}<br/>
               <span class="text-[11px] text-emerald-800">Spoken: "${escapeHtml(recognized)}"</span>
             </div>
             <span class="text-sm font-black px-2.5 py-1 rounded-lg bg-emerald-200 text-emerald-900 shrink-0">${partScore} / 5 Pts</span>
@@ -8747,7 +8747,7 @@ window.startSprechenRecognition = function(partIdx, keywordsArray) {
 
     recognition.start();
   } catch (err) {
-    showFloatingToast("âš ï¸ Could not start speech recognition: " + err.message);
+    showFloatingToast("⚠️ Could not start speech recognition: " + err.message);
   }
 };
 
@@ -8757,7 +8757,7 @@ window.setSprechenSelfScore = function(partIdx, pts) {
   if (scoreBox) {
     scoreBox.innerHTML = `
       <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-950 flex items-center justify-between">
-        <span>âœ… Score confirmed:</span>
+        <span>✅ Score confirmed:</span>
         <span class="text-sm font-black px-2.5 py-1 rounded-lg bg-emerald-200 text-emerald-900">${pts} / 5 Pts</span>
       </div>
     `;
@@ -8794,11 +8794,11 @@ function updateExamProgressFooter() {
     statusEl.innerHTML = `<span>Modul Lesen Progress:</span> <strong class="text-indigo-900">${answered} / 6 Questions Answered</strong>`;
   } else if (currentExamModule === 'hoeren') {
     const answered = Object.keys(examUserAnswers.hoeren).length;
-    statusEl.innerHTML = `<span>Modul HÃ¶ren Progress:</span> <strong class="text-indigo-900">${answered} / 6 Questions Answered</strong>`;
+    statusEl.innerHTML = `<span>Modul Hören Progress:</span> <strong class="text-indigo-900">${answered} / 6 Questions Answered</strong>`;
   } else if (currentExamModule === 'schreiben') {
     const fFilled = Object.keys(examUserAnswers.schreibenPart1).length;
     const nlp = evaluateExamEmailNLP(examUserAnswers.schreibenPart2 || '');
-    statusEl.innerHTML = `<span>Modul Schreiben Progress:</span> <strong class="text-indigo-900">${fFilled}/5 Form Fields â€¢ ${nlp.wordCount} words (${nlp.score}/10 Pts)</strong>`;
+    statusEl.innerHTML = `<span>Modul Schreiben Progress:</span> <strong class="text-indigo-900">${fFilled}/5 Form Fields • ${nlp.wordCount} words (${nlp.score}/10 Pts)</strong>`;
   } else if (currentExamModule === 'sprechen') {
     const scored = Object.keys(examUserAnswers.sprechenScores).length;
     statusEl.innerHTML = `<span>Modul Sprechen Progress:</span> <strong class="text-indigo-900">${scored} / 3 Tasks Recorded / Evaluated</strong>`;
@@ -8817,10 +8817,10 @@ function renderExamModuleContent() {
       <div class="p-3.5 bg-indigo-50/70 rounded-2xl border border-indigo-200 text-xs text-indigo-950 leading-relaxed">
         <div class="flex items-center justify-between font-bold mb-1">
           <span class="flex items-center gap-1.5 text-indigo-900">
-            <span>ðŸ“–</span>
+            <span>📖</span>
             <span class="text-sm font-black">Modul 1: Lesen (Reading - 25 Min, 15 Points)</span>
           </span>
-          <span class="px-2.5 py-0.5 rounded-full bg-indigo-200/80 text-indigo-900 font-extrabold text-[11px]">3 Teile â€¢ 6 Questions</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-indigo-200/80 text-indigo-900 font-extrabold text-[11px]">3 Teile • 6 Questions</span>
         </div>
         Read each short text, email, or public sign carefully and select the best option.
       </div>
@@ -8858,14 +8858,14 @@ function renderExamModuleContent() {
     });
   }
 
-  // ---------------- MODULE 2: HÃ–REN ----------------
+  // ---------------- MODULE 2: HÖREN ----------------
   else if (currentExamModule === 'hoeren') {
     html += `
       <div class="p-3.5 bg-indigo-50/70 rounded-2xl border border-indigo-200 text-xs text-indigo-950 leading-relaxed">
         <div class="flex flex-wrap items-center justify-between gap-2 font-bold mb-1">
           <span class="flex items-center gap-1.5 text-indigo-900">
-            <span>ðŸŽ§</span>
-            <span class="text-sm font-black">Modul 2: HÃ¶ren (Listening - 20 Min, 15 Points)</span>
+            <span>🎧</span>
+            <span class="text-sm font-black">Modul 2: Hören (Listening - 20 Min, 15 Points)</span>
           </span>
           <div class="flex items-center gap-1.5">
             <span class="text-[11px] text-sky-800">Speed:</span>
@@ -8873,7 +8873,7 @@ function renderExamModuleContent() {
             <button id="examSpeedBtn-10" onclick="setExamAudioSpeed(1.0)" class="px-2 py-0.5 rounded-lg ${examAudioSpeed === 1.0 ? 'bg-indigo-600 text-white font-bold text-[10px] shadow-xs cursor-pointer' : 'bg-indigo-100 text-indigo-900 font-bold text-[10px] hover:bg-indigo-200 cursor-pointer'}">1.0x Normal</button>
           </div>
         </div>
-        Click the ðŸ”Š button to play the authentic German audio simulation. Each prompt can be replayed.
+        Click the 🔊 button to play the authentic German audio simulation. Each prompt can be replayed.
       </div>
     `;
 
@@ -8887,11 +8887,11 @@ function renderExamModuleContent() {
           </div>
           <div class="flex items-center justify-between p-3 bg-sky-50/80 rounded-xl border border-sky-200">
             <div class="text-xs text-sky-900 font-medium flex items-center gap-2">
-              <span class="text-base">ðŸŽ™ï¸</span>
+              <span class="text-base">🎙️</span>
               <span>Authentic German Audio Recording</span>
             </div>
             <button onclick="playExamSpeech(decodeURIComponent('${encodeURIComponent(item.audioPrompt)}'), this)" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition cursor-pointer flex items-center gap-1.5 shadow-2xs">
-              <span>ðŸ”Š</span>
+              <span>🔊</span>
               <span>Play Audio</span>
             </button>
           </div>
@@ -8918,19 +8918,19 @@ function renderExamModuleContent() {
       <div class="p-3.5 bg-indigo-50/70 rounded-2xl border border-indigo-200 text-xs text-indigo-950 leading-relaxed">
         <div class="flex items-center justify-between font-bold mb-1">
           <span class="flex items-center gap-1.5 text-indigo-900">
-            <span>âœï¸</span>
+            <span>✍️</span>
             <span class="text-sm font-black">Modul 3: Schreiben (Writing - 20 Min, 15 Points)</span>
           </span>
           <span class="px-2.5 py-0.5 rounded-full bg-indigo-200/80 text-indigo-900 font-extrabold text-[11px]">Teil 1 (5 Pts) + Teil 2 (10 Pts)</span>
         </div>
-        Complete both parts: 1) Fill in the missing registration form fields. 2) Compose a short email (~30â€“40 words) with real-time AI evaluation.
+        Complete both parts: 1) Fill in the missing registration form fields. 2) Compose a short email (~30–40 words) with real-time AI evaluation.
       </div>
 
-      <!-- Part 1: Formular AusfÃ¼llen -->
+      <!-- Part 1: Formular Ausfüllen -->
       <div class="p-4 bg-white rounded-2xl border border-sky-200 shadow-2xs space-y-3">
         <div class="flex items-center justify-between">
           <span class="text-[10px] font-black uppercase tracking-wider text-sky-700">${GOETHE_EXAM_DATA.schreiben.part1.title}</span>
-          <span class="px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 text-[10px] font-bold">5 Fields â€¢ 5 Points</span>
+          <span class="px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 text-[10px] font-bold">5 Fields • 5 Points</span>
         </div>
         <div class="p-3 bg-sky-50 rounded-xl border border-sky-200 text-xs text-sky-950 leading-relaxed font-serif italic">
           "${escapeHtml(GOETHE_EXAM_DATA.schreiben.part1.text)}"
@@ -8966,31 +8966,31 @@ function renderExamModuleContent() {
         <!-- Real-Time Leitpunkte & Structure Badges -->
         <div class="flex flex-wrap gap-1.5 pt-1">
           <span id="nlpPillGreeting" class="${nlp.hasGreeting ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium'}">
-            ${nlp.hasGreeting ? 'âœ… Greeting' : 'âšª Greeting'}
+            ${nlp.hasGreeting ? '✅ Greeting' : '⚪ Greeting'}
           </span>
           <span id="nlpPillLp1" class="${nlp.hasLp1 ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium'}">
-            ${nlp.hasLp1 ? 'âœ… 1. Travel Reason' : 'âšª 1. Travel Reason'}
+            ${nlp.hasLp1 ? '✅ 1. Travel Reason' : '⚪ 1. Travel Reason'}
           </span>
           <span id="nlpPillLp2" class="${nlp.hasLp2 ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium'}">
-            ${nlp.hasLp2 ? 'âœ… 2. Travel Dates' : 'âšª 2. Travel Dates'}
+            ${nlp.hasLp2 ? '✅ 2. Travel Dates' : '⚪ 2. Travel Dates'}
           </span>
           <span id="nlpPillLp3" class="${nlp.hasLp3 ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium'}">
-            ${nlp.hasLp3 ? 'âœ… 3. Map & Hotels' : 'âšª 3. Map & Hotels'}
+            ${nlp.hasLp3 ? '✅ 3. Map & Hotels' : '⚪ 3. Map & Hotels'}
           </span>
           <span id="nlpPillClosing" class="${nlp.hasClosing ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-medium'}">
-            ${nlp.hasClosing ? 'âœ… Sign-Off' : 'âšª Sign-Off'}
+            ${nlp.hasClosing ? '✅ Sign-Off' : '⚪ Sign-Off'}
           </span>
         </div>
 
-        <textarea id="examEmailInput" rows="5" oninput="handleExamEmailInput(this.value)" placeholder="Sehr geehrte Damen und Herren,\n\nich plane eine Reise nach KÃ¶ln..." class="w-full p-3 rounded-xl bg-white border border-sky-300 text-xs text-sky-950 font-mono leading-relaxed focus:outline-none focus:border-indigo-500 shadow-2xs">${escapeHtml(examUserAnswers.schreibenPart2 || '')}</textarea>
+        <textarea id="examEmailInput" rows="5" oninput="handleExamEmailInput(this.value)" placeholder="Sehr geehrte Damen und Herren,\n\nich plane eine Reise nach Köln..." class="w-full p-3 rounded-xl bg-white border border-sky-300 text-xs text-sky-950 font-mono leading-relaxed focus:outline-none focus:border-indigo-500 shadow-2xs">${escapeHtml(examUserAnswers.schreibenPart2 || '')}</textarea>
 
         <div class="flex items-center justify-between pt-1">
           <button onclick="toggleExamModelAnswer()" class="text-xs text-indigo-700 hover:text-indigo-900 font-bold underline cursor-pointer">
-            ðŸ’¡ Toggle Official Model Answer & Rubric
+            💡 Toggle Official Model Answer & Rubric
           </button>
         </div>
         <div id="examModelAnswerBox" class="hidden p-3.5 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-950 space-y-1.5 leading-relaxed">
-          <div class="font-bold text-emerald-900">Official Goethe Model Solution (100% Score):</div>
+          <div class="font-bold text-emerald-900">Standard Model Solution (100% Score):</div>
           <p class="font-serif italic whitespace-pre-line text-emerald-950">${escapeHtml(GOETHE_EXAM_DATA.schreiben.part2.sampleAnswer)}</p>
         </div>
       </div>
@@ -9003,12 +9003,12 @@ function renderExamModuleContent() {
       <div class="p-3.5 bg-indigo-50/70 rounded-2xl border border-indigo-200 text-xs text-indigo-950 leading-relaxed">
         <div class="flex items-center justify-between font-bold mb-1">
           <span class="flex items-center gap-1.5 text-indigo-900">
-            <span>ðŸ—£ï¸</span>
+            <span>🗣️</span>
             <span class="text-sm font-black">Modul 4: Sprechen (Speaking - 15 Min, 15 Points)</span>
           </span>
-          <span class="px-2.5 py-0.5 rounded-full bg-indigo-200/80 text-indigo-900 font-extrabold text-[11px]">3 Teile â€¢ 15 Points</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-indigo-200/80 text-indigo-900 font-extrabold text-[11px]">3 Teile • 15 Points</span>
         </div>
-        Listen to the native pronunciation model, then click ðŸŽ™ï¸ to record your German response or self-award points.
+        Listen to the native pronunciation model, then click 🎙️ to record your German response or self-award points.
       </div>
     `;
 
@@ -9048,7 +9048,7 @@ function renderExamModuleContent() {
               Native German Model Audio
             </div>
             <button onclick="playExamSpeech(decodeURIComponent('${encodeURIComponent(item.modelSpeech || (item.modelQuestion + ' ' + item.modelResponse))}'), this)" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition cursor-pointer flex items-center gap-1.5 shadow-2xs">
-              <span>ðŸ”Š</span>
+              <span>🔊</span>
               <span>Listen to Model</span>
             </button>
           </div>
@@ -9057,7 +9057,7 @@ function renderExamModuleContent() {
           <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2.5">
             <div class="flex flex-wrap items-center justify-between gap-2">
               <button id="sprechenMicBtn-${idx}" onclick="startSprechenRecognition(${idx}, ${JSON.stringify(item.targetKeywords)})" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 transition shadow-xs cursor-pointer">
-                <span>ðŸŽ™ï¸</span>
+                <span>🎙️</span>
                 <span>Record Answer</span>
               </button>
               <div id="sprechenStatus-${idx}" class="text-[11px] text-slate-600 font-medium">Click Record and speak clearly in German...</div>
@@ -9070,7 +9070,7 @@ function renderExamModuleContent() {
             <div id="sprechenScoreBox-${idx}">
               ${partScore !== undefined ? `
                 <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-950 flex items-center justify-between">
-                  <span>âœ… Recorded & Evaluated Score:</span>
+                  <span>✅ Recorded & Evaluated Score:</span>
                   <span class="text-sm font-black px-2.5 py-1 rounded-lg bg-emerald-200 text-emerald-900">${partScore} / 5 Pts</span>
                 </div>
               ` : `
@@ -9115,7 +9115,7 @@ window.finishGoetheExam = function() {
     }
   });
 
-  // 2. HÃ–REN SCORING (Max 15 Pts)
+  // 2. HÖREN SCORING (Max 15 Pts)
   let hoerenPts = 0;
   GOETHE_EXAM_DATA.hoeren.forEach((item, idx) => {
     if (examUserAnswers.hoeren[idx] === item.answer) {
@@ -9156,7 +9156,7 @@ window.finishGoetheExam = function() {
   else if (totalPercentage >= 60) grade = "Ausreichend (Passed)";
 
   if (isPassed) {
-    if (typeof awardXP === 'function') awardXP(50, 'Goethe A1 Exam Passed');
+    if (typeof awardXP === 'function') awardXP(50, 'German A1 Exam Passed');
     if (typeof unlockBadge === 'function') unlockBadge('goethe_ready');
   }
 
@@ -9165,50 +9165,50 @@ window.finishGoetheExam = function() {
 
   container.innerHTML = `
     <div class="p-6 bg-white rounded-2xl border-2 ${isPassed ? 'border-emerald-400 bg-gradient-to-br from-emerald-50/50 to-teal-50/50' : 'border-rose-300 bg-rose-50/50'} text-center space-y-4">
-      <div class="text-5xl">${isPassed ? 'ðŸ†' : 'ðŸ“š'}</div>
-      <h3 class="text-xl font-black text-sky-950">${isPassed ? 'Herzlichen GlÃ¼ckwunsch! Exam Passed!' : 'Good Effort! Keep Reviewing!'}</h3>
-      <p class="text-xs text-sky-700 font-medium">Official Goethe-Zertifikat A1 (Start Deutsch 1) & telc A1 Evaluation</p>
+      <div class="text-5xl">${isPassed ? '🏆' : '📚'}</div>
+      <h3 class="text-xl font-black text-sky-950">${isPassed ? 'Herzlichen Glückwunsch! Exam Passed!' : 'Good Effort! Keep Reviewing!'}</h3>
+      <p class="text-xs text-sky-700 font-medium">German A1 Standard Proficiency Exam Evaluation</p>
       
       <!-- 4 Module Breakdown Cards -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-xl mx-auto py-2">
         <div class="p-3 bg-white rounded-xl border border-sky-200 shadow-2xs">
-          <div class="text-[11px] font-bold text-sky-600">ðŸ“– Lesen</div>
+          <div class="text-[11px] font-bold text-sky-600">📖 Lesen</div>
           <div class="text-base font-black text-sky-950">${lesenPts} / 15</div>
         </div>
         <div class="p-3 bg-white rounded-xl border border-sky-200 shadow-2xs">
-          <div class="text-[11px] font-bold text-sky-600">ðŸŽ§ HÃ¶ren</div>
+          <div class="text-[11px] font-bold text-sky-600">🎧 Hören</div>
           <div class="text-base font-black text-sky-950">${hoerenPts} / 15</div>
         </div>
         <div class="p-3 bg-white rounded-xl border border-sky-200 shadow-2xs">
-          <div class="text-[11px] font-bold text-sky-600">âœï¸ Schreiben</div>
+          <div class="text-[11px] font-bold text-sky-600">✍️ Schreiben</div>
           <div class="text-base font-black text-sky-950">${schreibenPts} / 15</div>
         </div>
         <div class="p-3 bg-white rounded-xl border border-sky-200 shadow-2xs">
-          <div class="text-[11px] font-bold text-sky-600">ðŸ—£ï¸ Sprechen</div>
+          <div class="text-[11px] font-bold text-sky-600">🗣️ Sprechen</div>
           <div class="text-base font-black text-sky-950">${sprechenPts} / 15</div>
         </div>
       </div>
 
       <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full ${isPassed ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-rose-100 text-rose-900 border border-rose-300'} text-xs font-black shadow-2xs">
         <span>Total: ${totalRaw} / 60 Points (${totalPercentage}%)</span>
-        <span>â€¢</span>
+        <span>•</span>
         <span>${grade}</span>
       </div>
 
       <!-- Action Buttons: Review All Answers + Print Certificate -->
       <div class="flex flex-wrap items-center justify-center gap-2.5 pt-2">
         <button onclick="openExamReviewModal()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs transition shadow-sm cursor-pointer flex items-center gap-1.5">
-          <span>ðŸ”</span>
+          <span>🔍</span>
           <span>Review All Answers & Explanations</span>
         </button>
         ${isPassed ? `
           <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs transition shadow-sm cursor-pointer flex items-center gap-1.5">
-            <span>ðŸ“œ</span>
+            <span>📜</span>
             <span>Print Official Certificate</span>
           </button>
         ` : ''}
         <button onclick="restartGoetheExam()" class="px-4 py-2 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-900 font-bold text-xs transition cursor-pointer flex items-center gap-1.5">
-          <span>ðŸ”„</span>
+          <span>🔄</span>
           <span>Retake Exam</span>
         </button>
       </div>
@@ -9216,8 +9216,8 @@ window.finishGoetheExam = function() {
       ${isPassed ? `
         <div class="p-4 bg-white/90 rounded-2xl border border-emerald-300 text-left space-y-1.5 max-w-md mx-auto shadow-sm mt-3">
           <div class="flex items-center gap-2 text-emerald-900 font-black text-xs">
-            <span>ðŸŽ“</span>
-            <span>Cheeya Studio Goethe A1 Certificate of Proficiency</span>
+            <span>🎓</span>
+            <span>Cheeya Studio German A1 Certificate of Proficiency</span>
           </div>
           <p class="text-[11px] text-sky-900 leading-relaxed">
             Certified proficiency in German Level A1 competencies across Reading, Listening, Writing, and Speaking with final score of <strong>${totalPercentage}% (${grade})</strong>.
@@ -9251,7 +9251,7 @@ window.openExamReviewModal = function() {
   html += `
     <div class="space-y-3">
       <div class="flex items-center gap-2 pb-2 border-b border-sky-200">
-        <span class="text-base">ðŸ“–</span>
+        <span class="text-base">📖</span>
         <h4 class="text-sm font-black text-sky-950 uppercase tracking-wider">Modul Lesen (Reading) Review</h4>
       </div>
   `;
@@ -9263,7 +9263,7 @@ window.openExamReviewModal = function() {
         <div class="flex items-center justify-between">
           <span class="text-[10px] font-black uppercase tracking-wider text-sky-700">${item.teil}</span>
           <span class="text-xs font-black px-2 py-0.5 rounded-full ${isCorrect ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-rose-100 text-rose-900 border border-rose-300'}">
-            ${isCorrect ? 'âœ… Correct (+2.5 Pts)' : 'âŒ Incorrect (0 Pts)'}
+            ${isCorrect ? '✅ Correct (+2.5 Pts)' : '❌ Incorrect (0 Pts)'}
           </span>
         </div>
         ${item.context ? `<div class="p-2.5 bg-sky-50/80 rounded-xl border border-sky-100 text-sky-900 font-serif italic whitespace-pre-line text-[11px]">"${escapeHtml(item.context)}"</div>` : ''}
@@ -9278,19 +9278,19 @@ window.openExamReviewModal = function() {
           </div>
         </div>
         <div class="p-2 bg-sky-50 rounded-xl text-sky-900 text-[11px] leading-relaxed">
-          ðŸ’¡ <strong>Explanation:</strong> ${escapeHtml(item.explanation)}
+          💡 <strong>Explanation:</strong> ${escapeHtml(item.explanation)}
         </div>
       </div>
     `;
   });
   html += `</div>`;
 
-  // 2. HÃ–REN REVIEW
+  // 2. HÖREN REVIEW
   html += `
     <div class="space-y-3 mt-6">
       <div class="flex items-center gap-2 pb-2 border-b border-sky-200">
-        <span class="text-base">ðŸŽ§</span>
-        <h4 class="text-sm font-black text-sky-950 uppercase tracking-wider">Modul HÃ¶ren (Listening) Review</h4>
+        <span class="text-base">🎧</span>
+        <h4 class="text-sm font-black text-sky-950 uppercase tracking-wider">Modul Hören (Listening) Review</h4>
       </div>
   `;
   GOETHE_EXAM_DATA.hoeren.forEach((item, idx) => {
@@ -9301,11 +9301,11 @@ window.openExamReviewModal = function() {
         <div class="flex items-center justify-between">
           <span class="text-[10px] font-black uppercase tracking-wider text-sky-700">${item.teil}</span>
           <span class="text-xs font-black px-2 py-0.5 rounded-full ${isCorrect ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-rose-100 text-rose-900 border border-rose-300'}">
-            ${isCorrect ? 'âœ… Correct (+2.5 Pts)' : 'âŒ Incorrect (0 Pts)'}
+            ${isCorrect ? '✅ Correct (+2.5 Pts)' : '❌ Incorrect (0 Pts)'}
           </span>
         </div>
         <div class="p-2.5 bg-indigo-50/70 rounded-xl border border-indigo-100 text-indigo-950 font-mono text-[11px] leading-relaxed">
-          ðŸ—£ï¸ <strong>Audio Transcript:</strong> "${escapeHtml(item.audioPrompt)}"
+          🗣️ <strong>Audio Transcript:</strong> "${escapeHtml(item.audioPrompt)}"
         </div>
         <div class="font-bold text-sky-950">${escapeHtml(item.q)}</div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
@@ -9317,7 +9317,7 @@ window.openExamReviewModal = function() {
           </div>
         </div>
         <div class="p-2 bg-sky-50 rounded-xl text-sky-900 text-[11px] leading-relaxed">
-          ðŸ’¡ <strong>Explanation:</strong> ${escapeHtml(item.explanation)}
+          💡 <strong>Explanation:</strong> ${escapeHtml(item.explanation)}
         </div>
       </div>
     `;
@@ -9329,13 +9329,13 @@ window.openExamReviewModal = function() {
   html += `
     <div class="space-y-3 mt-6">
       <div class="flex items-center gap-2 pb-2 border-b border-sky-200">
-        <span class="text-base">âœï¸</span>
+        <span class="text-base">✍️</span>
         <h4 class="text-sm font-black text-sky-950 uppercase tracking-wider">Modul Schreiben (Writing) Review</h4>
       </div>
 
       <!-- Part 1 Form Filling Review -->
       <div class="p-4 bg-white rounded-2xl border border-sky-200 space-y-2.5 shadow-2xs">
-        <div class="font-black text-xs text-sky-950">Teil 1: Formular ausfÃ¼llen (Form Fields)</div>
+        <div class="font-black text-xs text-sky-950">Teil 1: Formular ausfüllen (Form Fields)</div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
           ${GOETHE_EXAM_DATA.schreiben.part1.fields.map((f, fIdx) => {
             const userVal = (examUserAnswers.schreibenPart1[fIdx] || '').trim().toLowerCase();
@@ -9345,11 +9345,11 @@ window.openExamReviewModal = function() {
               <div class="p-2.5 rounded-xl border ${isFCorrect ? 'border-emerald-200 bg-emerald-50/40' : 'border-rose-200 bg-rose-50/40'} space-y-1">
                 <div class="flex items-center justify-between">
                   <span class="font-bold text-sky-900">${f.label}:</span>
-                  <span class="text-[10px] font-black">${isFCorrect ? 'âœ… +1 Pt' : 'âŒ 0 Pts'}</span>
+                  <span class="text-[10px] font-black">${isFCorrect ? '✅ +1 Pt' : '❌ 0 Pts'}</span>
                 </div>
                 <div>Your input: <strong>"${escapeHtml(examUserAnswers.schreibenPart1[fIdx] || '-')}"</strong></div>
                 <div class="text-emerald-800">Expected: <strong>"${escapeHtml(f.answer)}"</strong></div>
-                <div class="text-[10px] text-sky-700">ðŸ’¡ ${f.explanation}</div>
+                <div class="text-[10px] text-sky-700">💡 ${f.explanation}</div>
               </div>
             `;
           }).join('')}
@@ -9366,7 +9366,7 @@ window.openExamReviewModal = function() {
           ${escapeHtml(examUserAnswers.schreibenPart2 || 'No email written.')}
         </div>
         <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 space-y-1">
-          <span class="font-bold text-emerald-950 block">Official Goethe Model Solution (100% Score):</span>
+          <span class="font-bold text-emerald-950 block">Standard Model Solution (100% Score):</span>
           <p class="font-serif text-[11px] text-emerald-900 whitespace-pre-line leading-relaxed italic">${escapeHtml(GOETHE_EXAM_DATA.schreiben.part2.sampleAnswer)}</p>
         </div>
       </div>
@@ -9377,7 +9377,7 @@ window.openExamReviewModal = function() {
   html += `
     <div class="space-y-3 mt-6">
       <div class="flex items-center gap-2 pb-2 border-b border-sky-200">
-        <span class="text-base">ðŸ—£ï¸</span>
+        <span class="text-base">🗣️</span>
         <h4 class="text-sm font-black text-sky-950 uppercase tracking-wider">Modul Sprechen (Speaking) Review</h4>
       </div>
   `;
@@ -9393,7 +9393,7 @@ window.openExamReviewModal = function() {
         <p class="text-sky-800 text-[11px]">${item.taskDesc}</p>
         ${transcript ? `<div class="p-2 bg-slate-50 rounded-xl border text-[11px] font-mono">Recognized Speech: "${escapeHtml(transcript)}"</div>` : ''}
         <div class="p-2 bg-indigo-50/70 rounded-xl border border-indigo-100 text-indigo-950 text-[11px] leading-relaxed">
-          <strong>Official Model Pronunciation:</strong> "${escapeHtml(item.modelSpeech || (item.modelQuestion + ' â€” ' + item.modelResponse))}"
+          <strong>Official Model Pronunciation:</strong> "${escapeHtml(item.modelSpeech || (item.modelQuestion + ' — ' + item.modelResponse))}"
         </div>
       </div>
     `;
@@ -9408,6 +9408,15 @@ window.closeExamReviewModal = function() {
   const modal = document.getElementById('goetheReviewModal');
   if (modal) modal.classList.add('hidden');
 };
+
+// Clean API Aliases
+const GERMAN_EXAM_DATA = GOETHE_EXAM_DATA;
+window.openGermanExamModal = window.openGoetheExamModal;
+window.closeGermanExamModal = window.closeGoetheExamModal;
+window.finishGermanExam = window.finishGoetheExam;
+window.restartGermanExam = window.restartGoetheExam;
+window.openGermanReviewModal = window.openExamReviewModal;
+window.closeGermanReviewModal = window.closeExamReviewModal;
 
   // ================= 31. SMART SPACED REPETITION (SRS) 3D FLASHCARDS =================
   const DEFAULT_SRS_DECK = [
