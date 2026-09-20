@@ -11,7 +11,7 @@
   // 1. Disable Right-Click Context Menu (prevents "View Source", "Inspect", "Save As")
   window.addEventListener('contextmenu', (e) => {
     e.preventDefault();
-    notify('🔒 Konten dilindungi oleh Cheeya Studio.');
+    notify('🔒 Content protected by Cheeya Studio.');
     return false;
   }, true);
 
@@ -21,7 +21,7 @@
     if (e.key === 'F12' || e.keyCode === 123) {
       e.preventDefault();
       e.stopPropagation();
-      notify('🔒 Developer tools dinonaktifkan.');
+      notify('🔒 Developer tools are disabled.');
       return false;
     }
 
@@ -33,7 +33,7 @@
       if (key === 'u') {
         e.preventDefault();
         e.stopPropagation();
-        notify('🔒 View Source dinonaktifkan.');
+        notify('🔒 View source is disabled.');
         return false;
       }
 
@@ -41,7 +41,7 @@
       if (key === 's') {
         e.preventDefault();
         e.stopPropagation();
-        notify('🔒 Save Page dinonaktifkan.');
+        notify('🔒 Save page is disabled.');
         return false;
       }
 
@@ -49,7 +49,7 @@
       if (key === 'p') {
         e.preventDefault();
         e.stopPropagation();
-        notify('🔒 Silakan gunakan tombol Export PDF bawaan aplikasi.');
+        notify('🔒 Please use the built-in PDF export button.');
         return false;
       }
 
@@ -57,7 +57,7 @@
       if (e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) {
         e.preventDefault();
         e.stopPropagation();
-        notify('🔒 Inspect Element dinonaktifkan.');
+        notify('🔒 Inspect element is disabled.');
         return false;
       }
 
@@ -66,7 +66,7 @@
         const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
         if (tag !== 'input' && tag !== 'textarea') {
           e.preventDefault();
-          notify('🔒 Salin teks dinonaktifkan.');
+          notify('🔒 Copying text is disabled.');
           return false;
         }
       }
