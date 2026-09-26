@@ -81,13 +81,8 @@
     <!-- Right Controls: 2 Organized Rows (Learning Tools & Study Utilities) -->
     <div class="flex flex-col items-end gap-1.5 flex-shrink-0 max-w-full overflow-x-auto scrollbar-none py-0.5">
 
-      <!-- Row 1: Core Learning Hubs (Translator, Progress, A1 Exam, Flashcards, Notebook, Grammar Hub) -->
+      <!-- Row 1: Core Learning Hubs (Progress, A1 Exam, Flashcards, Notebook, Grammar Hub) -->
       <div class="flex items-center gap-1.5 sm:gap-2 flex-nowrap">
-        <!-- 0. Smart Translator & Grammar Analyzer Full-Page Trigger -->
-        <button id="navTab-translator" onclick="switchView('translator')" class="px-2.5 sm:px-3 py-1 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="AI Smart German Translator & 12-Module Grammar Analyzer">
-          <span>🌐</span>
-          <span>Smart Translator</span>
-        </button>
 
         <!-- 1. Progress Tracker Trigger Button -->
         <button id="navTab-progress" onclick="switchView('progress')" class="px-2.5 sm:px-3 py-1 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="View Learning Progress & Exercise History">
@@ -210,7 +205,6 @@
   <!-- Mobile View Selector Bar (Shown only on small screens) -->
   <div class="lg:hidden flex items-center justify-around bg-sky-100/90 border-b border-sky-200 px-2 py-1.5 text-xs font-bold flex-shrink-0 z-20 overflow-x-auto scrollbar-none gap-1">
     <button onclick="switchView('dashboard')" class="px-2 py-1 rounded-lg text-sky-800 shrink-0">🏠 Dashboard</button>
-    <button onclick="switchView('translator')" class="px-2 py-1 rounded-lg text-sky-800 shrink-0">🌐 Translator</button>
     <button onclick="switchView('lesson')" class="px-2 py-1 rounded-lg text-sky-800 shrink-0">📘 Lesson</button>
     <button onclick="switchView('pdf')" class="px-2 py-1 rounded-lg text-sky-800 shrink-0">📖 PDF</button>
     <button onclick="switchView('vocab')" class="px-2 py-1 rounded-lg text-sky-800 shrink-0">📚 Vocab</button>
@@ -396,31 +390,6 @@
       </div>
 
 
-      <!-- ================= DASHBOARD: QUICK ACCESS TO FULL-PAGE SMART TRANSLATOR ================= -->
-      <div onclick="switchView('translator')" class="blue-glass-card p-5 md:p-6 border-2 border-sky-300 shadow-md hover:shadow-xl transition cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 text-white rounded-2xl group flex-shrink-0 mb-2">
-        <div class="flex items-center gap-4">
-          <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-3xl shrink-0 group-hover:scale-105 transition shadow-md border border-white/30">
-            🌐
-          </div>
-          <div>
-            <div class="flex flex-wrap items-center gap-2">
-              <h3 class="text-base md:text-xl font-black tracking-tight">AI Smart German Translator & Grammar Analyzer</h3>
-              <span class="text-[10px] bg-white/20 px-2.5 py-0.5 rounded-full font-extrabold border border-white/30 tracking-wide">12-Module Deep Analysis</span>
-            </div>
-            <p class="text-xs text-sky-100 mt-1 max-w-2xl leading-relaxed">
-              Open dedicated full-page language lab & in-depth German grammar breakdown: word-by-word morphological dissection, adjective declensions, case government, verb brackets, mistake detector, and native audio.
-            </p>
-          </div>
-        </div>
-        <div class="flex items-center gap-3 shrink-0 self-end md:self-center">
-          <button class="px-5 py-2.5 rounded-xl bg-white text-sky-950 text-xs font-black shadow-md group-hover:bg-sky-50 group-hover:shadow-lg transition flex items-center gap-2 cursor-pointer">
-            <span>Open Full Translator</span>
-            <span class="text-sm">➔</span>
-          </button>
-        </div>
-      </div>
-
-
       <!-- Chapter Directory Grid (12 Cards) -->
       <div class="flex-shrink-0">
         <div class="flex items-center justify-between mb-4">
@@ -436,192 +405,6 @@
         <div id="dashboardChapterGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <!-- Populated dynamically by JavaScript -->
         </div>
-      </div>
-
-    </section>
-
-    <!-- ================= VIEW: DEDICATED FULL-PAGE AI SMART TRANSLATOR & 12-MODULE GRAMMAR ANALYZER ================= -->
-    <section id="view-translator" class="app-view flex-col flex-1 overflow-y-auto p-4 md:p-8 space-y-6 bg-gradient-to-b from-sky-50/70 via-white to-sky-50/70">
-      
-      <!-- Top Action & Navigation Bar for Translator Page -->
-      <div class="blue-glass-card p-4 md:p-5 border-2 border-sky-300 bg-white/95 flex flex-wrap items-center justify-between gap-4 shadow-sm rounded-2xl flex-shrink-0">
-        <div class="flex items-center gap-3">
-          <button onclick="switchView('dashboard')" class="px-3.5 py-2 rounded-xl bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 text-xs font-black flex items-center gap-2 transition shadow-xs cursor-pointer" title="Back to Dashboard">
-            <span>←</span>
-            <span>Dashboard</span>
-          </button>
-          <div class="h-6 w-px bg-sky-200 hidden sm:block"></div>
-          <div>
-            <div class="flex items-center gap-2">
-              <h2 class="text-base md:text-xl font-black text-sky-950 flex items-center gap-2">
-                <span>🌐</span>
-                <span>AI Smart German Translator & Grammar Analyzer</span>
-              </h2>
-              <span class="text-[10px] bg-sky-100 text-sky-800 font-extrabold px-2.5 py-0.5 rounded-full border border-sky-300 hidden md:inline">Full Page Language Lab</span>
-            </div>
-            <p class="text-xs text-sky-700 font-medium">Bilingual translation & 12-module German grammar breakdown with native audio pronunciation.</p>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-2 flex-wrap">
-          <button onclick="openNotebookModal()" class="px-3 py-1.5 rounded-xl bg-purple-100 hover:bg-purple-200 border border-purple-300 text-purple-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="My Starred German Sentences Notebook">
-            <span>⭐</span>
-            <span>My Notebook</span>
-          </button>
-          <button onclick="openGrammarModal()" class="px-3 py-1.5 rounded-xl bg-blue-100 hover:bg-blue-200 border border-blue-300 text-blue-900 text-xs font-black flex items-center gap-1.5 transition shadow-xs cursor-pointer" title="Comprehensive German Grammar Reference">
-            <span>📑</span>
-            <span>Quick Grammar</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Main Translator Card Container (Full Width) -->
-      <div id="translatorSection" class="blue-glass-card p-5 md:p-8 border-2 border-sky-300 shadow-xl flex-shrink-0 relative overflow-hidden bg-gradient-to-br from-white/95 via-sky-50/90 to-blue-50/90">
-        
-        <!-- Header -->
-        <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-sky-200">
-          <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-500 to-blue-600 text-white flex items-center justify-center text-2xl shadow-md flex-shrink-0">
-              🤖
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <h3 class="text-lg md:text-xl font-black text-sky-950">AI Smart German Translator & Grammar Analyzer</h3>
-                <span class="text-[10px] bg-sky-100 text-sky-800 font-extrabold px-2.5 py-0.5 rounded-full border border-sky-300">A1-C1 Deep Analysis</span>
-              </div>
-              <p class="text-xs text-sky-700 font-medium mt-0.5">
-                Translate sentences into German with comprehensive grammatical breakdown (word-by-word morphology, case government, verb brackets, adjective declension) and native audio pronunciation.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Language Selector Bar & Controls -->
-        <div class="py-3 flex flex-wrap items-center justify-between gap-2.5">
-          <div class="flex items-center gap-2">
-            <!-- Source Lang -->
-            <div class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-sky-300 shadow-2xs">
-              <span class="text-xs font-bold text-sky-700">From:</span>
-              <select id="transSourceLang" onchange="handleTranslatorLangChange()" class="bg-transparent text-xs font-extrabold text-sky-950 focus:outline-none cursor-pointer">
-                <option value="en" selected>🇬🇧 English</option>
-                <option value="de">🇩🇪 German (Deutsch)</option>
-                <option value="id">🇮🇩 Indonesian</option>
-              </select>
-            </div>
-
-            <!-- Swap Button -->
-            <button onclick="swapTranslatorLanguages()" class="p-2 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-800 border border-sky-300 transition shadow-2xs cursor-pointer" title="Swap languages">
-              ⇄
-            </button>
-
-            <!-- Target Lang -->
-            <div class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-sky-300 shadow-2xs">
-              <span class="text-xs font-bold text-sky-700">To:</span>
-              <select id="transTargetLang" onchange="handleTranslatorLangChange()" class="bg-transparent text-xs font-extrabold text-sky-950 focus:outline-none cursor-pointer">
-                <option value="de" selected>🇩🇪 German (Deutsch)</option>
-                <option value="en">🇬🇧 English</option>
-                <option value="id">🇮🇩 Indonesian</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Quick Sample Sentences Chips -->
-          <div class="flex flex-wrap items-center gap-1.5 text-[11px]">
-            <span class="font-bold text-sky-700 mr-1">Examples:</span>
-            <button onclick="setTranslatorSample('Ich lerne jeden Tag fleißig Deutsch.', 'de', 'en')" class="px-2.5 py-1 rounded-lg bg-sky-100/80 hover:bg-sky-200 border border-sky-200 text-sky-900 font-semibold cursor-pointer">
-              Ich lerne Deutsch
-            </button>
-            <button onclick="setTranslatorSample('Wir fahren morgen mit dem Zug nach Berlin.', 'de', 'en')" class="px-2.5 py-1 rounded-lg bg-sky-100/80 hover:bg-sky-200 border border-sky-200 text-sky-900 font-semibold cursor-pointer">
-              Wir fahren mit dem Zug
-            </button>
-            <button onclick="setTranslatorSample('I would like to eat noodles with spicy chicken.', 'en', 'de')" class="px-2.5 py-1 rounded-lg bg-sky-100/80 hover:bg-sky-200 border border-sky-200 text-sky-900 font-semibold cursor-pointer">
-              I would like noodles (EN)
-            </button>
-            <button onclick="setTranslatorSample('Where do you come from and what is your name?', 'en', 'de')" class="px-2.5 py-1 rounded-lg bg-sky-100/80 hover:bg-sky-200 border border-sky-200 text-sky-900 font-semibold cursor-pointer">
-              Where do you come from? (EN)
-            </button>
-          </div>
-        </div>
-
-        <!-- Input & Output Dual Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2">
-          
-          <!-- Source Input Box -->
-          <div class="flex flex-col bg-white rounded-2xl border-2 border-sky-200 p-4 shadow-sm focus-within:border-sky-500 transition">
-            <div class="flex items-center justify-between pb-2 mb-2 border-b border-sky-100 text-xs">
-              <span id="transSourceLabel" class="font-black text-sky-900 uppercase tracking-wider text-[11px]">🇬🇧 English Sentence</span>
-              <div class="flex items-center gap-2">
-                <button id="transVoiceInputBtn" onclick="startTranslatorVoiceInput()" class="px-2 py-0.5 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 text-[11px] font-bold flex items-center gap-1 transition cursor-pointer" title="Voice Input: Speak to type">
-                  <span id="transVoiceMicIcon">🎙️</span>
-                  <span>Voice Input</span>
-                </button>
-                <button onclick="clearTranslatorInput()" class="text-sky-400 hover:text-sky-700 font-bold transition">Clear</button>
-              </div>
-            </div>
-            <textarea id="transInputText" rows="4" placeholder="Enter or paste your sentence here..." class="w-full resize-none text-sm text-sky-950 font-medium focus:outline-none placeholder-sky-300" onkeydown="if(event.ctrlKey && event.key === 'Enter') translateAndAnalyze()"></textarea>
-            
-            <div class="flex items-center justify-between pt-3 mt-auto border-t border-sky-100 text-xs">
-              <span id="transCharCount" class="text-[11px] text-sky-400 font-medium">0 / 500</span>
-              <button onclick="translateAndAnalyze()" id="transSubmitBtn" class="btn-pastel-blue py-2 px-5 rounded-xl text-xs font-black flex items-center gap-2 shadow-sm hover:shadow-md cursor-pointer transition">
-                <span>⚡</span>
-                <span>Translate & Analyze</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Target Output Box -->
-          <div class="flex flex-col bg-sky-50/60 rounded-2xl border-2 border-sky-200 p-4 shadow-sm relative">
-            <div class="flex items-center justify-between pb-2 mb-2 border-b border-sky-200 text-xs">
-              <span id="transTargetLabel" class="font-black text-sky-900 uppercase tracking-wider text-[11px]">🇩🇪 German Translation</span>
-              <div class="flex items-center gap-1.5">
-                <button id="transSpeakPracticeBtn" onclick="startSpeakingPractice()" class="px-2 py-1 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300 text-[11px] font-bold flex items-center gap-1 transition cursor-pointer" title="Practice Speaking: Test your German pronunciation">
-                  <span>🎙️</span>
-                  <span class="hidden sm:inline">Practice Speaking</span>
-                </button>
-                <button id="transSaveNotebookBtn" onclick="toggleSaveCurrentSentence()" class="p-1.5 rounded-lg bg-white hover:bg-amber-100 text-amber-700 border border-sky-200 transition cursor-pointer" title="Save this sentence to My Notebook">
-                  <span id="transSaveStarIcon">⭐</span>
-                </button>
-                <button id="transAudioBtn" onclick="playTranslatorTargetAudio()" class="p-1.5 rounded-lg bg-white hover:bg-sky-100 text-sky-700 border border-sky-200 transition cursor-pointer" title="Listen to pronunciation">
-                  🔊
-                </button>
-                <button onclick="copyTranslatorOutput()" class="p-1.5 rounded-lg bg-white hover:bg-sky-100 text-sky-700 border border-sky-200 transition cursor-pointer" title="Copy text">
-                  📋
-                </button>
-              </div>
-            </div>
-
-            <div id="transOutputText" class="text-base md:text-lg font-bold text-sky-950 min-h-[70px] flex items-center">
-              <span class="text-sky-400 text-xs font-medium italic">Translation and grammar breakdown will appear here...</span>
-            </div>
-
-            <!-- Live Phonetic Pronunciation Guide in Translator -->
-            <div id="transPhoneticBar" class="hidden mt-2 pt-2 border-t border-purple-200/80 text-xs bg-purple-50/70 -mx-4 -mb-4 p-3.5 rounded-b-2xl">
-              <div class="flex items-center gap-1.5 flex-wrap mb-1">
-                <span class="text-[10px] font-black uppercase text-purple-800 tracking-wider flex items-center gap-1">
-                  <span>🗣️</span>
-                  <span>How to pronounce:</span>
-                </span>
-                <span id="transPhoneticText" class="font-bold text-purple-950 font-mono text-[11px] tracking-wide bg-white px-2 py-0.5 rounded-md border border-purple-300 shadow-2xs"></span>
-              </div>
-              <div id="transPhoneticTips" class="text-[11px] text-purple-900 font-medium leading-snug pt-0.5"></div>
-            </div>
-
-            <!-- Speaking Practice Feedback Banner -->
-            <div id="speakingPracticeFeedback" class="hidden mt-2 p-2.5 rounded-xl border text-xs"></div>
-
-            <div id="transLoadingIndicator" class="hidden absolute inset-0 bg-white/80 rounded-2xl backdrop-blur-xs flex items-center justify-center gap-2 text-sky-800 font-bold text-xs">
-              <div class="w-5 h-5 border-2 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
-              <span>Analyzing grammar & translating...</span>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- ================= IN-DEPTH GERMAN GRAMMAR ANALYSIS CONTAINER ================= -->
-        <div id="grammarAnalysisContainer" class="mt-5 space-y-4 hidden">
-          <!-- Populated dynamically by app.js -->
-        </div>
-
       </div>
 
     </section>
