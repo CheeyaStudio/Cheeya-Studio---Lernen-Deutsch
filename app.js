@@ -5217,6 +5217,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+
+
   // ================= 22. THEME MODE SWITCHER (LIGHT, DARK, SEPIA) =================
   const THEME_STORAGE_KEY = 'netzwerk_theme_mode';
   let currentTheme = localStorage.getItem(THEME_STORAGE_KEY) || 'light';
@@ -5995,24 +5997,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   window.generateGermanPhonetics = generateGermanPhonetics;
 
-recognition.onerror = function(err) {
-      console.warn('Speech error:', err);
-      showFloatingToast("⚠️ Microphone error or permission denied.");
-    };
-
-    recognition.onend = function() {
-      activeSpeechRecognition = null;
-      if (btn) btn.classList.remove('mic-recording-active');
-      if (micIcon) micIcon.textContent = '🎙️';
-    };
-
-    try {
-      recognition.start();
-    } catch(e) {
-      console.error(e);
-    }
-  };
-
   async function startRecordingUserVoice() {
     try {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -6158,7 +6142,13 @@ recognition.onerror = function(err) {
       }
     };
 
-recognition.onerror = function(err) {
+    recognition.onresult = function(event) {
+      const spokenText = event.results[0][0].transcript;
+      stopRecordingUserVoice();
+      evaluatePronunciation(spokenText, currentSpeakingTargetText);
+    };
+
+    recognition.onerror = function(err) {
       console.warn('Speech recognition error:', err);
       stopRecordingUserVoice();
       if (statusLabel) {
@@ -6272,7 +6262,7 @@ recognition.onerror = function(err) {
     if (badge) badge.textContent = `${list.length} ${list.length === 1 ? 'Sentence' : 'Sentences'} Saved`;
   }
 
-window.openNotebookModal = function() {
+  window.openNotebookModal = function() {
     const modal = document.getElementById('savedNotebookModal');
     if (!modal) return;
     renderSavedNotebook();
@@ -6318,9 +6308,6 @@ window.openNotebookModal = function() {
               <button onclick="startSpeakingPractice('${escapeHtml(item.german)}')" class="px-2 py-0.5 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-900 text-[11px] font-bold transition cursor-pointer" title="Practice Speaking">
                 🎙️ Speak
               </button>
-              <button onclick="reAnalyzeFromNotebook('${escapeHtml(item.german)}')" class="px-2 py-0.5 rounded-lg bg-purple-100 hover:bg-purple-200 text-purple-900 text-[11px] font-bold transition cursor-pointer" title="Load into Grammar Analyzer">
-                🔍 Analyze
-              </button>
               <button onclick="deleteSavedSentence('${item.id}')" class="p-1 rounded-lg hover:bg-rose-100 text-rose-500 transition cursor-pointer" title="Delete from Notebook">
                 🗑️
               </button>
@@ -6344,7 +6331,7 @@ window.openNotebookModal = function() {
     showFloatingToast('Sentence removed from Notebook');
   };
 
-// ================= RUN INITIALIZATION =================
+  // ================= RUN INITIALIZATION =================
   initSpeech();
   initFontSize();
   initTheme();
