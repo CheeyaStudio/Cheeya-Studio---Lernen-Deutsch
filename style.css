@@ -301,6 +301,82 @@ input, textarea {
   pointer-events: auto;
   cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Crect x='3' y='7' width='16' height='10' rx='2.5' transform='rotate(-25 11 12)' fill='%23fda4af' stroke='%23e11d48' stroke-width='1.5'/%3E%3Crect x='3' y='12' width='16' height='5' rx='1' transform='rotate(-25 11 12)' fill='%23cbd5e1' stroke='%2364748b' stroke-width='1'/%3E%3C/svg%3E") 4 18, default;
 }
+#pdfAnnotationCanvas.mode-text {
+  pointer-events: auto;
+  cursor: text;
+}
+
+/* Interactive PDF Typed Notes & Fill-in-the-Blank Text Layer */
+.pdf-text-item {
+  position: absolute;
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  max-width: 90%;
+  font-family: 'Quicksand', 'Plus Jakarta Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.25;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1.5px dashed rgba(2, 132, 199, 0.5);
+  box-shadow: 0 2px 6px rgba(12, 74, 110, 0.12);
+  cursor: pointer;
+  user-select: text;
+  -webkit-user-select: text;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  z-index: 5;
+}
+.pdf-text-item:hover {
+  border-color: #0284c7;
+  border-style: solid;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+  transform: translateY(-1px);
+}
+.pdf-text-item .delete-note-btn {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  border: 1.5px solid white;
+  z-index: 10;
+}
+.pdf-text-item:hover .delete-note-btn {
+  display: flex;
+}
+.pdf-text-editor-box {
+  position: absolute;
+  pointer-events: auto;
+  z-index: 20;
+}
+.pdf-text-editor-box input {
+  font-family: 'Quicksand', 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 2px solid #0284c7;
+  background: #ffffff;
+  color: #0c4a6e;
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.35);
+  outline: none;
+  min-width: 120px;
+  max-width: 380px;
+}
 
 /* Ambient Music Sound Pulsing */
 @keyframes pulse-wave {

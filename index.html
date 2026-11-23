@@ -575,6 +575,12 @@
             <span>Eraser</span>
           </button>
 
+          <!-- Text / Type Notes -->
+          <button id="toolBtn-text" onclick="setPdfTool('text')" class="pdf-tool-btn" title="Text (Click anywhere on the PDF page to type answers or notes)">
+            <span>🔤</span>
+            <span>Text</span>
+          </button>
+
           <!-- Separator -->
           <div class="h-5 w-[1px] bg-sky-300 mx-1"></div>
 
@@ -685,6 +691,9 @@
           
           <!-- HTML5 Drawing Canvas Overlay for Pen, Stabilo & Eraser -->
           <canvas id="pdfAnnotationCanvas" class="mode-hand absolute inset-0 w-full h-full"></canvas>
+          
+          <!-- Interactive Typed Notes & Fill-in-the-Blank Text Layer -->
+          <div id="pdfTextOverlay" class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden" style="z-index: 6;"></div>
           
           <!-- Loading Spinner -->
           <div id="pdfLoadingSpinner" class="absolute inset-0 flex flex-col items-center justify-center bg-white/90 z-10 transition-opacity duration-200">

@@ -2589,6 +2589,7 @@ document.addEventListener('DOMContentLoaded', () => {
       pdfRenderTask = null;
 
       redrawPdfStrokes();
+      renderPdfTextAnnotations();
 
       if (spinner) {
         spinner.style.display = 'none';
@@ -2747,6 +2748,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (canvas) {
     canvas.addEventListener('pointerdown', (e) => {
       if (currentPdfTool === 'hand') return;
+      if (currentPdfTool === 'text') {
+        const rect = canvas.getBoundingClientRect();
+        const x = rect.width > 0 ? (e.clientX - rect.left) / rect.width : 0;
+        const y = rect.height > 0 ? (e.clientY - rect.top) / rect.height : 0;
+        openPdfTextEditor(x, y);
+        return;
+      }
       isDrawing = true;
       const rect = canvas.getBoundingClientRect();
       const x = rect.width > 0 ? (e.clientX - rect.left) / rect.width : 0;
@@ -2817,9 +2825,150 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.addEventListener('pointercancel', finishStroke);
   }
 
+  // ================= TEXT ANNOTATION & TYPING ENGINE =================
+  function getTextStorageKey() {
+    const chap = NETZWERK_DATA.chapters[currentChapterIndex];
+    const p = parseInt(pageInput.value, 10) || 1;
+    return `netzwerk_texts_doc_${currentDoc}_chap_${chap.id}_page_${p}`;
+  }
+
+  function loadPageTexts() {
+    const key = getTextStorageKey();
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) {}
+    }
+    return [];
+  }
+
+  function savePageTexts(texts) {
+    const key = getTextStorageKey();
+    localStorage.setItem(key, JSON.stringify(texts));
+  }
+
+  function renderPdfTextAnnotations() {
+    const overlay = document.getElementById('pdfTextOverlay');
+    if (!overlay) return;
+    overlay.innerHTML = '';
+
+    const texts = loadPageTexts();
+    texts.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'pdf-text-item';
+      el.style.left = (item.x * 100) + '%';
+      el.style.top = (item.y * 100) + '%';
+      el.style.color = item.color || '#0284c7';
+      el.title = 'Click to edit, or click ✕ to delete';
+
+      const span = document.createElement('span');
+      span.textContent = item.text;
+      el.appendChild(span);
+
+      const delBtn = document.createElement('div');
+      delBtn.className = 'delete-note-btn';
+      delBtn.textContent = '✕';
+      delBtn.title = 'Delete note';
+      delBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        deletePdfTextNote(item.id);
+      });
+      el.appendChild(delBtn);
+
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openPdfTextEditor(item.x, item.y, item);
+      });
+
+      overlay.appendChild(el);
+    });
+  }
+
+  function deletePdfTextNote(id) {
+    let texts = loadPageTexts();
+    texts = texts.filter(t => t.id !== id);
+    savePageTexts(texts);
+    renderPdfTextAnnotations();
+  }
+
+  function openPdfTextEditor(xPct, yPct, existingItem = null) {
+    const overlay = document.getElementById('pdfTextOverlay');
+    if (!overlay) return;
+
+    const existingEditor = overlay.querySelector('.pdf-text-editor-box');
+    if (existingEditor) {
+      existingEditor.remove();
+    }
+
+    const editorBox = document.createElement('div');
+    editorBox.className = 'pdf-text-editor-box';
+    editorBox.style.left = (xPct * 100) + '%';
+    editorBox.style.top = (yPct * 100) + '%';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'Type answers or notes here...';
+    input.value = existingItem ? existingItem.text : '';
+    input.style.color = currentPdfColor || '#0284c7';
+    input.style.borderColor = currentPdfColor || '#0284c7';
+
+    editorBox.appendChild(input);
+    overlay.appendChild(editorBox);
+
+    setTimeout(() => {
+      input.focus();
+      if (input.value) {
+        input.setSelectionRange(input.value.length, input.value.length);
+      }
+    }, 40);
+
+    let isSaved = false;
+    const saveAndClose = () => {
+      if (isSaved) return;
+      isSaved = true;
+      const textVal = input.value.trim();
+      let texts = loadPageTexts();
+
+      if (existingItem) {
+        if (textVal) {
+          texts = texts.map(t => t.id === existingItem.id ? { ...t, text: textVal, color: currentPdfColor } : t);
+        } else {
+          texts = texts.filter(t => t.id !== existingItem.id);
+        }
+      } else if (textVal) {
+        texts.push({
+          id: Date.now() + Math.random(),
+          x: xPct,
+          y: yPct,
+          text: textVal,
+          color: currentPdfColor || '#0284c7'
+        });
+      }
+
+      savePageTexts(texts);
+      editorBox.remove();
+      renderPdfTextAnnotations();
+    };
+
+    input.addEventListener('keydown', (e) => {
+      e.stopPropagation();
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        saveAndClose();
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        editorBox.remove();
+        renderPdfTextAnnotations();
+      }
+    });
+
+    input.addEventListener('blur', () => {
+      setTimeout(saveAndClose, 160);
+    });
+  }
+
   window.setPdfTool = function(tool) {
     currentPdfTool = tool;
-    ['hand', 'pen', 'highlighter', 'eraser'].forEach(t => {
+    ['hand', 'pen', 'highlighter', 'eraser', 'text'].forEach(t => {
       const btn = document.getElementById(`toolBtn-${t}`);
       if (btn) {
         if (t === tool) {
@@ -2866,13 +3015,22 @@ document.addEventListener('DOMContentLoaded', () => {
       strokes.pop();
       savePageStrokes(strokes);
       redrawPdfStrokes();
+    } else {
+      const texts = loadPageTexts();
+      if (texts.length > 0) {
+        texts.pop();
+        savePageTexts(texts);
+        renderPdfTextAnnotations();
+      }
     }
   };
 
   window.clearPdfStrokes = function() {
-    if (confirm("Clear all hand-drawn notes and highlights on this page?")) {
+    if (confirm("Clear all hand-drawn notes, highlights, and typed text on this page?")) {
       savePageStrokes([]);
+      savePageTexts([]);
       redrawPdfStrokes();
+      renderPdfTextAnnotations();
     }
   };
 
@@ -4975,6 +5133,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Draw annotations layer if present
     if (annotCanvas && annotCanvas.width > 0 && annotCanvas.height > 0) {
       ctx.drawImage(annotCanvas, 0, 0);
+    }
+
+    // 4. Draw typed text annotations if present
+    const texts = (typeof loadPageTexts === 'function') ? loadPageTexts() : [];
+    if (texts && texts.length > 0) {
+      texts.forEach(item => {
+        ctx.save();
+        ctx.font = 'bold 16px "Quicksand", sans-serif';
+        const posX = item.x * exportCanvas.width;
+        const posY = item.y * exportCanvas.height;
+        const metrics = ctx.measureText(item.text);
+        const padX = 8, padY = 4, boxH = 24;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+        ctx.strokeStyle = item.color || '#0284c7';
+        ctx.lineWidth = 1.5;
+        ctx.fillRect(posX, posY - 17, metrics.width + padX * 2, boxH);
+        ctx.strokeRect(posX, posY - 17, metrics.width + padX * 2, boxH);
+        ctx.fillStyle = item.color || '#0284c7';
+        ctx.fillText(item.text, posX + padX, posY);
+        ctx.restore();
+      });
     }
 
     return exportCanvas;
