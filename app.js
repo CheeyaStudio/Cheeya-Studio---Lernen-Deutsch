@@ -2749,6 +2749,8 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.addEventListener('pointerdown', (e) => {
       if (currentPdfTool === 'hand') return;
       if (currentPdfTool === 'text') {
+        e.preventDefault();
+        e.stopPropagation();
         const rect = canvas.getBoundingClientRect();
         const x = rect.width > 0 ? (e.clientX - rect.left) / rect.width : 0;
         const y = rect.height > 0 ? (e.clientY - rect.top) / rect.height : 0;
@@ -2858,7 +2860,7 @@ document.addEventListener('DOMContentLoaded', () => {
       el.style.left = (item.x * 100) + '%';
       el.style.top = (item.y * 100) + '%';
       el.style.color = item.color || '#0284c7';
-      el.title = 'Click to edit, or click ✕ to delete';
+      el.title = 'Klik untuk edit, atau klik ✕ untuk hapus';
 
       const span = document.createElement('span');
       span.textContent = item.text;
@@ -2867,7 +2869,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const delBtn = document.createElement('div');
       delBtn.className = 'delete-note-btn';
       delBtn.textContent = '✕';
-      delBtn.title = 'Delete note';
+      delBtn.title = 'Hapus catatan';
       delBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         deletePdfTextNote(item.id);
@@ -2901,30 +2903,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const editorBox = document.createElement('div');
     editorBox.className = 'pdf-text-editor-box';
-    editorBox.style.left = (xPct * 100) + '%';
-    editorBox.style.top = (yPct * 100) + '%';
+    const clampedX = Math.min(76, Math.max(3, xPct * 100));
+    const clampedY = Math.min(92, Math.max(3, yPct * 100));
+    editorBox.style.left = clampedX + '%';
+    editorBox.style.top = clampedY + '%';
 
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.placeholder = 'Type answers or notes here...';
+    editorBox.innerHTML = `
+      <div class="flex items-center gap-1.5 bg-white/95 p-1.5 rounded-xl shadow-2xl border-2 border-sky-400 backdrop-blur-md" style="min-width: 250px;">
+        <span class="text-sky-500 font-bold text-xs pl-1">✏️</span>
+        <input type="text" class="pdf-text-real-input flex-1 text-xs font-bold text-sky-950 bg-sky-50/80 border border-sky-200 rounded-lg px-2.5 py-1.5 outline-none focus:border-sky-500 focus:bg-white" placeholder="Ketik jawaban di sini...">
+        <button type="button" class="pdf-save-btn px-2.5 py-1.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg text-xs font-bold transition shadow-xs cursor-pointer flex items-center gap-1">✔ Simpan</button>
+        <button type="button" class="pdf-cancel-btn px-2 py-1.5 bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 rounded-lg text-xs font-bold transition cursor-pointer">✕</button>
+      </div>
+    `;
+
+    overlay.appendChild(editorBox);
+
+    const input = editorBox.querySelector('.pdf-text-real-input');
+    const saveBtn = editorBox.querySelector('.pdf-save-btn');
+    const cancelBtn = editorBox.querySelector('.pdf-cancel-btn');
+
     input.value = existingItem ? existingItem.text : '';
     input.style.color = currentPdfColor || '#0284c7';
-    input.style.borderColor = currentPdfColor || '#0284c7';
 
-    editorBox.appendChild(input);
-    overlay.appendChild(editorBox);
+    // Prevent editor clicks from propagating to canvas
+    editorBox.addEventListener('pointerdown', (e) => e.stopPropagation());
+    editorBox.addEventListener('mousedown', (e) => e.stopPropagation());
+    editorBox.addEventListener('click', (e) => e.stopPropagation());
 
     setTimeout(() => {
       input.focus();
       if (input.value) {
         input.setSelectionRange(input.value.length, input.value.length);
       }
-    }, 40);
+    }, 60);
 
-    let isSaved = false;
-    const saveAndClose = () => {
-      if (isSaved) return;
-      isSaved = true;
+    let isFinished = false;
+    const doSave = () => {
+      if (isFinished) return;
+      isFinished = true;
       const textVal = input.value.trim();
       let texts = loadPageTexts();
 
@@ -2949,20 +2966,50 @@ document.addEventListener('DOMContentLoaded', () => {
       renderPdfTextAnnotations();
     };
 
+    const doCancel = () => {
+      if (isFinished) return;
+      isFinished = true;
+      editorBox.remove();
+      renderPdfTextAnnotations();
+    };
+
+    saveBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      doSave();
+    });
+
+    cancelBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      doCancel();
+    });
+
     input.addEventListener('keydown', (e) => {
       e.stopPropagation();
       if (e.key === 'Enter') {
         e.preventDefault();
-        saveAndClose();
+        doSave();
       } else if (e.key === 'Escape') {
         e.preventDefault();
-        editorBox.remove();
-        renderPdfTextAnnotations();
+        doCancel();
       }
     });
+  }
 
-    input.addEventListener('blur', () => {
-      setTimeout(saveAndClose, 160);
+  // Hook pointerdown on text overlay as well so clicks always register
+  const overlayEl = document.getElementById('pdfTextOverlay');
+  if (overlayEl) {
+    overlayEl.addEventListener('pointerdown', (e) => {
+      if (currentPdfTool === 'text') {
+        if (e.target.closest('.pdf-text-item') || e.target.closest('.pdf-text-editor-box')) {
+          return;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+        const rect = overlayEl.getBoundingClientRect();
+        const x = rect.width > 0 ? (e.clientX - rect.left) / rect.width : 0;
+        const y = rect.height > 0 ? (e.clientY - rect.top) / rect.height : 0;
+        openPdfTextEditor(x, y);
+      }
     });
   }
 
@@ -2981,6 +3028,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (canvas) {
       canvas.className = `mode-${tool}`;
+    }
+
+    if (overlayEl) {
+      overlayEl.style.pointerEvents = (tool === 'text') ? 'auto' : 'none';
+    }
+
+    if (tool === 'text') {
+      if (typeof showFloatingToast === 'function') {
+        showFloatingToast('🔤 Mode Teks Aktif! Klik di mana saja pada buku untuk mengetik.', '✍️');
+      }
     }
   };
 
