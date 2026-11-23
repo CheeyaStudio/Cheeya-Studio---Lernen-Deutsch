@@ -2695,9 +2695,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  let lastWindowWidth = window.innerWidth;
+  let pdfResizeTimer = null;
   window.addEventListener('resize', () => {
-    const p = parseInt(pageInput.value, 10) || 1;
-    updatePdfSource(p);
+    // Only re-render if the WIDTH actually changed by at least 15px (e.g. rotating tablet/phone or resizing desktop window)
+    // On mobile and tablets, opening the on-screen keyboard changes window height, NOT width.
+    if (Math.abs(window.innerWidth - lastWindowWidth) < 15) {
+      return;
+    }
+    lastWindowWidth = window.innerWidth;
+
+    // Do NOT interrupt if user is currently typing in an input
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+      return;
+    }
+
+    clearTimeout(pdfResizeTimer);
+    pdfResizeTimer = setTimeout(() => {
+      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+        return;
+      }
+      const p = parseInt(pageInput.value, 10) || 1;
+      updatePdfSource(p);
+    }, 250);
   });
 
   function redrawPdfStrokes() {
@@ -2867,7 +2887,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderPdfTextAnnotations() {
     const overlay = document.getElementById('pdfTextOverlay');
     if (!overlay) return;
-    overlay.innerHTML = '';
+    // Remove only existing text note items, preserving any active typing editor box
+    overlay.querySelectorAll('.pdf-text-item').forEach(el => el.remove());
 
     const texts = loadPageTexts();
     texts.forEach(item => {
@@ -3094,17 +3115,19 @@ document.addEventListener('DOMContentLoaded', () => {
     editorBox.appendChild(input);
     overlay.appendChild(editorBox);
 
-    // Prevent clicks inside editor from propagating
+    // Prevent clicks and touch inside editor from propagating
     editorBox.addEventListener('pointerdown', (e) => e.stopPropagation());
     editorBox.addEventListener('mousedown', (e) => e.stopPropagation());
     editorBox.addEventListener('click', (e) => e.stopPropagation());
+    editorBox.addEventListener('touchstart', (e) => e.stopPropagation());
+    editorBox.addEventListener('touchend', (e) => e.stopPropagation());
 
     setTimeout(() => {
       input.focus();
       if (input.value) {
         input.setSelectionRange(input.value.length, input.value.length);
       }
-    }, 40);
+    }, 60);
 
     let isSaved = false;
     const saveAndClose = () => {
@@ -3151,7 +3174,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Otomatis simpan saat klik di luar area input (blur)
     input.addEventListener('blur', () => {
-      setTimeout(saveAndClose, 100);
+      setTimeout(() => {
+        if (document.activeElement === input || editorBox.contains(document.activeElement)) {
+          return;
+        }
+        saveAndClose();
+      }, 150);
     });
   }
 
