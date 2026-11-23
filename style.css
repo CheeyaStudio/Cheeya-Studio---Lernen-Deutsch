@@ -319,22 +319,28 @@ input, textarea {
   line-height: 1.25;
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(4px);
-  padding: 4px 10px;
-  border-radius: 8px;
-  border: 1.5px dashed rgba(2, 132, 199, 0.6);
-  box-shadow: 0 2px 8px rgba(12, 74, 110, 0.14);
-  cursor: pointer;
-  user-select: text;
-  -webkit-user-select: text;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-  z-index: 5;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1.5px dashed rgba(2, 132, 199, 0.5);
+  box-shadow: 0 2px 6px rgba(12, 74, 110, 0.12);
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  z-index: 10;
+}
+.pdf-text-item:active {
+  cursor: grabbing;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+  border-color: #0284c7;
+  border-style: solid;
 }
 .pdf-text-item:hover {
   border-color: #0284c7;
   border-style: solid;
   background: rgba(255, 255, 255, 0.98);
   box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
-  transform: translateY(-1px);
 }
 .pdf-text-item .delete-note-btn {
   position: absolute;
@@ -353,7 +359,7 @@ input, textarea {
   cursor: pointer;
   box-shadow: 0 1px 4px rgba(0,0,0,0.25);
   border: 1.5px solid white;
-  z-index: 10;
+  z-index: 15;
 }
 .pdf-text-item:hover .delete-note-btn {
   display: flex;
@@ -361,21 +367,21 @@ input, textarea {
 .pdf-text-editor-box {
   position: absolute;
   pointer-events: auto;
-  z-index: 20;
+  z-index: 50;
 }
-.pdf-text-editor-box input {
+.pdf-inline-text-input {
   font-family: 'Quicksand', 'Plus Jakarta Sans', sans-serif;
-  font-size: 14px;
   font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 8px;
+  padding: 3px 8px;
+  border-radius: 6px;
   border: 2px solid #0284c7;
   background: #ffffff;
   color: #0c4a6e;
-  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.35);
+  box-shadow: 0 3px 12px rgba(2, 132, 199, 0.25);
   outline: none;
   min-width: 120px;
-  max-width: 380px;
+  max-width: 480px;
+  line-height: 1.25;
 }
 
 /* Ambient Music Sound Pulsing */

@@ -2878,7 +2878,7 @@ document.addEventListener('DOMContentLoaded', () => {
       el.style.color = item.color || '#0284c7';
       const fSize = item.fontSize || currentPdfTextSize || 18;
       el.style.fontSize = fSize + 'px';
-      el.title = `Ukuran: ${fSize}px - Klik untuk edit, atau klik ✕ untuk hapus`;
+      el.title = 'Tahan & geser untuk memindahkan ke mana saja, klik untuk edit, atau klik ✕ untuk hapus';
 
       const span = document.createElement('span');
       span.textContent = item.text;
@@ -2888,16 +2888,73 @@ document.addEventListener('DOMContentLoaded', () => {
       delBtn.className = 'delete-note-btn';
       delBtn.textContent = '✕';
       delBtn.title = 'Hapus catatan';
+      delBtn.addEventListener('pointerdown', (e) => e.stopPropagation());
       delBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         deletePdfTextNote(item.id);
       });
       el.appendChild(delBtn);
 
-      el.addEventListener('click', (e) => {
+      // Fitur geser / pindah posisi (drag & drop)
+      let isDragging = false;
+      let startX = 0;
+      let startY = 0;
+      let initLeft = item.x * 100;
+      let initTop = item.y * 100;
+      let curLeft = initLeft;
+      let curTop = initTop;
+      let hasDragged = false;
+
+      el.addEventListener('pointerdown', (e) => {
+        if (e.target === delBtn) return;
         e.stopPropagation();
-        openPdfTextEditor(item.x, item.y, item);
+        isDragging = true;
+        hasDragged = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        initLeft = item.x * 100;
+        initTop = item.y * 100;
+        curLeft = initLeft;
+        curTop = initTop;
+        el.setPointerCapture(e.pointerId);
       });
+
+      el.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        if (Math.hypot(dx, dy) > 4) {
+          hasDragged = true;
+        }
+        const rect = overlay.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          curLeft = Math.min(95, Math.max(0, initLeft + (dx / rect.width) * 100));
+          curTop = Math.min(95, Math.max(0, initTop + (dy / rect.height) * 100));
+          el.style.left = curLeft + '%';
+          el.style.top = curTop + '%';
+        }
+      });
+
+      const finishDrag = (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        try { el.releasePointerCapture(e.pointerId); } catch (err) {}
+
+        if (hasDragged) {
+          // Posisi baru tersimpan permanen
+          item.x = curLeft / 100;
+          item.y = curTop / 100;
+          let allTexts = loadPageTexts();
+          allTexts = allTexts.map(t => t.id === item.id ? { ...t, x: item.x, y: item.y } : t);
+          savePageTexts(allTexts);
+        } else {
+          // Kalau cuma klik biasa (tanpa digeser), buka edit teks
+          openPdfTextEditor(item.x, item.y, item);
+        }
+      };
+
+      el.addEventListener('pointerup', finishDrag);
+      el.addEventListener('pointercancel', finishDrag);
 
       overlay.appendChild(el);
     });
@@ -2914,69 +2971,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const overlay = document.getElementById('pdfTextOverlay');
     if (!overlay) return;
 
+    // Remove any existing active editor
     const existingEditor = overlay.querySelector('.pdf-text-editor-box');
     if (existingEditor) {
       existingEditor.remove();
     }
 
-    let activeSize = existingItem ? (existingItem.fontSize || currentPdfTextSize || 18) : currentPdfTextSize;
+    const fSize = existingItem ? (existingItem.fontSize || currentPdfTextSize || 18) : (currentPdfTextSize || 18);
 
     const editorBox = document.createElement('div');
     editorBox.className = 'pdf-text-editor-box';
-    const clampedX = Math.min(72, Math.max(2, xPct * 100));
-    const clampedY = Math.min(90, Math.max(2, yPct * 100));
+    const clampedX = Math.min(82, Math.max(1, xPct * 100));
+    const clampedY = Math.min(93, Math.max(1, yPct * 100));
     editorBox.style.left = clampedX + '%';
     editorBox.style.top = clampedY + '%';
 
-    editorBox.innerHTML = `
-      <div class="flex flex-col gap-1.5 bg-white/95 p-2 rounded-2xl shadow-2xl border-2 border-sky-400 backdrop-blur-md" style="min-width: 280px; max-width: 360px;">
-        <div class="flex items-center justify-between text-[11px] font-bold text-sky-800 border-b border-sky-100 pb-1">
-          <span class="flex items-center gap-1"><span>✏️</span> Teks Jawaban</span>
-          <div class="flex items-center gap-1 bg-sky-50 p-0.5 rounded-lg border border-sky-200">
-            <span class="text-[9px] text-sky-600 px-0.5">Ukuran:</span>
-            <button type="button" data-size="14" class="size-choice-btn px-1.5 py-0.5 rounded text-[10px] font-bold ${activeSize === 14 ? 'bg-sky-600 text-white' : 'text-sky-700 hover:bg-sky-100'}">S</button>
-            <button type="button" data-size="18" class="size-choice-btn px-1.5 py-0.5 rounded text-[10px] font-bold ${activeSize === 18 ? 'bg-sky-600 text-white' : 'text-sky-700 hover:bg-sky-100'}">M</button>
-            <button type="button" data-size="24" class="size-choice-btn px-1.5 py-0.5 rounded text-[10px] font-bold ${activeSize === 24 ? 'bg-sky-600 text-white' : 'text-sky-700 hover:bg-sky-100'}">L</button>
-            <button type="button" data-size="32" class="size-choice-btn px-1.5 py-0.5 rounded text-[10px] font-bold ${activeSize === 32 ? 'bg-sky-600 text-white' : 'text-sky-700 hover:bg-sky-100'}">XL</button>
-          </div>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <input type="text" class="pdf-text-real-input flex-1 font-bold text-sky-950 bg-sky-50/80 border border-sky-200 rounded-lg px-2.5 py-1.5 outline-none focus:border-sky-500 focus:bg-white" placeholder="Ketik jawaban di sini..." style="font-size: ${activeSize}px;">
-          <button type="button" class="pdf-save-btn px-2.5 py-1.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg text-xs font-bold transition shadow-xs cursor-pointer flex items-center gap-1">✔ Simpan</button>
-          <button type="button" class="pdf-cancel-btn px-2 py-1.5 bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 rounded-lg text-xs font-bold transition cursor-pointer">✕</button>
-        </div>
-      </div>
-    `;
-
-    overlay.appendChild(editorBox);
-
-    const input = editorBox.querySelector('.pdf-text-real-input');
-    const saveBtn = editorBox.querySelector('.pdf-save-btn');
-    const cancelBtn = editorBox.querySelector('.pdf-cancel-btn');
-    const sizeBtns = editorBox.querySelectorAll('.size-choice-btn');
-
-    sizeBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        activeSize = parseInt(btn.getAttribute('data-size'), 10) || 18;
-        currentPdfTextSize = activeSize;
-        if (typeof window.setPdfTextSize === 'function') {
-          window.setPdfTextSize(activeSize);
-        }
-        sizeBtns.forEach(b => {
-          b.className = (parseInt(b.getAttribute('data-size'), 10) === activeSize) 
-            ? 'size-choice-btn px-1.5 py-0.5 rounded text-[10px] font-bold bg-sky-600 text-white' 
-            : 'size-choice-btn px-1.5 py-0.5 rounded text-[10px] font-bold text-sky-700 hover:bg-sky-100';
-        });
-        input.style.fontSize = activeSize + 'px';
-        input.focus();
-      });
-    });
-
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'pdf-inline-text-input';
+    input.placeholder = 'Ketik di sini...';
     input.value = existingItem ? existingItem.text : '';
     input.style.color = currentPdfColor || '#0284c7';
+    input.style.borderColor = currentPdfColor || '#0284c7';
+    input.style.fontSize = fSize + 'px';
 
-    // Prevent editor clicks from propagating to canvas
+    const adjustWidth = () => {
+      const len = Math.max(8, input.value.length + 3);
+      input.style.width = Math.min(520, Math.max(120, len * (fSize * 0.65))) + 'px';
+    };
+    adjustWidth();
+
+    editorBox.appendChild(input);
+    overlay.appendChild(editorBox);
+
+    // Prevent clicks inside editor from propagating
     editorBox.addEventListener('pointerdown', (e) => e.stopPropagation());
     editorBox.addEventListener('mousedown', (e) => e.stopPropagation());
     editorBox.addEventListener('click', (e) => e.stopPropagation());
@@ -2986,18 +3014,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (input.value) {
         input.setSelectionRange(input.value.length, input.value.length);
       }
-    }, 60);
+    }, 40);
 
-    let isFinished = false;
-    const doSave = () => {
-      if (isFinished) return;
-      isFinished = true;
+    let isSaved = false;
+    const saveAndClose = () => {
+      if (isSaved) return;
+      isSaved = true;
       const textVal = input.value.trim();
       let texts = loadPageTexts();
 
       if (existingItem) {
         if (textVal) {
-          texts = texts.map(t => t.id === existingItem.id ? { ...t, text: textVal, color: currentPdfColor, fontSize: activeSize } : t);
+          texts = texts.map(t => t.id === existingItem.id ? { ...t, text: textVal, color: currentPdfColor, fontSize: fSize } : t);
         } else {
           texts = texts.filter(t => t.id !== existingItem.id);
         }
@@ -3008,7 +3036,7 @@ document.addEventListener('DOMContentLoaded', () => {
           y: yPct,
           text: textVal,
           color: currentPdfColor || '#0284c7',
-          fontSize: activeSize
+          fontSize: fSize
         });
       }
 
@@ -3017,32 +3045,23 @@ document.addEventListener('DOMContentLoaded', () => {
       renderPdfTextAnnotations();
     };
 
-    const doCancel = () => {
-      if (isFinished) return;
-      isFinished = true;
-      editorBox.remove();
-      renderPdfTextAnnotations();
-    };
-
-    saveBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      doSave();
-    });
-
-    cancelBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      doCancel();
-    });
+    input.addEventListener('input', adjustWidth);
 
     input.addEventListener('keydown', (e) => {
       e.stopPropagation();
       if (e.key === 'Enter') {
         e.preventDefault();
-        doSave();
+        saveAndClose();
       } else if (e.key === 'Escape') {
         e.preventDefault();
-        doCancel();
+        editorBox.remove();
+        renderPdfTextAnnotations();
       }
+    });
+
+    // Otomatis simpan saat klik di luar area input (blur)
+    input.addEventListener('blur', () => {
+      setTimeout(saveAndClose, 100);
     });
   }
 
