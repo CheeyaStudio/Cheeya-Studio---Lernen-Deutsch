@@ -2828,6 +2828,22 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ================= TEXT ANNOTATION & TYPING ENGINE =================
+  let currentPdfTextSize = 18; // Default Medium (18px)
+
+  window.setPdfTextSize = function(size) {
+    currentPdfTextSize = size;
+    [14, 18, 24, 32].forEach(s => {
+      const btn = document.getElementById(`textSizeBtn-${s}`);
+      if (btn) {
+        if (s === size) {
+          btn.className = "px-2 py-1 text-xs font-bold rounded-lg transition bg-sky-600 text-white shadow-xs cursor-pointer";
+        } else {
+          btn.className = "px-2 py-1 text-xs font-bold rounded-lg transition text-sky-800 bg-white hover:bg-sky-100 cursor-pointer";
+        }
+      }
+    });
+  };
+
   function getTextStorageKey() {
     const chap = NETZWERK_DATA.chapters[currentChapterIndex];
     const p = parseInt(pageInput.value, 10) || 1;
@@ -2860,7 +2876,9 @@ document.addEventListener('DOMContentLoaded', () => {
       el.style.left = (item.x * 100) + '%';
       el.style.top = (item.y * 100) + '%';
       el.style.color = item.color || '#0284c7';
-      el.title = 'Klik untuk edit, atau klik ✕ untuk hapus';
+      const fSize = item.fontSize || currentPdfTextSize || 18;
+      el.style.fontSize = fSize + 'px';
+      el.title = `Ukuran: ${fSize}px - Klik untuk edit, atau klik ✕ untuk hapus`;
 
       const span = document.createElement('span');
       span.textContent = item.text;
@@ -2901,19 +2919,32 @@ document.addEventListener('DOMContentLoaded', () => {
       existingEditor.remove();
     }
 
+    let activeSize = existingItem ? (existingItem.fontSize || currentPdfTextSize || 18) : currentPdfTextSize;
+
     const editorBox = document.createElement('div');
     editorBox.className = 'pdf-text-editor-box';
-    const clampedX = Math.min(76, Math.max(3, xPct * 100));
-    const clampedY = Math.min(92, Math.max(3, yPct * 100));
+    const clampedX = Math.min(72, Math.max(2, xPct * 100));
+    const clampedY = Math.min(90, Math.max(2, yPct * 100));
     editorBox.style.left = clampedX + '%';
     editorBox.style.top = clampedY + '%';
 
     editorBox.innerHTML = `
-      <div class="flex items-center gap-1.5 bg-white/95 p-1.5 rounded-xl shadow-2xl border-2 border-sky-400 backdrop-blur-md" style="min-width: 250px;">
-        <span class="text-sky-500 font-bold text-xs pl-1">✏️</span>
-        <input type="text" class="pdf-text-real-input flex-1 text-xs font-bold text-sky-950 bg-sky-50/80 border border-sky-200 rounded-lg px-2.5 py-1.5 outline-none focus:border-sky-500 focus:bg-white" placeholder="Ketik jawaban di sini...">
-        <button type="button" class="pdf-save-btn px-2.5 py-1.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg text-xs font-bold transition shadow-xs cursor-pointer flex items-center gap-1">✔ Simpan</button>
-        <button type="button" class="pdf-cancel-btn px-2 py-1.5 bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 rounded-lg text-xs font-bold transition cursor-pointer">✕</button>
+      <div class="flex flex-col gap-1.5 bg-white/95 p-2 rounded-2xl shadow-2xl border-2 border-sky-400 backdrop-blur-md" style="min-width: 280px; max-width: 360px;">
+        <div class="flex items-center justify-between text-[11px] font-bold text-sky-800 border-b border-sky-100 pb-1">
+          <span class="flex items-center gap-1"><span>✏️</span> Teks Jawaban</span>
+          <div class="flex items-center gap-1 bg-sky-50 p-0.5 rounded-lg border border-sky-200">
+            <span class="text-[9px] text-sky-600 px-0.5">Ukuran:</span>
+            <button type="button" data-size="14" class="size-choice-btn px-1.5 py-0.5 rounded text-[10px] font-bold ${activeSize === 14 ? 'bg-sky-600 text-white' : 'text-sky-700 hover:bg-sky-100'}">S</button>
+            <button type="button" data-size="18" class="size-choice-btn px-1.5 py-0.5 rounded text-[10px] font-bold ${activeSize === 18 ? 'bg-sky-600 text-white' : 'text-sky-700 hover:bg-sky-100'}">M</button>
+            <button type="button" data-size="24" class="size-choice-btn px-1.5 py-0.5 rounded text-[10px] font-bold ${activeSize === 24 ? 'bg-sky-600 text-white' : 'text-sky-700 hover:bg-sky-100'}">L</button>
+            <button type="button" data-size="32" class="size-choice-btn px-1.5 py-0.5 rounded text-[10px] font-bold ${activeSize === 32 ? 'bg-sky-600 text-white' : 'text-sky-700 hover:bg-sky-100'}">XL</button>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <input type="text" class="pdf-text-real-input flex-1 font-bold text-sky-950 bg-sky-50/80 border border-sky-200 rounded-lg px-2.5 py-1.5 outline-none focus:border-sky-500 focus:bg-white" placeholder="Ketik jawaban di sini..." style="font-size: ${activeSize}px;">
+          <button type="button" class="pdf-save-btn px-2.5 py-1.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg text-xs font-bold transition shadow-xs cursor-pointer flex items-center gap-1">✔ Simpan</button>
+          <button type="button" class="pdf-cancel-btn px-2 py-1.5 bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 rounded-lg text-xs font-bold transition cursor-pointer">✕</button>
+        </div>
       </div>
     `;
 
@@ -2922,6 +2953,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const input = editorBox.querySelector('.pdf-text-real-input');
     const saveBtn = editorBox.querySelector('.pdf-save-btn');
     const cancelBtn = editorBox.querySelector('.pdf-cancel-btn');
+    const sizeBtns = editorBox.querySelectorAll('.size-choice-btn');
+
+    sizeBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        activeSize = parseInt(btn.getAttribute('data-size'), 10) || 18;
+        currentPdfTextSize = activeSize;
+        if (typeof window.setPdfTextSize === 'function') {
+          window.setPdfTextSize(activeSize);
+        }
+        sizeBtns.forEach(b => {
+          b.className = (parseInt(b.getAttribute('data-size'), 10) === activeSize) 
+            ? 'size-choice-btn px-1.5 py-0.5 rounded text-[10px] font-bold bg-sky-600 text-white' 
+            : 'size-choice-btn px-1.5 py-0.5 rounded text-[10px] font-bold text-sky-700 hover:bg-sky-100';
+        });
+        input.style.fontSize = activeSize + 'px';
+        input.focus();
+      });
+    });
 
     input.value = existingItem ? existingItem.text : '';
     input.style.color = currentPdfColor || '#0284c7';
@@ -2947,7 +2997,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (existingItem) {
         if (textVal) {
-          texts = texts.map(t => t.id === existingItem.id ? { ...t, text: textVal, color: currentPdfColor } : t);
+          texts = texts.map(t => t.id === existingItem.id ? { ...t, text: textVal, color: currentPdfColor, fontSize: activeSize } : t);
         } else {
           texts = texts.filter(t => t.id !== existingItem.id);
         }
@@ -2957,7 +3007,8 @@ document.addEventListener('DOMContentLoaded', () => {
           x: xPct,
           y: yPct,
           text: textVal,
-          color: currentPdfColor || '#0284c7'
+          color: currentPdfColor || '#0284c7',
+          fontSize: activeSize
         });
       }
 
@@ -5197,16 +5248,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (texts && texts.length > 0) {
       texts.forEach(item => {
         ctx.save();
-        ctx.font = 'bold 16px "Quicksand", sans-serif';
+        const fSize = item.fontSize || 18;
+        ctx.font = `bold ${fSize}px "Quicksand", sans-serif`;
         const posX = item.x * exportCanvas.width;
         const posY = item.y * exportCanvas.height;
         const metrics = ctx.measureText(item.text);
-        const padX = 8, padY = 4, boxH = 24;
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+        const padX = Math.round(fSize * 0.4), boxH = Math.round(fSize * 1.4);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.94)';
         ctx.strokeStyle = item.color || '#0284c7';
         ctx.lineWidth = 1.5;
-        ctx.fillRect(posX, posY - 17, metrics.width + padX * 2, boxH);
-        ctx.strokeRect(posX, posY - 17, metrics.width + padX * 2, boxH);
+        ctx.fillRect(posX, posY - fSize, metrics.width + padX * 2, boxH);
+        ctx.strokeRect(posX, posY - fSize, metrics.width + padX * 2, boxH);
         ctx.fillStyle = item.color || '#0284c7';
         ctx.fillText(item.text, posX + padX, posY);
         ctx.restore();

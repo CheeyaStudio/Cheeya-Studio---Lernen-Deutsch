@@ -51,7 +51,7 @@
   </script>
 
   <!-- Custom Soft Pastel Blue Theme & Scalable Font Styling -->
-  <link rel="stylesheet" href="style.css?v=20261123_text2">
+  <link rel="stylesheet" href="style.css?v=20261123_text3">
 </head>
 <body class="h-full flex flex-col antialiased select-none relative overflow-hidden" oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
 
@@ -601,6 +601,15 @@
             <button id="strokeWidthBtn-2" onclick="setPdfStrokeWidth(2)" class="px-2.5 py-1 text-xs font-bold rounded-lg transition text-sky-800 bg-white hover:bg-sky-100 cursor-pointer" title="Fine (2px)">• Fine</button>
             <button id="strokeWidthBtn-4" onclick="setPdfStrokeWidth(4)" class="px-2.5 py-1 text-xs font-bold rounded-lg transition bg-sky-600 text-white shadow-xs cursor-pointer" title="Medium (4px)">•• Med</button>
             <button id="strokeWidthBtn-8" onclick="setPdfStrokeWidth(8)" class="px-2.5 py-1 text-xs font-bold rounded-lg transition text-sky-800 bg-white hover:bg-sky-100 cursor-pointer" title="Thick (8px)">••• Thick</button>
+          </div>
+
+          <!-- Text Font Size Choices -->
+          <div id="pdfTextSizeControls" class="flex items-center gap-0.5 bg-sky-100/80 p-0.5 rounded-xl border border-sky-200" title="Ukuran Font Teks (S: 14px, M: 18px, L: 24px, XL: 32px)">
+            <span class="text-[10px] font-bold text-sky-700 px-1">🔠:</span>
+            <button id="textSizeBtn-14" onclick="setPdfTextSize(14)" class="px-2 py-1 text-xs font-bold rounded-lg transition text-sky-800 bg-white hover:bg-sky-100 cursor-pointer" title="Small (14px)">S</button>
+            <button id="textSizeBtn-18" onclick="setPdfTextSize(18)" class="px-2 py-1 text-xs font-bold rounded-lg transition bg-sky-600 text-white shadow-xs cursor-pointer" title="Medium / Standar (18px)">M</button>
+            <button id="textSizeBtn-24" onclick="setPdfTextSize(24)" class="px-2 py-1 text-xs font-bold rounded-lg transition text-sky-800 bg-white hover:bg-sky-100 cursor-pointer" title="Large / Besar (24px)">L</button>
+            <button id="textSizeBtn-32" onclick="setPdfTextSize(32)" class="px-2 py-1 text-xs font-bold rounded-lg transition text-sky-800 bg-white hover:bg-sky-100 cursor-pointer" title="Extra Large (32px)">XL</button>
           </div>
 
           <!-- Undo & Clear Buttons -->
@@ -2054,6 +2063,6 @@
   <!-- SCRIPT LOGIC -->
   <script src="flashcards-data.js?v=20260926_clean"></script>
   <script src="media-data.js?v=20260926_clean"></script>
-  <script src="app.js?v=20261123_text2"></script>
+  <script src="app.js?v=20261123_text3"></script>
 </body>
 </html>
