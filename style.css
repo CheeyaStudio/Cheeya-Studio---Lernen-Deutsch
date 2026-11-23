@@ -336,32 +336,93 @@ input, textarea {
   border-color: #0284c7;
   border-style: solid;
 }
-.pdf-text-item:hover {
+.pdf-text-item:hover,
+.pdf-text-item.active-item {
   border-color: #0284c7;
   border-style: solid;
   background: rgba(255, 255, 255, 0.98);
   box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+  z-index: 20;
 }
-.pdf-text-item .delete-note-btn {
+
+/* Floating Actions on Box (A-, A+, Delete) */
+.pdf-text-item .pdf-text-actions {
   position: absolute;
-  top: -7px;
-  right: -7px;
-  width: 17px;
-  height: 17px;
-  border-radius: 50%;
-  background: #ef4444;
-  color: white;
+  top: -24px;
+  right: -2px;
+  display: none;
+  align-items: center;
+  gap: 3px;
+  background: #0f172a;
+  padding: 2px 5px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 30;
+  pointer-events: auto;
+}
+.pdf-text-item:hover .pdf-text-actions,
+.pdf-text-item.active-item .pdf-text-actions {
+  display: flex;
+}
+.pdf-text-actions .pdf-action-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border: none;
+  border-radius: 9999px;
   font-size: 10px;
   font-weight: 800;
+  padding: 1px 5px;
+  height: 18px;
+  min-width: 18px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.pdf-text-actions .pdf-action-btn:hover {
+  background: #0284c7;
+  transform: scale(1.08);
+}
+.pdf-text-actions .pdf-action-btn.del-btn {
+  background: #ef4444;
+  color: #ffffff;
+  padding: 0;
+  width: 18px;
+}
+.pdf-text-actions .pdf-action-btn.del-btn:hover {
+  background: #dc2626;
+}
+
+/* Corner Resize Handle on Box (↘) */
+.pdf-text-item .pdf-resize-handle {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  width: 13px;
+  height: 13px;
+  background: #0284c7;
+  border: 2px solid #ffffff;
+  border-radius: 3px;
+  cursor: nwse-resize;
   display: none;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
-  border: 1.5px solid white;
-  z-index: 15;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  z-index: 25;
+  touch-action: none;
+  pointer-events: auto;
 }
-.pdf-text-item:hover .delete-note-btn {
+.pdf-text-item .pdf-resize-handle::after {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-right: 1.5px solid white;
+  border-bottom: 1.5px solid white;
+}
+.pdf-text-item:hover .pdf-resize-handle,
+.pdf-text-item.active-item .pdf-resize-handle {
   display: flex;
 }
 .pdf-text-editor-box {

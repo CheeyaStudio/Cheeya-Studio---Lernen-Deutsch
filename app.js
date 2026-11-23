@@ -2878,14 +2878,56 @@ document.addEventListener('DOMContentLoaded', () => {
       el.style.color = item.color || '#0284c7';
       const fSize = item.fontSize || currentPdfTextSize || 18;
       el.style.fontSize = fSize + 'px';
-      el.title = 'Tahan & geser untuk memindahkan ke mana saja, klik untuk edit, atau klik ✕ untuk hapus';
+      el.title = 'Tahan & geser untuk memindahkan teks, tarik sudut ↘ atau klik A-/A+ untuk ubah ukuran';
 
       const span = document.createElement('span');
+      span.className = 'pdf-text-content';
       span.textContent = item.text;
       el.appendChild(span);
 
-      const delBtn = document.createElement('div');
-      delBtn.className = 'delete-note-btn';
+      // Mini floating actions (A-, A+, Delete)
+      const actions = document.createElement('div');
+      actions.className = 'pdf-text-actions';
+
+      const sizeDownBtn = document.createElement('button');
+      sizeDownBtn.type = 'button';
+      sizeDownBtn.className = 'pdf-action-btn size-down';
+      sizeDownBtn.textContent = 'A-';
+      sizeDownBtn.title = 'Kecilkan ukuran teks';
+      sizeDownBtn.addEventListener('pointerdown', (e) => e.stopPropagation());
+      sizeDownBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const cur = item.fontSize || currentPdfTextSize || 18;
+        const newSize = Math.max(10, cur - 2);
+        item.fontSize = newSize;
+        el.style.fontSize = newSize + 'px';
+        let allTexts = loadPageTexts();
+        allTexts = allTexts.map(t => t.id === item.id ? { ...t, fontSize: newSize } : t);
+        savePageTexts(allTexts);
+      });
+      actions.appendChild(sizeDownBtn);
+
+      const sizeUpBtn = document.createElement('button');
+      sizeUpBtn.type = 'button';
+      sizeUpBtn.className = 'pdf-action-btn size-up';
+      sizeUpBtn.textContent = 'A+';
+      sizeUpBtn.title = 'Besarkan ukuran teks';
+      sizeUpBtn.addEventListener('pointerdown', (e) => e.stopPropagation());
+      sizeUpBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const cur = item.fontSize || currentPdfTextSize || 18;
+        const newSize = Math.min(48, cur + 2);
+        item.fontSize = newSize;
+        el.style.fontSize = newSize + 'px';
+        let allTexts = loadPageTexts();
+        allTexts = allTexts.map(t => t.id === item.id ? { ...t, fontSize: newSize } : t);
+        savePageTexts(allTexts);
+      });
+      actions.appendChild(sizeUpBtn);
+
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.className = 'pdf-action-btn del-btn';
       delBtn.textContent = '✕';
       delBtn.title = 'Hapus catatan';
       delBtn.addEventListener('pointerdown', (e) => e.stopPropagation());
@@ -2893,7 +2935,55 @@ document.addEventListener('DOMContentLoaded', () => {
         e.stopPropagation();
         deletePdfTextNote(item.id);
       });
-      el.appendChild(delBtn);
+      actions.appendChild(delBtn);
+
+      el.appendChild(actions);
+
+      // Corner Resize Handle (↘)
+      const resizeHandle = document.createElement('div');
+      resizeHandle.className = 'pdf-resize-handle';
+      resizeHandle.title = 'Tarik sudut ini untuk mengecilkan / membesarkan teks';
+
+      let isResizing = false;
+      let resizeStartX = 0;
+      let resizeStartY = 0;
+      let startFontSize = 18;
+      let currentResizedSize = 18;
+
+      resizeHandle.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        isResizing = true;
+        resizeStartX = e.clientX;
+        resizeStartY = e.clientY;
+        startFontSize = item.fontSize || currentPdfTextSize || 18;
+        currentResizedSize = startFontSize;
+        resizeHandle.setPointerCapture(e.pointerId);
+      });
+
+      resizeHandle.addEventListener('pointermove', (e) => {
+        if (!isResizing) return;
+        e.stopPropagation();
+        const dx = e.clientX - resizeStartX;
+        const dy = e.clientY - resizeStartY;
+        const delta = (dx + dy) / 2;
+        currentResizedSize = Math.max(10, Math.min(48, Math.round(startFontSize + delta * 0.22)));
+        el.style.fontSize = currentResizedSize + 'px';
+      });
+
+      const finishResize = (e) => {
+        if (!isResizing) return;
+        isResizing = false;
+        try { resizeHandle.releasePointerCapture(e.pointerId); } catch (err) {}
+        item.fontSize = currentResizedSize;
+        let allTexts = loadPageTexts();
+        allTexts = allTexts.map(t => t.id === item.id ? { ...t, fontSize: currentResizedSize } : t);
+        savePageTexts(allTexts);
+      };
+
+      resizeHandle.addEventListener('pointerup', finishResize);
+      resizeHandle.addEventListener('pointercancel', finishResize);
+      el.appendChild(resizeHandle);
 
       // Fitur geser / pindah posisi (drag & drop)
       let isDragging = false;
@@ -2906,7 +2996,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let hasDragged = false;
 
       el.addEventListener('pointerdown', (e) => {
-        if (e.target === delBtn) return;
+        if (e.target.closest('.pdf-text-actions') || e.target.closest('.pdf-resize-handle')) return;
         e.stopPropagation();
         isDragging = true;
         hasDragged = false;
