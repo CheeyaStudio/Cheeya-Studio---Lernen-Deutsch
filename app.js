@@ -2729,38 +2729,70 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function drawSingleStroke(stroke, ctx) {
-    if (!stroke.points || stroke.points.length < 2) return;
+    if (!stroke.points || stroke.points.length === 0) return;
 
     const rect = canvas ? canvas.getBoundingClientRect() : null;
     const scaleRatio = (rect && rect.width > 0) ? (canvas.width / rect.width) : 1;
     const effectiveWidth = (stroke.width || 4) * scaleRatio;
 
     ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
     if (stroke.tool === 'highlighter') {
       ctx.globalAlpha = 0.38;
       ctx.strokeStyle = stroke.color;
       ctx.lineWidth = effectiveWidth * 3.5;
-      ctx.lineCap = 'square';
-      ctx.lineJoin = 'round';
     } else if (stroke.tool === 'eraser') {
       ctx.globalCompositeOperation = 'destination-out';
       ctx.lineWidth = effectiveWidth * 5;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
     } else {
-      // Pen
+      // Pen - smooth handwriting
       ctx.globalAlpha = 1.0;
       ctx.strokeStyle = stroke.color;
       ctx.lineWidth = effectiveWidth;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
     }
 
-    ctx.beginPath();
-    ctx.moveTo(stroke.points[0].x * canvas.width, stroke.points[0].y * canvas.height);
-    for (let i = 1; i < stroke.points.length; i++) {
-      ctx.lineTo(stroke.points[i].x * canvas.width, stroke.points[i].y * canvas.height);
+    const pts = stroke.points;
+    const cw = canvas.width;
+    const ch = canvas.height;
+
+    if (pts.length === 1) {
+      // Single tap / dot (titik, umlaut, tanda centang)
+      ctx.beginPath();
+      const dotRadius = (stroke.tool === 'highlighter') ? (effectiveWidth * 1.75) : (stroke.tool === 'eraser' ? (effectiveWidth * 2.5) : Math.max(1.5, effectiveWidth / 2));
+      ctx.arc(pts[0].x * cw, pts[0].y * ch, dotRadius, 0, Math.PI * 2);
+      if (stroke.tool === 'eraser') {
+        ctx.fill();
+      } else {
+        ctx.fillStyle = stroke.color;
+        ctx.fill();
+      }
+      ctx.restore();
+      return;
     }
+
+    if (pts.length === 2) {
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x * cw, pts[0].y * ch);
+      ctx.lineTo(pts[1].x * cw, pts[1].y * ch);
+      ctx.stroke();
+      ctx.restore();
+      return;
+    }
+
+    // Silky-Smooth Quadratic Bézier Curve Interpolation
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x * cw, pts[0].y * ch);
+
+    for (let i = 1; i < pts.length - 1; i++) {
+      const xc = (pts[i].x + pts[i + 1].x) / 2 * cw;
+      const yc = (pts[i].y + pts[i + 1].y) / 2 * ch;
+      ctx.quadraticCurveTo(pts[i].x * cw, pts[i].y * ch, xc, yc);
+    }
+
+    const last = pts[pts.length - 1];
+    ctx.lineTo(last.x * cw, last.y * ch);
     ctx.stroke();
     ctx.restore();
   }
@@ -2789,52 +2821,102 @@ document.addEventListener('DOMContentLoaded', () => {
         points: [{ x, y }]
       };
       canvas.setPointerCapture(e.pointerId);
+
+      // Draw initial dot immediately for instant responsive feedback
+      const scaleRatio = rect.width > 0 ? (canvas.width / rect.width) : 1;
+      const effectiveWidth = (activeStroke.width || 4) * scaleRatio;
+      canvasCtx.save();
+      canvasCtx.lineCap = 'round';
+      canvasCtx.lineJoin = 'round';
+      if (activeStroke.tool === 'highlighter') {
+        canvasCtx.globalAlpha = 0.38;
+        canvasCtx.fillStyle = activeStroke.color;
+        canvasCtx.beginPath();
+        canvasCtx.arc(x * canvas.width, y * canvas.height, effectiveWidth * 1.75, 0, Math.PI * 2);
+        canvasCtx.fill();
+      } else if (activeStroke.tool === 'eraser') {
+        canvasCtx.globalCompositeOperation = 'destination-out';
+        canvasCtx.beginPath();
+        canvasCtx.arc(x * canvas.width, y * canvas.height, effectiveWidth * 2.5, 0, Math.PI * 2);
+        canvasCtx.fill();
+      } else {
+        canvasCtx.globalAlpha = 1.0;
+        canvasCtx.fillStyle = activeStroke.color;
+        canvasCtx.beginPath();
+        canvasCtx.arc(x * canvas.width, y * canvas.height, Math.max(1.5, effectiveWidth / 2), 0, Math.PI * 2);
+        canvasCtx.fill();
+      }
+      canvasCtx.restore();
     });
 
     canvas.addEventListener('pointermove', (e) => {
       if (!isDrawing || !activeStroke) return;
       const rect = canvas.getBoundingClientRect();
-      const x = rect.width > 0 ? (e.clientX - rect.left) / rect.width : 0;
-      const y = rect.height > 0 ? (e.clientY - rect.top) / rect.height : 0;
+      if (rect.width <= 0 || rect.height <= 0) return;
 
-      activeStroke.points.push({ x, y });
-
-      const scaleRatio = rect.width > 0 ? (canvas.width / rect.width) : 1;
+      // Extract coalesced pointer events for ultra-high resolution & buttery smooth writing
+      const events = (typeof e.getCoalescedEvents === 'function') ? e.getCoalescedEvents() : [e];
+      const scaleRatio = canvas.width / rect.width;
       const effectiveWidth = (activeStroke.width || 4) * scaleRatio;
+      const cw = canvas.width;
+      const ch = canvas.height;
 
-      // Draw current active segment incrementally
       canvasCtx.save();
+      canvasCtx.lineCap = 'round';
+      canvasCtx.lineJoin = 'round';
+
       if (activeStroke.tool === 'highlighter') {
         canvasCtx.globalAlpha = 0.38;
         canvasCtx.strokeStyle = activeStroke.color;
         canvasCtx.lineWidth = effectiveWidth * 3.5;
-        canvasCtx.lineCap = 'square';
       } else if (activeStroke.tool === 'eraser') {
         canvasCtx.globalCompositeOperation = 'destination-out';
         canvasCtx.lineWidth = effectiveWidth * 5;
-        canvasCtx.lineCap = 'round';
       } else {
         canvasCtx.globalAlpha = 1.0;
         canvasCtx.strokeStyle = activeStroke.color;
         canvasCtx.lineWidth = effectiveWidth;
-        canvasCtx.lineCap = 'round';
       }
 
-      const pts = activeStroke.points;
-      const pPrev = pts[pts.length - 2];
-      const pCur = pts[pts.length - 1];
+      for (let k = 0; k < events.length; k++) {
+        const ev = events[k];
+        const x = (ev.clientX - rect.left) / rect.width;
+        const y = (ev.clientY - rect.top) / rect.height;
 
-      canvasCtx.beginPath();
-      canvasCtx.moveTo(pPrev.x * canvas.width, pPrev.y * canvas.height);
-      canvasCtx.lineTo(pCur.x * canvas.width, pCur.y * canvas.height);
-      canvasCtx.stroke();
+        activeStroke.points.push({ x, y });
+
+        const pts = activeStroke.points;
+        const len = pts.length;
+        if (len >= 3) {
+          const p0 = pts[len - 3];
+          const p1 = pts[len - 2];
+          const p2 = pts[len - 1];
+
+          const startX = (p0.x + p1.x) / 2 * cw;
+          const startY = (p0.y + p1.y) / 2 * ch;
+          const endX = (p1.x + p2.x) / 2 * cw;
+          const endY = (p1.y + p2.y) / 2 * ch;
+
+          canvasCtx.beginPath();
+          canvasCtx.moveTo(startX, startY);
+          canvasCtx.quadraticCurveTo(p1.x * cw, p1.y * ch, endX, endY);
+          canvasCtx.stroke();
+        } else if (len === 2) {
+          canvasCtx.beginPath();
+          canvasCtx.moveTo(pts[0].x * cw, pts[0].y * ch);
+          canvasCtx.lineTo(pts[1].x * cw, pts[1].y * ch);
+          canvasCtx.stroke();
+        }
+      }
+
       canvasCtx.restore();
     });
 
     const finishStroke = (e) => {
       if (!isDrawing || !activeStroke) return;
       isDrawing = false;
-      if (activeStroke.points && activeStroke.points.length > 1) {
+      try { canvas.releasePointerCapture(e.pointerId); } catch (err) {}
+      if (activeStroke.points && activeStroke.points.length >= 1) {
         const strokes = loadPageStrokes();
         strokes.push(activeStroke);
         savePageStrokes(strokes);
@@ -3216,10 +3298,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (canvas) {
       canvas.className = `mode-${tool}`;
+      canvas.style.zIndex = (tool === 'text') ? '5' : '8';
     }
 
     if (overlayEl) {
       overlayEl.style.pointerEvents = (tool === 'text') ? 'auto' : 'none';
+      overlayEl.style.zIndex = (tool === 'text') ? '8' : '5';
+      if (tool === 'text') {
+        overlayEl.classList.remove('overlay-inactive');
+      } else {
+        overlayEl.classList.add('overlay-inactive');
+      }
+    }
+
+    // Contextual toolbar toggle: show line width for drawing tools, show text size for text tool
+    const strokeControls = document.getElementById('pdfStrokeWidthControls');
+    const textControls = document.getElementById('pdfTextSizeControls');
+    if (strokeControls && textControls) {
+      if (tool === 'text') {
+        strokeControls.classList.add('hidden');
+        textControls.classList.remove('hidden');
+      } else {
+        strokeControls.classList.remove('hidden');
+        textControls.classList.add('hidden');
+      }
     }
 
     if (tool === 'text') {

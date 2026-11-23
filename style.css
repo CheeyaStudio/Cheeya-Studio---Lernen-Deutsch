@@ -307,6 +307,10 @@ input, textarea {
 }
 
 /* Interactive PDF Typed Notes & Fill-in-the-Blank Text Layer */
+#pdfTextOverlay.overlay-inactive,
+#pdfTextOverlay.overlay-inactive * {
+  pointer-events: none !important;
+}
 .pdf-text-item {
   position: absolute;
   pointer-events: auto;

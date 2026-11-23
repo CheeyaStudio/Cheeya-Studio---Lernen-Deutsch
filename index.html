@@ -51,7 +51,7 @@
   </script>
 
   <!-- Custom Soft Pastel Blue Theme & Scalable Font Styling -->
-  <link rel="stylesheet" href="style.css?v=20261124_fix1">
+  <link rel="stylesheet" href="style.css?v=20261124_smoothpen1">
 </head>
 <body class="h-full flex flex-col antialiased select-none relative overflow-hidden" oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
 
@@ -596,15 +596,15 @@
           <!-- Separator -->
           <div class="h-5 w-[1px] bg-sky-300 mx-1"></div>
 
-          <!-- Line Width Choices -->
-          <div class="flex items-center gap-1 bg-sky-100/80 p-0.5 rounded-xl border border-sky-200" title="Pen & Highlighter Thickness">
+          <!-- Line Width Choices (Visible when Pen, Highlighter, or Eraser is active) -->
+          <div id="pdfStrokeWidthControls" class="flex items-center gap-1 bg-sky-100/80 p-0.5 rounded-xl border border-sky-200" title="Pen & Highlighter Thickness">
             <button id="strokeWidthBtn-2" onclick="setPdfStrokeWidth(2)" class="px-2.5 py-1 text-xs font-bold rounded-lg transition text-sky-800 bg-white hover:bg-sky-100 cursor-pointer" title="Fine (2px)">• Fine</button>
             <button id="strokeWidthBtn-4" onclick="setPdfStrokeWidth(4)" class="px-2.5 py-1 text-xs font-bold rounded-lg transition bg-sky-600 text-white shadow-xs cursor-pointer" title="Medium (4px)">•• Med</button>
             <button id="strokeWidthBtn-8" onclick="setPdfStrokeWidth(8)" class="px-2.5 py-1 text-xs font-bold rounded-lg transition text-sky-800 bg-white hover:bg-sky-100 cursor-pointer" title="Thick (8px)">••• Thick</button>
           </div>
 
-          <!-- Text Font Size Choices -->
-          <div id="pdfTextSizeControls" class="flex items-center gap-0.5 bg-sky-100/80 p-0.5 rounded-xl border border-sky-200" title="Ukuran Font Teks (S: 14px, M: 18px, L: 24px, XL: 32px)">
+          <!-- Text Font Size Choices (Visible when Text tool is active) -->
+          <div id="pdfTextSizeControls" class="hidden flex items-center gap-0.5 bg-sky-100/80 p-0.5 rounded-xl border border-sky-200" title="Ukuran Font Teks (S: 14px, M: 18px, L: 24px, XL: 32px)">
             <span class="text-[10px] font-bold text-sky-700 px-1">🔠:</span>
             <button id="textSizeBtn-14" onclick="setPdfTextSize(14)" class="px-2 py-1 text-xs font-bold rounded-lg transition text-sky-800 bg-white hover:bg-sky-100 cursor-pointer" title="Small (14px)">S</button>
             <button id="textSizeBtn-18" onclick="setPdfTextSize(18)" class="px-2 py-1 text-xs font-bold rounded-lg transition bg-sky-600 text-white shadow-xs cursor-pointer" title="Medium / Standar (18px)">M</button>
@@ -699,10 +699,10 @@
           <canvas id="pdfRenderCanvas" class="block w-full h-auto"></canvas>
           
           <!-- HTML5 Drawing Canvas Overlay for Pen, Stabilo & Eraser -->
-          <canvas id="pdfAnnotationCanvas" class="mode-hand absolute inset-0 w-full h-full"></canvas>
+          <canvas id="pdfAnnotationCanvas" class="mode-hand absolute inset-0 w-full h-full" style="z-index: 8;"></canvas>
           
           <!-- Interactive Typed Notes & Fill-in-the-Blank Text Layer -->
-          <div id="pdfTextOverlay" class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden" style="z-index: 6;"></div>
+          <div id="pdfTextOverlay" class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden" style="z-index: 5;"></div>
           
           <!-- Loading Spinner -->
           <div id="pdfLoadingSpinner" class="absolute inset-0 flex flex-col items-center justify-center bg-white/90 z-10 transition-opacity duration-200">
@@ -2063,6 +2063,6 @@
   <!-- SCRIPT LOGIC -->
   <script src="flashcards-data.js?v=20260926_clean"></script>
   <script src="media-data.js?v=20260926_clean"></script>
-  <script src="app.js?v=20261124_fix1"></script>
+  <script src="app.js?v=20261124_smoothpen1"></script>
 </body>
 </html>
